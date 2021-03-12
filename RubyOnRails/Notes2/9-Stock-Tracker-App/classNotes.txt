@@ -1,0 +1,3610 @@
+#=================================================================#
+#            Section 9. Stock Tracker Social Media App            #
+#=================================================================#
+
+
+
+
+
+
+
+
+
+
+#=======================================================#
+#            240. Preview and Details of App            #
+#=======================================================#
+
+The Preview video of the Stock Tracker Social Media App has been moved to section 1. 
+Please take a look at the preview video if you like to get a feel for the completed app.
+
+The Github repo for the Rails 6 version (brand new - January 2020) of the app can be found here:
+
+https://github.com/udemyrailscourse/finance-tracker-6
+
+Sections covered in this section that are different from previous apps:
+
+- Use (and customization) of devise gem for authentication
+
+- Ajax for form submission, in-depth
+
+- Working with an external API to get stock quote information
+
+- Working with sensitive credentials (such as API keys) within the app
+
+- Faster development of resources using generators
+
+- Bootstrap 4.3.1 installation and usage for front-end styling without the use of the bootstrap gem
+
+- Much more! 
+
+Older versions:
+
+The completed Github repo for the Rails 4.2.5 version of the app can be found here:
+
+https://github.com/udemyrailscourse/finance-tracker-4.2.5
+
+The completed Github repo for the Rails 5.1.4 version of the app can be found here:
+
+https://github.com/udemyrailscourse/finance-tracker-5.1.4  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=========================================================#
+#            241. Finance Tracker Requirements            #
+#=========================================================#
+
+Requirements
+  - Authentication System
+    * sign up
+    * edit profile
+    * Login/Logout
+
+  - Track Stocks
+    * 10 per user
+    * profile displays stocks and current price
+
+  - Seach for stocks
+    * add and remove stocks from portfolio
+
+  - Look for Friends
+    * can search by name or email
+
+  - View friends profile
+    * contains friends portfolio of stocks
+
+  - Mobile friendly
+
+  - Requires fast development
+
+  - Styling not important but must be presentable
+
+  - No test framework required since it is a prototype
+    * aim is to get the product up and running for display
+
+  - Core functionality, time, and presentation are key factors
+
+
+What will we learn?
+  - Rapid prototyping with rails 'magic'
+
+  - Make use of out of the box tools like bootstrap and template generators
+
+  - How to use generators to build features and then tailor them as needed
+
+  - Install configure and customize 3rd party gems/tools like devise for authentication
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=========================================================#
+#            242. Finance Tracker Assignment 1            #
+#=========================================================#
+
+ASSIGNMENT:
+
+1 Create a new rails application called finance-tracker. 
+  I'm using Rails 6 for this application and I'd recommend you use the same 
+  (Installation videos for Rails 6 can be found in sections 13, 14, 15 depending on your system).
+    $rails new finance-tracker (will create a new directory containing project)
+
+2 Change directory into your finance-tracker folder  
+  ensure that the rails server runs and you are able to preview the app.
+
+3 Make a commit of your newly created app files to your git repo, 
+  the message should be "Initial commit of app" 
+  (ensure you do this from the finance-tracker directory).
+
+4 Update the readme file to say something relevant about the app. 
+  Example: "This is the finance tracker app from the Complete Ruby on Rails Developer course".
+
+5 Make a commit of your code (to capture this latest change).
+
+6 Create a Github repository for the application and push your code to the remote repo.
+
+Old notes on Rails 6 installation (shouldn't be an issue if you have been using Rails 6 already):
+
+- Make sure to install yarn (which will require node installed already) 
+  which will help you install and manage JavaScript packages/dependencies. 
+  It's like npm (node package manager).
+
+- Rails 6 makes use of webpack via the webpacker gem. 
+  Webpack provides modularization for JavaScript and the webpacker gem provides integration with webpack. 
+  All this will start making sense when we start using these in our app to install and use Bootstrap. 
+  Just know that if you start seeing requirements for node or yarn during installation of Rails 6 
+  (which will try to install webpacker as well) don't worry, just install what it recommends and that's 
+  really it! Good luck!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#====================================================#
+#            243. Assignment 1 Completion            #
+#====================================================#
+
+Create project
+  $rails new finance-tracker
+
+Check rails version
+  $rails -v
+
+Check ruby version
+  $ruby -v
+
+Check that it runs
+  $rails s (visit localhost3000: in browser)
+
+make commit
+
+Change readme
+
+make commit
+
+Create a new repo on github website
+Follow instructions for pushing an existing repo
+  $git remote add origin git@github.com:jnhthomp/finance-tracker.git
+  $git branch -M master
+  $git push -u origin master
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===================================================#
+#            244. FT Assignment 2 - Text            #
+#===================================================#
+
+ASSIGNMENT:
+
+1 Create a homepage for your application using a root route. 
+  You may name your controller welcome controller and the action your index action.
+
+2 Push your updated code to your Github repository so it's saved. 
+  (After making a commit of course)
+
+3 Re-organize your Gemfile to put sqlite3 gem in group development, 
+  and create group production with the pg gem.
+
+4 Make a commit of your code
+
+5 Create a Heroku app for your application and deploy it to production. 
+  Refer to Heroku app docs to see if there are any latest changes you need 
+  to be aware of in deploying Rails applications in the platform.
+
+6 Post a link to your Heroku app page in the discussions
+
+7 IMPORTANT: Don't proceed to the next video unless you're able to get the above working. 
+  It is necessary that you are able to perform the tasks above and the videos going forward will make this assumption 
+  (You can reference the alpha-blog videos for help at any time). 
+  If you want to skip production deploy with Heroku, then you can skip those steps, 
+  but you have to at least get a root route/view working.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#====================================================#
+#            245. Assignment 2 Completion            #
+#====================================================#
+
+First we have to add the root route to routes.rb
+  root 'welcome#index'
+
+Then create:
+  app/controllers/welcome_controller.rb
+
+Add the class and index method
+  class WelcomeController < ApplicationController
+    def index
+
+    end
+  end
+
+Then create a view
+  app/views/welcom/index.html.erb
+
+Add a heading and test
+
+Make a commit and push
+
+In Gemfile
+cut the following from public gems and place in development group
+  gem 'sqlite3'
+
+Then create a new production group with pg gem
+  group :production do
+    gem 'pg'
+  end
+
+run:
+  $bundle install --without production
+
+Commit and push
+
+Create a new project in heroku
+Follow commands to push existing repo
+  $heroku git:remote -a finance-tracker-jt
+  $git push heroku master
+
+You can also do this all at once with:
+  $rails generate controller welcome index
+    This will create the welcome controller
+    Will assign a route (needs changed to root)
+    Will create app/views/welcome/index.html/erb
+    Creates helper for welcome controller
+    Crates test files
+    Creates css sheet for views
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==============================================================#
+#            246. Add devise Gem for Authentication            #
+#==============================================================#
+
+Now we will work on authentication
+We have built this from scratch with alpha-blog and message-me
+
+Now we will use a gem that will handle some of the setup 
+We will also customize this gem so it works how we want it to
+
+First let's review how authentication works
+  users have to be able to sign up
+    hashed passwords (not plain string)
+    confirmation links (email confirmation) [not necessary]
+    forgot password links [not necessary]
+  users can log in
+    remember user [not necessary]
+  users can log out
+
+devise can handle all of the above even though we don't we don't need some of them
+We can add them later on if we want but not right now
+
+More info here: https://github.com/heartcombo/devise
+
+First step is to add the devise gem to the app
+in Gemfile: (public)
+  gem 'devise'
+
+Save and run bundle install
+  $bundle install --without production
+
+Now we need to run the devise generator
+  $rails generate devise:install 
+
+This is all we need to get setup next lesson we will start making users
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=====================================================#
+#            247. Create Users With Devise            #
+#=====================================================#
+
+Now we have added and installed the devise gem we can to create users with devise
+
+In order to generate the user model we can use:
+  $rails generate devise User
+
+What did this do?
+  invoke  active_record
+  create    db/migrate/20200914224101_devise_create_users.rb
+  create    app/models/user.rb
+  invoke    test_unit
+  create      test/models/user_test.rb
+  create      test/fixtures/users.yml
+  insert    app/models/user.rb
+  route  devise_for :users
+
+The important part is
+  created a migration file for 20200914224101_devise_create_users
+    This creates our User table 
+    Includes email, encrypted_password, reset_password_token, reset_password_sent_at,
+     remember_created_at, timestamps
+    This also adds and index for the users email and reset_password_token
+      This is important because it will make searching much faster 
+      although creating a new entry will be slightly longer
+  Created a user model
+    In the model it added:
+      devise :database_authenticatable, :registerable,
+             :recoverable, :rememberable, :validatable
+      This will allow set up newly created users to work with devise and it's functions
+  Added a devise route
+    devise_for :users
+
+First let's take a look at the routes that were added to the routes.rb
+You can view routes and only return results with a keyword with:
+  $rails routes | grep users
+
+We get the following returned:
+          new_user_session  GET      /users/sign_in(.:format)          devise/sessions#new
+              user_session  POST     /users/sign_in(.:format)          devise/sessions#create
+      destroy_user_session  DELETE   /users/sign_out(.:format)         devise/sessions#destroy
+         new_user_password  GET      /users/password/new(.:format)     devise/passwords#new
+        edit_user_password  GET      /users/password/edit(.:format)    devise/passwords#edit
+             user_password  PATCH    /users/password(.:format)         devise/passwords#update
+                            PUT      /users/password(.:format)         devise/passwords#update
+                            POST     /users/password(.:format)         devise/passwords#create
+  cancel_user_registration  GET      /users/cancel(.:format)           devise/registrations#cancel
+     new_user_registration  GET      /users/sign_up(.:format)          devise/registrations#new
+    edit_user_registration  GET      /users/edit(.:format)             devise/registrations#edit
+         user_registration  PATCH    /users(.:format)                  devise/registrations#update
+                            PUT      /users(.:format)                  devise/registrations#update
+                            DELETE   /users(.:format)                  devise/registrations#destroy
+                            POST     /users(.:format)                  devise/registrations#create
+
+These are all the paths generated for our users by devise
+
+In the migration file there are many fields added and some that are disabled
+  def change
+    create_table :users do |t|
+      ## Database authenticatable
+      t.string :email,              null: false, default: ""
+      t.string :encrypted_password, null: false, default: ""
+
+      ## Recoverable
+      t.string   :reset_password_token
+      t.datetime :reset_password_sent_at
+
+      ## Rememberable
+      t.datetime :remember_created_at
+
+      ## Trackable
+      # t.integer  :sign_in_count, default: 0, null: false
+      # t.datetime :current_sign_in_at
+      # t.datetime :last_sign_in_at
+      # t.string   :current_sign_in_ip
+      # t.string   :last_sign_in_ip
+
+      ## Confirmable
+      # t.string   :confirmation_token
+      # t.datetime :confirmed_at
+      # t.datetime :confirmation_sent_at
+      # t.string   :unconfirmed_email # Only if using reconfirmable
+
+      ## Lockable
+      # t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts
+      # t.string   :unlock_token # Only if unlock strategy is :email or :both
+      # t.datetime :locked_at
+
+
+      t.timestamps null: false
+    end
+
+    add_index :users, :email,                unique: true
+    add_index :users, :reset_password_token, unique: true
+    # add_index :users, :confirmation_token,   unique: true
+    # add_index :users, :unlock_token,         unique: true
+  end
+
+We wont' change any of the defaults at this time
+
+
+Then in the models file that was generated
+We have the following:
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
+registerable -> can register a user
+recoverable  -> can use forgot password
+rememberable -> stayed signed in
+
+There are others that can be added that we are not using
+
+There are no views generated since we did not run '$rails g devise:views' after generating the User things
+
+
+Now that we have everything we need for the table and devise we can run our migration file that was generated
+  $rails db:migrate
+
+Now our table should be created
+Test in rails console
+
+There is one more thing that we have to add to authenticate users
+We have devise set up but we never call it
+We can force the sign on page to load before the page loads by using a before_action
+If we add this to our application controller than all users have to be authenticated to use any part of the app
+  before_action :authenticate_user
+
+Now if we try to load any page in the app the devise default sign in page will load instead
+
+We also need to add flash messages to our application.html.erb so they can appear on this sign in page (above yield tag)
+This was in the devise instructions after installing devise
+  <p class="notice"><%= notice %></p>
+  <p class="alert"><%= alert %></p>
+
+Now if we reload the home page we are redirected to sign in and a flash message shows 
+Then if we input the wrong username and password there are more flash messages
+Devise also has a handy pop up that tells the user if their email format is invalid
+
+Now we have a robust authentication system set up and ready to go with comparitively little effort
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#============================================================#
+#            248. Test Auth System | Login/Logout            #
+#============================================================#
+
+Now we will test the authentication system we built with devise
+
+We can currently sign in and create a new user but the problem is the homepage has no way to sign that user out
+So the logged in user will remain logged in
+
+Let's add a logout button to the homepage really quick 
+We can check what the sign out link was with the '$rails routes | grep user' from earlier
+  destroy_user_session    DELETE    /users/sign_out(.:format)        devise/sessions#destroy
+
+So we can make a link to destroy_user_session_path to make a sign out link on the homepage
+  <%= link_to 'Sign out',  destroy_user_session_path, method: :delete %>
+
+Now we should have enough to test if new user, sign in, and log out is working
+
+Now that authentication and sign up are all working let's take a look at the user in console
+  $User.all
+  $user = User.first
+  $user
+We can see that the user we created in the browser was added to the User table
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#======================================================#
+#            249. Assignment: Add Bootstrap            #
+#======================================================#
+
+Now to add bootstrap to our application for styling
+
+Use a navbar to test that it is working properly since it needs js and jquery to work properly
+If the bootstrap navbar works then all other bootstrap features should work
+
+For rails 6 the method for installing bootstrap is slightly different
+
+How to Install:
+
+Run the following command in terminal: (In finance-tracker directory)
+  $yarn add bootstrap@4.4.1 jquery popper.js
+
+Now bootstrap should be installed
+
+You can verify it was installed by looking at package.json and seeing the yarn packages there.
+
+add navigation html to partial and render in application.html.erb
+
+In app/assets/stylesheets/application.css:
+  *= require bootstrap (top of page in comment block)
+
+Style navbar from partial how you want (I used alpha blog classes/id and css as a baseline)
+
+To link javascript 
+We have to make sure that the application understands jquery and popper.js
+We have to edit the config/webpack/environment.js file
+add the following lines below const { environment } = require('@rails/webpacker'):
+  const webpack = require("webpack")
+
+  environment.plugins.append("Provide", new webpack.ProvidePlugin({
+    $:'jquery',
+    jQuery: 'jquery',
+    Popper:['popper.js', 'default']
+  }))
+
+Then in the application.js we have to add: app/javascript/pack/application.js
+  import "bootstrap"
+
+Now bootstrap should be working just fine
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=========================================================#
+#            250. Implementation Add Bootstrap            #
+#=========================================================#
+
+Previous lesson was the assignment and I included my explanation
+This lesson is just the explanation so it will be the same
+
+How to Install:
+
+Run the following command in terminal: (In finance-tracker directory)
+  $yarn add bootstrap@4.4.1 jquery popper.js
+
+Now bootstrap should be installed
+
+You can verify it was installed by looking at package.json and seeing the yarn packages there.
+
+add navigation html to partial and render in application.html.erb
+
+In app/assets/stylesheets/application.css:
+  *= require bootstrap (top of page in comment block)
+
+Style navbar from partial how you want (I used alpha blog classes/id and css as a baseline)
+
+To link javascript 
+We have to make sure that the application understands jquery and popper.js
+We have to edit the config/webpack/environment.js file
+add the following lines below const { environment } = require('@rails/webpacker'):
+  const webpack = require("webpack")
+
+  environment.plugins.append("Provide", new webpack.ProvidePlugin({
+    $:'jquery',
+    jQuery: 'jquery',
+    Popper:['popper.js', 'default']
+  }))
+
+Then in the application.js we have to add: app/javascript/pack/application.js
+  import "bootstrap"
+
+Now bootstrap should be working just fine
+
+Now we can add our own stylesheet in app/assets/custom.css.scss
+At the top we must include:
+  @import 'bootstrap/dist/css/bootstrap';
+
+Now we will be able to modify bootstrap classes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=========================================#
+#            251. Update Views            #
+#=========================================#
+
+Now we want to update the login and signup views
+
+But we don't know where they are since they were made by devise and are not in our views folder
+That is because they are made available by the devise engine
+You can see this in the devise github page
+
+Devise allows us to customize these and copy the views into our project with:
+  $rails generate devise:views
+
+However that will give us the same styling
+We could go through and edit by hand to get the styling we want
+But instead we can generate it automatically using a gem:
+  devise-bootstrap-views
+
+To add it to our project we must have bootstrap 4 (which we added last lesson)
+Then we have to add the gem to our gemfile:
+  gem 'devise-bootstrap-views', '~> 1.0'
+
+Then we have to run '$bundle install' like with all other gems
+
+Now we can generate views with the following command:
+  $rails generate devise:views:bootstrap_templates
+
+Now we can see several views that were generated by devise
+
+If we start server and view the page we can see that the page now has bootstrap styling
+We still have to fix it a little bit but the correct parts are being used
+
+Note that you can see all the views that were generated in app/views/devise
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==================================================================#
+#            252. Update Layout: Containers For Styling            #
+#==================================================================#
+
+We want to update our application so it will look better visually
+adding padding to both sides of the application will be first
+
+We want this padding on all of our views (not just the login page since the fields were stretched)
+So we will add this padding to the application.html.erb file
+
+Put the flash messages and our main yield block inside a .container div
+  You may have to change some css if you edited background colors or anything
+
+Then we want to add some padding to the text inside the navigation bar
+Note that we still want the navigation bar to go all the way across the screen - 
+ we just want the text to be pushed in a little
+We can do this in the _navigation partial
+Just add a .container div inside the nav tag and nest the rest of the navbar inside .container
+
+Next even though we added some padding to all of our views (and the login form doesn't spread alllll the way across)
+It still is stretched too far across the .container div and is taking up all 12 columns instead of just 9 or so
+
+To add that we can look at the login page created by devise (app/views/devise/sessions/new.html.erb)
+We can use a bootstrap class to hold this form and it's items to reduce how many columns it can take
+To do that we have to add:
+  <div class="row">
+    <div class="col-9">
+    </div>
+  </div>
+
+Then we can put the entire form inside of these divs
+Be sure to leave the header outside of these divs at the top
+Adjust sizing as needed by changing the number after col
+Also add this to our registration page
+
+Play around with any other styling (.justify-content-center for bootstrap centering)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#====================================================================#
+#            253. Layout Assignment: Add _messages & _nav            #
+#====================================================================#
+
+There are a couple of layout cleanup tasks to take care of
+
+-notice and alert in application.html.erb
+  * Add style to these messages (be consistent with bootstrap styling)
+     you can add alert-danger/success or whatever
+  * Move these to a partial
+
+-navigation block in application.html.erb
+  * We add the navigation code to a partial when we created it so this is already done
+    The lesson plan had it in application.html.erb to this point
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==========================================#
+#            254. Setup API key            #
+#==========================================#
+
+Now we will add the main functionality of our app
+We will use an api to get stock data
+We are going to use a service provided by IEXCloud.io
+
+We are also going to use a ruby gem associated with it
+This will make it even easier
+  iex-ruby-client
+
+To add the gem we have to use: (Gemfile)
+  gem 'iex-ruby-client'
+
+Then install
+  $bundle install --without production
+
+Now the gem is installed and we have to get an API token
+This will verify that we are allowed to access the data
+Will be used by our application like a key
+*You will need an iex account to get an API token
+
+After making an account turn sandbox testing on
+This will allow us to make calls to the api without adding to our limit
+However the data will be randomized and inaccurate
+
+Now to get our tokens go to the "API Tokens" menu
+You will see a Publishable key listed - Keep this key in mind (copy somewhere safe if needed)
+
+Now we can look at the documentation for the gem again to see how to use it
+In the configure you can see the documentation shows the code we will need 
+  client = IEX::Api::Client.new(
+    publishable_token: 'publishable_token',
+    endpoint: 'https://sandbox.iexapis.com/v1'
+  )
+
+Before adding this to our application let's see how this works in rails console
+Use the above into our rails console
+Make sure to replace 'publishable_token' with the token from earlier
+
+Now we have what we need to get started integrating this with our app
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=============================================================#
+#            255. Create Stock Model w/ Attributes            #
+#=============================================================#
+
+Now we want to create our stock model
+It will need 3 attributes:
+  t.string :name
+  t.string :ticker_symbol
+  t.decimal :price
+
+First let's generate the model
+  $rails generate model Stock ticker:string name:string last_price:decimal
+
+This creates four files for us
+  create_stocks migration file
+  stock.rb model
+  2 test files
+
+Now to run the migration file that was generated
+  $rails db:migrate
+
+Test that it was created properly in console
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=========================================#
+#            256. Stock Lookup            #
+#=========================================#
+
+Now to automate looking up stock like we did in the console a couple of lessons ago
+
+We will have to change the stock model to build the backend
+
+We want to be able to use something like:
+  Stock.new_lookup('MSFT') 
+in order to get the latest price for that stock
+
+In our stock model let's create the new_lookup method
+In order to make this a class method we have to use self
+This means we don't have to use an instance variable
+ -because each time the method is called it is a new instance
+
+This method will also need to be able to accept an arguement of ticker_symbol
+Inside of this method we will use the same code that we did in rails console
+to lookup a price: (replace 'publishable_token' with the token from your iex account)
+  def self.new_lookup(ticker_symbol)
+    client = IEX::Api::Client.new(
+      publishable_token: 'publishable_token',
+      endpoint: 'https://sandbox.iexapis.com/v1'
+    )
+
+    client.price(ticker_symbol)
+  end
+
+DO NOT MAKE A COMMIT OF YOUR CODE WITH YOUR KEY WRITTEN
+In the next lessons we will learn how to store this key and encrypt it so that it can be pushed confidentially
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==========================================================#
+#            257. Secure Credentials In Rails 6            #
+#==========================================================#
+
+We cannot post our keys or credentials online so that they do not show up in our repo
+We could use environment variables (some do) then we would just have to set those variables in our production
+
+However, Rails provides a way for us to store and encrypt our credentials so we do not have to do that
+
+There is a file called config/credentials.yml.enc and master.key file
+The credentials.yml file cannot be read because it is encrypted (hence .enc)
+The master.key file has the means to decrypt it but master.key is not pushed to github
+You can see it is ignored in the .gitignore file
+
+If you are working with a multimember team who uses the same credentials file (because they are in the same repo)
+then the master.key must be shared with them 
+
+This also means that if we clone someone else's github we won't have the master.key file and will not be able to run the application
+We will have to create our own credentials file or git it from them
+
+How do we read the credentials file?
+There is a command built into rails that allows us to do this if we have the master.key file 
+  $EDITOR="code --wait" rails credentials:edit
+
+Now we can see that a file will open in vs code
+This is a temporary file and will be used to update the credentials.yml.enc and then deleted
+
+To practice uncomment the aws credentials at the top so we can learn how to read them
+The file follows a key value pattern
+
+How do we access the aws access_key_id?
+Let's try in rails console
+  $Rails.application.credentials.aws[:access_key_id]
+  =>123
+
+We will follow the same pattern in our code so:
+  We don't have to hardcode our keys and tokens
+  Our tokens and keys are encrypted
+  Only those with access to master.key can decrypt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=================================================#
+#            258. Store Secure API Key            #
+#=================================================#
+
+Now that we know how the credentials.yml.enc and master.key file work we can use them to store our api tokens
+
+Let's add them both to our credentials file
+Use the same command from last lesson:
+  $EDITOR="code --wait" rails credentials:edit
+
+Then edit the file (remove the aws example)(replace 'publishable_token' with token from iex)
+  iex_client:
+    sandbox_api_key: 'publishable_token'
+
+Now we just have to save this file and call it wherever we need the token
+We can call it the same way we did in rails console
+Use this in place of 'publishable_token' in our Stock model:
+  Rails.application.credentials.iex_client[:sandbox_api_key]
+
+Now let's try to use our new method to look up a price for a stock and test that our method works
+In rails console:
+  $Stock.new_lookup('GOOG')
+  =>1490.2
+
+Now we can make a commit of our code since our keys are encrypted
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=============================================================#
+#            259. Setup Front-end For Stock Lookup            #
+#=============================================================#
+
+Now that we are able to use a function to find a given stocks price on the backend
+We need to change the front end to use this feature
+
+How will this work?
+We will have a form input
+In this input we can enter a ticker_symbol
+When the ticker_symbol is submitted to the stocks controller which will search for the stock
+
+We will add this functionality to the users view page
+This will act as the user's portfolio page
+We will call this route my_portfolio
+
+If we try visiting this route now we get an error because we haven't set it up 
+
+We need to do this in the routes.rb
+  get 'my_portfolio', to: 'users#my_portfolio'
+
+Now to create a users_controller.rb
+Since we know that we will also need a my_portfolio action, view, and route and a users controller
+ we can generate all of this with a command
+  $rails generate controller users my_portfolio
+
+Now we have a users_controller, users/my_portfolio route, users/my_portfolio view, some tests, helpers, and a users stylesheet
+
+We will have to delete the generated route since we already made one
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#====================================================#
+#            260. Build Stock Lookup Form            #
+#====================================================#
+
+Now we will build a form to search for ticker symbols and find their stock price
+First we want to change the Users#my_portfolio view to display a better headline
+We can do this in app/views/users/my_protfolio.html.erb
+
+Change the main heading to say my portfolio instead of the default Users#my_portfolio
+Then add an h3 tag with "Search Stocks
+
+Then we want to add the search stocks to a new div so it can be within our search field
+We can use a class .search-area around our h3 tag to start creating our search form
+
+Then use our custom.css.scss to add some top padding to our .search-area class (50px)
+
+Next we want to start to build our form
+This is not a model backed form so we are going to use the ruby form_tag
+To do this we use embedded ruby and add
+  form_tag, where we want to submit the form to, a method, and start a do block
+It should look like this: (below search stocks heading and in .search-area div)
+  <%= form_tag '#', method: :get do %>
+
+  <% end %>
+
+Next we want to add the input field to our form
+We will use standard bootstrap styling
+For a baseline we can use this inside of the form_tag we just made:
+  <div class="form-group row">
+    <div class="col-sm-9">
+      # Our input field
+    </div>
+    <div class="col-sm-3">
+      # Our submit/search button
+    </div>
+  </div>
+
+Then we can add the input field to our form with the text_field tag
+  <%= text_field_tag :stock, params[:stock], placeholder: "Stock ticker symbol", autofocus: true, class: "form-control form-control-lg" %>
+This will create a text input field and will name the input field "stock"
+Then we have to specify what we want to send. We want to send the stock that was entered to our params.
+It will also have placeholder text and autofocus when the page loads
+Then there are a couple of bootstrap classes to help styling
+
+Now we should have an input field that we can use to get input to find a stock to search for
+When we type into the input bar and press enter to submit it will add the following to the end of the url:
+  ?stock=test#
+
+We can use this to return any stocks with ticker symbols that match what was input
+
+Now to add the button we can use the following embedded ruby:
+  <%= button_tag type: :submit, class: "btn btn-success" do %>
+    <%= 'Search' %>
+  <% end %>
+
+Instead of using 'Search' text for our button we are going to use an icon instead
+We can add this with a font awesome gem 
+We have to add to our Gemfile first:
+  gem "font-awesome-rails"
+
+Then install the gem:
+  $bundle install --without production
+
+Then we have to include the following in our application.css file:
+  /*
+  *= require font-awesome
+  */
+
+Now we are able to embedded ruby that says fa_icon "icon-name" to add an icon somewhere
+Look through options on font awesome each icon will say how to call them with html
+We don't need to include the starting fa tags that are at the beginning of these since we are using the fa helper
+You can increase the size with 2x or 4x when saying the icon name
+Instead of the 'Search' ER tag we can use:
+  <%= fa_icon "search 2x"%>
+
+Now we have a styled search button but we want to line it up with the input field
+There is white space between the input field and the button
+This is because the .sm-col-9 (input) has right padding and the .sm-col-3 (btn) has left padding
+We can fix this by adding a class .no-right-padding and .no-left-padding to our col divs
+Then in our custom.css.scss file we can add these classes and set their padding to 0px
+(You may have to use !important to override bootstrap default)
+  .no-right-padding {
+    padding-right: 0px !important;
+  }
+(change as needed for .no-left-padding)
+
+No our search form is styled how we want it
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===========================================================#
+#            261. Display Stock Price in Browser            #
+#===========================================================#
+
+Now that we have a form we need to accept ticker symbols that are submitted 
+ and use these to display the stock price
+
+We already have the stock lookup function written in our stock.rb model
+
+First we have to define where we are submitting our form
+Currently we only have '#'
+
+First we have to create a route to send the data to in routes.rb
+  get 'search_stock', to: 'stocks#search'
+
+We don't have a stocks controller or search action yet so we will have to make those
+
+Check that the route was made correctly
+  $rails routes | grep stocks
+  =>search_stock GET        /search_stock(.:format)        stocks#search
+
+Now that we have the path we can update our view to submit to the search_stock_path
+in my_portfolio.html.erb change to:
+  <%= form_tag search_stock_path, method: :get do %>
+
+This path will route to the stocks controller search method
+Neither of these exist yet so we have to make them
+
+Create app/controllers/stocks_controller.rb
+Add the class and empty search method to the controller
+
+If we try searching for something now we will get an error because there is no template or view
+
+If we use byebug in the search method and params in console we can see that we have access to a params variable
+This variable is holding the ticker symbol that was submitted by the user in the variable stock
+
+Since we already have a method in our stock model to look up prices via ticker symbol we can use that in our controller
+To call it: (in search method of stocks_controller)
+  stock = Stock.new_lookup(params[:stock])
+  render json: stock
+
+render json can be used to display the data just to make sure we are getting it correctly
+This makes it so we don't have to create or pass anything into a view yet and can test
+
+Now if we try running a search then we can see the value of the stock returned in the browser
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=============================================================#
+#            262. Create and Display Stock Objects            #
+#=============================================================#
+
+Currently we are only returning the stock price
+However, we also want to return the name and ticker symbol
+
+To do this we will create a stock object
+This object will hold a stocks name, symbol, and price
+We will be able to access the variables in this object
+We will also be able to access individual stock objects
+ This is how we will be able to save and display multiple stocks to a user profile
+
+Our attributes for our stocks table also accespt the stock symbol, name, and price
+Then we can just use the objects to save the object to the db
+
+We will have to change how our stock model works
+Instead of returning the client.price(ticker_symbol) 
+we are going to create a stock object and return it
+To get this data we will use methods that come with our api (see gem documentation)
+Note that when we create this object we don't have to call it Stock
+ because it is being created in the Stock class so it is assumed to be a Stock object
+
+  new(ticker: ticker_symbol, name: client.company(ticker_symbol).company_name , last_price: client.price(ticker_symbol))
+
+This will create a new Stock object with three attributes
+  ticker: ticker symbol that was searched for by the user
+  name: uses returned client object from ticker symbol search to get associated company name
+  last_price: uses returned client object to get price
+
+The new_lookup method should now look like this
+  def self.new_lookup(ticker_symbol)
+    client = IEX::Api::Client.new(
+      publishable_token: Rails.application.credentials.iex_client[:sandbox_api_key],
+      endpoint: 'https://sandbox.iexapis.com/v1'
+    )
+
+    new(ticker: ticker_symbol, name: client.company(ticker_symbol).company_name , last_price: client.price(ticker_symbol))
+  end
+
+Now when we render the stock in controller (change both stock variables to @stock to use in our views later)
+We get a full stock object that has the ticker_symbol, company_name, and price
+
+Now we want to render this data in our my_portfolio page under the search bar
+Let's get the my_portfolio.html.erb ready to display this data
+
+We can add these to a card simply with:
+  <div class="card card-header">
+    <strong>Symbol: </strong> <%= @stock.ticker %>
+    <strong>Name: </strong> <%= @stock.name %>
+    <strong>Price: </strong> <%= @stock.last_price %>
+  </div>
+
+We used the same card from bootstrap in alpha-blog to show articles and users
+Then we are just accessing the attributes of the @stock instance variable from the search
+However, when we load the page for the first time there is no @stock instance variable and we will get an error
+
+So we need to add this inside of an if @stock block
+
+Now in our stocks_controller instead of rendering json we can re-render the my_portfolio view
+  render 'users/my_portfolio'
+
+Now the page will load correctly initially and if we search for a stock there is a card with the stock data on it
+
+The card is a little big and everything is on seperate lines
+To fix this we can add a custom class to the .card.card-header div (results-block)
+Then add to our custom.css.scss:
+  .results-block {
+    display: inline-block !important;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==============================================================#
+#            263. Dealing w/ Invalid Search Results            #
+#==============================================================#
+
+Right now our search only works if we use valid ticker symbols
+
+If we leave it blank or incorrect we receive an error 'Symbol not found'
+
+We want to handle this by:
+  search string empty: do nothing. Don't search.
+    This is good because there are a limited number of calls we can make to our api
+    If we allow empty strings to be called we already know it will be an error an wastes a call
+    So preventing the api call at all is the best option
+    It amy also be a good idea to check for other incorrect lengths like 1 or 2 or > 5 
+  ticker symbol incorrect: show flash error message
+
+First lets take care of the empty string scenario
+We can see in our search action we are receiving the params[:stock] arguement
+If nothing is entered then params[:stock] will be empty
+So we only want to execute our Stock.new_lookup if params[:stock] is not empty 
+If there is an error we want to create a flash message and redirect to my_portfolio (same page but will show message)
+Now our search method should look like this:
+  def search
+    if params[:stock].present?
+      @stock = Stock.new_lookup(params[:stock])
+    render 'users/my_portfolio'
+    else
+      flash[:alert] = "Please enter a symbol to search"
+      redirect_to my_portfolio_path
+    end
+  end
+
+Now we have handled blank submissions
+Now we have to handle incorrect ticker symbols
+Since the error is coming from our api (client) in our stock model we have to handle it there
+This is how we handle exceptions in ruby:
+  begin
+    new(ticker: ticker_symbol, name: client.company(ticker_symbol).company_name , last_price: client.price(ticker_symbol))  
+  rescue => exception
+    return nil
+  end
+
+What does this do
+This will try to create the new Stock object using the API methods
+If client is invalid then the .company and .price methods will return an error
+In that case we are going to rescue with an exception and return nil
+So if the search is invalid then @stock in the controller where the new_lookup method is called will be nill
+
+That means that if @stock is nill we can display an error and if it is not then we can return the Stock object
+In the stock controller edit the search function to render the result if @stock is valid
+If stock is not valid re-render the page with a flash alert
+To do this change the search method to:
+  def search
+    if params[:stock].present?
+      @stock = Stock.new_lookup(params[:stock])
+      if @stock
+        render 'users/my_portfolio'
+      else
+        flash[:alert] = "Please enter a valid symbol to search"
+        redirect_to my_portfolio_path
+      end
+    else
+      flash[:alert] = "Please enter a symbol to search"
+      redirect_to my_portfolio_path
+    end
+  end
+
+Now if we test our page
+  Searching for a valid symbol will return the stock object
+  Searching for an empty string will return the appropriate error
+  Searching for an invalid symbol returns appropriate error 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=====================================================#
+#            264. Use AJAX Form Submission            #
+#=====================================================#
+
+Now the app looks nice and we can get/display stock information
+
+Currently however the whole page reloads when a search result is returned
+It will look, feel, and perform much better if we just add in the returned data instead of loading the whole page again
+
+We can instead submit this form as an ajax request instead of a regular http request
+AJAX stands for asynchronous javascript
+
+It allows a function to perform in the background and another function to wait for a response before doing something
+
+More information can be found by searching XHR (XML HTTP Request)
+
+What will happen is when we submit the form javascript will wait for a response
+When it gets the response it will update the page with the data received
+
+Since we just want to load the stock listing that is returned we are going to move it to a partial
+This will make it easier to reference and use and just makes sense
+Move the returned search result from my_protfolio.html.erb to _result.html.erb (create)
+Render this new partial in my_portfolio.html.erb
+
+Now we have to update our form so it knows it will be submitting to a remote 
+This is what will turn our request into an ajax request
+Update the form_tag:
+  <%= form_tag search_stock_path, remote: true, method: :get do %>
+
+Now if we try a request then we won't get any result
+This is because we are submitting a remote request but we don't have any javascript to handle and process the request
+
+We will have to add this javascript in to show the result on the page
+You can see the result has already been returned by looking in network tab of chrome console
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#======================================================#
+#            265. Setup Javascript Response            #
+#======================================================#
+
+Now we will use javascript to render the _result partial with the data from our ajax request
+
+First we have to identify where we want javascript to render the results at
+We can do this by adding a div to my_portfolio where we are rendering results 
+replace the render tag with a div with id = results
+
+Next we need to respond to the request from our server with js
+We are getting the @stock instance variable but our program is expecting a js response that we are not providing
+We need to add our response in the if @stock block
+To do that inside of the if @stock block (replace the render line)
+  respond_to do |format|
+    format.js { render partial: 'users/result'}
+  end
+
+What does this do?
+This will handle the response from our form that our program is expecting
+It will accept and look for a .js response (format)
+If that .js file exists (the response) then it will render a js partial called users/result(.js.erb)
+
+So we have to create this file in views/users
+It will be called _result.js.erb
+
+To test that the response is being recognized and we are accessing the _result.js partial we can use:
+  alert("Hello World")
+
+This will make a quick pop up to let us know we are reaching this page and everything is working so far
+
+Instead of making an alert let's instead load our _result.html partial
+We can use the div that we created earlier (id = results) and grab it with a js function called QuerySelector
+  document.querySelector('#results').innerHTML = "Hello"
+This will use querySelector and look for a div with an id of results then inside of that div it will add "Hello" to test
+
+Since that works we can replace "Hello" with our partial instead
+To do that replace "Hello" with:
+  '<%= j render 'users/result.html' %>'
+
+The j will escape javascript see full answer: https://stackoverflow.com/a/1623813/9059589
+Basically this is shorthand for escape_javascript(render 'users/result.html')
+This is needed because without it javascript expects whatever is returned by our embedded ruby to be valid js code
+Since it is inside of quotations whenever there are quotations in the html being returned it will cut the html short and cause issues
+using the j (escape_javascript) will let the program know that any ' or " returned are not meant to cut off the quotes our method is inside of
+
+Now when we search for a stock it will load the partial below the search bar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=================================================================================#
+#            Exercise 5. Declare a variable and assign it a value (js)            #
+#=================================================================================#
+
+Declare a variable and assign it a string value in JavaScript
+
+This exercise tests your knowledge of the syntax for variable declaration and assignment of string values.
+Declare a variable called firstName and assign it a string which is your first name
+Be sure tha tyou have used all the required keywords and delimiters
+
+var firstName = "your first name"
+
+
+
+
+
+
+
+
+
+
+#=========================================================================#
+#            Coding Exercise 6. Create a simple function (js)             #
+#=========================================================================#
+
+Craete a simple function in JavaScript which accepts one parameter and returns a computed value
+
+Declare a function called orangeCost which accepts one parameter (cost of a single orange)
+The function should compute and return the cost of 5 oranges by multiplying
+
+function orangeCost(price) {
+  return price * 5;
+}
+
+
+
+
+
+
+
+
+
+
+#=================================================================#
+#            Coding Exercise 7. Invoke a function (js)            #
+#=================================================================#
+
+Invoke a function
+
+The code contains a function called greeting
+You have to add a line at the end of the code snippet (as indicated in it)
+which invokes the function w/ an appropriate greeting message passed as parameter
+
+// Below is the greeting function!
+// See line 7
+// We can join strings together using the plus sign (+)
+// See the hint for more details about how this works.
+var greeting = function (name) {
+console.log("Great to see you," + " " + name);
+};
+// Call the greeting function below
+greeting("human person")
+
+
+
+
+
+
+
+
+
+
+#======================================================================#
+#            Coding Exercise 8. Sort Characters of a String            #
+#======================================================================#
+
+Sort the characters of a string in alphabetical order
+
+The code below contains a function called sort which takes one string parameter
+You have to sort the characters of the string and return the sorted string
+Ex: if str is the string "webmaster", then the function should return "abeemrstw"
+
+function sort(str) {
+// sort the characters in ‘str’ in alphabetical order
+// and return the sorted string
+  alphabet_order(str)
+}
+
+function alphabet_order(str){
+  return str.split('').sort().join('');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===========================================================================#
+#            266. Javascript Responses to Invalid Search Results            #
+#===========================================================================#
+
+Now we our app will return valid searches but nothing happens in the case of invalid searches
+Remember we have 2 types of invalid searches:
+  empty strings
+  Invalid ticker symbols
+
+We want to build onto our partial to handle these 
+We can see in our controller that we are only using respond_to if stock is valid
+We need to add a respond_to for our other 2 cases for those to work since this is being handled by ajax from the form
+Now our search method should look like this:
+  def search
+    if params[:stock].present?
+      @stock = Stock.new_lookup(params[:stock])
+      if @stock
+        respond_to do |format|
+          format.js { render partial: 'users/result'}
+        end
+      else
+        respond_to do |format|
+          flash.now[:alert] = "Please enter a valid symbol to search"
+          format.js {render partial: 'users/result'}
+        end
+      end
+    else
+      respond_to do |format|
+        flash.now[:alert] = "Please enter a symbol to search"
+        format.js {render partial: 'users/result'}
+      end
+    end
+  end
+
+We will render the same partial as before since we want the error message to display under the search bar where results would be
+(this will actually render the _result.js file but the only thing that does is render _result.html in the correct place)
+Not that since this a render of a partial and not the page as a whole then normally our flash message will still be stored until we need load a new page
+ then the flash message will display
+That is why we are using flash.now it will only hold the flash message while on this page and will discard it on reload
+
+Now we have to actually handle these within our partial
+We can display the flash messages in the same way that we did in application.html.erb
+There we rendered the _messages partial
+We can do the same in our _result.html
+To keep it in line with our results styling we can put it inside of a .results-block div
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#======================================================================#
+#            267. Users and Stocks Many to Many Association            #
+#======================================================================#
+
+Now we have both a stock model and can retrieve stock information 
+we can focus on allowing users to add stocks to their profile
+
+To do this we will utilize a many-many association like our article_categories in alpha-blog
+
+There will be a third table called user_stocks that will hold user_id and stock_id
+If there are 2 listed on the same row
+There is a relationship between the user/stock with matching ids
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=====================================================#
+#            268. Setup UserStock Resource            #
+#=====================================================#
+
+Now we can start building the User and Stock association
+
+To do this we will need to create 3 different things
+  user_stocks_controller.rb => controller file
+  user_stock.rb => model file 
+  user_stocks table
+
+Since we are very familiar with the concepts behind these files and what goes into them 
+We can generate them with:
+  $rails g resource UserStock user:references stock:references
+(g is shorthand for generate and will work in place of it)
+
+The above command will result in the following:
+  create    db/migrate/20200926233519_create_user_stocks.rb     <== Migration file for creating table
+  create    app/models/user_stock.rb                            <== user_stock model for creating new user_stock associations
+  invoke    test_unit
+  create      test/models/user_stock_test.rb                    <== model test
+  create      test/fixtures/user_stocks.yml
+  invoke  controller
+  create    app/controllers/user_stocks_controller.rb           <== user_stocks controller
+  invoke    erb
+  create      app/views/user_stocks                             <== user_stocks views
+  invoke    test_unit
+  create      test/controllers/user_stocks_controller_test.rb   <== Controller test
+  invoke    helper
+  create      app/helpers/user_stocks_helper.rb                 <== Helper file
+  invoke      test_unit
+  invoke    assets
+  invoke      scss
+  create        app/assets/stylesheets/user_stocks.scss         <== CSS for views
+  invoke  resource_route
+  route    resources :user_stocks                               <== add route to routes.rb
+
+We can see the routes that were added for us with:
+  $rails routes --expanded | grep user_stocks
+
+This will return:
+    PATH             METHOD              URL                       CONTROLLER/ACTION
+  user_stocks         GET       /user_stocks(.:format)             user_stocks#index
+                      POST      /user_stocks(.:format)             user_stocks#create
+  new_user_stock      GET       /user_stocks/new(.:format)         user_stocks#new
+  edit_user_stock     GET       /user_stocks/:id/edit(.:format)    user_stocks#edit
+  user_stock          GET       /user_stocks/:id(.:format)         user_stocks#show
+                      PATCH     /user_stocks/:id(.:format)         user_stocks#update
+                      PUT       /user_stocks/:id(.:format)         user_stocks#update
+                      DELETE    /user_stocks/:id(.:format)         user_stocks#destroy
+
+Now we can complete our user_stock model
+We have to edit our User and Stock model to include that they have many of each other
+in stock model (stock.rb)
+  has_many :user_stocks
+  has_many :users, through: :user_stocks
+
+
+Now is also a good time to add validation for Stocks being saved to the database
+We only need to check that the name and ticker symbol exist
+  validates :name, :ticker, presence: true
+
+Now we have to edit the user model for it's stock and user_stocks association:
+  has_many :user_stocks
+  has_many :stocks, through: :user_stocks
+
+Run our rails migration before continuing
+  $rails db:migrate
+
+Create a couple of users we can use to test our associations
+(can be done in front end or in rails console whichever is easier for you)
+user = User.new(email: "user1@email.com", password: "password")
+user.save
+(repeat and increment number in email)
+
+Now let's add some new stocks
+We don't have a front end for this so we have to do this in console
+  $Stock.create(ticker: "AAPL", name: "Apple inc.") 
+  $Stock.create(ticker: "AMZN", name: "Amazon inc")
+
+Now let's test what we have done in rails console
+First get a user to play with:
+  $user = User.first
+Check that associations work:
+  $user.stocks
+
+This will return an empty array but that means we know that associations should be working correctly
+
+Assign a stock to the user
+  $stock = Stock.first
+  $user.stocks << stock
+  $user.stocks
+  =>[#<Stock id: 1, ticker: "GOOG", name: "Alphabet", 
+      last_price: 0.42069e3, created_at: "2020-09-22 03:49:18", updated_at: "2020-09-27 00:03:24">]
+  $UserStock.all
+  =>[#<UserStock id: 1, user_id: 1, stock_id: 1, 
+      created_at: "2020-09-27 00:05:57", updated_at: "2020-09-27 00:05:57">]
+  $stock = Stock.last
+  $stock.users
+  =>[#<User id: 1, email: "user0@email.com", 
+      created_at: "2020-09-15 00:00:18", updated_at: "2020-09-15 00:00:18">]
+  $stock.users << User.last
+  $stock.users
+  =>[#<User id: 1, email: "user0@email.com", created_at: "2020-09-15 00:00:18", updated_at: "2020-09-15 00:00:18">, 
+     #<User id: 6, email: "user5@email.com", created_at: "2020-09-26 23:57:44", updated_at: "2020-09-26 23:57:44">]
+  
+
+We can see that the association is working between users and stocks in both directions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#================================================#
+#            269. Stocks Listing View            #
+#================================================#
+
+Now that we can create relationships between users and stocks
+We want to be able to display a users stock on their profile
+
+We will use a bootstrap table to show and organize these stocks on the user profile
+ I like these classes: "table table-striped table-dark table-hover"
+ More info on bootstrap tables at: https://getbootstrap.com/docs/4.0/content/tables/
+  take note of how to use headers as we might add these
+
+Paste the following bootstrap (from their site) into the bottom of my_portfolio
+  <table class="table table-striped table-dark table-hover">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">First</th>
+        <th scope="col">Last</th>
+        <th scope="col">Handle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">1</th>
+        <td>Mark</td>
+        <td>Otto</td>
+        <td>@mdo</td>
+      </tr>
+      <tr>
+        <th scope="row">2</th>
+        <td>Jacob</td>
+        <td>Thornton</td>
+        <td>@fat</td>
+      </tr>
+      <tr>
+        <th scope="row">3</th>
+        <td>Larry</td>
+        <td>the Bird</td>
+        <td>@twitter</td>
+      </tr>
+    </tbody>
+  </table>
+
+(put all of this inside the following for sizing)
+  <div class="row">
+    <div class="col-9">
+      (table here)
+    </div>
+  </div>
+Make sure it is showing with these placeholders correctly (we can edit specific styling later)
+
+Now we can go through the table code we pasted and edit to show the values for the current user.stocks
+First for the table head we want to display Ticker, Name, Price, and Action (placeholder for now)
+Change the headers to the appropriate names and remove extra rows
+We will later add a for each loop to create a new row for each of the users stocks
+
+Now let's change the data in the table to show 'actual' stock data (we are still in sandbox mode for api)
+
+In order to access the user.stocks we have to get the list of stocks and add them to an instance variable
+In our users_controller.rb: (inside my_portfolio method)
+  @tracked_stocks = current_user.stocks
+
+current_user is a helper built into devise that does the same thing we coded manually in alpha blog to get current user
+
+Now we can use embedded ruby to render rows with @tracked_stocks value
+with embedded ruby around the table row (right below table body)
+Create a @tracked_stocks.each loop
+render a row with stock data
+
+Now the we just have to fix the table for users who aren't following any stocks
+We can do an if @tracked_stocks exists show the table otherwise nothing will load 
+
+Now our page will load correctly for both users that are following stocks (1 or multiple)
+ as well as users who are not following any stocks
+
+The table code should now look like this: 
+  <% if !@tracked_stocks.empty? %>
+    <div class="row">
+      <div class="col-9">
+        <table class="table table-striped table-dark table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Ticker</th>
+              <th scope="col">Name</th>
+              <th scope="col">Price</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @tracked_stocks.each do |stock| %>
+              <tr>
+                <th scope="row"><%= stock.ticker %></th>
+                <td><%= stock.name %></td>
+                <td><%= stock.last_price %></td>
+                <td><%= 'Future btn' %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+
+This is still a little cluttererd so we can move everything inside of the if statement to a partial
+This will only load the partial if there are stocks to display
+To do this cut all ot the table code from the page and paste in stocks/_list.html.erb (create folder and file)
+
+Double check that everything works correctly for both types of users
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===============================================#
+#            270. Cleanup App Layout            #
+#===============================================#
+
+Before we go further let's cleanup the layout a little bit
+
+Start with the navbar
+  Change the logo to say something better (a website name or something)
+  Change the route of the logo to the root route
+  Add logout button to navbar
+    should only be visible if user is logged in
+  Add sign_in button to navbar
+    should only be visible if user is not logged in (replaces log out)
+    I want to add this just in case one day there are pages that can be viewed without being logged in
+  Remove unnecessary menu items
+  Add any missing menu items
+
+Add link to root route to logo and change title
+We can do this in our nav partial
+Change the current logo link (currently goes nowhere) to:
+  <%= link_to "Stalks", root_path, class: "navbar-brand", id: "logo" %>
+
+Add logout button to navbar
+We want this on the right side next to the search bar
+Devise provides a route for that to make this relatively easy
+We can add: 
+  <ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+      <%= link_to("Logout", destroy_user_session_path, class: "btn btn-danger mr-2", method: :delete) %>
+    </li>
+  </ul>
+
+Remove the unneeded dropdown (comment out)
+Replace the current home link (non functional) with er link to user portfolio
+  <%= link_to "My Portfolio", my_portfolio_path, class: "nav-link" %>
+
+Now to make the logout button and my portfolio button not appear when a user is not logged in
+
+We can add both of these in an if current_user embedded ruby tag to only show if current_user exists
+We don't want to show anything except the logo if someone is logged in so we can add everything from the logo down inside of this if block
+
+Now create an else statement in that if to display a link to our login page if a user is not signed in (else)
+Add this to the else:
+  <ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+      <%= link_to "Sign In", new_user_session_path, class: "btn btn-success" %>
+    </li>
+  </ul>
+
+Next let's add a .active class to the my_portfolio in navbar but only if we are on the my_portfolio page
+To do this we can do this with the following: (replace current li where my portfolio link is in navbar)
+  <li class="nav-item <%= 'active' if request.path == my_portfolio_path %>">
+
+Let's add a bottom margin to the search result to give it a little space
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#========================================================#
+#            271. Track Stocks From Front End            #
+#========================================================#
+
+Now we want to give users the ability to track stocks from the browser when they search for a stock
+So far we have only done this from the console
+We want to add a button that does what we did in console to the result that is rendered when we search for a stock
+We will have to add this to our users/_results.html.erb partial
+This will go as the last item after price
+To do this we can use the route provided by our user_stocks resource
+This allows us to add a new entry to the user stocks table, 
+ which creates a new association between a user and stock
+We can check which route we should use with:
+  $rails routes | grep user_stocks
+
+We can see one of the routes returned is a create route which we can use to create a new entry
+
+There are also several routes that we don't need so let's edit our routes.rb
+ to make unnecessary ones innaccessable
+Edit the :user_stocks resource in our routes.rb to:
+  resources :user_stocks, only: [:create]
+
+Now if we run the same command as we did above we will only get the create route returned
+
+Let's add this route to our _result partial
+We will have to pass in 2 arguements to this path 
+ one will be the user_id and the other will be the stock_id
+The user_id we can get from the current_user (devise method)
+The stock_id we can get from whatever it was that was searched
+
+Let's see how we can retrieve this info
+  <%= link_to 'Add to portfolio', user_stocks_path(user: current_user, ticker: @stock.ticker), class: "btn btn-success", method: :post %>
+
+This will allow us to add current_user since that method is available via devise
+It will also allow us to access the @stock ticker since the @stock instance variable has been created whenever a result shows
+We also have to include the post method since it is mentioned in the rails routes results like delete
+
+However we don't want the ticker to be stored in user_stocks table, we want the id of the matching entry from our stocks table
+
+To do this we can search our database to see if the stock w/ matching ticker is listed. If it is then we just get it's id
+If it is not listed then we can create a new entry and get the id of the new entry
+
+So in our user_stocks controller let's build our create action to handle this
+We want to first check if the stock is in our database
+The best way to do this is to create a method in our stocks model since we will be checking our stocks database
+ (compared to having this method written in the user_stocks controller which doesn't make as much sense)
+
+So let's write a method in stock.rb to check if a stock has been added to our database already
+We will need our method to accept a ticker_symbol
+Then it will search the stock databse for an entry with a metching ticker_symbol and will get the first entry
+ This will ensure that there is only 1 result and we can be specific about which one we want 
+ (there shouldn't be multiple entries)
+
+Our check_db method in stock.rb should look like:
+  def self.check_db(ticker_symbol)
+    where(ticker: ticker_symbol).first
+  end
+  
+Now we can use this method in our user_stocks_controller
+We will use this method and save the stock returned to a variable
+  stock = Stock.check_db(params[:ticker])
+
+If there was no entry in our databse then the stock variable will be blank
+So if it is blank then we want to perform a new api call and save the result to our database
+We already created a method for this api call in our stock.rb
+  if stock.blank?
+    stock = Stock.new_lookup(params[:ticker])
+    stock.save
+  end
+
+Now we can use an @user_stock variable to create a new user_stock entry
+  @user_stock = UserStock.create(user: current_user, stock: stock)
+
+Finally we can create a flash method saying the stock was added successfully and redirect to the my_portfolio_path
+  flash[:notice] = "Stock #{stock.name} was successfully added to your portfolio"
+  redirect_to my_portfolio_path
+
+When finished our create method should look like this: 
+  def create
+    stock = Stock.check_db(params[:ticker])
+    if stock.blank?
+      stock = Stock.new_lookup(params[:ticker])
+      stock.save
+    end
+    @user_stock = UserStock.create(user: current_user, stock: stock)
+    flash[:notice] = "Stock #{stock.name} was successfully added to your portfolio"
+    redirect_to my_portfolio_path
+  end
+
+Now if you test adding a stock that wasn't in our database it should add successfully
+
+Let's test the other way and see if a stock that is in our table can be added
+First let's remove all the stock associations this user has in our console
+  $user = User.first
+  $user.stocks
+  $user.stocks.delete_all
+
+This will remove entries for the user from the user_stocks table but won't delete the stocks themselves from the stocks table
+
+Now reload the page, search for one of the previous stocks and try adding it
+It should be successful and our buttons are working
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==================================================================#
+#            272. Implement Stock Tracking Restrictions            #
+#==================================================================#
+
+Now we want to restrict a couple of user actions
+
+First we do not want to show the add to portfolio button if a user is already tracking that stock
+
+We also want to restrict users to only be able to track 10 stocks
+
+Set a user to be following 9 different stocks so we can test these functionalities 
+
+Let's start with the button
+This button is being displayed by the _result.html.erb partial
+We want to add an if condition that checks if the user is following the stock and if not then display the button
+
+Let's create the method that determines whether a user can follow a stock or not
+We can add this to the user model since this is user based 
+
+The method should take in a ticker_symbol and will get the current user
+Then it will check which stocks the user is tracking
+We can also check how many stocks a user is tracking
+
+In rails console it would look something like this:
+  $user = User.first
+  $user.stocks 
+  => [list of stocks]
+  $user.stocks.count 
+  => 9
+  $user.stocks.count < 10 
+  => true
+
+We can use this same logic to check whether a user is allowed to track a stock or not
+
+Now to get started on building our method
+We will create one called can_track_stock? that will return true or false based on the two conditions above being met
+
+First to check whether the user is following too many stocks
+
+We will create another method (to be called inside of can_track_stock?) that will return true if user.stock.count < 10
+To create this method we don't have to specify the user since we are in the User model and current user is implied
+  def under_stock_limit?
+    stocks.count < 10
+  end
+  
+Next we will create another method called stock_already_tracked? that accepts a ticker_symbol
+Inside of this method we will search if the user already has that stock listed on their portfolio (association between user and stock in user_stocks table)
+First we want to check whether a stock with the given ticker_symbol exists in our stocks table
+If it doesn't exist we know the user is not tracking the stock since the stock must be in our db for the user to track it
+We already have a way to check this in our stock model so we can simply call that function
+If this function returns nill (stock is not in our db we can return nill as well {false since this is a ? method})
+
+If the stock is in our database then we want to check whether the user is tracking that stock
+let's think of it like we are in rails console again
+To find the stock:
+  $Stock.where(ticker: "NFLX") 
+  => NFLX stock in our db (if it exists use a stock the test user is following)
+  $user.stocks 
+  => list of stocks test user is following
+  $user.stocks.where(id: 9) 
+  => returns the stock followed by the user w/ id of 9 (if it exists, NFLX in my dev db)
+     If no stock with that id is followed returns an empty array
+     This is returning the whole object but we only need to know if it exists or not
+  $user.stocks.where(id: 9).exists? 
+  => return true or false based on whether user follows a stock with that id or not
+     This is more like what we want so let's use something like this in our code
+
+We can make stock_already_tracked? method look like this:
+  def stock_already_tracked?(ticker_symbol)
+    stock = Stock.check_db(ticker_symbol)
+    return nil unless stock
+
+    stocks.where(id: stock.id).exists?
+  end
+
+This will accept a ticker_symbol
+Then it will use our check_db method from the stocks controller to see if the stock is in our database
+If it is not in our db then we know the user is not tracking the stock and can return false
+Then we check the user list of followed stocks (user.stocks == stocks when in user model since current user is implied since 
+ this is a method that belongs to that user)
+We wnat to see if a stock with a matching id exists in the users tracked stocks
+This will return true if it does exist and false if it does not exist
+so stock stock_already_tracked will now return true if the stock is tracked and nill (or false because ?) if it is not tracked
+
+Now we can get started on the method that will combine both of these checks
+Remember the two checks are:
+  under_stock_limit? and stock_already_tracked?
+
+In order for this method to return true then 
+  under_stock_limit must return true
+  stock_already_tracked must reutn false
+
+So our can_track_stock? method should look like:
+  def can_track_stock?(ticker_symbol)
+    under_stock_limit? && !stock_already_tracked?(ticker_symbol)
+  end
+
+Everything we added to the model:
+  def stock_already_tracked?(ticker_symbol)
+    stock = Stock.check_db(ticker_symbol)
+    return nil unless stock
+
+    stocks.where(id: stock.id).exists?
+  end
+
+  def under_stock_limit?
+    stocks.count < 10
+  end
+
+  def can_track_stock?(ticker_symbol)
+    under_stock_limit? && !stock_already_tracked?(ticker_symbol)
+  end
+  
+Now we can use the can_track_stock method to limit the view so the user will not have a button if can_track_stock returns false
+  <% if current_user.can_track_stock?(@stock.ticker) %>
+    <%= link_to 'Add to portfolio', user_stocks_path(user: current_user, ticker: @stock.ticker), class: "btn btn-success", method: :post %>  
+  <% else %>
+
+Next let's display a badge showing what the issue is when there is no button for a user to track the stock
+We can do this using the other 2 methods we just created (put below the else included above)
+    <span class="badge badge-secondary">
+      You are already tracking
+      <% if !current_user.under_stock_limit? %>
+        10 stocks
+      <% end %>
+      <% if current_user.stock_already_tracked?(@stock.ticker) %>
+        this stock
+      <% end %>
+    </span>
+  <% end %>
+
+This will use the two methods that we created to changing the ending of the message based on what the error is
+(it still looks ugly when a user is following 10 stock and is following the result stock)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=================================================================#
+#            273. Add Functionality to Remove Tracking            #
+#=================================================================#
+
+Now that users can add stock correctly we have to allow users to remove stocks
+
+We will add this functionality to our list partial (stocks/_list.html.erb) where it says future button
+
+Instead of the placeholder text we can use a link_to the path to delete an entry from the user_stocks table
+  <td><%= link_to 'Remove', '#', method: :delete, data: {confirm: "Are you sure?"}, class: 'btn btn-sm btn-danger' %></td>
+
+Notice that we didn't specify a path yet
+This is because our resource only gives access to the create method for user_stocks (routes.rb)
+We have to add the destroy action to our routes as well
+Edit the :user_stocks resource in routes.rb to:
+  resources :user_stocks, only: [:create, :destroy]
+
+Now if we check our routes
+  $rails routes | grep user_stocks
+
+Now we have to make this method in our user_stocks controller
+
+Note that we are deleting an entry in user_stocks table
+  We do not want to delete an entry in users table because that would delete a user
+  We don't want to delete an entry in stocks table because that would delete the stock
+  We only want to get rid of the relationship between user and stock that is stored in user_stocks table
+
+We can also see that a route has been added for user_stocks#destroy we also have the path to this 
+We can add the link to our button above we also have to pass in id of the entry in the user_stocks table
+To do this we will create a method that looks for the stock id and finds the entry with the associated user in the user_stocks table
+Then we will get the id of that row and delete it
+So we also have to pass in the stock that we want to destroy to:
+  user_stock_path(stock)
+
+In the console it would be like this
+  $user = User.first
+  $stock = Stock.find(10) #stock tracked by the user selected above
+  
+What we need to do is find the entry in our UserStock table where user_id is 1 and stock_id is 10
+  $user_stock = UserStock.where(user_id: user.id, stock_id: stock.id).first
+  $user_stock.destroy
+  (the above can also be chained into one command):
+    $UserStock.where(user_id: 1, stock_id: 10).first.destroy
+
+Now we have to use something like that in our destroy method
+Our method should look like this:
+  def destroy
+    stock = Stock.find(params[:id])
+    user_stock = UserStock.where(user_id: current_user.id, stock_id: stock.id).first
+    user_stock.destroy
+    flash[:notice] = "#{stock.ticker} was successfully removed from portfolio"
+    redirect_to my_portfolio_path
+  end
+
+Now we should be able to remove a stock from a users profile
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==============================================#
+#            274. Modify User Model            #
+#==============================================#
+
+Let's explore how to customize the user model provided by devise
+
+Currently we only store email address and password
+We also want to add first and last name fields to the users
+We will need to add some code for devise so that these fields are accepted by our form submissions
+These first + last name field should be available when creating new users or editing existing users
+
+The first step is to create the migration to add these two fields to the users table
+  $rails generate migration add_first_last_name_to_users
+
+Now we have to edit this migration file to add the two new columns to the users table
+This is a generic migration table so we have to specify the table and fields we are adding
+To do this we can use the add_column method provided by rails
+It accepts 3 arguements (as keys)
+  table to add the column to
+  name of the column to add
+  type of data held in the column
+
+For ours we can use: (in change method)
+  add_column :users, :first_name, :string
+  add_column :users, :last_name, :string
+
+Now we can run our migration file
+  $rails db:migrate
+
+Now we can check that these columns were added in rails console
+  $User.all
+  $User
+
+All of the users have a first_name and last_name column but they are all nill because we just added these and haven't updated any users
+
+Let's use these two new fields in our app to display the first and last name of a user when they are logged in (navbar)
+
+Since we will add the fullname to the navigation bar we will have to edit the _navigation partial
+
+Since we might need a user's full name in other places of our app (and it wouldn't look very nice to construct it here in the navbar)
+We will create a new method (full_name) that will display the fullname for us in the navbar
+For now our new navbar item will look like this: (directly over logout li)
+  <li class="nav-item" id="nav-name">
+    <%= current_user.full_name %>
+  </li>
+
+Now we have to go create the full_name method in our user model
+This method is really simple:
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+
+What if a user doesn't have a first and last name saved?
+If that is the case we want something to show up there still
+So we will only return the above if the first_name or the last_name fields are present
+Otherwise we want to display anonymous
+Edit the line above to add an if statement and something else to return if the if statement fails:
+  return "#{first_name} #{last_name}" if first_name || last_name
+  "Anonymous"
+
+Now our method should look like this:
+ def full_name
+    return "#{first_name} #{last_name}" if first_name || last_name
+    "Anonymous"
+  end
+
+Note I also added a fa icon before the name displayed in the navbar with:
+  <%= fa-icon 'user' %> <%= current_user.full_name %>
+
+Now to test load the app with a user signed in (no first_name/last_name assigned)
+It should display Anonymous up by the logout button and have an icon next to it
+
+Now we can assign the logged in user a first_name and last_name
+In rails console:
+  $User.all
+  $user = User.first
+  $user.first_name = "First"
+  $user.last_name = "Last"
+  $user.save
+
+Now reload the page and the user's full_name should be displayed in the navbar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==========================================================================#
+#            275. Accept Additional Fields in App - Edit action            #
+#==========================================================================#
+
+Now that the first and last name fields are setup
+We need to add the ability to edit these fields in the browser
+
+We will start by setting up the edit path
+We want to be able to edit the name of the logged in user and see the name change take place
+
+We can check for this route with:
+  $rails routes | grep user
+  => edit_user_registration     GET     /users/edit(.:format)    devise/registrations#edit
+
+This looks like our edit route/path and we can use this to edit the current user
+Let's visit the edit url as a logged in user to see what that is like now
+
+if we go to http://localhost:3000/users/edit while signed in we can see that devise has already created this view
+However it only shows that we can edit the user email and password
+
+Just so we don't have to type in this page every time we want to view it let's add a link to it in the navbar
+I am going to make a different change than the one in the lecture
+I will create a dropdown (right aligned next to search)
+The title of the dropdown will be the user full_name we have displayed currently (w/ || w/o icon tbd)
+Inside the dropdown will be links
+  my_portfolio
+  edit profile
+
+I got rid of unnecessary my_portfolio link and logout button in the navbar
+I used this dropdown menu and a little css 
+  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+    <%= link_to "My Portfolio", my_portfolio_path, class: "nav-link dropdown-item" %>
+    <%= link_to "Edit Profile", edit_user_registration_path, class: "nav-link dropdown-item" %>
+    <div class="dropdown-divider"></div>
+    <%= link_to "Logout", destroy_user_session_path, class: "dropdown-item", id: "nav-logout", method: :delete %>
+  </div>
+
+CSS only sets text-alignment and color (color and background color change on hover)
+
+To make this a little prettier we can add fa icons to our link_to above
+To do that we need to make our link_to a block instead of a 1 line
+To do this we simply remove the displayed part (ex: "Edit Profile")
+Then add do to the end of the statement and add an end tag
+Finally just add what we want to display inside the do block
+Like this:
+  <%= link_to edit_user_registration_path, class: "nav-link dropdown-item" do %>
+    <%= fa_icon 'edit' %> Edit Profile
+  <% end %>
+
+Then we can display an icon and text or whatever else inside
+Play around with the others to add icons (I also added the logout button to the dropdown)
+
+Now we can start making changes to the form
+This is in views/devise/registrations/edit.html.erb
+
+We will create our form using bootstrap and edit the current one to conform with it
+Find bootstrap form details here: https://getbootstrap.com/docs/4.0/components/forms/
+
+I am going to use one that uses a grid of rows and columns to create our form
+
+The pattern that bootstrap uses is:
+  .form-row
+    .form-group .col-md-6
+      label and input field
+    /
+    .form-group .col-md-6
+      label and input field
+    /
+  /
+
+Our current edit page already uses form-group so we only need to add our two new Fields
+ and put these two fields inside of a form-row
+Then we just have to add column sizing to them
+
+We can copy and paste the email entry a couple of times to get a baseline and edit to fit first_name and last_name
+When added it will look like this:
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <%= f.label :email %>
+      <%= f.email_field :email, autofocus: true, autocomplete: 'email', class: 'form-control' %>
+    </div>
+    <div class="form-group col-md-6">
+      <%= f.label :email %>
+      <%= f.email_field :email, autofocus: true, autocomplete: 'email', class: 'form-control' %>
+    </div>
+  </div>
+
+Now we have to edit the form contents to work with first_name and last_name instead of email
+Now the two divs inside of the row should each look like:
+  <div class="form-group col-md-6">
+    <%= f.label :first_name %>
+    <%= f.text_field :first_name, autofocus: true, autocomplete: 'first name', class: 'form-control' %>
+  </div>
+  <div class="form-group col-md-6">
+    <%= f.label :last_name %>
+    <%= f.text_field :last_name, autofocus: true, autocomplete: 'last name', class: 'form-control' %>
+  </div>
+
+Now wrap the whole form in divs like this
+  .justify-content.center
+    .col-n (set n to appropriate size, I used 8)
+
+Wrap the header in it's own .justify-content-center and add a margin if necessary
+
+Now that our form is showing correctly we need to handle the submit button
+This is because devise hasn't allowed those fields to be posted when it was generated
+(remember we have to whitelist values going to the db)
+To let devise know that these fields are permitted and that they can be used with account_update
+See devise documentation
+There is a section on how to sanitize input when added to our forms
+We can see we have access to:
+  sign_in
+  sign_up
+  account_update
+
+We know we will need to use the account update one
+
+Then it says to add the following to our application controller
+ a before action for configure_permitted_parameters
+
+ then we will have to write this as a protected method
+ Inside of this method we will use devise_parameter_sanitizer.permit and provide the account_update method and the new attributes we have added
+
+We can pretty much copy/paste the example code with only minor alterations in our application controller
+Use this after our authenticate_user before_action:
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
+  protected
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name])
+  end
+
+Now if we sign in a user without a first_name and last_name we can assign one from the view
+We can also update it to a new first_name and last_name
+
+
+
+#### Assignment ####
+Add the first_name and last_name fields to the new user sign up form
+
+*We also have to let devise know that we are expecting new fields for the sign_up form too
+  since we have only specified it is allowed for the edit page so far
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=======================================================#
+#            276. Complete Signup Assignment            #
+#=======================================================#
+
+We can copy and paste our changes from the edit page to the signup page
+Then in the application_controller we just have to add a new line in
+ configure_permitted_parameters for sign_up
+Add:
+  devise_parameter_sanitizer.permit(:sign_up, keys: [:first_name, :last_name])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=========================================================#
+#            277. Self Referential Association            #
+#=========================================================#
+
+Now we will focus on users tracking other users (friends)
+The association this uses will be similar to users and stocks
+
+Instead of using 3 tables however there will only be 2 tables
+That's because the two objects we are making an association between are both within the same table
+
+That means there will be 2 columns both referencing the same table
+
+friendships table
+id    user_id     user_id
+1       1           2
+2       1           3
+3       2           4
+
+We can see that user 1 is friends with both use 2 and 3 and user 2 is friends with user 1 and 4
+
+Since both of the keys that are making the association are from the same table it is a self referential association
+
+However we can't have to columns with the same name so we will have to name one of them friend_id
+
+Rails has a way that we can easily have a friend_id column that references a user_id
+
+First let's build the friendships model
+  $rails g model Friendship user:references
+
+This will generate both a migration and a model
+
+In the migration file a reference to user was added automatically along with null_false and foreign_key:true
+So one of our two columns have been prepared we just have to prepare the other one
+Below the already created column we can use:
+  t.references :friend, references: :users, foreign_key: { to_table: :users}
+
+What does this do?
+This will create a column called friend
+It will reference the users table and expect the user_id as a foreign key of the users table
+
+Both the pre-written and our new line create a column but our new one is able to rename it from user_id to friend_id
+There are a couple different ways to do this but this is one that worked well for our purpose
+
+In the model we can see that it added a belongs_to :user line
+We also know that this will belong to :friend so we have to add that as well
+We will also add a class_name method so that way it has access to the User class
+  belongs_to :friend, class_name: 'User'
+
+Now we have to do some preparation in the user model
+We have to add its has_many relationship to friendships table
+We also have to include a has_many friends through friendships line
+
+Now our self referential association is ready to go
+We can run our migration
+
+After the migration is run test out the new table and associations
+  $Frienship.all
+  $User.all
+  $user = User.first
+  $User_2 = User.last
+  $user.friends 
+  =>[empty]
+  $user.friends << user_2
+  $user.friends 
+  =>[user_2]
+
+We can see this works now
+
+####    Assignment    ####
+In our application for the user that has friends go to my_portfolio
+We can currently see that there is a nice table showing all of the users followed stocks
+
+The task is to create another page that lists a given users friends
+Display a table and show the users first/last name and email
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===================================================#
+#            278. Assignment Walktrhough            #
+#===================================================#
+
+Now for how to complete the assignment
+
+First we have to add the route to routes.rb
+  get 'my_friends', to: 'users#my_friends'
+
+Then we have to add the my_friends method to the users controller
+
+After that we can create a users/my_friends view
+Then we can use an if statement to check if the user has any friends
+ if they do then we can render a _list partial of their friends
+Looks like this:
+  <% if !@friends.empty? %>
+    <%= render 'friends/list' %>
+  <% end %>
+
+Next we have to create the folder/file views/friendships/_list.html.erb
+We can copy/paste the table from my_portfolio
+Then change the column names
+
+Initiate an @friends variable in our users_controller.rb
+(in my_friends method)
+  @friends = current_user.friends
+
+Then we can use this instead of @stocks and iterate over a friend object
+then we can render attributes of friend (friend.first_name, friend.last_name, friend.email)
+ inside of columns in this row
+
+The _list partial should look like this:
+  <div class="row">
+    <div class="col-9">
+      <table class="table table-striped table-dark table-hover">
+        <thead>
+          <tr>
+            <th scope="col">First Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @friends.each do |friend| %>
+            <tr>
+              <th scope="row"><%= friend.first_name %> <%= friend.last_name %></th>
+              <td> <%= friend.email %></td>
+              <td><%= link_to 'Remove Friend', '#', method: :delete, data: {confirm: "Are you sure?"}, class: 'btn btn-sm btn-danger' %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+Now there should be a working friends list
+
+Next we have to add a link to this in our navigation bar
+I just added it to my dropdown in the same way I have added the others (link_to block)
+  <%= link_to my_friends_path, class: "nav-link dropdown-item" do %>
+    <%= fa_icon 'users' %> My friends
+  <% end %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===================================================================#
+#            279. Assignment: Create Search Friends Form            #
+#===================================================================#
+
+Now we need to add the ability to search for friends
+From the my_friends page there should be a search friends form 
+just like the search stocks from from my_portfolio
+
+There is no search functionality it submits via ajax
+In other words there is a route that we are submitting the form to (a controller action)
+but there is no functionality in that action
+this will be sent to the search_friend route so we have to have a users#search method for that in routes.rb
+In that search action we can render json: params[:friend] (friend was what was entered by the user)
+
+
+
+Explanation:
+First we have to add a route to our routes.rb for us to direct our search method to
+in routes.rb:
+  get 'search_friend', to: 'users#search'
+
+Then we need to add a search method to our users_controller.rb
+
+Next we can add our search field to my_friends.html.erb
+We will basically use the same one as in my_profile to look for stocks but with some small changes
+
+We will obviously change the header for it to search friends instead of search stocks
+Then insetad of search_stock_path we need to find our path for users#search 
+  $rails routes | grep users#search
+  =>search_friend    GET    /search_friend(.:format)    users#search
+We will use search_friend_path instead
+Then we will change the params and placeholders to :friend instead of stock
+When finished it should look like this:
+  <div class="search-area">
+    <h3>Search Friends</h3>
+    <%= form_tag search_friend_path, remote: true, method: :get do %>
+      <div class="form-group row">
+        <div class="col-sm-9 no-right-padding">
+          <%= text_field_tag :friend, params[:friend], placeholder: "Name or Email", autofocus: true, class: "form-control form-control-lg search-field" %>
+        </div>
+        <div class="col-sm-3 no-left-padding">
+          <%= button_tag type: :submit, class: "btn btn-success" do %>
+            <%= fa_icon "search 2x"%>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mb-5" id="results">
+    
+  </div>
+
+Finally we can use our users#search method to "catch" the result
+  render json: params[:friend] 
+
+Now our search form and method is as ready as it needs to be
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===========================================================================#
+#            280. Assignemnt: Add JS Response to Form Submission            #
+#===========================================================================#
+
+Now that the form is working we need to handle the js response from this form submission
+For the assignment we are to render the response in a partial just like we did with stocks
+
+We still do not handle the actual search but we do have to display what was searched for 
+ (and a non-functional follow friend button)
+
+There should also be validation that an empty string hasn't been entered
+
+This should all be built the same way as stocks so use that as a reference
+
+Hints: 
+In routes we are already handling the form submission with users search
+So we will handle json there
+First we will have to receive the @friend instance variable from params
+  @friend = params[:friend]
+  
+Then if @friend exists then use respond_to to render a 'users/friend_result' partial
+
+We will need an else statment to return a flash.now alert rendered to the users/friend_result partial if there is no match
+
+Then we will need an if for any other cases (blank)
+This will also have a flash alert but with a different message
+
+
+Next we will have to make the users/_friend_result.js partial
+ (because the partial rendered above is a js partial not an html.erb partial since it is a js response)
+Then in this partial we can render html using js
+we can render users/_friend_result.html.erb
+This will have a partial to display the params that we got earlier
+
+
+Explanation:
+
+Most of the work is done in the users_controller in the search method
+We can pretty much copy/paste the search method from the stocks controller w/ some small changes
+
+Instead of a stocks param we are looking for a friend param 
+ and creating an @friend instance variable w/ it
+
+Then we are rendering users/friend_result instead of users/result
+
+Also a slight change to the flash messages for wording
+
+When complete users#search should look like this:
+  def search
+    if params[:friend].present?
+      @friend = params[:friend]
+      if @friend
+        respond_to do |format|
+          format.js { render partial: 'users/friend_result'}
+        end
+      else
+        respond_to do |format|
+          flash.now[:alert] = "No match found"
+          format.js {render partial: 'users/friend_result'}
+        end
+      end
+    else
+      respond_to do |format|
+        flash.now[:alert] = "Please enter a name or email to search"
+        format.js {render partial: 'users/friend_result'}
+      end
+    end
+  end
+
+Next we have to create the users/_friend_result.js.erb partial
+We can directly copy the users/_result.js.erb partial and just change the path
+Path should be like above users/friend_result
+
+Next we can create a users/_friend_result.html.erb
+Again we can copy/paste from _result.html.erb
+Except we can remove the if statements and badges
+We also need to pass in @friend instead of @stock
+Replace the titles (between strong tags) with more appropriate ones
+Then instead of rendering @stock.whatever just render @friend for right now
+Then we can add a blank button
+
+When finished the whole thing should look like this:
+  <div class="container">
+    <div class="row results-block">
+      <%= render 'layouts/messages' %>
+    </div>
+  </div>
+
+  <% if @friend %>
+    <div class="card card-header results-block">
+      <strong>Name </strong> <%= @friend %>
+      <strong>Email </strong> <%= @friend %>
+      <strong>Placeholder </strong> <%= @friend %>
+      <%= link_to 'Follow Friend', '#', class: "btn btn-success", method: :post %>
+    </div>
+  <% end %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===================================================================#
+#            281. Search Users/Friends: Implement Search            #
+#===================================================================#
+
+At this point we are able to enter a search and render a partial displaying what was entered
+If nothing was entered then an error message is displayed instead
+
+Now we have to implement the search functionality
+That way we can have a user returned when a search is performed
+
+Let's think about how we would perform this search in the console
+When we run:
+  $user = User.first
+
+We can see the following SQL query is run
+  => SELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT ?
+
+What if we wanted to look a user up by email?
+We could use:
+  $User.where(email: "user0@email.com")
+  => SELECT "users".* FROM "users" WHERE "users"."email" = ? LIMIT ?
+
+We are entering ruby code but rails is transforming it to sql for us before returning a result
+
+We can also mix this together like so:
+  $User.where("email like ?", "user0@email.com")
+  => [user0 object]
+
+Since this works we can use methods like this to create our own sql queries in our code
+
+What if we wanted to look for something in the first_name field?
+  $User.where("first_name like ?", "jnh")
+  =>[user0 object]
+
+Now what if we didn't know the full email or name and wanted to be able to get all the users who match?
+We have to use a wildcard by adding a % at the beggining of the string
+  $User.where("email like?", "%@email.com%")
+  =>[list of users]
+
+This will return all the users who match the beggining and end of the provided string even if the middle is different
+
+This wildcard can be very useful if we don't know the full name or email
+
+Since we don't know whether a name or email will be entered we also have to be able to make the search more generic
+
+Let's start implementing these ideas in the user.rb model
+Create a 'matches' method and paste the laste command:
+  def metches
+    User.where("email like ?", "%@email.com%")
+  end
+
+Since this is a class level method and we are in the user class we don't need to include the User part but we do have to add self
+  def self.metches
+    where("email like ?", "%@email.com%")
+  end
+
+We can't hardcode email as the field we are searching for so let's use a variable that we will pass into the method instead
+We can't hardcode what we are searching for either so we also have to pass in a param variable and use that insetad of @email.com
+
+Now it should look like:
+  def self.matches(field_name, param)
+    where("#{field_name} like ?", "%#{param}%")
+  end
+
+Now we have a method that can take in a field_name and search item and return the restults
+Let's test in console
+  $User.matches('email', 'user0')
+  => [user0 object]
+
+We can also use this method on first_name or last_name as well just by subbing out the field name
+  $User.matches('first_name', 'jnh')
+  => [user0 object]
+
+Now let's create a search method that can use this matches method
+This search method will receive a param (the search string)
+Then we will prepare the param with .strip! to get rid of whitespace before or after
+
+Then we have to check if the param matches any of our fields
+That means we have to call matches with first_name, last_name, and email passed in w/ the param
+
+We can write 3 other methods that call our matches function and each pass in their own field
+Each of these methods will need to receive the param to search to pass into matches
+Here is an example of one:
+  def self.first_name_matches(param)
+    matches('first_name', param)
+  end
+
+Now in our search method we can create a variable to hold all of our matches
+Each of the 3 methods created to search each field will be called and concatenated into this variable
+Now our search method should look like this:
+  def self.search(param)
+    param.strip!
+    search_results = first_name_matches(param) + last_name_matches(param) + email_matches(param)
+  end
+
+But what if someone is John Johnson john@email.com
+We will get the same result returned 3 times since all three methods will return the same match
+To fix this we can put all 3 methods in parenthesis and run .uniq on them so each object is unique
+  search_results = (first_name_matches(param) + last_name_matches(param) + email_matches(param)).uniq
+
+What if there are no results?
+We have to account for that by returning nil instead of an empty array
+  return nil unless search_results
+  search_results
+
+This will return nil by default unless search_results has objects in it's array
+If search_results does contain objects then it will return the search results
+
+Now we can test this in the console:
+  $User.search('jnh')
+  =>[user0 object]
+
+Now we can see that our search function works no matter what we search for
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==============================================================#
+#            282. Display Search Results In Browser            #
+#==============================================================#
+
+Now we will use our partial that shows the search string to display search results
+
+In our code we are receiving this string through the params hash and assigning it to @friend
+
+We want to use @friend with the search method we made so we can return any results from search
+
+Instead of setting @friend to equal the search string 
+we want to set it equal to our search method and pass the search string into the search method
+
+Since @friend can now hold multiple search results let's rename to @friends 
+don't forget to rename in the if statement below as well
+
+Now we can look at _friend_result.html.erb and use our @friends variable instead of @friend
+
+This partial was also only prepared to handle one result so we have to add a loop to loop through the returned friends search results
+Then we can iterate through each friend and display the needed info
+Update the partial to look like this:
+  <div class="container">
+    <div class="row results-block">
+      <%= render 'layouts/messages' %>
+    </div>
+  </div>
+
+  <% if @friends %>
+    <div class="card card-header results-block">
+      <% @friends.each do |friend| %>
+        <strong>Name </strong> <%= friend.full_name %>
+        <strong>Email </strong> <%= friend.email %>
+        <strong>Profile </strong> <%= link_to "View profile", "#", class: "btn btn-primary" %>
+        <%= link_to 'Follow Friend', '#', class: "btn btn-success", method: :post %>
+      <% end %>
+      
+    </div>
+  <% end %>
+
+Now if we search for a user they will be returned in our view
+
+However there are a couple issues
+If we search for something that will return multiple users (like "@" or "email") then it looks really ugly
+The logged in user can also search for themselves and see their profile returned which we want to avoid
+
+To remove the current_user from the search results we will check if the current_user is listed in @friends in our users_controller
+We will create an except_current_user method that will be called on current_user and receive @friends as an arguement
+In controller right below where we initially define @friends:
+  @friends = current_user.except_current_user(@friends)
+
+We will define this new method in our user.rb model
+  def except_current_user(users)
+    users.reject { |user| user.id == self.id }
+  end
+
+This will go through the list of users given to it (@friends)
+Then it will reject/remove any instances where the id matches the current_user id (available from self)
+
+Now try searching for a generic result and see if the signed in user is listed
+Current user should not be listed in results when searching "@" or "email"
+
+Now let's clean up the layout of the search results
+In our partial let's create a table right outside of our do block (the do block will be used to create the rows)
+Now our partial should look like this:
+  <div class="container">
+    <div class="row results-block">
+      <%= render 'layouts/messages' %>
+    </div>
+  </div>
+
+  <% if @friends %>
+    <div class="card card-header results-block">
+      <table class="col-md-12">
+        <tbody>
+          <% @friends.each do |friend| %>  
+            <tr>
+              <td><strong>Name </strong> <%= friend.full_name %></td>
+              <td><strong>Email </strong> <%= friend.email %></td>
+              <td>
+                <%= link_to "View profile", "#", class: "btn btn-primary" %>
+                <%= link_to 'Follow Friend', '#', class: "btn btn-success", method: :post %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#====================================================================#
+#            283. Implement Remove Tracking Functionality            #
+#====================================================================#
+
+Now we want to give users the ability to add and remove friendships
+
+First let's deal with the following
+If a user is already friends with another user we don't want them to get an add friend button
+
+We will have to add this functionality in our _friend_result partial
+To do this we will use an if statement where the button shows to only show the button if the result user is not one of the current users friends
+We can use the following code just under the view profile button
+  <% if current_user.not_friends_with?(friend.id) %>
+    <%= link_to 'Follow Friend', '#', class: "btn btn-success", method: :post %>
+  <% else %>
+    <span class="badge badge-secondary">You are already friends!</span>
+  <% end %>
+
+We don't have a not_friends_with? method yet so we have to create one in our user.rb model
+It will be pretty basic and look at the current users friend list and pass in the id of the returned friend user
+If the id exists then they are already friends and will be returned
+  def not_friends_with?(id_of_friend)
+    !self.friends.where(id: id_of_friend).exists?
+  end
+
+SIDENOTE: I think this approach is a little weird. I don't like that there is a double negative method here
+  I would prefer to use a friends_with? method and return true if .exists? in the current users friends list
+  I think way would be much easier to read and make more sense but I'm not sure if this will be used later on
+   so I'm going to leave it how the instructor wrote it at least for now.
+
+
+Now we can add the functionality to remove a friend from a users friends list
+We will need a route that is used to destroy a row in a the user_friends table
+Similar to what we did with :user_stocks where we added the resource and the :create :destroy methods
+We will need to do the same for friendships
+In routes.rb:
+  resources :friendships, only: [:create, :destroy]
+
+Now that we have created the routes we will need to create our controller as well
+He generated it but we can just create the controller by hand(I already did earlier)
+to generate:
+  rails g controller friendships create destroy
+When generated it creates the following that we don't have and may need to include later (probably not though)
+  routes friendships :create :destroy     (definitely don't need: delete if generated)
+  app/views/friendships                   (definitely don't need: delete if generated)
+  app/views/friendships/create.html.erb   (definitely don't need: delete if generated)
+  app/views/friendships/destroy.html.erb  (definitely don't need: delete if generated)
+  test/controllers/friendships_controller_test.rb
+  app/helpers/friendships_helper.rb
+  app/assets/stylesheets/frienships.scss
+
+Now we can add the destroy route to the stop following button
+To check our routes:
+  $rails routes | grep friendships
+  =>friendships     POST       /friendships(.:format)        friendships#create
+    friendship      DELETE     /friendships/:id(.:format)    friendships#destroy
+
+We can see we will have to add create and destroy methods to our friendships controller to utilize these routes
+
+Now we should be able to add our destroy route to the button 
+See in the url we do have to add the friend_id (not the current user_id)
+Change the remove friend line in friendships/_list.html.erb to:
+  <td><%= link_to 'Remove Friend', friendship_path(friend.id), method: :delete, data: {confirm: "Are you sure?"}, class: 'btn btn-sm btn-danger' %></td>
+
+Now we are able to select a friend to delete and forward the request to our friendships#destroy action
+We just have to handle the actual deletion now
+To do this we can use user_stock#destroy as a guide since it will be very similar
+Our destroy method should look like this:
+  def destroy
+    friendship = current_user.friendships.where(friend_id: params[:id]).first
+    friendship.destroy
+    flash[:notice] = "Stopped following user"
+    redirect_to my_friends_path
+  end
+
+Now we can test in the browser to make sure it is working
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===============================================================#
+#            284. Implement Add Friend Functionality            #
+#===============================================================#
+
+Now we will work on adding friends to the browser
+This will work with the friendships#create method that we started last lesson
+
+We already have the path added to our routes so we can go ahead and add the path to our button
+This button is in users/_friend_result.html.erb
+  <%= link_to 'Follow Friend', friendships_path(friend: friend), class: "btn btn-success", method: :post %>
+
+The friendships post path is not anticipating an id 
+so we have to specify that the object being passed will be a param with the name friend
+
+Now we can work on the create method in friendships_controller where we can access this param
+We will use it and current_user to create a new row in our friendships table
+Again this will be very similar to the user_stocks controller#create method
+First we have to assign the friend object that was added to params to a variable 
+Then we will build a friendship for the current_user using the friend.id from that variable
+Then we will try to save this friendship
+  If save is successful then a notice will appear that the current_user is now following the selected user
+  If the save is not successful there will be a flash alert
+After attempting the save (successful or not) it will render the my_friends_path
+The create method should look like this:
+ def create
+    friend = User.find(params[:friend])
+    current_user.friendships.build(friend_id: friend.id)
+    if current_user.save
+      flash[:notice] = "Following user"
+    else
+      flash[:alert] = "Something went wrong with the request"
+    end
+
+    redirect_to my_friends_path
+  end
+
+Now if we save this we should be able to add friends from the browser
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=============================================================================#
+#            285. Display user/friend profile and tracking options            #
+#=============================================================================#
+
+Now for the last part we just have to make the friends show page (user viewing another user's profile)
+
+This page will show the user's details (name and email) and a list of stocks they are tracking
+
+We will have to build a route for the show action
+We will need to add this to our routes.rb
+We will add the users resource but only for the show action
+  resources :users, only: [:show]
+We got a lot of user routes from devise so we don't want to mess with any of those
+Now in our terminal we can view our new routes
+  $rails routes | grep user
+  =>user     GET     /users/:id(.:format)     users#show
+
+
+Now that our route is available we can add it to the controller and update our buttons
+We have two sets of buttons to update
+  users/_friend_result partial
+  friend/_list partial
+
+In our friend result partial we will update the button we already have
+Update the button in the users/_friend_result to view profile
+  <%= link_to "View profile", user_path(friend), class: "btn btn-primary" %>
+
+Now the button works but we do not have a show action in our users_controller to handle the request
+
+Let's add this before adding the other button
+We will also pass in the user object we are viewing into an instance variable so we can access user details
+  def show
+    @user = User.find(params[:id])
+  end
+
+We will also need to create a view for this to open called views/users/show.html.erb
+To start we will just have a heading saying User Details 
+Then we want to display the user details just like in the users/_friend_result
+We can copy and paste the whole thing into our page and edit to fit our needs (not the flash messages section)
+
+We will need to remove the if @friends block and the @friends do |friends| block (keep the divs inside of these)
+We can also remove the View Profile button since we are already viewing the profile
+Then change friend variable to @user 
+When finished it should look like this:
+  <h2>User Details</h2>
+
+
+  <div class="card card-header results-block">
+    <table class="col-md-12">
+      <tbody>
+        <tr>
+          <td><strong>Name </strong> <%= @user.full_name %></td>
+          <td><strong>Email </strong> <%= @user.email %></td>
+          <td>
+            <% if current_user.not_friends_with?(@user.id) %>
+              <%= link_to 'Follow Friend', friendships_path(friend: @user), class: "btn btn-success", method: :post %>
+            <% else %>
+              <span class="btn btn-success disabled" >Friend added</span>
+            <% end %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+Now test to see if that information is showing correctly in browser
+
+We should be able to unfollow a user and then follow them from their profile
+
+Now let's add the view profile button to the friends table
+Remember this is in the friends/_list partial
+We don't have a button to view the profile so we will have to add one after the 'stop following' button
+For styling keep it in the same <td> tag as our remove friend button
+  <%= link_to 'View Profile', user_path(friend), class: 'btn btn-sm btn-success' %>
+
+Now when we click the view profile from friends list it should load the friends profile
+
+Next we want to show the friends stocks beneath their user details just like on the my_portfolio page
+
+To do this we can render the same partial that we use in my_portfolio
+In this page we are rendering stocks/_list
+So we want to use the same partial to render for our profile pages
+  <% if !@tracked_stocks.empty? %>
+    <%= render 'stocks/list' %>
+  <% end %>
+
+However this partial needs a tracked stocks instance variable which we have not set up yet
+We can add this to our users_controller show action just like we did with @user
+This is easy with:
+  @tracked_stocks = @user.stocks
+
+Now if we view another users profile who is tracking stocks we can see that their list of stocks is displayed
+
+However there is one problem
+The remove button still shows even though the current user may not be following that stock
+instead we want to show an add stock action if the current user is not already tracking that stock
+We will have to edit our stocks/_list partial to add an if statment
+It will check if the current_user.id matches the @user.id
+
+Now this is good because if we view a users profile the remove button will be gone 
+However since we are using the partial in my_portfolio as well we get an error since there is no @user variable defined
+We can fix this by adding a current_user = @user in our my_portfolio method in users_controller
+
+Now no remove button will be shown when viewing another users page
+ but remove will be shown when viewing my_portfolio
+
+Now we just need to add an else statement to the if block we just made to display one of two things
+  disabled button 
+    if a user is already tracking a friends stock
+  add to portfolio button
+    if a user is not tracking a friends stock
+
+We already have code similar to this in our partial where we have the stock lookup
+
+How can we make this functionality available to our friends stocks view too?
+We can see in our _result.html.erb we are using an if current_user.can_track_stock method to determine whether to show an add button or not
+We will copy this functionality and paste it in our stocks/_list partial
+With a few small changes we can make this work for this _list partial
+This list partial should now look like this:
+  <div class="row">
+    <div class="col-9">
+      <table class="table table-striped table-dark table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Ticker</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @tracked_stocks.each do |stock| %>
+            <tr>
+              <th scope="row"><%= stock.ticker %></th>
+              <td><%= stock.name %></td>
+              <td><%= stock.last_price %></td>
+              <td>
+                <% if current_user.can_track_stock?(stock.ticker) %>
+                  <%= link_to 'Add to portfolio', user_stocks_path(user: current_user, ticker: stock.ticker), class: "btn btn-success", method: :post %>  
+                <% else %>
+                  <span class="badge badge-secondary">
+                    You are already tracking
+                    <% if !current_user.under_stock_limit? %>
+                      10 stocks
+                    <% end %>
+                    <% if current_user.stock_already_tracked?(stock.ticker) %>
+                      this stock
+                    <% end %>
+                  </span>
+                <% end %>
+                <% if current_user == @user %>
+                  <%= link_to 'Remove', user_stock_path(stock), method: :delete, data: {confirm: "Are you sure?"}, class: 'btn btn-sm btn-danger' %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+Now there is still 1 issue
+The error badge still shows up on the user page obviously they are tracking their own stocks
+ and don't need to see any warnings about why they can't add a stock they already have\
+ 
+To fix this instead of just using an else we can use else if that checks if current_user.id does not equal @user
+Only if this is the case do we want to show the error badge
+Else statement directly above the badge should look like:
+  <% elsif current_user.id != @user.id%>
+
+Now the error badge doesn't show up on a users page but it does show up on another users page
+If you are not tracking a friends stock the button will appear as normal
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===================================================#
+#            286. Assignment and Wrap Up            #
+#===================================================#
+
+Congratulations on having completed the finance tracker section. 
+Hope you enjoyed building it and learning how to do some cool new things. 
+
+Now the assignment:
+  1. Ensure you do a commit and push your code to Github.
+  2. Deploy to Heroku (production),
+     run migrations and ensure the app works as expected. 
+     This step will require you to perform an additional step due to the master.key not being available in your repo. 
+     You will have to set this in Heroku. I will leave it up to you to figure this out.
+       Here is the production deployed link for the app I built in the videos: https://finance-tracker-6.herokuapp.com
+  3. Add your Heroku app link to the Discussions/Q&A area of the course so we can take a look at your completed/working app.
+  4. Write a blog post about your thoughts/journey around building the finance tracker and what you have learnt.
+  5. Link the production app to your blog post so readers can directly check out your work, 
+     you can include your Github repo there as well if you like. 
+     This will be good when speaking to potential clients or interviewers since you'll have examples of your completed work using Rails.
+  6. Optional - What feature would you like to add to the finance tracker? 
+     Build it, deploy to production and please share some details about your custom feature in the Discussion/Q&A area where you post the Heroku app link.
+
+  
+I'm only going to cover the heroku deploy
+After making a commit and pushing to github
+  $git push heroku
+  $heroku run rails db:migrate
+  $heroku config:set RAILS_MASTER_KEY="$(< config/master.key)"
+
+Now the app should be live on heroku
+
+
+
+
+
+
+
+
+
+
+#==============================================#
+#            Section 9. Complete!!!            #
+#==============================================#

@@ -1,0 +1,617 @@
+#===========================================================================#
+#            Section 10. Email, Custom Payment, and File Uploads            #
+#===========================================================================#
+
+
+
+
+
+
+
+
+
+
+#===========================================================#
+#            287. IMPORTANT: Preview of Material            #
+#===========================================================#
+
+Preview video of material covered in this section moved to section 1, lecture 13, 
+you can take a look at the video at this time if you choose. (Not there)
+
+Some very important items to note before you start this section are listed below:
+
+1) At this point, you have a pretty strong understanding of Rails basics, 
+    and can make virtually any app work with time/reading documents and trial/error. 
+    Therefore, code will be written faster with less explanations.
+
+2) From this point on and with this app, 
+    we will write a lot of code which in the beginning will "make no sense" 
+    and also seem like I'm "typing away" without explanation, especially when we get to the stripe and javascript part. 
+    It is ok to feel lost here and follow/type along because:
+
+      a. Most of that code is provided by the third party provider, 
+          for example: code for stripe is provided by stripe in examples. 
+          Sometimes these examples are used with devise (another tool/gem) examples to make a specific version of the code work. 
+          This syntax will sometimes look different from what we have used, but again, that will be because that is syntax provided by the tool/gem creators.
+
+      b. What's important to remember is the overall flow. 
+          A lot of code used is also searched on google then implemented using trial and error. 
+          The science part is in the understanding of the overall picture so if you had to re-produce it you could also experiment and make it work. 
+          Since we'll be using API's and such, it's more of a "do as they say" type scenario, thus copy/pasting is ok, 
+          as long as you keep the overall flow/picture in mind. It's not important to understand every line of code in this app but be able to apply the code.
+
+3) Javascript will not be explained since it's not a javascript course. 
+    However, as long as you have the idea of what the code is used for in mind (since the code will be provided), 
+    you'll find the code pretty concise and easily usable/re-usable. 
+
+4) In conclusion - you're in a part of the course now which will look like how real world development looks like - 
+    get a task - research - apply - trial/error - re-apply till it works. 
+    So it can be a bit frustrating at times. But it's important to remember that this is necessary for growth as a developer. 
+    Now you already have all the basics in place - it's a matter of taking it to the next level which means -
+
+    a. A lot of research. When errors are hit, researching them using google/stack overflow, being able to resolve them on your own
+
+    b. Upgrades - as upgrades of gems/code become necessary - being able to look them up. Being able to resolve issues by trying/re-trying - research
+
+    c. Collaboration! join other students in the live chat or through the Q & A and work on the item together
+
+    d. Try your own versions, experiment!
+
+Good luck and enjoy!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#============================================#
+#            288. Start Photo App            #
+#============================================#
+
+So far we have built two applications with their own authentication systems
+For both you can sign up with email username and password
+
+In alpha-blog we built a custom authentication system from scratch
+In finance-tracker we used the devise gem
+
+In both cases as soon as the user signed up with their email they were registered and able to use the application
+That isn't very good in terms of security because we don't know if that email is actually valid
+This is important to verify so users don't sign up with other peoples address
+Some applications the email being correct will be important
+ (like if notifications are sent via email)
+
+In this app we will explore how to ensure that email addresses are verified
+To do this we will send the user an email activation link
+This is sent to the email chosen by the user when they sign up
+Basically before they confirm the activation link the user is in an unconfirmed state
+After they click this link they are switched to a confirmed state
+
+We could do this from scartch by setting up mailers and fields in the users table and sending auth tokens
+Luckily we don't have to deal with all of that because devise makes this very easy
+
+First create a new rails application
+
+  $rails new photo-app
+
+IMPORTANT:
+  The video for this lesson is quite old (oldest so far) and is using rails 4
+  I didn't feel like downloading another version of rails
+  Especially since it could cause problems if not getting the correct version of devise/bootstrap etc
+  I decided to just use rails 6 and will look up any issues I run into
+
+Now to generate a welcome controller with an index action
+  $rails g controller welcome index
+  =>  create  app/controllers/welcome_controller.rb
+      route   get 'welcome/index'
+      invoke  erb
+      create    app/views/welcome
+      create    app/views/welcome/index.html.erb
+      invoke  test_unit
+      create    test/controllers/welcome_controller_test.rb
+      invoke  helper
+      create    app/helpers/welcome_helper.rb
+      invoke    test_unit
+      invoke  assets
+      invoke    scss
+      create      app/assets/stylesheets/welcome.scss
+
+Create welcome_controller
+add welcome/index to routes.rb
+created welcome/index view
+created welcome_controller test fil
+Created welcome_controller helper file
+Created welcome stylesheet
+
+Now let's look at our routes.rb
+Instead of having this be a 'get' we will set it to root route
+  root 'welcome#index'
+
+Edit the welcome/index to show a header
+
+OW MY EYES! I went ahead and added a custom.css.scss to assets/stylesheets
+I added the following colors that I have used in previous projects as variables to set more easily
+  $background:  #1b2327;
+  $foreground:  #1f292e;
+  $white:       #ffffff;
+  $grey:        #bcbfc1;
+  $main-dark:   #418e86;
+  $main-ligh:   #37988e;
+  $danger:      #dc3545;
+  $accent-dark: #6f4fff;
+  $accent-light:#7e4fff;
+
+Now let's make sure git is set up (should be already with rails 6+)
+  $git status
+  =>list of entire project directory
+  $git add *
+  $git commit -m "initial commit"
+  $git status
+
+If there are untracked files at this point add them by hand with: (usually . files)
+  $git add .filename1 .filename2 .filename3
+  $git commit --amend
+
+Next we want to move our sql light gem to group development, test in the Gemfile
+
+Make a production group in the Gemfile and add the pg gem
+  group :production do
+    gem 'pg'
+  end
+
+Install our gems
+  $bundle install --without production
+  ( run the following command to not have to add the --without production tag so you don't accidentally install unnecessary gems
+      $bundle config set without 'production')
+
+Now setup a github repo for our application and push to it
+Create a github repo in the browser
+  $git remote add origin git@github.com:username/proj-name
+  $git branch -M master
+  $git push -u origin master
+
+Now create a heroku app and deploy this
+  $heroku create
+  $heroku rename memorable-unique-proj-name
+
+Make sure all code has been commited and pushed to github (we changed the gemfile)
+
+Push project to heroku
+  $git push heroku master
+
+Check to make sure that your app is available online
+
+
+
+
+
+
+
+
+
+
+#===============================================================#
+#            289. Instructor Notes: Start Photo App             #
+#===============================================================#
+
+Generate a new rails application:
+
+rails new photo-app
+
+Cd into the app:
+
+cd photo-app
+
+To setup homepage, generate a controller with an action:
+
+rails generate controller welcome index
+
+Then set the root route to this in the config/routes.rb file by uncommenting the root 'welcome#index' line
+
+Test it out in the preview
+
+You can update the page as you need, you can find this index view in the app/views/welcome folder in a file called index.html.erb
+
+Initialize a git repo for the app and make a commit
+
+Prepare the app for deployment to heroku by moving the sqlite3 gem to group development and then creating a group production and adding the gems necessary below it:
+
+group :production do
+
+gem 'pg', '~> 0.11'
+
+gem 'rails_12factor'
+
+end
+
+If using Rails 5 - note you don't need the gem 'rails_12factor' line above
+
+Then run:
+
+bundle install --without production
+
+Create a github repository in your github account for this app, follow steps to setup remote for this repo from your app
+
+Make a commit of your code and push to your github repo
+
+Create a heroku app by using heroku create
+
+Rename the app to something you like by using heroku rename nameofyourchoice
+
+Ensure your latest changes are committed using git status, if not, make a commit
+
+To deploy your app to production:
+
+git push heroku master
+
+Then test out the URL to view your app in production
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#========================================================#
+#            290. Setup Authentication System            #
+#========================================================#
+
+Now we will use devise to set  up our authentication system for users
+
+We will need to add our devise gem
+  gem 'devise'
+  gem 'devise-bootstrap-views', '~> 1.0'
+
+Then we will go ahead and install bootstrap
+Follow instructions here: https://www.mashrurhossain.com/blog/rails6bootstrap4
+(instructions written by me in alpha-blog and probably finance-tracker notes)
+
+Test that bootstrap works by adding something like a navbar
+This can go directly in application.html.erb then removed once we can confirm the navbar works
+
+Then go ahead and run a bundle install
+  $bundle install
+
+Now to finish our devise installation
+  $rails g devise:install
+
+Then to create the users object through devise
+  $rails g devise User
+
+This will create a migration file
+In our previous project we just ran this migration right away
+This time we want to change some things so that way we can get the email verification working
+These changes will be made in our new migration file
+
+If we look in the migration there is a commented out section marked 'Confirmable'
+If we uncomment this we can get this functionality to work
+Save this
+
+Next we will have to updtae the user.rb model to add the :confirmable devise method 
+just add it to the list of other devise methods (see comment above devise methods)
+
+Now we can run our migration
+  $rails db:migrate
+
+Now to test that all of this worked we can force users to be signed in to view any part of the app
+To do this we can use a before_action :authenticate_user! in application controller
+If no user is logged in it will automatically redirect to the sign in page before any page loads
+
+Now if we reload we will see a sign in page so we know it is working
+
+Let's keep this functionality but allow users to view the homepage (root)
+Everywhere else we want to force the login screen if a user is not signed in
+We can add this to the top of WelcomeController to skip the before_action for our index method
+  skip_before_action :authenticate_user!, only: [:index]
+
+Now if we try to load the root route we can see the homepage but we know devise is working in the background
+
+Use the following commands to generate the devise layouts in our application
+This will allow us better control of devise views and functions
+  $rails g devise:views:locale en
+  $rails g devise:views:bootstrap_templates
+
+Now we can see the views behind pages like sign in or sign up
+
+Now when a user signs up to our application our application knows to send them an email to confirm
+There are still a couple of other things to set up for this
+
+In production we will have to use a service called sengrid
+But in development we will just read the token that was sent in the console
+
+
+
+
+
+
+
+
+
+
+#================================================================#
+#            291. Instructor Notes: Setup Auth System            #
+#================================================================#
+
+First add the following gems to the gemfile:
+
+gem 'devise'
+
+gem 'twitter-bootstrap-rails'
+
+gem 'devise-bootstrap-views'
+
+If using Rails 5, also add gem 'jquery-rails'
+
+Then run bundle install --without production
+
+Then install devise:
+
+rails generate devise:install
+
+rails generate devise User
+
+Pull up the migration file that just got created and uncomment the 4 lines under confirmable:
+
+t.string :confirmation_token
+
+t.datetime :confirmed_at
+
+t.datetime :confirmation_sent_at
+
+t.string :unconfirmed_email
+
+Pull up the user.rb model file under app/models and in the line for devise, add in a:
+
+:confirmable,
+
+after :registerable, entry
+
+Run your migration now to create the users table:
+
+rake db:migrate (rails db:migrate if using Rails 5)
+
+In your application_controller.rb file under app/controllers add in:
+
+before_action :authenticate_user!
+
+In your welcome_controller.rb file under app/controllers add in:
+
+skip_before_action :authenticate_user!, only: [:index]
+
+Run the following generators to install bootstrap themed styling:
+
+rails generate bootstrap:install static
+
+rails generate bootstrap:layout application # select Y to force override after hitting enter
+
+rails generate devise:views:locale en
+
+rails generate devise:views:bootstrap_templates
+
+In the application.css file under app/assets/stylesheets folder, right above the line that says *= require_tree add in the following line:
+
+*= require devise_bootstrap_views
+
+If using Rails 5, you need to perform the following two steps:
+
+- Remove the favicon link tags from application.html.erb layout file (there should be 5)
+
+- In the application.js file under app/assets/javascripts folder, add the line //= require jquery to make it look like below:
+
+//= require rails-ujs
+//= require jquery
+//= require twitter/bootstrap
+//= require turbolinks
+//= require_tree .
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#========================================================#
+#            292. Sending Email in Production            #
+#========================================================#
+
+Now we will add the heroku mailing functionality with sendgrid
+We can do this in our terminal
+  $heroku addons:create sendgrid:starter
+
+If you haven't added a credit card to your heroku account this command will not work
+You have to go to your account settings => billing to add a credit card
+This is just for account verification purposes and your account will not be charged
+
+Now sendgrid is added to our heroku app
+to see documentation you can use the command:
+  $heroku addons:docs sendgrid
+
+Now we will need to do a couple more steps to finish setup
+Go view your app in heroku
+You should see the sendgrid add-on listed
+
+#################### ERROR ###############################
+At this point in the class sendgrid would not allow me to use their application and wouldn't explain why
+I haven't found a good answer online about how I can do this without Sendgrid so I'll take notes on how this should have worked
+I'll pickup on including the lesson in the application after the email confirmation section is complete
+################### END ERROR ############################
+
+If we click the link it will go to the sendgrid account for this application
+
+Then you will have to make note of your api and secret api keys
+
+Back in terminal we have to let heroku know the values for these keys
+
+$heroku config:set SENDGRID_USERNAME=apikey
+$heroku config:set SENDGRID_PASSWORD=paste_api_key_here
+
+In add the apikey and secret apikey to environment variables
+We have already stored these as environment variables in heroku so that means we don't have to mess with giving heroku the masterkey for our application
+
+create config/local_env.yml
+
+SENDGRID_USERNAME=apikey
+SENDGRID_PASSWORD=paste_api_key_here
+
+Now reload terminal for env variables to take effect
+
+Then in config/environment.rb
+
+  ActionMailer::Base.smtp_settings = {
+    :address => 'smtp.sendgrid.net',
+    :port => '587',
+    :authentication => :plain,
+    :user_name => ENV['SENDGRID_USERNAME'],
+    :password => ENV['SENDGRID_PASSWORD'],
+    :domain => 'heroku.com',
+    :enable_starttls_auto => true
+  }
+
+Next in config/environment/development.rb
+add the following line:
+  config.action_mailer.delivery_method = :test #set to :smtp to send email from development (not recommended)
+  config.action_mailer.default_url_options = { :host => 'localhost:3000'}
+
+Now in config/environments/production.rb
+add the following:
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.default_url_options = { :host => 'your-heroku-app.herokuapp.com', :protocol => 'https'}
+
+Now we can test it by starting the rails server
+  $rails s
+
+In the signup page create a new account and signup
+Since this is in the test environment an email will not actually be sent
+We can see what was sent in our terminal
+It will diplay the email that was generated along with where it was sent, and the activation link
+If you paste the link you will see that the account was successfully confirmed
+
+
+
+
+
+
+
+
+
+
+#==========================================================================#
+#            293. Instructor Notes: Sending Email In Production            #
+#==========================================================================#
+
+First add in your credit card details to your heroku account
+
+Then enter in:
+
+heroku addons:create sendgrid:starter
+
+Set the sendgrid apikey credentials you created for heroku:
+
+heroku config:set SENDGRID_USERNAME=apikey
+
+heroku config:set SENDGRID_PASSWORD=enterintheapikey
+
+To display your settings you can type in:
+
+heroku config:get SENDGRID_USERNAME
+
+Open your .profile file and enter in the following as well, if using a different environment, check discussions/google/docs or your environment's settings help/doc for more info about where you can set this:
+
+export SENDGRID_USERNAME=apikey
+
+export SENDGRID_PASSWORD=entireapikey
+
+Then open a new terminal window for these to take effect
+
+Under config/environment.rb file add in the following code at the bottom:
+
+ActionMailer::Base.smtp_settings = {
+
+:address => 'smtp.sendgrid.net',
+
+:port => '587',
+
+:authentication => :plain,
+
+:user_name => ENV['SENDGRID_USERNAME'],
+
+:password => ENV['SENDGRID_PASSWORD'],
+
+:domain => 'heroku.com',
+
+:enable_starttls_auto => true
+
+}
+
+Now update the development.rb file under config/environments folder and add the following two lines:
+
+config.action_mailer.delivery_method = :test
+
+config.action_mailer.default_url_options = { :host => 'http://previewurlforyourapp'}
+
+My preview url looks like this: http://ruby-on-rails-123170.nitrousapp.com:3000
+
+Now update the production.rb file under config/environments folder and add the following two lines:
+
+config.action_mailer.delivery_method = :smtp
+
+config.action_mailer.default_url_options = { :host => 'yourherokuappname.herokuapp.com', :protocol => 'https'}
+
+Test it out in development by signing up a user and then grabbing the confirmation link from the web output in your terminal and copying/pasting the link in your browser
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=======================================================================#
+#            294. Update Layout and Test Email in Production            #
+#=======================================================================#
+
+THIS PART OF THE LESSON IS NOT BEING INCORPORATED TO THE PHOTOS APPLICATION
+THIS IS DUE TO ISSUES WITH SENDGRID THAT COULD NOT BE RESOLVED AFTER CONTACTING SUPPORT
+NOTES FOR THESE LESSONS ARE STILL RECORDED EVEN THOUGH THEY ARE NOT USED
+
+At this point a user is able to sign up and a url is sent to the email they provided
+If the user visits that url their account is confirmed
+
+#### THIS IS DONE IN THE PHOTOS APP
+# Update the navigation bar to include login and logout buttons
+# I don't think I caught the part where the navbar was added so it needs to be added 
+# This is easy enough using the provided code on the bootstrap page
+#
+#
+#

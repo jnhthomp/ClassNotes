@@ -1,0 +1,1783 @@
+#==============================================================#
+#            Section 8. Real Time Rails - MessageMe            #
+#==============================================================#
+
+
+
+
+
+
+
+
+
+
+#===========================================#
+#            209. Preview of App            #
+#===========================================#
+
+In this section we will make the MessageMe app
+
+We will use rails 5 for this application
+Rails 5 provides something called action cable which will allow us to make real time communications
+We will use Semantic.UI instead of bootstrap to create and style our application
+
+The application will allow someone to log in and join a chatroom
+When a user is logged in they can post a message to the chatroom 
+All other users will get the message in real time and messages are labelled by the sender
+
+
+
+
+
+
+
+
+
+
+#=====================================================#
+#            210. Notes about this section            #
+#=====================================================#
+
+The two main items we aim to learn by the conclusion of this section are:
+
+- How to use a different front-end UI like Semantic UI with Rails applications (or in general) instead of Bootstrap.
+
+- How to use ActionCable to implement real-time features in Rails apps (we will demonstrate using a chat application).
+
+Recommendations for versions of Rails and development environment used in this section:
+
+- The MessageMe chat app built in this section uses Rails 5.1.6, 
+  therefore, I would strongly recommend using a version of Rails between 
+  Rails 5.1.6 and Rails 5.2.4 for this section to have the smoothest experience and alignment with the videos.
+
+- Atom will be used as the text editor and the development will be done locally in a Mac machine, however, you can use AWS Cloud9 or Windows as well.
+
+- For local installation options, and launching a Rails 5 application while you have Rails 6 installed, are covered in the following sections:
+
+If using MacOS - Section 13
+
+If using AWS Cloud9 - Section 14
+
+If using Windows - Section 15
+
+How this section is designed (and different):
+
+- Each video has an associated commit in the Github repository of the app. You can find each commit here: 
+  https://github.com/udemyrailscourse/message_me/commits/master
+
+- Simply select the name of the video/section from the commit message and you will be able to view all the code changes made in that video.
+
+- You will be assigned tasks regarding topics which have already been covered (or you are able to figure out). 
+  This is done on purpose to simulate more of a real-life web developer/development scenario you may face at a job.
+
+- We will cover design of the front-end first - then move on to the back-end.
+
+Expectations before you get started with this section:
+
+- You are able to install and use different versions of Rails. 
+  Optional (but strongly recommended): You are able to install Rails locally in your machine (either Windows, Mac or Linux).
+
+- You are able to build a simple authentication system using the default Rails stack. 
+  There are assignments in this section which will ask you to do this. 
+  If you are unable to do so you may feel left behind, I recommend either reviewing the authentication system 
+  of alpha blog or the authentication system in the University App (last app before the installation sections in this course).
+
+- You know what Git and Github are, and are able to use them at a basic level.
+
+What if you are not interested in learning about ActionCable, or building a realtime Chat App, 
+but want to either learn a new front-end framework in a typical RESTful Rails application, or other fun new things?
+
+- If you fall in this category then you can skip this section and either move on to the last app 
+  (last app before the installation sections in this course) where we build a university app to 
+  learn how to use MaterializeCSS instead of Bootstrap in a Rails app, or, you can continue on to the next app where
+  we build a Finance Tracker app using Rails 6 and learn some new cool things.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#================================================#
+#            211. Start New Rails App            #
+#================================================#
+
+To follow along with the videos better we are going to use rails 5
+  $gem list rails
+  $rails _5.2.4.3_ new test_app
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#====================================================#
+#            212. Task 1: Version Control            #
+#====================================================#
+
+The first task for this section is to get our app setup with git and GitHub
+
+Steps
+  -Ensure git credentials are setup
+  -Download and install git if you don't have it already
+  -Initialize a git repo for this app
+  -Make an initial commit
+  -Create a GitHub repo
+  -Post a link to the repo in Q&A
+
+
+________________________________________________
+Solution
+
+A repo should be initiated already from making the project (rails does this)
+Make the initial commit: (make sure you are in the project directory)
+  $git add *
+  $git commit -m "Initial commit"
+
+In GitHub create a new repo
+Follow instructions to push an existing repo:
+    $git remote add origin git@github.com:jnhthomp/message_me.git
+    $git branch -M master
+    $git push -u origin master
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=========================================================#
+#            213. Task 2 Root and Login Routes            #
+#=========================================================#
+
+-Set the root and login routes
+  - Should just display a heading at root and /login
+-Set up two controllers, sessions and chatroom
+  -chatroom#index should be the root route
+  -sessions#new should be the /login route
+-Set up associated views
+  -chatroom/index
+  -sessions/new
+-Commit and push to GitHub repo
+
+________________________________________________
+Solution
+
+In config/routes.rb
+  root 'chatrooms#index'
+  get 'login', to: 'sessions#new'
+
+Create app/controllers/chatrooms_controller.rb
+Create app/controllers/sessions_controller.rb
+
+In chatrooms_controller:
+Create 'index' method
+
+  class ChatroomsController < ApplicationController
+    def index
+      
+    end
+  end
+
+
+
+In sessions_controller:
+Create 'new' method
+
+class SessionsController < ApplicationController
+  def new
+    
+  end
+end
+
+
+Create chatrooms & sessions views
+
+create app/views/chatrooms/index.html.erb
+  Add simple heading html
+
+create app/views/sessions/new.htlm.erb
+  Add simple heading html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#================================================#
+#            214. Install Semantic-UI            #
+#================================================#
+
+We can install semantic ui via gem 
+Add the following to your Gemfile
+  gem 'semantic-ui-sass'
+  gem 'jquery-rails'
+
+Then we can install these from the terminal
+  $bundle install
+
+Now we have to import it into our scss file
+Create app/assets/stylesheets/custom.css.scss
+  @import "semantic-ui";
+
+Semantic UI also uses javascript helpers
+We need to add this to the javascript manifest: 
+  //= require semantic-ui
+  //= require jquery
+
+Make sure you restart your server before trying to refresh the page
+
+You can tell it worked because the default font will have changed
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#================================================#
+#            215. Add Navigation Menu            #
+#================================================#
+
+We are going to add a navigation menu with semantic ui
+
+We will do this in a partial (in the video he did it in application.html.erb)
+Create app/views/layouts/_navigation.html.erb
+
+Drop in the semantic ui html (provided on their website for menus)
+  <div class="ui large inverted menu">
+    <a class="item">
+      Home
+    </a>
+    <a class="item">
+      Messages
+    </a>
+    <div class="right menu">
+      <div class="ui dropdown item">
+        Language <i class="dropdown icon"></i>
+        <div class="menu">
+          <a class="item">English</a>
+          <a class="item">Russian</a>
+          <a class="item">Spanish</a>
+        </div>
+      </div>
+      <div class="item">
+          <div class="ui primary button">Sign Up</div>
+      </div>
+    </div>
+  </div>
+
+Then in application.html.erb (above yield tag)
+  <%= render 'layouts/navigation' %>
+
+Then we want to put everything in the yield tag of application.html.erb in a container
+  -That way things can be set with a margin from the edge of the screen
+   without having to set margins or put them in containers
+Should look like this:
+  <div class="ui container">
+    <%= yield %>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#============================================#
+#            216. Enable Dropdown            #
+#============================================#
+
+We have to enable the js dropdown functionality for our navigation bar
+
+If you look at the semantic UI website you can see dropdown listed under modules
+We already have the dropdown code but we do need to look at usage
+
+To enable the dropdown we have to add some javascript
+This will be added to application.js file
+We want to wait for the dom to load before we run any functions (and turbolinks)
+To make sure we wait for that we need to include:
+  $(document).on('turbolinks:load', function() {
+    $('.ui.dropdown')
+    .dropdown();
+  })
+
+  Then change the menu and dropdown items to the following: (left to right)
+    Chatroom
+    Messages
+    Account
+      Log out
+      Log in
+      Sign Up
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#========================================#
+#            217. Add Favicon            #
+#========================================#
+
+Now we are going to add a favicon to our application
+It is the small icon picture that shows in the browser
+You can find these in semantic ui
+There is a section for icons from FontAwesome that are available with semantic
+  -We will use the 'comments' icon
+
+We have already used an icon once in our application
+There is an example of one in our navigation bar
+The little icon that shows up for the dropdown is a fa icon
+
+Where do we put the favicon
+In images we will need to add a favicon.ico file
+We will generate this file
+Search for fontawesome generator on google
+Then select an icon and color (give it a background if you want)
+Download the file and drag to the images folder of the application
+Make sure you name it favicon.ico
+
+Now in application.html.erb we can add the icon
+This should go directly below <title>
+  <%= favicon_link_tag %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#====================================================#
+#            218. Build Chatroom Homepage            #
+#====================================================#
+
+Now we are going to build the homepage
+
+It will have an image at the top center with a heading underneath
+  ("say something")
+
+For the main portion of the page there will be an area for chats from other users to be displayed
+There is also an area for the user to enter text and send a message to the chat
+
+Then on the right there is a list of online users
+
+We will use the semantics header
+Semantics has an example on their website we can base ours off of
+  <h4 class="ui center aligned medium icon header">
+    <i class="circular comments icon"></i>
+    Say something
+  </h4>
+
+
+Now let's work on the color of the icon
+You can do that by providing the color name as a class
+  <i class="circular inverted teal comments icon "></i>
+
+Now in order to build the rest of the page we will have to learn about the grid system semantics ui uses
+Semantics uses a 16 column grid
+
+That means if we assign something a width of 4 we will be able to fit 4 of those items across the screen
+
+Let's start with the actual page content
+
+For the chatbox we will use the small feed example from semantics website
+copy and paste into index
+
+For the online users we will use the inverted veritcle menu example from semantics website
+Copy and paste into index
+
+Now we have to edit the two of these to work how we need them
+
+First we are going to create a 2 column grid to seperate the two sections
+  <div class="ui two column grid">
+
+  </div>
+
+Put both sections in the above div
+
+For proportions we want the chatbox to be 12 columns and the online box to be 4 columns
+
+Put the chatbox section in the following div:
+  <div class="twelve wide column">
+  </div>
+
+Then put the online box in the following div:
+  <div class="four wide column">
+  </div>
+
+Now both of our sections are seperated out
+
+We are going to put both of the sections inside of a card to style them a little better
+the content block is a good start
+We will have to add 2 sets of 2 divs each around one of the sections
+
+Put the chatbox area inside these 2 divs put these divs just below the .twelve .column one
+  <div class="ui fluid raised card">
+    <div class="content">
+    </div>
+  </div
+
+Then do the same for the online box
+
+Now the issue is that the boxes are a little small
+They will adjust height based on how much information they need to hold but we want them to be a fixed height
+We can do that by adding a class called "chatbox"
+Then in our custom.css.scss we can set a height there
+Add this class in the same div where we set "ui fluid raised card"
+  I set height to be 60vh (viewport height so it will adjust for screensize)
+When finished my index looked like this:
+
+    <h4 class="ui center aligned medium icon header">
+      <i class="circular inverted teal comments icon "></i>
+      <span class="heading-title"> Say something </span>
+    </h4>
+
+    <div class="ui two column grid">
+      <div class="twelve wide column">
+        <div class="ui fluid raised card chatbox">
+          <div class="content">
+            <div class="ui small feed">
+              <h4 class="ui header">Followers Activity</h4>
+              <div class="event">
+                <div class="content">
+                  <div class="summary">
+                    <a>Elliot Fu</a> added <a>Jenny Hess</a> as a friend
+                  </div>
+                </div>
+              </div>
+              <div class="event">
+                <div class="content">
+                  <div class="summary">
+                    <a>Stevie Feliciano</a> added <a>Elliot Fu</a> as a friend
+                  </div>
+                </div>
+              </div>
+              <div class="event">
+                <div class="content">
+                  <div class="summary">
+                    <a>Helen Troy</a> added <a>Christian Rocha</a> as a friend
+                  </div>
+                </div>
+              </div>
+              <div class="event">
+                <div class="content">
+                  <div class="summary">
+                    <a>Christian Rocha</a> signed up for the  site.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="four wide column">
+        <div class="ui fluid raised card chatbox">
+          <div class="content">
+            <div class="ui inverted vertical menu">
+              <a class="active item">Home</a>
+              <a class="item">Messages</a>
+              <a class="item">Friends</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==============================================#
+#            219. Complete Chatroom            #
+#==============================================#
+
+We are going to add the input box to the chat window so users can add messages
+Then we will clean up the chat area
+To make this area we can use the semantics classes extra content
+We also want to make this an input box instead of just a button
+We can do that with ui reply form
+We want to put these divs right after the content div for the chatbox
+  -that way it gets forced to the bottom of the chatbox
+
+To do that we can use the following: (all gotten from semantic website)
+  <div class="extra content">
+    <form class="ui reply form">
+      <div class="field">
+        <div class="ui fluid icon input">
+          <input type="text" placeholder="Enter a message...">
+          <i class="bordered inverted teal edit icon"></i>
+        </div>
+      </div>
+    </form>
+  </div>
+
+Then we want to change how the feed looks
+We don't need the followers activity line so we can remove it
+We are also going to change what is in the event>content>summary divs
+I changed mine to the following (and added some css)
+  <em class="chat-content">User1: </em><span class="chat-content">Says hello</span> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=====================================================#
+#            220. Task 3: Build Login Page            #
+#=====================================================#
+
+Now we have to build the login page by ourselves
+
+Part of the task is to send the login link in the navbar to the login page
+Then we will have to build the page out fully
+We can use a sessions controller like in alpha blog
+
+For the view itself it will have a heading up top
+Below that there will be an image icon (like on the homepage)
+Then a smaller heading that says "log in to continue"
+Below that there will be a container that is divided in two
+  -Use divider from semantics website
+  -There is a login template we can use from there that does exactly this
+On the left side there is a username and password field
+Then on the right there is a signup button
+
+None of the functionality needs to be there yet just the view
+
+First to take care of the link in the navbar
+To do this we have to edit the partial and add a link_to
+This will replace the current line we have for login
+  <%= link_to "Log In", login_path, class: "item" %>
+
+Now to fix the heading of /login
+This will add a heading to the top
+
+Now to use the divider code from semantics website
+I added a few classes to make css styling easier
+But it is still mostly the same:
+
+  <div class="ui placeholder segment">
+    <div class="ui two column very relaxed stackable grid">
+      <div class="column">
+        <div class="ui form">
+          <div class="field">
+            <label class="login-label">Username</label>
+            <div class="ui left icon input">
+              <input type="text" placeholder="Username" class="login-field">
+              <i class="teal user icon"></i>
+            </div>
+          </div>
+          <div class="field">
+            <label class="login-label">Password</label>
+            <div class="ui left icon input">
+              <input type="password" placeholder="Enter your password" class="login-field">
+              <i class="teal lock icon"></i>
+            </div>
+          </div>
+          <div class="ui teal submit button">Login</div>
+        </div>
+      </div>
+      <div class="middle aligned column">
+        <div class="ui big button teal">
+          <i class="signup icon"></i>
+          Sign Up
+        </div>
+      </div>
+    </div>
+    <div class="ui vertical divider login-label">
+      Or
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=================================================#
+#            221. Explore the Back-end            #
+#=================================================#
+
+Our application will use an mvc structure again
+
+When you enter a message from the browser it is received by routes.rb
+Routes will forward the request to the appropriate controller
+Then the controller will work with the model to save the message
+The model will save the message to the database
+Then the controller will request that data and add it to the view
+
+Later we will switch to websocket protocols will change this a little
+
+For our databases we will have users and messages
+There will be a one to many relationship between users and messages
+  (users can have many messages, messages can only have 1 user)
+
+The user table will only contain username and password
+
+The messages table will contain a body string and a user_id
+  -This user_id will match who sent the message
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#========================================================#
+#            222. Task 4: Build user Resource            #
+#========================================================#
+
+Now we have to build the users resource
+
+We will have to add the bcrypt gem since we will hash the password
+  
+Then run:
+  $bundle install
+
+We can generate the model and migration with:
+  $rails generate model User
+
+Then we will have to edit the migration file to include 2 columns
+  t.string :username
+  t.string :password_digest
+  t.timestamps
+Then run the migration file
+  $rails db:migrate
+
+In the user model we also ahve to add our validation:
+  validates :username, presence: true, uniqueness (look it up) length: {minimum: 3, maximum: 15}
+  has_secure_password
+
+Test the connection in the console
+Make sure the password is hashed
+
+To make multiple users at once we can use the db/seeds file
+There we can create users with the same commands as in the console
+To run this file use:
+  $rails db:seed
+
+To make the console output your users in a more readable format
+There is a gem called 'hirb'
+Add it to the gemfile:
+  gem 'hirb'
+Install it in terminal
+  $bundle install
+Then in console enable it:
+  $Hirb.enable
+  $User.all
+
+Now there is a much better output of the users table
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===========================================================#
+#            223. Task 5: Build Message Resource            #
+#===========================================================#
+
+Do the same thing you did for users resource but for Messages
+
+Messages should have the following columns:
+  body
+    text
+  user_id
+    integer
+  timestamps(both)
+
+So we will have to link messages and users 
+
+In the message model we will have to specify:
+  belongs_to :user
+
+We will also have to validate that the body is present
+  validates :body, presence: true
+
+Then in the User model we will also have to link messages:
+  has_many :messages
+
+For our migration file we will have to add our three columns and their types
+  t.text :body
+  t.integer :user_id
+  t.timestamps
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===================================================================#
+#            224. Task 6: Add actual Messages From Table            #
+#===================================================================#
+
+Now we need to add the messages from the Messages table to our view
+
+First we need to get rid of the hardcoded examples that came with semantic
+
+Then in the chatrooms_controller we will have to initiate an instance variable that has all messages
+In index method
+  @messages = Message.all
+
+Then we have to use the following do block instead of the html provided by semantic
+  <% @messages.each do |message| %>
+    <div class="event">
+      <div class="content">
+        <div class="summary">
+          <em class="chat-content"><%= message.user.username %>: </em><span class="chat-content"><%= message.body %></span> 
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+Since we linked messages and users we can get the user info just by looking at attributes of the message
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=======================================================#
+#            224. Add _message Refactor Code            #
+#=======================================================#
+
+Now we will add the messages do block we just made to a partial
+
+That way if we want to use it somewhere else in the app we can easily render it
+Since we are calling Message in the controler that is the resource it currently associates
+So rails will look in the views/messages folder for any partial we specify (_message)
+
+Then we can take out everything from the do block and add it to the new partial
+
+Then we can replace the do block itself with:
+  <%= render @messages %>
+
+This will recognize that it is the Message object and will try to render it using the _message partial in the views/message folder
+Then it will render that partial for each message in the message object 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#================================================================#
+#            226. Task 7: Start Authentication System            #
+#================================================================#
+
+Now we have to build the login form
+We will have to change it to build the authentication system
+
+We also want the helper methods from the authentication system in alpha blog
+
+One of the changes we will need to do is instead of using the html form tag 
+we want to use the form_for provided by rails
+
+Replace the current form in views/sessions/new with:
+  <%= form_for(:session, html: {class: "ui form", role: "form"}, url: login_path) do |f| %>
+    <div class="field">
+      <%= f.label :username, "Username", class: "login-label" %>
+      <div class="ui left icon input">
+        <%= f.text_field :username, placeholder: "Username", class: "login-field" %>
+        <i class="teal user icon"></i>
+      </div>
+    </div>
+    <div class="field">
+      <%= f.label :password, "Password", class: "login-label" %>
+      <div class="ui left icon input">
+        <%= f.password_field :password, placeholder: "Password", class: "login-field"%>
+        <i class="teal lock icon"></i>
+      </div>
+    </div>
+    <%= f.button "Login", class: "ui teal submit button" %>
+  <% end %>
+
+In the application controller add:
+  helper_method :current_user, :logged_in?
+
+  def current_user
+    @current_user ||= User.find(session[:user_id]) if session[:user_id]
+  end
+
+  def logged_in?
+    !!current_user
+  end
+
+  def require_user
+    if !logged_in?
+      flash[:alert] = "You must be logged in to perform that action"
+      redirect_to login_path
+    end
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#======================================================#
+#            227. Add Authentication System            #
+#======================================================#
+
+Right now we have the form but when we submit we get an error
+This is because we do not have a post route for our sessions controller defined in routes.rb
+
+First add the route to routes.rb
+  post 'login', to: 'seesions#create'
+
+Then we have to add the create method to sessions controller
+  def create
+
+  end
+
+We can use byebug inside this method to see what parameters are available
+Using params when the code pauses you can see:
+   "session"=>{"username"=>"user0", "password"=>"password"}
+This means we can access these with params[:session][:username] and params[:session][:password]
+So we will assign a user variable based on these parameters
+
+Now we can assign these parameters in the create method
+We will do it almost the exact same way as in alpha-blog
+  def create
+    user = User.find_by(username: params[:session][:username])
+    if user && user.authenticate(params[:session][:password])
+      session[:user_id] = user.id
+      flash[:success] = "You have successfully logged in"
+      redirect_to root_path
+    else
+      flash.now[:error] = "Your credentials were incorrect"
+      render 'new'
+    end
+  end
+
+This will attempt to find a user by the username provided
+  If it does find a user then that user object will be assigned to the variable
+  If it doe snot find a user then the variable will be nil or false
+
+Then it will check if a user was found AND if the provided password matches that users password hash
+  If they do match 
+    a session :user_id will be assigned the authenticated users id
+    A flash message is created saying login successful
+    User is redirected to chatpage
+  If they do not match or no user was found
+    A flash message is created saying login failed
+    The login page is rendered again
+
+
+We can also add the destroy method while we are here since we will need it
+This will also be like alpha-blog
+The goal is to get rid of the session id which is used to identify the current user
+If the session id is nil then no user is logged in
+  def destroy
+    session[:user_id] = nil
+    flash[:success] = "You have successfully logged out"
+    redirect_to login_path
+  end
+
+Now we have to add this create and destroy action to our routes.rb
+  post 'login', to: 'sessions#create'
+  delete 'logout', to: 'sessions#destroy'
+
+Finally change the navbar to show login or logout based on if a user is logged in
+  <% if logged_in? %>
+    <%= link_to "Logout", logout_path, method: :delete, class: "item" %>
+  <% else %>
+    <%= link_to "Log In", login_path, class: "item" %>
+  <% end %>
+
+This will replace the old login/logout buttons 
+I might take this out of the dropdown later since there is only 1 item in it right now
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==================================================#
+#            228. Enable Flash Messages            #
+#==================================================#
+
+Now we are going to enable flash messages for our website
+This will allow us to pass messages to the user when actions are successful or unscuccessful
+We will also be able to style the message based on the type of message being passed
+
+We are going to render the messages in the application.html.erb
+
+Then we will use a partial that will contain the message and styling and be rendered
+This will make sure that it works on all pages since all pages are rendered to application.html.erb
+
+In application.html.erb (above yield tag)
+  <%= render 'layouts/messages' %>
+
+Then create app/views/layouts/_messages.html.erb
+Inside of this file we want to loop through each flash message
+  <% flash.each do |message_type, message_content| %>
+  
+  <% end %>
+
+Then we can add the styling and where to display the body inside this block
+
+We will get styling to put inside from the semantic website 
+In order for our errors to be dismissible we will have to use the js provided on their website
+This goes in our application.js after turbolinks loads
+  $('.message .close').on('click', function() {
+    $(this).closest('.message').transition('fade');
+  });
+
+Then we can add our messages to our partial
+You can do it with one div but I didn't want to use the default success and error colors
+ and didn't want to deal with overwriting all of the styles
+If you don't care then just pass in message_type into the class instead 
+  <% if message_type == "success" %>
+    <div class="ui teal message">
+      <i class="close icon"></i>
+      <div class="header">
+        <%= message_content %>
+      </div>
+    </div>
+  <% end %>
+  <% if message_type == "error" %>
+    <div class="ui red message">
+      <i class="close icon"></i>
+      <div class="header">
+        <%= message_content %>
+      </div>
+    </div>
+  <% end %>
+
+Now our flash messages are all set up
+If we add a message of another type we will have to define a style for it in the _messages partial
+If we used the other way then it would give it a default semantic coloring
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===============================================================#
+#            229. Restrict Views at Controller Layer            #
+#===============================================================#
+
+Now we want to restrict access to the chatroom screen to only be visible by users
+
+We can do that in the chatroom controller by adding the require_user helper method to run before we load the page
+  before_action :require_user
+
+Now we cannot load the chatroom without being logged in and we are redirected to the login page
+Then if we are logged in we can load the chatroom
+
+There is a small bug though
+If we are logged in we are able to access the login path
+We don't want them to be able to access this page if they are already logged in
+
+To do that we can add a private method to our sessions controller
+This method will redirect to the homepage and send a flash message if the user is already logged in
+  def logged_in_redirect
+    if logged_in?
+      flash[:error] = "You are already logged in"
+      redirect_to root_path
+    end
+  end
+
+Then we can add this method as a before action for our new and create methods
+before_action :logged_in_redirect, only: [:new, :create]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=================================================#
+#            230. Add Messages From UI            #
+#=================================================#
+
+Now we are going to add the ability to enter messages from the message input box
+
+This is from the chatroom index view
+We have the @messages instance variable which hold the table of Messages
+but we will also need a singular @message variable for the form to submit to the Messages table
+We also don't have a controller for Messages to create new ones so we will need to add that too
+Since we will need a controller we will also have to add a post route for messages so users can add to the table
+
+Let's start with the route
+in routes.rb:
+  post 'message', to: 'messages#create'
+This will post to the message path using the messages#create action
+Now we have to update our form to use this new route to post a message
+
+This will be in the chatrooms/index.html.erb
+We will be adding this in place of the div that uses ui reply form for classes
+Now that area should look like this:
+  <div class="extra content">
+    <%= form_for(@message, html: {class: "ui reply form", role: "form"}, url: message_path) do |f| %>
+      <div class="field">
+        <div class="ui fluid icon input">
+          <%= f.text_field :body, placeholder: "Enter a message...", class: "login-field" %>
+          <%= f.button '<i class="bordered inverted teal edit icon"></i>'.html_safe %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+Now if we try to type a message and press enter we get an error because we do not have a Messages controller
+
+Let's create the messages controller
+We can use a rails generator since we know how to do this and how it works
+  $rails generate controller messages create
+
+This made a bunch of files we don't need so we can use to remove everything
+  $rails destroy controller messages
+
+That will undo everything that was still created
+
+NOTE THIS MIGHT ALSO DELETE YOUR VIEWS/MESSAGES/_MESSAGE.HTML.ERB
+MAKE SURE YOU GO TO GIT AND COPY/PASTE THE MOST RECENT VERSION
+This can probably be done in git but I didn't feel like looking up how
+ (intructor didn't tell us how)
+
+If you prefer to delete what is not needed then you can use the above method otherwise we will have to make it by hand
+Just be aware that is an option
+
+create app/controllers/messages_controller.rb
+Set up the messages controller:
+  class MessagesController < ApplicationController
+    def create
+      
+    end
+  end
+
+We know that a user will need to be logged in to post a message
+So we can add the before_action :require_user right away
+
+Now we can build the create method:
+  def create
+    message = current_user.messages.build(message_params)
+    if message.save
+      redirect_to root_path
+    end
+  end
+
+  private
+
+  def message_params
+    params.require(:message).permit(:body)
+  end
+
+This will build a message and assign it to the current user
+Then it will try to save the message to the messages table
+If successful it will redirect to the root path which should now show the message
+
+It will need a private method message_params to be able to build and be whitelisted to submit
+This is very similar to alpha blog
+
+Now this should be enough to start testing
+Now when we send our message it will show up in the chatbox
+
+However the issue is that nobody else will see that message until they send a message or they refresh the page
+That is where action cable will help us
+We are also going to add the ability to send a message with just 'enter' key press
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=========================================================#
+#            230. Intro to WebSocket Protocol             #
+#=========================================================#
+
+Now to make our messaging function update live between users
+
+We will use a protocol called websocket
+This is made available to ruby on rails via ActionCable
+
+What happens in a standard http request response cycle?
+This is what we have been using so far 
+The browser (user) will request a page from the server
+Then the server will send a response to the user
+Both of these steps are a one way communication
+ where there is only 1 request and 1 response
+The important thing is that data is only moving in one direction
+Either the client is requesting from the server or the server is responding to the client
+
+What happens with websocket?
+The client will request to initiate a connection with the server
+ Instead of just an http request it will make a websocket request
+Then the server will allow the connection
+Once connection is established both devices can send data to and from each other freely
+Both the client and server are able to send data to each other and receive from each other at the same time
+Multiple clients can use this feature at once 
+This is what allows the chatroom functionality to take place
+One user can send a message to the server and then the server can broadcast it to all users at once
+
+Rails implements this with ActionCable to make this websocket connection happen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==================================================================#
+#            232. Implementing real-time w/ ActionCable            #
+#==================================================================#
+
+Action cable here is going to be pretty similar to other uses
+The implementation isn't important, the concept is
+
+With websocket we are initiating a websocket request from the client to the server
+Then the server will allow that connection and allow two way data transmission
+
+How will we handle this?
+This is handled by what is called a channel
+We will create a chatroom_channel which will enable this two way communication
+We can use this channel to all users who are 'subscribed' to the channel
+  (subscribed meaning they have the chat window open)
+This will allow all users to get real time updates as soon as their messages are created
+
+The first step is to create a chatroom channel
+For the clients we will have to use javascript
+Then when the messages#create action happens it is currently hitting the database
+We will update this to broadcast to other users when the message hits the database
+Then this message will be received by a coffescript file (basically js)
+We can modify the data received by this and do what we need
+We only need to display that data to the chat window
+We will need to update some of the styling for when there become a lot of messages in the chatbox
+
+In the chatroom_controller we will have a subscribed method that enables a stream from the chatroom_channel
+Then in the messages controller (inside create) we will have a broadcast method
+
+For our javascripts/channels/chatroom.coffee
+There is received data and there are things we can do with it before we display it
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#========================================================#
+#            233. Generate a Chatroom Channel            #
+#========================================================#
+
+Now we are ready to create our chatroom channel
+Since we do need the files that we had to delete last time we can generate this time
+  $rails generate channel chatroom
+
+This will create the following files:
+  app/channels/chatroom_channel.rb
+  app/assets/javascripts/cable.js  #may already exist
+  app/assets/javascripts/channels/chatroom.coffee
+
+What do these files do?
+  chatroom_channel.rb
+    there are two methods defined for us
+      subscribed
+        This will define where to stream data from
+      unsubscribed
+        This will cleanup anything needed when unsubscribed (closed)
+        We won't need this right now
+
+  chatroom.coffee
+    There are three methods defined for us
+      connected:
+        this is called when the subscription is ready on the server
+      disconnected:
+        this is called when the subscription is terminated
+      received:
+        This is called where there is incoming data (like a message from the user)
+
+  cable.js
+    Nothing has changed here, it is only put there in case it didn't already exist
+    It just makes sure ActionCable is running correctly
+
+
+We are going to start making changes to the chatroom_channel.rb
+  We just have to uncomment the subscribed section and change the name of the channel
+  It should now read: 
+    def subscribed
+      stream_from "chatroom_channel"
+    end
+
+One other thing we have to do is setup a route for this subscription
+We have to mount the websocket connection so it can be accessed in the browser
+The way to do that is to mount it in routes.rb
+We have to add:
+  mount ActionCable.server, at: '/cable'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==========================================================#
+#            234. Modify and Broadcast Messages            #
+#==========================================================#
+
+Since we setup action cable when we start our server we should be getting a new message at the bottom
+  ChatroomChannel is transmitting the subscription confirmation
+  ChatroomChannel is streaming from chatroom_channel
+
+This means that ActionCable is up and running but we have to connect our form with it so it broadcasts
+
+So we will want to change our messages_controller to not render the page but to broadcast the message
+To do that we need to remove the render line in create method
+Replace it with:
+  ActionCable.server.broadcast "chatroom_channel",
+                                    foo: message.body
+
+This should send the message body to the received method in chatroom.coffee
+
+Now we have to edit the received method in chatroom.coffee so it can handle the data
+  alert data.foo
+
+Now when we send a message the content should show up in an alert in the browser
+That's how we can tell it is working
+
+IMPORTANT SIDENOTE:
+IF DEPLOYED TO HEROKU IN PRODUCTION YOU MUST ADD THE FOLLOWING:
+Add this to config/environments/production.rb (at bottom)
+  config.action_cable.allowed_request_origins = ['www.url-for-heroku-app.here']
+
+So what is going on so far?
+We can see that when a message is saved to the table it is being broadcast to the chatroom_channel
+The chatroom.coffee file has access to the sent data in the receive: method
+Then the chatroom.coffee file does what it is told and creates a pop up alert
+But it still isn't being inserted into the messages body
+
+Instead we want to display the message
+To do that we will need to append the message body to our html which we will do with js next lesson
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===========================================================#
+#            235. Display Messages Using Partial            #
+#===========================================================#
+
+Now we want to display the message in our chatbox instead of as an alert
+Right now we have a loop that takes all messages in the table on page load
+This is where we want the latest message to be appended instead
+To do that we have to give the area an id
+  <div class="ui small feed" id="message-container">
+
+By adding that id we can now append data to the end of it
+
+In our chatroom.coffee file:
+Change the alert line to:
+  $('#message-container').append(data.foo)
+
+Now the message will show up whenever we write a new one in the chatbox
+However when we send the form data we are using a standard http post request 
+Instead we want to submit this remotely
+To do that we have to add: (right after url in form submission chatroom/index.html.erb)
+  remote: true 
+Now when we append it will be handled via ajax
+
+Now let's correct the display to match the other messages
+Instead of rendering via html we have to render from our messages_controller
+(change the foo to mod_message for clarity don't forget to change it in coffee file too )
+Then insetad of message.body we will use a message_render method and pass the message into it
+Then the chatroom.coffee file will receive the result of this method on the message body
+message_render(mesage) will simply call the message partial to be rendered
+Now the messages controller should look like:
+  class MessagesController < ApplicationController
+    before_action :require_user
+    def create
+      message = current_user.messages.build(message_params)
+      if message.save
+        ActionCable.server.broadcast "chatroom_channel",
+                                      mod_message: message_render(message)
+      end
+    end
+
+    private
+
+    def message_params
+      params.require(:message).permit(:body)
+    end
+
+    def message_render(message)
+      render(partial: 'message', locals: {message: message})
+    end
+  end
+
+Now when we send the message it is styled correctly!
+
+There is still 1 small issue
+When we send the message the input box still has the previous text in it
+It will also start pushing the input box off the page if there are too many messages on it
+This is what we will be fixing in the next couple of lessons
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#==============================================================#
+#            236. Add Auto-Scrolling to Chat Window            #
+#==============================================================#
+
+Now to add auto scrolling to our chat window since it will overflow if there are too many messages
+
+To fix this we can edit our chatroom/index.html.erb
+We will have to change the .content div
+We can give it an id of messages
+
+Then in our css we can add styling to this id by adding:
+  overflow: auto;
+
+Now when there are excess messages they stay inside the card and a scrollbar is added
+But we want it to scroll down automatically for the user so the most recent message is always shown
+
+We will have to use javascript to fix this
+In application.js
+  scroll_bottom = function(){
+    if ($('#messages').length > 0){
+      $('#messages').scrollTop($('#messages')[0].scrollHeight)
+    }
+  }
+
+When called this will look for the div with id messages
+If it has an child divs then it will scroll the first (0th) element to the top of of the scroll area
+
+Now we have to call this function
+Since we want to always have the newest chat showing then there are two times we should run this
+  When the page loads
+  When a new message is received
+
+So we can run it in the application.js in our onload function
+  scroll_bottom();
+
+Now we want to scroll when a new message is submitted
+This is happening in chatroom.coffee so we need to run this message in the received function
+
+Now our chatbox will scroll to the bottom every time a new message is added to it
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#===============================================#
+#            237. Beautify Input Box            #
+#===============================================#
+
+Now to add a few finishing touches to the input box
+We want too clear the div with id #message_body
+You can see this with inspect element on the input box since this is generated by rails
+We can also have our application listen for an enter key pressed on that field to submit the message as well
+
+We will have to add some more to the application.js
+This will be a new function:
+  submit_message = function(){
+    $('#message_body').on('keydown', function(e){
+      if (e.keyCode == 13){
+        $('button').click();
+      };
+    });
+  }
+
+Now this will but a listener on the input box
+A user presses enter with the box selected it will click the button that is also in the input field
+We still have to call this method in the onload function we have 
+  submit_message();
+
+Now we have to clear the input box
+We can do that in the submit_message method we wrote earlier
+Change it to the following:
+  submit_message = function(){
+    $('#message_body').on('keydown', function(e){
+      if (e.keyCode == 13){
+        $('button').click();
+        e.target.value = "";
+      };
+    });
+  };
+
+
+Now we want to do something to prevent a ton of messages
+Eventually there could be thousands
+In our controller we are getting every message with @messages = Message.all
+We need to modify this to use a custom scope (scope defines what to get from the db)
+We can call this custom display
+Change the line mentioned above to:
+  @messages = Message.custom_display
+
+Then we have to define what custom_display is in our message.rb model
+We are going to only grab the most recent 50 messsages 
+In our message model we should have the following (can adjust number if you want)
+  scope :custom_display, -> { order(:created_at).last(50) }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#============================================#
+#            238. Section Project            #
+#============================================#
+
+For the final project we will deploy this application to production
+This will be a little different than when we deployed to production previously
+
+There is a middle layer in production that allows the websocket communication
+This is called redis. This will take place between the deployed app in production and heroku
+We will have to set up redis in heroku and make changes to our app based on that
+
+First create a new commit and push to github
+
+Since we haven't pushed this app to heroku yet there are a couple changes we have to make
+These are for our gemfile and our database
+Our development database is using sqlite3 but heroku does not accept that
+Instead we hav to udpate the Gemfile to use posgris for heroku
+
+In Gemfile
+Create a new group called production below all other groups 
+  group :production do
+    gem 'pg'
+  end
+
+Then remove sqlite3 gem from the public gems to be inside the development and test groups
+
+Now update our application with the new gem configuration
+  $bundle install --without production
+
+Now make a new commit
+
+In heroku create a new project
+Follow instructions on heroku new project to upload app to heroku
+( This specific command will only work if you connected heroku to your terminal for alpha blog)
+  $heroku git:remote -a name-of-heroku-project
+
+
+Then push to heroku
+  $git push heroku master
+
+Then runs db:migrate for heroku
+  $heroku run rails db:migrate
+
+Now to incorporate heroku redis addon
+You will have to have a verified card connected to your account on heroku
+Then use the following command:
+heroku addons:create heroku-redis:hobby-dev -a name-of-heroku-project
+
+Then tosee if the redis was created you can use:
+  $heroku addons | grep heroku-redis
+This will tell you the name of the redis
+
+Then to verify that it has been created and is ready to incorporate use:
+  $heroku addons:info redis-curved-32904 #(replace redis-curved with whatever name is returned from previous command)
+
+Then we have to get the redis url
+To do that we use:
+  $heroku config | grep REDIS
+  => reallylongredisurlstring
+
+Copy the above url, we have to place it in our project
+First we have to add the gem to our project
+In our Gemfile add:
+  gem 'redis'
+
+run
+  $bundle install
+
+Then we will have to create an initializer file
+Create: config/initializers/redis.rb
+
+In this file we will add:
+  $redis = Redis.new(url: ENV["REDIS_URL"])
+
+Now make a commit and push to github and heroku
+
+Now the app is live and working!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=====================================================#
+#            239. Section Conclusion Notes            #
+#=====================================================#
+
+Congratulations on having made it this far. 
+Hopefully you enjoyed building the project and added the herokuapp link to the discussion area.
+
+As the next step, you may continue onward to the next section where we 
+build the finance tracker social media app using Rails 6 (upgraded in January 2020)! 
+Or if you want more practice with Rails 5 and exposure to a different front-end framework 
+you can check out the last section (before the 'Thank you' section) 
+where we build the University App and use Materialize CSS as the front-end framework. 
+If you have not built the University App yet, I would recommend taking a look at the preview video 
+for what the app looks like at this point and giving it a shot by yourself, 
+you can always refer to the videos if you get stuck somewhere. Good luck!
+
+Good luck in the next section!
+
+
+
+
+
+
+
+
+
+
+#==============================================#
+#            Section 8. Complete!!!            #
+#==============================================#

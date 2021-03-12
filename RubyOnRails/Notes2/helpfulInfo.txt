@@ -1,0 +1,36 @@
+Images/icons:
+  https://freellustrations.com/
+  https://www.metmuseum.org/art/collection
+  https://unsplash.com/
+  https://www.nasa.gov/multimedia/imagegallery/index.html
+    apod.nasa.gov
+  https://www.nga.gov/collection/highlights.html
+  https://collections.lacma.org/search/site/?f[0]=bm_field_has_image%3Atrue&f[1]=bm_field_has_unrestricted_image%3Atrue
+  https://www.clevelandart.org/art/collection/search
+  https://icons8.com/illustrations
+  https://undraw.co/
+  https://products.ls.graphics/paaatterns/
+  https://www.drawkit.io/
+  https://www.manypixels.co/
+  https://blush.design/
+  https://www.humaaans.com/
+  https://avataaars.com/
+  https://iradesign.io/gallery/illustrations
+
+Planning:
+  draw.io
+  https://proto.io/
+  https://www.figma.com/prototyping/
+    https://100dailyui.webflow.io/ (figma library of products elements and screens)
+
+Color Palettes:
+  https://coolors.co/643a71-8b5fbf-d183c9-e3879e-fec0ce
+  https://www.canva.com/colors/color-palette-generator/
+  http://colormind.io/
+
+UI Kits
+  https://www.invisionapp.com/inside-design/design-resources/
+  https://www.uplabs.com/
+  https://www.sketchappsources.com/
+  https://uidesigndaily.com/
+  https://uispace.net/

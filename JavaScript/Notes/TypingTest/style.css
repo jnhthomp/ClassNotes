@@ -1,0 +1,100 @@
+/**********************
+ *COLORS:             *
+ *  Black: #292929;   *
+ *  Seafoam: #5AAA95; *
+ *  SkyBlue: #4ECDC4; *
+ *  Cream: #fffdd0;   *
+ **********************/
+
+body{
+  background-color:#292929;
+  font-family: Open Sans;
+  font-size: 16px;
+  position: relative;
+  height: 100vh;
+  font-weight: 400
+}
+
+h1{
+  color:#5AAA95;
+  text-align: center;
+}
+
+button{
+
+}
+.btn__restart{
+  font-size: 2em;
+  background-color: #292929 !important;
+  color:#5AAA95;
+  margin: 0px;
+  width: 150%;
+  height: 100%;
+
+
+}
+
+.ion-md-refresh{
+  padding: none;
+}
+.main__content{
+  display: block;
+  height:30%;
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.submit__btn{
+  font-size: 1em;
+  float: right;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0 !important;
+}
+
+.word__boxes{
+  background-color: #fffdd0;
+  font-size: 1.75em;
+  margin-left: auto;
+  margin-right: auto;
+  height: 80%;
+  width: 96%;
+  text-align: left;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  display: table;
+}
+
+.btn__div{
+  float: right;
+  display: inline;
+  width: 3%;
+}
+
+.testing__area{
+display: inline;
+}
+
+.timer__display{
+  width: 30%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  color: #5AAA95;
+  font-size: 1.25em;
+}
+
+#typing__box{
+  width: 95%;
+  height: 25px;
+  float:left;
+
+
+}
+#word__box__1{
+  display: table-row;
+}

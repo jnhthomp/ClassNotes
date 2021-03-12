@@ -1,0 +1,239 @@
+// run in project folder cmd: sass --watch SASS:CSS --style compressed
+/*
+Trying for a Neumorphism look
+How to:
+  Apply to individual containers
+  Rounded corners
+  Use same color as background color
+    Add darker shadow to bottom and right
+    Add lighter shadow to top and left
+    Lower opacity if too intense
+    Try x size = 9px y size = 9px and blur = 7;
+
+  SEE .gameContainer border-radius and box-shadow
+*/
+
+
+/************************
+ *      Color List      *
+ ************************/
+$base-color: #383838;
+$base-shadow-light: #404040;
+//$base-shadow-dark: #000000;
+$base-shadow-dark: #2c2c2c;
+$font-color: #272727;
+  /**************************************
+   *  Alternate Color Options           *
+   *    $base-color: #1c1c1c;           *
+   *    $base-color-light: #2c2c2c;     *
+   **************************************/
+
+
+$font: 'Press Start 2P', cursive;
+/******************
+ *      Sizes     *
+ ******************/
+
+ $gameContainerHeight: 400px;
+ $gameContainerWidth: 400px;
+
+ $bottomRightShadow: 7px;
+ $topLeftShadow: ($bottomRightShadow * (-1));
+ $largeBoxShadow: $bottomRightShadow $bottomRightShadow 7px $base-shadow-dark, $topLeftShadow $topLeftShadow 7px $base-shadow-light;
+ $infoBoxesShadow: ($bottomRightShadow - 3) ($bottomRightShadow - 3) 7px $base-shadow-dark, ($topLeftShadow + 3) ($topLeftShadow + 3) 7px $base-shadow-light;
+
+
+body{
+  background-color: $base-color;
+  font: $font;
+  overflow: hidden;
+}
+
+h1{
+  text-align: center;
+}
+
+button{
+  padding: 0 !important;
+}
+
+.allContainer{
+  display: grid;
+  grid-template-columns: 2.25fr 2.5fr 2.25fr;
+  grid-template-rows: .25fr 1.5fr 2fr 7fr 1fr;
+  grid-template-areas:
+    "blankLeft  blankTop      blankRight"
+    "blankLeft  title         blankRight"
+    "blankLeft  infoContainer blankRight"
+    "blankLeft  gameContainer blankRight"
+    "blankLeft  blankBottom   blankRight";
+  grid-row-gap: 15px;
+}
+
+.title{
+  grid-area: title;
+  //color: $base-color;
+  //text-shadow: $largeBoxShadow;
+  font-size: 3em;
+  letter-spacing: 4px;
+  text-align: center;
+  // font: bold arial, sans-serif;
+  font-family: $font;
+  background-color: $font-color;
+  color: transparent;
+  text-shadow: 2px 1px 1px $base-shadow-dark;
+  -webkit-background-clip: text;
+     -moz-background-clip: text;
+          background-clip: text;
+  padding-bottom: 0px;
+  padding-top: 8%;
+
+
+}
+
+.infoContainer{
+  grid-area: infoContainer;
+  border-radius: 15px;
+  box-shadow: $largeBoxShadow;
+  display: grid;
+  grid-template-columns:.05fr 1fr 1fr 1fr .05fr;
+  grid-template-rows: .25fr 3fr .25fr;
+  grid-template-areas:
+    "blankInfoTop blankInfoTop blankInfoTop blankInfoTop blankInfoTop"
+    "blankInfoLeft  bombCount resetButton timer blankInfoRight"
+    "blankInfoBottom blankInfoBottom blankInfoBottom blankInfoBottom blankInfoBottom";
+  grid-column-gap: 20px;
+  grid-row-gap: 10px;
+}
+.blankInfoTop{
+  grid-area: blankInfoTop;
+}
+
+.blankInfoLeft{
+  grid-area: blankInfoLeft;
+}
+
+.bombCount{
+  grid-area: bombCount;
+  box-shadow: $infoBoxesShadow;
+  border-radius: 7px;
+  font-family:$font;
+  color: $font-color;
+  text-align: center;
+  font-size: 3em;
+  padding-top: 19%;
+}
+
+.resetButton{
+  grid-area: resetButton;
+  box-shadow: $infoBoxesShadow;
+  border-radius: 7px;
+
+}
+
+.timer{
+  grid-area: timer;
+  box-shadow: $infoBoxesShadow;
+  border-radius: 7px;
+  font-family:$font;
+  color: $font-color;
+  text-align: center;
+  font-size: 2em;
+  padding-top: 23%;
+}
+
+#m{
+  float: left;
+  height: 100%;
+  margin-left: 15px;
+}
+
+
+.blankInfoRight{
+  grid-area: blankInfoRight;
+}
+
+.gameContainer{
+  grid-area: gameContainer;
+  // Set main color
+  background-color: $base-color;
+  border-radius: 15px;
+  box-shadow: $largeBoxShadow;
+  // TESTING ONLY DELETE LATER: WILL BE GENERATED
+  // display: grid;
+  // grid-template-columns:1fr 1fr;
+  // grid-template-rows: 1fr 1fr;
+  // grid-template-areas:
+  //   "c0r0 c1r0"
+  //   "c0r1 c1r1";
+  // grid-column-gap: 5px;
+  // grid-row-gap: 5px;
+
+}
+
+.fieldButton {
+  background-color: $base-color;
+  border-radius: 5px;
+  box-shadow: $infoBoxesShadow;
+  border: none;
+  margin: 5px;
+  font-family: $font;
+  color: $base-color;
+  font-size: 1.75em;
+}
+
+//TESTING ONLY DELETE LATER: WILL BE GENERATED
+// #c0r0{
+//   grid-area: c0r0;
+// }
+// #c1r0{
+//   grid-area: c1r0;
+// }
+// #c0r1{
+//   grid-area: c0r1;
+// }
+// #c1r1{
+//   grid-area: c1r1;
+// }
+
+
+.blankLeft{
+  grid-area: blankLeft;
+  height: 99vh;
+}
+
+.blankInfoBottom{
+  grid-area: blankInfoBottom;
+}
+
+.blankRight{
+  grid-area: blankRight;
+  height: 99vh;
+}
+
+.blankTop{
+  grid-area: blankTop;
+}
+
+.blankBottom{
+  grid-area: blankBottom;
+}
+
+.ion-md-refresh{
+  display: block !important;
+  color: $font-color;
+  font-size: 6em;
+  text-align: center;
+  width: 100%;
+}
+
+#reset{
+
+}
+#resetImg{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+  padding-top: 12%;
+}

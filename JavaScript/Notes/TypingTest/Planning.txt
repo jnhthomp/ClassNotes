@@ -1,0 +1,85 @@
+GOAL:
+Create a webpage that allows a user to see a list of words. The object is type each word as quickly as possible for 1 minute. When the minute is the words per minute (wpm) typed are displayed
+
+Outline:
+  UI
+    Must show list of words
+      Create HTML word box
+        approximately 40 characters across
+        2 rows
+      Highlight current word
+      When end of row reach scroll down so the second row is on top
+      Insert new row below to maintain 2 rows
+    Have user input box to type in
+    After completing a word (space is pressed) clear text box
+    Display calculated WPM
+    Have reset button
+    Show countdown timer
+
+  CalculateWPM
+    [(All typed entries / 5) - Uncorrected Errors] / Time(min)
+
+
+
+
+Future features:
+Adjust amount of time allowed for test
+
+Current Flow:
+Page load
+  mainController.init();
+    setTestWords();
+      Create wordList in TypeTestData.createWordList();
+        return result of randomizeWordList(wordList);
+          randomizeWordList(); shuffles TypeTestData.wordlist
+        retu
+    setupEventListeners
+
+
+scratch:
+
+When space is pressed we want to
+Look at what user typed
+Look at what they were supposed to type
+For each letter in the testWord string
+  compare to the letter in the same place in the typedWord sting
+Clear userInput from field
+Delete the first word from wordList
+Add the length of testWord to a running total
+  If 2 characters don't match
+    Add 1 to uncorrectedErrors variables
+Return the length of the testWord and the number of uncorrectedErrors
+Add the length of testWord and uncorrectedErrors to running total
+Once time is up
+  Send the totals to budgetController.CalculateWPM();
+  Return the WPM to global controller
+Send WPM to UIController to display
+
+in typingArea eventListener
+If(keypressed == spacebar){
+  var typedWord = domStrings.typingArea.value;
+  var wordEnd = wordList.indexOf(' ', 0)
+  var testWord = wordList.slice(0,wordEnd);
+
+  var uncorrectedErrors = 0;
+  var i = 0;
+  while(i < testWord.length){
+    var curTyped = typedWord.charAt(i);
+    var curTest = testWord.charAt(i);
+    if(curTyped !== curTest){
+      uncorrectedErrors++;
+    }
+    i++;
+  }
+  clear domStrings.typingArea //See budgety recap
+  delete wordList[0]; //Everything
+  return {
+    typedEntries: testWord.length,
+    errors: uncorrectedErrors};
+}
+
+finding testWord:
+  find index of ' '
+    wordEnd = wordList.indexOf(' ', 0) // 0 not necessary sets start
+  set everything up to that point as the testWord
+    testWord = wordList.slice(0, wordEnd);

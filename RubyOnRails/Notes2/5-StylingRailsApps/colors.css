@@ -1,0 +1,40 @@
+/* Colors used for syntax theme. Should be good highlight colors */
+@very-light-gray:   #EEFFFF;
+@light-gray:        #B2CCD6;
+@gray:              #373b41;
+@dark-gray:         #282a2e;
+@very-dark-gray:    #263238;
+
+@green:             #C3E88D;
+@teal:              #009688;
+@light-teal:        #73d1c8;
+@cyan:              #89DDF3;
+@cyan2:             #03dac6;
+@blue:              #82AAFF;
+@indigo:            #7986CB;
+@purple:            #C792EA;
+@pink:              #FF5370;
+@red:               #F07178;
+@strong-orange:     #F78C6A;
+@orange:            #FFCB6B;
+@light-orange:      #FFE082;
+
+/* Material design colors:*/
+@purple:            #6200EE;
+@deep-purple:       #3700B3;
+@light-purple:      #BB86FC;
+@material-teal:     #03DAC6;
+@material-d-teal:   #018786;
+
+/* Material Dark GitHub Stylus theme colors */
+@material-background:     #1b2327;
+@material-menu:           #1f292e;
+@material-menu-highlight: #27333a;
+@material-teal:           #418e86;
+@material-teal-highlight: #3f8d85;
+@material-teal-high2:     #a2eeef;
+@material-text-main:      #bcbfc1;
+@material-text-muted:     #3d4f5a;
+@material-purp:           #6f4fff;
+@material-purp-highlight: #7e4fff;
+
