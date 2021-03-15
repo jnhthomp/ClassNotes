@@ -274,3 +274,999 @@ return(
   <h1> Title 2 </h1>
 );
 ```
+
+
+
+
+____
+## 32. Creating a Functional Component
+
+Now we have the knowledge we need to start creating components
+To do this we will add a new file and folder in our src folder which we will name ```Person/``` and ```Person.js```
+
+We will create our component in this Person.js file similar to the way we have a component in the App.js file
+
+First we will create a new js function (named person as lowercase is convention)
+There are a couple of different ways to declare  a function in js but we should utilize let and const as it is best practice and offers advantages
+Since we don't want to change our function during the app we will use const here
+
+```
+const person = () => {
+
+};
+```
+Notice that we are using an arrow function since this is best practice and offers us advantages
+
+Now there are 2 more things we have to do
+First in order for this to work with React and work as a React component we have to import react which we can do at the top of the page with:
+```
+import React from 'react';
+```
+
+We also have to export our function or it can not be called
+we can do that with:
+```
+export default person;
+```
+
+Finally in order to make this component useful we have to actually return something within our function
+For now it can be something simple like:
+``` return <p> I'm a Person! </p> ```
+
+
+Now we can import this component to use it and have it show up in our app
+In our App.js file we need to add a new import statement before we can use our new component
+
+Since we are exporting a default within our component we can "Name it whatever we want"
+However it is important that it is uppercase and named something relevant to the component
+For the from we simply have to type the relative path to the component and the name of the file we are getting the component from (Person.js)
+Technically we can omit the .js file extension and React will add it automatically but I am going to leave it until i have a better understanding
+
+``` import Person from './Person/Person.js'; ```
+
+Now we can start include our component in our app
+Put it in our existing "App" div with the name we gave it above inside a self closing tag
+
+ ``` <Person /> ```
+
+Now our App.js should look like this:
+```
+import React, { Component } from 'react';
+import './App.css';
+import Person from './Person/Person.js'
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <h1> Hello there! General Kenobi, you are a react app</h1>
+        <Person />
+      </div>
+    );
+    //return React.createElement('div', { className: 'App' }, React.createElement('h1', null, 'Hello there! General Kenobi, you ARE a react app!'), React.createElement(<Person />, null, null));
+  }
+}
+
+export default App;
+
+```
+
+Now we should see our Person component showing within our app
+
+What is intersting is if you use inspect in browser tools it is all put together into regular neat html
+
+In the next lessons we will see the benefits of using components modularly as we did here instead of adding those lines directly in the App.js file
+
+
+
+
+___
+## 33. Components & JSX Cheat Sheet
+
+Components & JSX Cheat Sheet
+Components are the core building block of React apps. 
+Actually, React really is just a library for creating components in its core.
+
+A typical React app therefore could be depicted as a component tree - 
+having one root component ("App") and then an potentially infinite amount of nested child components.
+
+Each component needs to return/ render some JSX code - 
+it defines which HTML code React should render to the real DOM in the end.
+
+JSX is NOT HTML but it looks a lot like it.
+Differences can be seen when looking closely though 
+(for example className in JSX vs class in "normal HTML"). 
+JSX is just syntactic sugar for JavaScript, 
+allowing you to write HTMLish code instead of nested React.createElement(...) calls.
+
+When creating components, you have the choice between two different ways:
+
+Functional components 
+(also referred to as "presentational", "dumb" or "stateless" components - more about this later in the course)
+ ``` const cmp = () => { return <div>some JSX</div> } ```
+(using ES6 arrow functions as shown here is recommended but optional)
+
+class-based components 
+(also referred to as "containers", "smart" or "stateful" components) => 
+``` class Cmp extends Component { render () { return <div>some JSX</div> } } ```
+
+We'll of course dive into the difference throughout this course, you can already note that you should use 1) as often as possible though. It's the best-practice.
+
+
+
+
+
+____
+## 34. Workign with Components & Re-Using Them
+We have created a Person component but what is so useful about it
+
+Well having person helps us compartmentalize everything
+When projects start getting large it wuld be unmanageable to have every piece of the website in a single file
+
+It allows our components to be re-useable 
+All we have to do is copy/paste the ```<Person />``` tag in the same return statement (inside the wrapping div remember) and it will show again
+
+We can configure our components as well so that it can change each time it is called
+We can do this by setting arguments for our components and passing those arguments when the component is called
+They will be run through the function of the component which will alter the output
+
+
+
+
+____
+## 35. Outputting Dynamic Content
+
+Now let's make our components more interactive and dynamic
+
+Let's change our Person component so that it says:
+``` "I am a Person and I am X years old!" ```
+
+But instead of x we want to display a random number
+Instead of using X we could use ``` Math.floor(Math.random() * 30)```
+
+However if we just make a straight swap then that won't work
+Our function will be processed as plain text and displayed on screen
+We have to let React know that the text should actually be processed as js
+
+If we want our jsx code to process as js instead of plain text then we have to wrap it in single curly braces {}. Whatever is returned by our function in those braces will be displayed instead
+
+So we can update our Person component to look like this:
+
+```
+import React from 'react';
+
+const person = () => {
+  return <p> I'm a Person and I am { Math.floor(Math.random() * 30) } years old!</p> 
+};
+
+export default person;
+```
+
+Now copy/paste Person a few more times in the App.js so it shows multiple times if you didn't before
+
+If you save and look at the react server site then you should see our Person component is repeated 3 times and each time has a different random number
+
+Keep in mind we can't define classes or anything too complicated in these functions only short 1 line expressions
+We could call an existing function that does more complext things but we cannot define one
+
+Now that we can output dynamic content lets make our component more dynamic and pass configuration from App.js to our Person component
+
+
+
+
+____
+## 36. Working with Props
+
+Now let's make our component a little more configurable and flexible
+For normal html we can pass in some attributes like class name with syntax like:
+``` class="example" ```
+
+With our components we can do something similar and pass in arguments in a similar way
+
+``` <Person name="Max" age="28" /> ```
+
+We could even open the tag and make it wrap (instead of self closing)
+ ``` <Person name="Max age="28">My Hobbies: Racing</Person> ```
+
+We do have to first edit our function to accept these attribtues/arguments
+it gives us these through a vaue called props (you can actually name it yourself but props is a good idea)
+
+So add props to the arguments in our person function
+``` 
+const person = (props) => {
+  ...
+}
+```
+
+Now that we have props included we have access to the name and age attributes that were provided earlier
+
+Now we can add these with the curly braces {} that we used last lesson by calling them with ```props.name``` and ```props.age```
+
+** Important Note ** 
+If we were using a class component (like maybe we should be doing here but aren't we will touch on these more later. They are briefly mentioned in the notes from 3.33)
+We would need to use the this keyword instead of props
+For instance:
+```
+class Person extends Component {
+  render() {
+    return <p> My name is {this.props}</p>
+  }
+}
+```
+\****
+
+When we use theses curly braces and pass in these props values it looks like:
+```
+const person = (props) => {
+  return <p> I'm {props.name} and I am {props.age} years old!</p> 
+};
+```
+
+Now if we have 3 different calls to person within App.js we get three different Person components with different data in each
+
+```
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <h1> Hello there! General Kenobi, you are a react app</h1>
+        <Person name="Max" age="27">My Hobbies: Racing</Person>
+        <Person name="Manu" age="29">My Hobbies: Racing</Person>
+        <Person name="Marcy" age="26">My Hobbies: Racing</Person>
+
+      </div>
+    );
+    //return React.createElement('div', { className: 'App' }, React.createElement('h1', null, 'Hello there! General Kenobi, you ARE a react app!'));
+  }
+}
+```
+Now what about the hobbies part?
+We will discuss how to pass content between opening and closing tags (or children) in the next lesson
+
+
+
+
+____
+## 37. Understanding the Children Prop
+Now we will handle the part between the tags and how to pass that into our custom components
+There is a special prop that we can access that react gives us access to
+In the Person component wrap our return output in () so we can use multiple lines
+Then we will add a wrapping div and put our existing p tag content inside and add a new empty p tag at the end
+By this point our person function should look like this:
+```
+const person = (props) => {
+  return (
+    <div>
+      <p> I'm {props.name} and I am {props.age} years old!</p> 
+      <p></p>
+    </div>
+    
+  )
+};
+```
+Now we can use the special prop to access any children that are passed into this function and have that displayed as well.
+To do this we use the curly braces {} and ``` props.children ```
+Note that children is a reserved word
+We didn't pass anything named children it is there by default and will catch anything that is placed inside of the Person tags when it is called
+ ``` <Person name="no" age="nope">THIS STUFF HERE</Person> ``` 
+
+You could nest html here or other react components but in this case our child is just a simple piece of text
+
+Fill in our method to include the curly braces and children prop
+```
+const person = (props) => {
+  return (
+    <div>
+      <p> I'm {props.name} and I am {props.age} years old!</p> 
+      <p>{props.children} </p>
+    </div>
+    
+  )
+};
+```
+
+Now our page should show each of our people and another line with hobbies
+What is cool is that each line has unique values (except the hobbies that are copy pasted unless you change that) because we passed all of the data in
+
+What is cool is that if we wanted to pass some structured html content we could by including it when calling Person and adding props.children to our return
+
+
+
+
+____
+## 38. Understanding and Using State
+
+So far we have looked at props which is an object that gives us access to attributes that we pass into the component
+Sometimes you don't want to take info from outside but want to change info from inside of the component.
+
+For example let's add a button that when we click it switches one of the names we use
+
+First we can create a simple button with the button tag and some text inside
+Above our list of Person in App.js add:
+```
+<button> Switch Name </button>
+```
+
+First we need to stop hardcoding the names that are being shown
+Since App is a class we have the ability to create and assign properties just like any other class
+
+One way to do this is to access a special property called ```state```
+This property is only available to classes that extend Component (such as App)
+
+Where props are set and passed from outside, states are managed from inside components
+We should use function components as often as possible because we should use state with care
+This is because state can make the application unpredictable and dificult to manage
+To do this we define a new object called state in our App class (in App.js)
+This object will hold an array of persons (what we will name it the array)
+This array will hold a list of objects with each object having a name and age properties and values
+
+In the end it will look like this:
+```
+state = {
+    persons: [
+      {name: 'Max', age: 28},
+      {name: 'Manu', age: 29},
+      {name: 'Marcy', age: 26}
+    ]
+  }
+```
+
+Double check that it is plugged into the correct place
+Now our App class should have to different properties one variable called state holding an object and a method called render which returns jsx to be displayed
+Note that we can define other properties if we wish but state is a special property that will pop up more
+
+```
+import React, { Component } from 'react';
+import './App.css';
+import Person from './Person/Person.js'
+
+class App extends Component {
+  state = {
+    persons: [
+      {name: 'Max', age: 28},
+      {name: 'Manu', age: 29},
+      {name: 'Marcy', age: 26}
+    ]
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <h1> Hello there! General Kenobi, you are a react app</h1>
+        <button>Switch Name</button>
+        <Person name="Max" age="27">My Hobbies: Racing</Person>
+        <Person name="Manu" age="29">My Hobbies: Racing</Person>
+        <Person name="Marcy" age="26">My Hobbies: Racing</Person>
+
+      </div>
+    );
+    //return React.createElement('div', { className: 'App' }, React.createElement('h1', null, 'Hello there! General Kenobi, you ARE a react app!'));
+  }
+}
+
+export default App;
+```
+Now that we have 2 properties within our class we have to point at these when calling our Person component instead of manually entering the Person details
+To do this we will have to use the this keyword
+this is refering to the App class that these functions are taking place inside of
+
+We can access these by simply calling them with ``` this.state.person[0].name ``` as expected
+We can do the same with age ``` this.state.person[0].age ```
+We will also have to replicate this for our other two Person calls as well
+Now our person calls should look like this:
+```
+<Person name={this.state.persons[0].name} age={this.state.persons[0].age}>My Hobbies: Racing</Person>
+<Person name={this.state.persons[1].name} age={this.state.persons[1].age}>My Hobbies: Racing</Person>
+<Person name={this.state.persons[2].name} age={this.state.persons[2].age}>My Hobbies: Racing</Person>
+
+```
+
+
+
+
+____
+## 39. Props and State
+props  and state  are CORE concepts of React. 
+Actually, only changes in props  and/ or state trigger React to re-render your components and potentially update the DOM in the browser 
+(a detailed look at how React checks whether to really touch the real DOM is provided in section 6).
+
+Props
+-props  allow you to pass data from a parent (wrapping) component to a child (embedded) component.
+
+Example:
+
+AllPosts Component:
+```
+const posts = () => {
+    return (
+        <div>
+            <Post title="My first Post" />
+        </div>
+    );
+}
+```
+Here, title  is the custom property (prop) set up on the custom Post  component. 
+We basically replicate the default HTML attribute behavior we already know 
+(e.g. \<input type="text">  informs the browser about how to handle that input).
+
+Post Component:
+```
+const post = (props) => {
+    return (
+        <div>
+            <h1>{props.title}</h1>
+        </div>
+    );
+}
+```
+The Post  component receives the props  argument. 
+You can of course name this argument whatever you want - it's your function definition, React doesn't care! 
+But React will pass one argument to your component function => An object, which contains all properties you set up on <Post ... /> .
+
+{props.title}  then dynamically outputs the title  property of the props  object - 
+which is available since we set the title  property inside AllPosts  component (see above).
+
+
+
+State
+
+Whilst props allow you to pass data down the component tree (and hence trigger an UI update), state is used to change the component, well, state from within. Changes to state also trigger an UI update.
+
+Example:
+
+NewPost Component:
+```
+class NewPost extends Component { // state can only be accessed in class-based components!
+    state = {
+        counter: 1
+    };  
+ 
+    render () { // Needs to be implemented in class-based components! Needs to return some JSX!
+        return (
+            <div>{this.state.counter}</div>
+        );
+    }
+}
+```
+Here, the NewPost  component contains state . 
+Only class-based components can define and use state . 
+You can of course pass the state  down to functional components, but these then can't directly edit it.
+
+state  simply is a property of the component class, you have to call it state  though - 
+the name is not optional. 
+You can then access it via this.state  in your class JSX code 
+(which you return in the required render()  method).
+
+Whenever state  changes (taught over the next lectures), the component will re-render and reflect the new state. 
+The difference to props  is, that this happens within one and the same component - you don't receive new data (props ) from outside!
+
+
+
+
+____
+## 40. Handling Events With Methods
+Last lecture we set up state but haven't done anything special with it. Currently it isn't much different than any other variable
+
+We are going to add a click to our button
+To do this we can use the onclick method just like in html
+The only difference is instead of it being ``` onclick ``` it is ``` onClick ``` 
+This is because this is actually jsx and not html 
+We then can include curly braces to define what we want to happen when the button is clicked
+What we want to execute is a function of our class as this is convention
+So that means we have to create a new method in our App.js app class since that is where the button click is 
+We will name this function switchNameHandler
+Handler is usually added to the end of method to indicate that it is not something that is actively called but is being used as an event handler
+
+Keep in mind we want to use ES6 arrow functions when creating this
+Now our App class should look like this:
+```
+class App extends Component {
+  state = {
+    persons: [
+      {name: 'Max', age: 27},
+      {name: 'Manu', age: 29},
+      {name: 'Marcy', age: 26}
+    ]
+  }
+
+  switchNameHandler = () => {
+    
+  }
+  render() {
+    return (
+      <div className="App">
+        <h1> Hello there! General Kenobi, you are a react app</h1>
+        <button onClick={}>Switch Name</button>
+        <Person name={this.state.persons[0].name} age={this.state.persons[0].age}>My Hobbies: Racing</Person>
+        <Person name={this.state.persons[1].name} age={this.state.persons[1].age}>My Hobbies: Racing</Person>
+        <Person name={this.state.persons[2].name} age={this.state.persons[2].age}>My Hobbies: Racing</Person>
+
+      </div>
+    );
+    //return React.createElement('div', { className: 'App' }, React.createElement('h1', null, 'Hello there! General Kenobi, you ARE a react app!'));
+  }
+}
+```
+We will fill in the ``` switchNameHandler ``` to perform the methods we need on the button click where it will be called for the button
+
+To test let's add a quick ``` console.log('Was clicked!') ``` to our ``` switchnameHandler ```
+Then also don't forget to call the function in button like this:
+```
+<button onClick={this.switchNameHandler}>Switch Name</button>
+
+/* Note that we didn't add () when calling our function
+This is because if we were to do that it would execute as soon as that button is rendered
+Instead we are putting a reference to the function 
+so that when the button is clicked it will find that function and execute then */
+```
+
+Another important note is that if we do not use the ES6 syntax when creating our methods we are keeping the ``` this ``` keyword pointing in the correct and predictable places
+
+If we use ``` this ``` inside of  ``` switchNameHandler ``` as is it will be able to point within the class but would not work if we did not use ES6 syntax
+
+Now if you save, open the console in browser dev tools, and click the button - 
+You can see your message from our console.log in the ``` switchNameHandler ``` function
+
+
+
+
+
+____
+## 41. To Which Events Can You Listen?
+
+In the last lecture, we saw that you can react to the onClick event - but to which other events can you listen? You can find a list of supported events here: https://reactjs.org/docs/events.html#supported-events
+
+### Clipboard Events
+- Event names:
+ ``` onCopy onCut onPaste ```
+
+- Properties:
+ ``` DOMDataTransfer clipboardData ```
+
+### Composition Events
+-Event names:
+ ``` onCompositionEnd onCompositionStart onCompositionUpdate ```
+
+- Properties:
+ ``` string data ```
+
+### Keyboard Events
+- Event names:
+ ``` onKeyDown onKeyPress onKeyUp ```
+
+- Properties:
+ ```
+ boolean altKey
+number charCode
+boolean ctrlKey
+boolean getModifierState(key)
+string key
+number keyCode
+string locale
+number location
+boolean metaKey
+boolean repeat
+boolean shiftKey
+number which
+```
+### Focus Events
+-Event names:
+ ``` onFocus onBlur ```
+These focus events work on all elements in the React DOM, not just form elements.
+
+-Properties:
+ ``` DOMEventTarget relatedTarget ```
+
+### Form Events
+- Event names:
+ ``` onChange onInput onInvalid onSubmit ```
+For more information about the onChange event, see Forms.
+
+### Mouse Events
+- Event names:
+``` 
+onClick onContextMenu onDoubleClick onDrag onDragEnd onDragEnter onDragExit
+onDragLeave onDragOver onDragStart onDrop onMouseDown onMouseEnter onMouseLeave
+onMouseMove onMouseOut onMouseOver onMouseUp 
+```
+The ``` onMouseEnter ``` and ``` onMouseLeave ``` events propagate from the element being left to the one being entered instead of ordinary bubbling and do not have a capture phase.
+
+- Properties:
+```
+boolean altKey
+number button
+number buttons
+number clientX
+number clientY
+boolean ctrlKey
+boolean getModifierState(key)
+boolean metaKey
+number pageX
+number pageY
+DOMEventTarget relatedTarget
+number screenX
+number screenY
+boolean shiftKey
+```
+
+### Selection Events
+- Event names:
+``` onSelect ```
+
+### Touch Events
+-Event names:
+ ``` onTouchCancel onTouchEnd onTouchMove onTouchStart ```
+
+-Properties:
+```
+boolean altKey
+DOMTouchList changedTouches
+boolean ctrlKey
+boolean getModifierState(key)
+boolean metaKey
+boolean shiftKey
+DOMTouchList targetTouches
+DOMTouchList touches
+```
+
+### UI Events
+-Event names:
+ ``` onScroll ```
+
+-Properties:
+```
+number detail
+DOMAbstractView view
+```
+
+### Wheel Events
+-Event names:
+ ``` onWheel ```
+
+-Properties:
+```
+number deltaMode
+number deltaX
+number deltaY
+number deltaZ
+```
+
+### Media Events
+-Event names:
+```
+onAbort onCanPlay onCanPlayThrough onDurationChange onEmptied onEncrypted
+onEnded onError onLoadedData onLoadedMetadata onLoadStart onPause onPlay
+onPlaying onProgress onRateChange onSeeked onSeeking onStalled onSuspend
+onTimeUpdate onVolumeChange onWaiting
+```
+
+### Image Events
+-Event names:
+ ``` onLoad onError ```
+
+### Animation Events
+- Event names:
+ ``` onAnimationStart onAnimationEnd onAnimationIteration ```
+
+- Properties:
+```
+string animationName
+string pseudoElement
+float elapsedTime
+```
+
+### Transition Events
+-Event names:
+ ``` onTransitionEnd ```
+
+- Properties:
+```
+string propertyName
+string pseudoElement
+float elapsedTime
+```
+
+### Other Events
+-Event names:
+ ``` onToggle ```
+
+
+
+
+ ____
+ ## 42. Manipulating the State
+ Last time we manipulated switchNameHandler on click but now we want to manipulate the state
+ We will do this within switchNameHandler
+ We can access the state property with ``` this.state ```
+ So since we can access this we can try to make a change to one of the values within state
+ Remember to comment out our console.log and update switchNameHandler to try to change the name of one of the persons in state:
+ ```
+switchNameHandler = () => {
+    //console.log('Was clicked!');
+    this.state.persons[0].name = "Maximilian"
+  }
+ ```
+
+If we do this we will see a warning saying that we shouldn't edit state directly and to instead use setState()
+If we ignore the warning and click anyway you can see that our button does not work as expected
+
+Let's try it their way then.
+We can access setState() with the ``` this ``` keyword as well (it is inherited into the class since the class extends component)
+The reason that setState is superior is because setState tells React that a value was changed and React updates the DOM accordingly in realtime
+ ``` this.setState() ```
+
+So how does setState work?
+It receives an object and will use that object to overwrite or merge the previous object with the new one
+
+For example since we have the persons object above we can copy/paste it into our ``` setState ``` object and make the changes we need
+(Note there is certainly a better way to do this with the spread operator but that is 
+not the point right now)
+
+Now our ``` state ``` object and ```switchNameHandler ``` function should look like this:
+```
+state = {
+  persons: [
+    {name: 'Max', age: 27},
+    {name: 'Manu', age: 29},
+    {name: 'Marcy', age: 26}
+  ]
+}
+
+switchNameHandler = () => {
+  //console.log('Was clicked!');
+  // DON'T DO THIS: this.state.persons[1].name = "Changed Bitch"
+  this.setState({persons:[
+    {name: 'Maximilian', age: 28},
+    {name: 'Mant', age: 30},
+    {name: 'Steph', age: 27}
+  ]})
+}
+```
+
+Now when we save and click the button the names and values will change just like we wanted
+This time the DOM  was updated because React recognized that the state of our app changed
+
+Ther are only two things that cause React to update the DOM so we have to do things in a certain way if we want our page to update properly
+- Changing state
+- Changing Props
+
+If either of these things happen
+React will analyze what was rendered to the DOM and what would be rendered with those changes to determine if it needs to update the DOM or not
+
+
+
+
+____
+## 43. Function Components Naming
+
+Function Components Naming
+In the next lecture, we'll learn how to manage state in functional components
+(instead of class-based components).
+
+In case you're getting an error with the code shown in the next lecture, 
+simply assign a capitalized variable name to the variable that holds your functional component.
+
+Example:
+Use
+ ``` const App = () => { ... } ```
+
+instead of
+ ``` const app = () => { ... } ```
+
+Technically, that's not required but depending on your project setup, 
+the built-in linter (a code quality checking tool) 
+that comes with create-react-app might not like the lowercase variable name.
+
+You can also avoid this by creating projects with the right react-scripts version,
+which I would recommend for this course anyways (see the setup video, lecture 26)
+ ``` create-react-app my-app --scripts-version 1.1.5 ```
+
+
+
+ ____
+ ## 44. Using the useState() Hook For State Manipulation
+ The last lessons covered setting state and using ``` setState() ``` to edit those values
+ However these features are only available in class based components and are not available in functional components so what do you do in that case?
+ Since React 16.8 we are able to use something called React hooks that allow us to manage state in functional components as well
+
+We will have a brief look at them here but there are 2 later modules that cover react hooks
+One teaches from the beginning and the other converts our project to use react hooks
+
+That is because for this course we will stick to the more traditional way of using class based components although functional components are becoming more common
+
+We are donig it this way because it is the way it has been done and if you were to join a react team with an existing react project there is a high likelihood it would be class based
+
+This new way is totally optional and we aren't sure if it will be the main way to do this in the future (hello from the future; it will be.)
+
+So let's take a quick look at these react hooks
+To do that we will have to convert our app class component to a functional component
+To do that we need to change our declaration to be like when we created person.js
+So it should look like this:
+```
+const app = props => {
+
+}
+```
+
+Then we need to change our export statement to use lowercase since lowercase component names are convention for functional components
+
+``` 
+export default app;
+```
+
+Instead of using ``` render() ``` to return jsx we can get rid of the render and just keep the returned jsx
+```
+return (
+  <div className="App">
+    <h1> Hello there! General Kenobi, you are a react app</h1>
+    <button onClick={this.switchNameHandler}>Switch Name</button>
+    <Person name={this.state.persons[0].name} age={this.state.persons[0].age}>My Hobbies: Racing</Person>
+    <Person name={this.state.persons[1].name} age={this.state.persons[1].age}>My Hobbies: Racing</Person>
+    <Person name={this.state.persons[2].name} age={this.state.persons[2].age}>My Hobbies: Racing</Person>
+  </div>
+);
+```
+
+Now we can start to implement the react hooks feature
+(double check package.json to make sure you are using react 16.8+)
+
+We can import hooks from react instead of component since we don't need component anymore
+
+Depending on your ide you should be able to type 'use' in the import area where component was to see some of the hooks available
+
+The one we are interested in is called useState
+So our import should look like this:
+```
+import React, { useState } from 'react';
+import './App.css';
+import Person from './Person/Person.js'
+```
+Now that we have useState imported lets utilize it
+We can call it like any other function before our return statement
+The first arguement will be the initial state of our object (copy the object we prevoiusly set up)
+It should look like this:
+```
+useState({
+    persons: [
+      {name: 'Max', age: 27},
+      {name: 'Manu', age: 29},
+      {name: 'Marcy', age: 26}
+    ]
+  });
+```
+
+So what does this do?
+useState will return an array with exactly 2 elements (ALWAYS 2)
+We can store these in a state array constant variable
+The first value is the initial state before we change it
+The second element will be a function that allows us to update the state in a way that react is aware and will re-render components 
+(which is the same kind of idea with class based components)
+
+So to store the ouput of this function into a const
+```
+const stateArr = useState({
+    persons: [
+      {name: 'Max', age: 27},
+      {name: 'Manu', age: 29},
+      {name: 'Marcy', age: 26}
+    ]
+  });
+```
+
+We can also add a modern feature called array destructuring
+This allows us to pull elements out of the array from the right side of the equals sign and assign them to variables
+To do this we can change the above to something like:
+```
+const [ personsState, setPersonsState] = useState({
+    persons: [
+      {name: 'Max', age: 27},
+      {name: 'Manu', age: 29},
+      {name: 'Marcy', age: 26}
+    ]
+  });
+```
+
+Now we are able to access these persons objects again only instead of using the ``` this ``` keyword we can use ``` personsState ```
+So our return needs updated to make the Person calls look more like this:
+ ``` <Person name={personsState.persons[0].name} age={this.state.persons[0],age} /> ```
+With this small update our page shouldn't have error messages and should display the person objects correctly
+We still have to re-add the switchNameHandler functionality via the setPersonsState
+How do we do that?
+Well we can add methods to functional components without a problem so we can simply store our switchNameHandler in a const
+```
+const switchNameHandler = () => {
+  //console.log('Was clicked!');
+  // DON'T DO THIS: this.state.persons[1].name = "Changed Bitch"
+  this.setState({persons:[
+    {name: 'Maximilian', age: 28},
+    {name: 'Mant', age: 30},
+    {name: 'Steph', age: 27}
+    ]
+  });
+};
+```
+Now insetad of calling it with a this keyword we can just call it with its name where we create the button
+```
+<button onClick={switchNameHandler}>Switch Name</button>
+```
+
+Lastly within our switchNameHandler we no longer should be calling this.setState anymore because that function does not exist
+Instead we will be calling setPersonsState
+
+Now if you kept up with all of those changes it should looks like this:
+```
+import React, { useState } from 'react';
+import './App.css';
+import Person from './Person/Person.js'
+
+const app = props => {
+  const [ personsState, setPersonsState] = useState({
+    persons: [
+      {name: 'Max', age: 27},
+      {name: 'Manu', age: 29},
+      {name: 'Marcy', age: 26}
+    ]
+  });
+
+  const switchNameHandler = () => {
+    //console.log('Was clicked!');
+    // DON'T DO THIS: this.state.persons[1].name = "Changed Bitch"
+    setPersonsState({
+      persons:[
+        {name: 'Maximilian', age: 28},
+        {name: 'Mant', age: 30},
+        {name: 'Steph', age: 27}
+      ]
+    });
+  };
+
+  return (
+    <div className="App">
+      <h1> Hello there! General Kenobi, you are a react app</h1>
+      <button onClick={switchNameHandler}>Switch Name</button>
+      <Person name={personsState.persons[0].name} age={personsState.persons[0].age}>My Hobbies: Racing</Person>
+      <Person name={personsState.persons[1].name} age={personsState.persons[1].age}>My Hobbies: Racing</Person>
+      <Person name={personsState.persons[2].name} age={personsState.persons[2].age}>My Hobbies: Racing</Person>
+    </div>
+  );
+}
+
+export default app;
+```
+
+If you save and look at the server page it should show the correct info to start and the that data should change when the button is pressed just like before
+
+One big difference to note between using a class state or these function componenet hooks is that in a class state with you use ``` setState ``` it merges changes that are pushed in
+With hooks and ``` useState ``` the original state is completely replaced with whatever is passed in so you have to be careful with how you use or you may not pass in data that was previously in the state
+If this happens that data will be lost
+You can do that by accessing the other values and setting them equal to themselves when using useState
+```
+setPersonsState({
+  persons:[
+      {name: 'Maximilian', age: 28},
+      {name: 'Mant', age: 30},
+      {name: 'Steph', age: 27}
+    ],
+    otherState: personsState.otherState
+});
+```
+The more elegant way of doing this is to call useState multiple times and have each time be their own state or object
+Then you can update one without losing data on others
+
+For example if we wanted to add otherState permanently we would use another useState instead of combining it with our persons state object like above
+We could add this useState method:
+```
+const [ otherState, setOtherState ] = useState({
+  otherState: 'Some other value'
+});
+```
+Then just to make sure that it works correctly add a console.log before the return somewhere
+ ``` console.log(personsState, otherState); ```
+
+ You should see that when the page loads there are 2 state objects (1 person 1 other)
+ Then when you press the button the persons state object is updated but the other state object is unaffected
+
+ We will use the version of our project that we started with before making these changes since we will use a class based approach for most of this class
+ However it is important to know what hooks are and is something we will have to know later
+
+ 
