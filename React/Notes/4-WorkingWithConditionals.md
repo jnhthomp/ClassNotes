@@ -486,9 +486,133 @@ Now we have an updated persons array that we can pass through setState to update
 ```
 this.setState({ persons: persons });
 ```
+Final nameChangedHandler:
+```
+nameChangedHandler = (event, id) => {
+  const personIndex = this.state.persons.findIndex(p => {
+    return p.id === id;
+  });
+
+  const person = {
+    ...this.state.persons[personIndex]
+  }
+
+  person.name = event.target.value;
+  
+  const persons = [...this.state.persons];
+  persons[personIndex] = person;
+  this.setState({ persons: persons });
+}
+```
 
 Now if we save and run our app we can click the button to toggle the list, type in any of the input boxes to change the displayed name, or click any of the boxes to delete the box without any errors
 Our app is working :)
+```
+// App.js:
+import React, { Component } from 'react';
+import './App.css';
+import Person from './Person/Person.js'
+
+class App extends Component {
+  state = {
+    persons: [
+      {id: 'lwkvciw', name: 'Max', age: 27},
+      {id: 'mv0wvo2', name: 'Manu', age: 29},
+      {id: 'q2v021n', name: 'Marcy', age: 26}
+    ],
+    showPersons: false
+  }
+
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
+    });
+
+    const person = {
+      ...this.state.persons[personIndex]
+    }
+
+    person.name = event.target.value;
+    
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+    this.setState({ persons: persons });
+  }
+
+  togglePersonsHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState({showPersons: !doesShow})
+  }
+
+  deletePersonHandler = (personIndex) => {
+    const persons = [...this.state.persons];
+    persons.splice(personIndex, 1);
+    this.setState({persons: persons});
+  }
+
+  render() {
+
+    const style={
+      backgroundColor: 'white',
+      font: 'inherit',
+      border: '1px solid blue',
+      padding: '8px',
+      cursor: 'pointer' 
+    };
+
+    let persons = null;
+
+    if (this.state.showPersons) {
+      persons = (
+        <div>
+          {this.state.persons.map((person, index) => {
+            return <Person 
+              key={person.id}
+              click={() => this.deletePersonHandler(index)}
+              changed={(event) => this.nameChangedHandler(event, person.id)}             
+              name={person.name} 
+              age={person.age} />
+          })}
+        </div>
+      );
+    }
+
+    return (
+      <div className="App">
+        <h1> Hello there! General Kenobi, you are a react app</h1>
+        <button 
+          style={style} 
+          onClick={this.togglePersonsHandler}>Toggle Name
+        </button>
+        {persons}
+      </div>
+    );
+    //return React.createElement('div', { className: 'App' }, React.createElement('h1', null, 'Hello there! General Kenobi, you ARE a react app!'));
+  }
+}
+
+export default App;
+
+
+```
+```
+// Person.js
+import React from 'react';
+import './Person.css';
+
+const person = (props) => {
+  return (
+    <div className="Person">
+      <p onClick={props.click}> I'm {props.name} and I am {props.age} years old!</p> 
+      <p>{props.children} </p>
+      <input type="text" onChange={props.changed} value={props.name} />
+    </div>
+    
+  )
+};
+
+export default person;
+```
 
 
 
