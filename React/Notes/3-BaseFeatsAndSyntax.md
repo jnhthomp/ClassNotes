@@ -1263,10 +1263,607 @@ const [ otherState, setOtherState ] = useState({
 Then just to make sure that it works correctly add a console.log before the return somewhere
  ``` console.log(personsState, otherState); ```
 
- You should see that when the page loads there are 2 state objects (1 person 1 other)
- Then when you press the button the persons state object is updated but the other state object is unaffected
+You should see that when the page loads there are 2 state objects (1 person 1 other)
+Then when you press the button the persons state object is updated but the otherstate object is unaffected
 
- We will use the version of our project that we started with before making these changes since we will use a class based approach for most of this class
- However it is important to know what hooks are and is something we will have to know later
+We will use the version of our project that we started with before making thesechanges since we will use a class based approach for most of this class
+However it is important to know what hooks are and is something we will have to knowlater
 
- 
+
+
+
+____
+## 45. Stateless vs Stateful Components
+We just learned quite a bit about state and props and how those apply to class vs functional components
+
+Whether a component is class or functional if it is managing state within it 
+With setState or useState you can identify it as stateful
+our App.js component is a stateful component
+
+If it does not manage state then it is stateless
+Our person.js component is a stateless component
+
+It is best practice to have as many stateless components in our application as possible (and as few stateful components as possible)
+
+This is because we want most of our components to be functional presentational components with very few that hold or manipulate data
+This is because it makes our app easier to manage
+It makes it easier to tell where data is being created/changed/deleted
+Then if anyone needs to make a change to the app it is much clearer where that change needs to be made
+
+
+
+
+____
+## 46. Passing Method References Between Components
+### Important
+#### Before starting this lesson make sure that you have reverted the changes from 3.44
+#### Our App.js should have a class App within it with the appropriate import and export statements
+
+Now let's say you want to call ``` switchNameHandler ``` also when clicking on a ``` <p> ``` tag in the person component
+
+In the person component we can add an ``` onClick ```but we can't really do anything from there
+We don't have any way to call ``` switchNameHandler ```
+
+We are actually able to (from our App class) pass a method into our component through props which allows us access to that method from within Person
+
+We can do this probably how you would expect to be able to (from App.js app class return statement)
+
+```
+<Person 
+          name={this.state.persons[0].name} 
+          age={this.state.persons[0].age}
+          click={this.switchNameHandler}>My Hobbies: Racing</Person>
+```
+
+Now this person instance will have access to the switchNameHandler by calling ``` props.click ```
+
+Now in our person component within our ``` <p> ``` we can add an ``` onClick ``` that will run ``` props.click ```
+
+```
+const person = (props) => {
+  return (
+    <div>
+      <p onClick={props.click}> I'm {props.name} and I am {props.age} years old!</p> 
+      <p>{props.children} </p>
+    </div>
+    
+  )
+};
+```
+
+Now when we click the paragraph it will change the names just like the button
+Notice that it only works on the isntance of our component that we passed in switchNameHandler through the click prop and not the other 2 instances since they do not have access to that method even though they try to call it
+
+What is important to take out of this is that you can pass methods that can manipulate or access the state into components that otherwise wouldn't have access to that state.
+
+This is a common and important pattern to know
+
+Now what if we want to pass data into ```switchNameHandler```?
+Now we want ```switchNameHandler``` to accept a name argument and change the name to the one that is passed into it
+
+We will have to make some minor changes to the method itself first
+```
+switchNameHandler = (newName) => {
+  //console.log('Was clicked!');
+  // DON'T DO THIS: this.state.persons[1].name = "Changed Bitch"
+  this.setState({persons:[
+    {name: newName, age: 28},
+    {name: 'Mant', age: 30},
+    {name: 'Steph', age: 27}
+  ]})
+}
+```
+
+Now how do we pass that argument in when we call it?
+One option is for our button we can use ``` bind ```
+To do that we can add it to the end of where we call ```switchNameHandler```
+```
+<button onClick={this.switchNameHandler.bind(this, 'Maximilian')}>
+```
+What does bind do?
+It will take the this keyboard and bind it to this context meaning the meaning of 'this' doesn't change within this function when it is called in person
+Then it will take the second argument and submit it as an argument to switchNameHandler when it is called
+Basically bind is locking in the context of our method so it doesn't behave unexpectedly when it moves contexts to another component
+
+To really see a difference let's copy the bind code into one of our Person intsances and change the newName being passed in
+```
+<Person 
+          name={this.state.persons[0].name} 
+          age={this.state.persons[0].age}
+          click={this.switchNameHandler.bind(this, 'Max!')}>My Hobbies: Racing</Person>
+```
+
+Now when we click the button we get the name changed to 'Maximilian' but if we click on the paragraph the name changes to 'Max!'
+
+
+This is one way to pass an argument
+Now let's try another way
+We will change how we call ```switchNameHandler``` for the button but keep the ```<Person>``` call as is to keep as an example
+
+This time we will execute an arrow function for our onClick that will return a function call for switchNameHandler
+```<button onClick={() => this.switchNameHandler('Maximilian')}>```
+Earlier it was mentioned that you shouldn't include the () when calling switchNameHandler but this time is a little different
+That is because that function is actually not returned by our button at all until the click even though the method calling it is 'run' when the button is rendered
+
+Of these two methods the bind syntax is probably the better of the two if possible as React can behave weird with re-rendering things too often
+
+
+
+
+____
+## 47. Adding two way binding
+Now what if we want to change the name on our own?
+
+In our person object let's add an input box of type text below child props (it can be self closing)
+ ```<input type="text" />```
+
+Now there should be an text input box for each of our Person instances we want to set it so that whatever we type will be the new name
+
+we can use a special event cause ```onChange``` and execute a method that is passed from our App.js file
+``` <input type="text" onChange={} />```
+
+For the sake of this example we will start a new function instead of trying to fit ```switchNameChangeHandler``` to our needs 
+
+We will create a new function called nameChangedHandler which will receive an event (a value was changed and should receive the new value) and replace the value in the state with the value in the text box 
+
+Now in a real application we would want to change the name of the person we are inputting under but since this we are mainly worried about learning how to receive and display this input and not so worried about directing it to specific places yet
+We will point all changes at the 'Manu' Person instance
+
+With all that in mind our method will come out to look like this:
+```
+nameChangedHandler = (event) => {
+  this.setState({
+    persons: [
+      { name: 'Max', age: 28 },
+      { name: 'Manu', age: 29 },
+      { name: 'Stephanie', age: 26 }
+    ]
+  })
+}
+```
+Now we are receiving an event object and this object will contain the value of what was typed (if we know how to access it, it is stored in the even.target.value)
+We want to update the state with that value instead of 'Manu'
+We can just update the persons object in our function to:
+```
+persons: [
+  { name: 'Max', age: 28 },
+  { name: event.target.value, age: 29 },
+  { name: 'Stephanie', age: 26 }
+]
+```
+
+Now we have this handler available to our app class but we have to pass it into our person component for it to be available there as well (we will only pass it into the manu person but we could pass it to anyone)
+We can do this in a similar way to the click prop we did earlier when we passed switchNameHandler into the ```<p>``` tag
+```
+<Person 
+          name={this.state.persons[1].name} 
+          age={this.state.persons[1].age}
+          changed={this.nameChangedHandler}>My Hobbies: Racing</Person>
+```
+
+Now in our person component we can add the method via props
+```
+<input type="text" onChange={props.changed} />
+```
+
+Now whenever we type the value in Manu gets updated automatically but the others are unaffected
+
+The other thing we want to do is to add the current name to the input field when the page is loaded so that it always matches
+
+That is really easy since we aleady have that value available via props
+We can simply set ```value={props.name}```
+
+Our input box should now look like:
+```
+<input type="text" onChange={props.changed} value={props.name} />
+```
+
+We do get one warning which is because we are passing a value into a form field which is usually able to be changed by the user
+However since the changed prop isn't passed into the first and third Person instance there is no way to handle changes to that value
+So React does not allow those changed and locks the input boxes to not be editable
+However everything does work as expected for Manu which is where we wanted to implement this
+
+
+
+
+____
+## 48. Adding Styling with Stylesheets
+
+Now that we have some of the react basics set lets touch up our app to make it a little better looking
+What if we made each person component styled so they look like cards?
+We can use css to style each component and keep styling consistent between components
+First we need to add a Person.css file to our Person component (add Person.css to Person folder)
+What is important to keep in mind is that whatever we put in this css file is not scoped to our Person component but rather is global css code 
+This means we do have to be a careful when naming and changing styles
+
+Now in that stylesheet we can start defining styles
+First we can define .Person which we will also assign to the wrapping div of our component will target the whole component as a css class (hint: use className)
+
+Now we can start filling out the css:
+```
+// Person/Person.css
+.Person {
+  width: 60%;
+  margin: 16px auto;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 3px #ccc;
+  padding: 16px;
+  text-align: center;
+}
+```
+
+If we save now then nothing happens yet
+This is because that React doesn't know to incorporate Person.css as a css file and hasn't imported it as a stylesheet
+
+So we have to take care of that and get our Person.css stylesheet imported
+We can do that in our App.js file
+It might look weird to do add css to a js file but webpack will use it to help style using the jsx
+
+To import we can follow the same pattern as our other import statement at the top of Person.js (hint: look at App.js and how it imports css)
+ ``` import './Person.css'; ```
+
+Now if we save and look at our page we can see nice boxes around each of our Person components
+
+Using the dev tools if you look at the ```<head>``` you can see that the css that we defined for person is there
+
+One interesting thing to note is that there should be css prefixes added already to our css that was determined by react (well babel actually) that would work better with our browser than what we had
+This will help our code to work in as many browsers as possible
+
+
+
+
+____
+## 49. Working With Inline Styles
+Last lecture we styled our app with stylesheets
+Now lets use inline styling to style our button
+In React inline styling is more common than some other frameworks because components are often styled in javascript and since everything in react is modular and self functioning it can make since to have the styling be within the component
+Using inline styling also scopes all of the styling to the component which may be desireable in some situations but not in others
+However there are some restrictions in what css you can do and not everything will work as easily as you might hope (like hover)
+
+Let's add some styling for our button in our App.js file
+This will go within our render method (before our return)
+We can set style by using the following
+```
+const style={
+  backgroundColor: 'white',
+  font: 'inherit',
+  border: '1px solid blue',
+  padding: '8px',
+  cusror: 'pointer' 
+};
+```
+
+Now we can go to our button and add this style to it with a style property it will receive a dynamic value {curly braces so actually js in the "html"}
+```
+<button style={style} onClick={() => this.switchNameHandler('Maximilian')}>Switch Name</button>
+```
+
+Now if we save and look at our page our button should have the styling we defined
+
+Our render method should now look like this:
+```
+render() {
+
+  const style={
+    backgroundColor: 'white',
+    font: 'inherit',
+    border: '1px solid blue',
+    padding: '8px',
+    cursor: 'pointer' 
+  };
+
+  return (
+    <div className="App">
+      <h1> Hello there! General Kenobi, you are a react app</h1>
+      <button style={style} onClick={() => this.switchNameHandler('Maximilian')}>Switch Name</button>
+      <Person 
+        name={this.state.persons[0].name} 
+        age={this.state.persons[0].age}
+        click={this.switchNameHandler.bind(this, 'Max!')}>My Hobbies: Racing</Person>
+      <Person 
+        name={this.state.persons[1].name} 
+        age={this.state.persons[1].age}
+        changed={this.nameChangedHandler}>My Hobbies: Racing</Person>
+      <Person 
+        name={this.state.persons[2].name} 
+        age={this.state.persons[2].age}>My Hobbies: Racing</Person>
+
+    </div>
+  );
+}
+```
+
+
+
+
+____
+## Assignment 1: Time to Practice - The Base Syntax
+You learned a lot about the base syntax and features of React, now it's time to practice all the things you learned!
+
+This is the first assignment which will help us practice the things we have learned
+### Question 1
+Follow the instructions explained in the problem video and try to implement a solution on your own. 
+Compare it with my solution (video + downloadable files) thereafter.
+
+The instructions are:
+
+(Create an entirely new react app for this assignment)
+-Create TWO new components: UserInput and UserOutput
+-UserInput should hold an input element, UserOutput two paragraphs
+-Output multiple UserOutput components in the App component (any paragraph texts of your choice)
+-Pass a username (of your choice) to UserOutput via props and display it there
+-Add state to the App component (=> the username) and pass the username to the -UserOutput component
+-Add a method to manipulate the state (=> an event-handler method)
+-Pass the event-handler method reference to the UserInput component and bind it to the input-change event
+-Ensure that the new input entered by the user overwrites the old username passed to UserOutput
+-Add two-way-binding to your input (in UserInput) to also display the starting username
+-Add styling of your choice to your components/ elements in the components - both with inline styles and stylesheets
+
+
+Questions for this assignment
+What did you find most challenging and how did you overcome the challenge?
+
+
+
+
+____
+## [OPTIONAL] Assignment Solution
+Now we will go step by step and add the teacher solution for the above problem
+
+(Create an entirely new react app for this assignment)
+
+- Create TWO new components: UserInput and UserOutput
+  - Create new folder in project called UserInput
+    - Create new file in this folder called UserInput.js
+  - Create new folder in project called UserOutput
+    - Create new file in this folder caleld UserOutput.js
+
+- UserInput should hold an input element, UserOutput two paragraphs
+  - In userInput create a functional component by creating an arrow function called userInput that will return a text input box
+    ``` 
+    const userInput = () => {
+        return <input type="text" />;
+     };
+    ```
+  - Don't forget to include import and export
+  - For userOutput we can do something similar
+  - Create a new arrow function that will return a div with 2 p tags
+    ```
+      const userOutput = () => {
+        return (
+          <div> 
+            <p> Hello there</p>
+            <p> General Kenobi</p>
+          </div>
+        )
+      }
+    ```
+  - Don't forget an import and export statement
+- Output multiple UserOutput components in the App component (any paragraph texts of your choice)
+  - In our main app component include both of our components in our return
+  - First import both files
+    ```
+    import UserInput from './UserInput/UserInput.js';
+    import UserOutput from './UserOutput/UserOutput.js';
+    ```
+  - Now we can include our components in our return statement
+    ```
+    render(){
+      return (
+        <UserInput />
+        <UserOutput />
+        <UserOutput />
+        <UserOutput />
+    )
+    ```
+-Pass a username (of your choice) to UserOutput via props and display it there
+  - We can pass props into the UserOutput component where it is called in App.js
+    ```
+    <UserOutput userName="User"/>
+    <UserOutput userName="User"/>
+    <UserOutput userName="User"/>
+    ```
+  - Then we have to accept it in our UserOutput component and output it in our UserOutput file
+  - Add the props argument to the arrow function
+    ```
+      const userOutput = (props) => {...}
+    ```
+  - Call props.userName to our paragraphs
+    ```
+    return (
+      <div>
+        <p>Hello there!</p>
+        <p>General {props.userName}</p>
+      </div>
+    )
+    ```
+
+- Add state to the App component (=> the username) and pass the username to the 
+  - First we have to add state and values to the App component
+    ```
+    // This goes above render as its own property
+    state = {
+      username: 'SuperUser'
+    }
+    ```
+  - Instead of passing text into our userName prop instead pass this state value (hint must use 'this' keyword)
+    ```
+    <UserOutput userName={this.state.username} />
+    ```
+- Add a method to manipulate the state (=> an event-handler method)
+  - First create a method in App.js
+  - Since it is an event listener it will be able to receive an event object 
+    - This will be able to access data like value
+  - Add setState to the method so we can merge our state changes
+  - update the username in the state with the value from our event 
+    ```
+    usernameChangedHandler = (event) => {
+      this.setState({username: event.target.value})
+    }
+    ```
+- Pass the event-handler method reference to the UserInput component and bind it to the input-change event
+  - we can pass this in via props by adding an attribute called changed to where we call UserInput
+    - Remember not to add parenthesis so the method is not executed within the UserInput call but rather is passed to UserInput to be made available to it
+    ```
+    <UserInput changed={this.usernameChangedHandler} />
+    ```
+  - Now we have to call the method within UserInput so that it activates
+  - Within UserInput remember to add props to the argument and add the method that we passed to an onChange event
+  - This will activate our method when the value in our text box changes
+    ```
+    const userInput = (props) => {
+      return <input type="text" onChange={props.changed} />;
+    };
+    ```
+- Ensure that the new input entered by the user overwrites the old username passed to UserOutput
+ - Ensure ``` npm start ``` is running in the project and check that changing the input change the displayed value
+- Add two-way-binding to your input (in UserInput) to also display the starting username
+  - we can set the initial value of our input box with the ``` value ``` property
+  - Then we can pass the initial name into props and access props to get the name
+  - First set up setting value to be props.currentName
+    ```
+    const userInput = (props) => {
+      return <input 
+        type="text" 
+        onChange={props.changed} 
+        value={props.currentName} />
+    };
+    ```
+  - Then set currentName in props where UserInput is called to be equal to the state.username value in App.js
+    ```
+    // in App.js
+    <UserInput changed={this.usernameChangedHandler} currentName={this.state.username}/>
+    ```
+- Add styling of your choice to your components/ elements in the components - both with inline styles and stylesheets
+  - For userInput we will use inline styling to make sure it only gets applied to the input box and not to others
+  - You can add a style object then assign it using the 'style' attribute in our input tag
+    ```
+    const style = {
+        border: '2px solid red'
+      };
+    
+      return <input 
+        type="text"
+        style={style} 
+        onChange={props.changed} 
+        value={props.currentName}/>;
+    };
+    ```
+  - Now for UserOutput we will use a stylesheet
+  - Within the UserOutput folder create a new file ``` UserOutput.css ``` 
+  - Add a new class called .UserOutput and add some styling
+    ```
+    .UserOutput{
+      width: 60%;
+      padding: 16px;
+      margin: 16px;
+      border: 2px solid black;
+      background-color: #ccc;
+      text-align: center;
+    }
+    ```
+  - Now we have to import this styling to our UserOutput.js and add the class to our div
+    ```
+    import './UserOutput.css';
+    
+    const userOutput = (props) => {
+      return (
+        <div className="UserOutput">
+          <p>Hello there!</p>
+          <p>General {props.userName}</p>
+        </div>
+      )
+    }
+    ```
+
+Here is what the final version of each file looks like in the teacher solution:
+
+```
+//App.js
+import React, { Component } from 'react';
+import './App.css';
+import UserInput from './UserInput/UserInput.js';
+import UserOutput from './UserOutput/UserOutput.js';
+
+class App extends Component {
+
+  state = {
+    username: 'Super Space Wizard Jesus Mk2'
+  }
+
+  usernameChangedHandler = (event) => {
+    this.setState({username: event.target.value})
+  }
+
+  render() {
+    return(
+      <div className="App">
+        <UserInput changed={this.usernameChangedHandler} currentName={this.state.username}/>
+        <UserOutput userName={this.state.username}/>
+        <UserOutput userName={this.state.username}/>
+        <UserOutput userName={this.state.username}/>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+```
+//UserInput.js
+import React from 'react';
+
+const userInput = (props) => {
+
+  const style = {
+    border: '2px solid red'
+  };
+
+  return <input 
+    type="text"
+    style={style} 
+    onChange={props.changed} 
+    value={props.currentName}/>;
+};
+
+export default userInput;
+```
+```
+//UserOutput.js
+import React from 'react';
+import './UserOutput.css';
+
+const userOutput = (props) => {
+  return (
+    <div className="UserOutput">
+      <p>Hello there!</p>
+      <p>General {props.userName}</p>
+    </div>
+  )
+}
+
+export default userOutput;
+```
+```
+//UserOutput.css
+.UserOutput{
+  width: 60%;
+  padding: 16px;
+  margin: 16px;
+  border: 2px solid black;
+  background-color: #ccc;
+  text-align: center;
+}
+```
+
+
+
+
+____
+## 51. Useful Resources and Links
+
+- create-react-app: https://github.com/facebookincubator/create-react-app
+- Introducing JSX: https://reactjs.org/docs/introducing-jsx.html
+- Rendering Elements: https://reactjs.org/docs/rendering-elements.html
+- Components & Props: https://reactjs.org/docs/components-and-props.html
+- Listenable Events: https://reactjs.org/docs/events.html
