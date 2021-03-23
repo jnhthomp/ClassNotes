@@ -632,4 +632,177 @@ We learned that you should always include key when outputtting lists of data so 
 
 ____
 ## Assignment 2: Time to Practice - Lists & Conditionals
+(Create a new app for this assignment)
+
 Lists and conditional content are key features of any web app and it's therefore crucial that you understand how to work with both concepts. Time to practice it!
+
+Foolow the instuctions explained in the problem video and try to implement a solution on your own
+Compare it to the teacher solution (video + downloadable files available in course)
+
+You'll also need to transform a string into a real array and then join it back into a string again to complete task 5 of the assignment
+
+You can split a string into an array of its characters with the ``` split('') ``` method
+By pasing just an empty string it's split after every character
+
+You may the re-create a string from that array by using ``` join('') ``` here we join with an empty string as the separator
+
+Questions for this assignment
+1. What did you find most challenging and how did you overcome the challenge?
+
+Video:
+- 1. Create an input field (in App component) with a change listener which outputs the length of the entered text below it (e.g. in a paragraph)
+  - Use state to store/display this length
+- 2. Create a new component (=> ValidationComponent) which receives the text length as a prop
+  - This prop can be fetched from the state
+- 3. Inside the ValidationComponent, either output "text too short" or "text long enough" depending on the length (e.g. take 5 as a minimum length)
+  - inside of ValidationComponent we shouldn't have to mess with state at all
+- 4. Create another component (=> CharComponent) and style it as an inline box (=> display: inline block; padding: 16px; text-align: center; margin: 16px; border: 1px solid black;)
+  - Example styling provided but it doesn't have to be just like this
+- 5. Render a list of CharComponents where each CharComponent receives a different letter of the entered text (in the initial input field) as a prop
+  - 1 CharComponent per character entered
+- 6. When you click a CharComponent it should be removed from the entered text
+  - Recommended to set up 2 way binding so the input field changes to match when a character is deleted
+
+Hint: Keep in mind that js strings are basically arrays!
+
+### My Solution:
+```
+// App.js
+import React, { Component } from 'react';
+import './App.css';
+import Validation from './ValidationComponent/ValidationComponent.js';
+import CharComp from './CharComponent/CharComponent.js';
+
+class App extends Component {
+  state = {
+    textLength: 0,
+    textValue: ""
+  }
+
+  inputChangedHandler = (event) => {
+    const newLength = event.target.value.length;
+    const newValue = event.target.value;
+    this.setState({
+      textLength: newLength,
+      textValue: newValue
+    });
+  }
+
+  deleteCharHandler = (charIndex) => {
+  
+    const stateCopy = {
+      ...this.state
+    };
+
+    let textValueArray = stateCopy.textValue.split('');
+    textValueArray.splice(charIndex, 1);
+    stateCopy.textValue = textValueArray.join('');
+    
+    this.setState({textValue: stateCopy.textValue})
+  }
+
+
+  render() {
+    let charCompList = null;
+
+    if (this.state.textValue) {
+      let stateCopy = {
+        ...this.state
+      }
+
+      const charArray = stateCopy.textValue.split('');
+
+      charCompList = (
+        <div>
+          {charArray.map((el, index) => {
+            return <CharComp 
+              click={() => this.deleteCharHandler(index)}
+              charEl={el} />
+          })}
+        </div>
+      );
+
+
+    }
+
+    return (
+      <div className="App">
+        <input type="text" onChange={(event) => {this.inputChangedHandler(event)}} value={this.state.textValue} />
+        <p>{this.state.textLength}</p>
+        <Validation length={this.state.textLength} />
+        {charCompList}
+      </div>
+    );
+  }
+}
+
+export default App;
+
+```
+
+```
+// ValidationComponent.js
+import React from 'react';
+
+const validation = (props) => {
+
+  return (
+    <div className="Validation">
+      {
+        props.length > 5 ? <p> Text long enough</p> : <p> Text too short</p>
+      }
+    </div>
+  )
+}
+
+export default validation;
+```
+
+```
+// CharComponent.js
+import React from 'react';
+
+const charComponent = (props) => {
+  const style = {
+    display: "inline-block", 
+    padding: "16px",
+    textAlign: "center",
+    margin: "16px", 
+    border: "1px solid black"
+  };
+
+  return (
+    <div className="CharChomponent" style={style} onClick={props.click}>
+      <p>{props.charEl}</p>
+    </div>
+    
+  )
+}
+
+export default charComponent;
+```
+
+
+
+
+____
+## 62. [OPTIONAL] Assignment Solution
+
+- 1. Create an input field (in App component) with a change listener which outputs the length of the entered text below it (e.g. in a paragraph)
+
+First we have to create the input box that will be used which can be added directly to the app component
+```
+```
+
+- 2. Create a new component (=> ValidationComponent) which receives the text length as a prop
+  - This prop can be fetched from the state
+- 3. Inside the ValidationComponent, either output "text too short" or "text long enough" depending on the length (e.g. take 5 as a minimum length)
+  - inside of ValidationComponent we shouldn't have to mess with state at all
+- 4. Create another component (=> CharComponent) and style it as an inline box (=> display: inline block; padding: 16px; text-align: center; margin: 16px; border: 1px solid black;)
+  - Example styling provided but it doesn't have to be just like this
+- 5. Render a list of CharComponents where each CharComponent receives a different letter of the entered text (in the initial input field) as a prop
+  - 1 CharComponent per character entered
+- 6. When you click a CharComponent it should be removed from the entered text
+  - Recommended to set up 2 way binding so the input field changes to match when a character is deleted
+
+Hint: Keep in mind that js strings are basically arrays!
