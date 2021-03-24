@@ -966,7 +966,88 @@ deleteCharHandler = (index) => {
 ```
 Now our app should work as expected since we already set up 2 way binding in our input at the very beginning of the lesson
 
+### Teacher Solution:
+```
+// App.js
+import React, { Component } from 'react';
+import './App.css';
+import Validation from './ValidationComponent/ValidationComponent.js';
+import Char from './CharComponent/CharCompnent.js';
 
+class App extends Component {
+
+  state = {
+    userInput: ''
+  }
+
+  inputChangedHandler = (event) => {
+    this.setState({userInput: event.target.value});
+  }
+
+  deleteCharHandler = (index) => {
+    const text = this.state.userInput.split('');
+    text.splice(index, 1);
+    const updatedText = text.join('');
+    this.setState({userInput: updatedText});
+  }
+
+  render() {
+    const charList = this.state.userInput.split('').map((ch, index)=>{
+      return <Char character={ch} key={index} clicked={() => this.deleteCharHandler(index)} />;
+    });
+    return (
+      <div className="App">
+        <input type="text" onChange={this.inputChangedHandler} value={this.state.userInput} />
+        <p> {this.state.userInput}</p>
+        <Validation inputLength={this.state.userInput.length} />
+        {charList}
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+```
+// ValidationComponent.js
+import React from 'react';
+
+const validation = (props) => {
+  let validationMessage = 'Text long enough';
+  if (props.inputLength <=5) {
+    validationMessage = 'Text too short';
+  }
+  return (
+    <div>
+      <p>{validationMessage}</p>
+    </div>
+  )
+}
+
+export default validation;
+```
+```
+// CharComponent.js
+import React from 'react';
+
+const char = (props) => {
+  const style = {
+    display: 'inline-block',
+    heading: '16px',
+    margin: '16px',
+    border: '1px solid black',
+    textAlign: 'center'
+  };
+
+  return (
+    <div style={style} onClick={props.clicked}>
+      {props.character}
+    </div>
+  )
+}
+
+export default char;
+```
 
 
 ____
