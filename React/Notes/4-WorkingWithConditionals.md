@@ -792,17 +792,185 @@ ____
 
 First we have to create the input box that will be used which can be added directly to the app component
 ```
+<input type="text" onChange={this.inputChangedHandler} value={this.state.userInput} />
 ```
 
-- 2. Create a new component (=> ValidationComponent) which receives the text length as a prop
-  - This prop can be fetched from the state
-- 3. Inside the ValidationComponent, either output "text too short" or "text long enough" depending on the length (e.g. take 5 as a minimum length)
-  - inside of ValidationComponent we shouldn't have to mess with state at all
-- 4. Create another component (=> CharComponent) and style it as an inline box (=> display: inline block; padding: 16px; text-align: center; margin: 16px; border: 1px solid black;)
-  - Example styling provided but it doesn't have to be just like this
-- 5. Render a list of CharComponents where each CharComponent receives a different letter of the entered text (in the initial input field) as a prop
-  - 1 CharComponent per character entered
-- 6. When you click a CharComponent it should be removed from the entered text
-  - Recommended to set up 2 way binding so the input field changes to match when a character is deleted
+Then we must create a method to handle our onChange event and update our value 
+```
+inputChangedHandler = (event) => {
+  this.setState({userInput: event.target.value});
+}
+```
 
-Hint: Keep in mind that js strings are basically arrays!
+We will also want to get started on setting up our state
+```
+state = {
+  userInput: ''
+}
+```
+
+Then we must output the length of our string below our input box
+```
+<p> {this.state.userInput}</p>
+// I realize this doesn't follow the instruction yet but this is what the teacher did
+```
+- 2. Create a new component (=> ValidationComponent) which receives the text length as a prop
+Now create folder/file ``` ValidationComponent/ValidationComponent.js ``` 
+Make sure to create a new function called validation, import react, return something, and export our method
+```
+import React from 'react';
+
+const validation = (props) => {
+  return (
+    <div>
+      <p>Text too short</p>
+    </div>
+  )
+}
+
+export default validation;
+```
+
+Then we can import this component into app
+```
+import Validation from './ValidationComponent/ValidationComponent.js';
+```
+
+Then we can add our new component under our ``` <p> ``` tag and pass in our length as a prop
+```
+<Validation inputLength={this.state.userInput.length}/>
+```
+
+- 3. Inside the ValidationComponent, either output "text too short" or "text long enough" depending on the length (e.g. take 5 as a minimum length)
+Inside Validation component add another ``` <p> ``` tag for 'text long enough'
+Then we have to decide which one of those p tags to show
+We can use a ternary expression to do this since it is something simple
+```
+<div>
+  {
+    props.inputLength > 5 ?
+      <p>Text Long enough</p> :
+      <p>Text too short</p>
+  }
+</div>
+```
+
+For practice here is the other approach:
+Outside of our return statement in ValidationComponent create a new variable to hold our validation message
+Then use an if statement to change validationMessage as needed based on length of props.inputLength
+```
+let validationMessage = 'Text long enough';
+if (props.inputLength <= 5) {
+  validationMessage = 'Text too short';
+}
+```
+Then we can just input validationMessage into our ``` <p> ``` tag by itself
+```
+<p>{validationMessage}</p>
+``` 
+- 4. Create another component (=> CharComponent) and style it as an inline box (=> display: inline block; padding: 16px; text-align: center; margin: 16px; border: 1px solid black;)
+
+Create a new folder/file called ``` CharComponent/CharComponent.js ```
+Add our compnent function, import, export, and return statements
+Add a const variable for style with styling options
+Add styling to div in return statement 
+```
+import React from 'react';
+
+const char = () => {
+  const style = {
+    display: 'inline-block',
+    heading: '16px',
+    margin: '16px',
+    border: '1px solid black',
+    textAlign: 'center'
+  };
+
+  return (
+    <div style={style}>
+
+    </div>
+  )
+}
+
+export default char;
+```
+
+Import our new component to our main app
+
+```
+import Char from './CharComponent/CharComponent.js';
+```
+
+- 5. Render a list of CharComponents where each CharComponent receives a different letter of the entered text (in the initial input field) as a prop
+Now under our validation we will render a variable ``` charList ``` which we will define in our render method above our return statement
+When we define this charList we will perform the .map() method on state.userInput so that we can perform an action on each character
+For each character we will return a Char component and pass in the current character as a prop
+```
+const charList = this.state.userInput.map((ch)=>{
+  return <Char character={ch} />;
+});
+
+return(
+  ...
+  <Validation inputLength={this.state.userInput.length} />
+  {charList}
+);
+```
+
+One issue that we hit at this point is calling .map() on a string
+To fix this we can call .split('') before we call .map to convert our string into an array
+```
+const charList = this.state.userInput.split('').map((ch)=>{
+  return <Char character={ch} />;
+});
+```
+Then in our CharComponent we have to make sure we are receiving props and then output props.character inside our div
+
+Next we will fix our key error it is not optimal but better than no solution but we can pass the index as well with our map function and use that as a key when creating our Char components
+```
+const charList = this.state.userInput.map((ch, index)=>{
+  return <Char character={ch} key={index} />;
+});
+```
+- 6. When you click a CharComponent it should be removed from the entered text
+Now we need to add a new method in our app component called ``` deleteCharHandler ```
+it will receive an index so it knows which character to target
+We will also have to add the clicked property to our Char component contstructor
+```
+const charList = this.state.userInput.map((ch)=>{
+  return <Char character={ch} key={index} clicked={() => this.deleteCharHandler(index)} />;
+});
+```
+
+Now to add the clicked prop to our CharComponent
+```
+return (
+    <div style={style} onClick={props.clicked}>
+      {props.character}
+    </div>
+  )
+```
+
+Next we can work on the actual method to delete the correct char
+We will first want to get a copy of our text from our state and store it as an array
+Then we want to remove a character with splice at the index position
+After that we will fuse our array back into a string and update the state
+```
+deleteCharHandler = (index) => {
+  const text = this.state.userInput.split('');
+  text.splice(index, 1);
+  const updatedText = text.join('');
+  this.setState({userInput: updatedText});
+}
+```
+Now our app should work as expected since we already set up 2 way binding in our input at the very beginning of the lesson
+
+
+
+
+____
+## 63. Useful Resources & Links
+
+Conditional Rendering: https://reactjs.org/docs/conditional-rendering.html
+Lists & Keys: https://reactjs.org/docs/lists-and-keys.html
