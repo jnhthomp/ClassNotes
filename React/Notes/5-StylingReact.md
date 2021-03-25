@@ -68,3 +68,125 @@ ____
 We can also set class names dynamically
 
 Let's create a new class to change one of our paragraphs 
+In our App.css create a new class that we will use to provide alternate styles
+
+In our case we wil change the color of our paragraph text depending on if it has 3 elements or less than 3 elements
+We can also add a class where the font is bold if there is only 1 item left
+
+First we have to add our new classes to App.css
+
+```
+.red{
+  color: red;
+}
+
+.bold {
+  font-weight: bold;
+}
+```
+
+Now we can add these classes to our paragraph tag dynamically back in App.js
+We will create a new variable to hold the class names which we will choose from to add classes to our paragraph
+For now we will use ``` .join(' ') ``` on our array which will allow us to easily manage classes while we tinker
+```
+let classes = ['red', 'bold'].join(' '); //classes= 'red bold';
+```
+
+Now we can add our classes variable as a classname in our paragraph tag
+```
+<p className={classes}>General Kenobi, you are a react app!</p>
+```
+
+Now if we save our paragraph will have both styles applied to our paragraph tag
+Instead we want to apply these styles dynamically so we will need to make some adjustments
+
+So let's remove the the join and classes from the array and use an if statement to add to the array and then join before assigning to our paragraphs
+
+So one way we can handle this is using an if statement to check if state.persons has 2 or less items
+If so then we can add the 'red' class to the 
+
+Then we can have another if statement to check if there is 1 or less items and if so then add the 'bold' class to the classes array
+```
+if (this.state.persons.length <= 2) {
+  classes.push('red'); // classes = ['red'];
+}
+if (this.state.persons.length <= 1) {
+  classes.push('bold'); // classes = ['red', 'bold'];
+}
+```
+
+Now when we call our classes variable in our paragraph we can use ``` .join(' ') ``` to create a valid list of classes
+```
+<p className={classes.join(' ')}>General Kenobi, you are a react app!</p>
+```
+
+Now when we reload our page the paragraph has no formatting when first displayed
+Then when we delete one of the names the text turns red
+Then when we delete another name the text is made bold (and stays red)
+
+
+
+
+____
+## 68. Adding and Using Radium
+
+Now that we can dynamically assign styles lets cover some of the limitations of inline styles (like not being able to assign :hover properties for our button)
+
+One way to fix this would be to style the button in a css stylesheet but one issue would be that the styling would not be scoped correctly
+(We could use css id's or classes but stop thinking about it)
+Inline is convenient so we want to try to be able to open these options with inline styling
+
+One option we have is a popular third party package called Radium
+To add this package we will need add a new package via npm (use your terminal)
+Be sure you are in terminal and in your project directory
+Use the following:
+```
+npm install --save radium
+```
+This will install a package which allows us to use inline styles with sudo selectors and media queries
+
+Now that we have installed radium we have to import it to our application
+(Npm added the necessary files and folders to node_modules in our project but we still have to import it just like react or components)
+Since our button is in App.js we will import Radium to App.js
+Add to our import statements:
+```
+import Radium from 'radium';
+```
+
+Then in our export statement we will change it to export Radium as a function with our app passed into it
+This allows our styles to be run through Radium and 'fixed'
+```
+export default Radium(App);
+```
+
+Now we are ready to set up our hover properties with inline styling
+To do that we can add a new property to our 'style' variable (this is the object being used to style our button)
+In order for Radium to properly handle this we have to set the :hover property in '' 
+Then we can use an object to hold any css properties we would like to be active for :hover
+```
+':hover': {
+  backgroundColor: 'lightgreen',
+  color: 'black'
+}
+```
+
+Note: We also want to set this where we override the background color and change it to red 
+In order to do that the syntax is a little different since we only want to call it on the :hover property
+```
+style[':hover'] = {
+    backgroundColor: 'salmon',
+    color: 'black'
+}
+```
+
+Now if we save and hover over the button we can see our styling changes worked for both when names are showing and when they are hidden
+
+This is great because now we have the advantage of being able to inline style with sudo-selectors while also being able to maintain really tight scopes when needed
+
+We can also add media queries which we will cover in the next lecture
+
+
+
+
+____
+## 69. Using Radium for Media Queries
