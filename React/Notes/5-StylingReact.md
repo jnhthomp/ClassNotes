@@ -190,3 +190,77 @@ We can also add media queries which we will cover in the next lecture
 
 ____
 ## 69. Using Radium for Media Queries
+
+Now let's add radium to help handle media queries
+
+We will do this in the person component
+We already have a Person.css that is linked so we could simply add the following to it:
+```
+@media (min-width: 500px;) {
+  .Person {
+    width: 450px;
+  }
+}
+```
+
+But we want to do it with Radium which we might need in some situations
+
+First we need to define a new style in a person function
+In order to use a media query with radium we will make the call a string
+Then we will put our properties in the object
+```
+const style = {
+  '@media (min-width: 500px)': {
+    width: '450px'
+  }
+}
+```
+
+Now we have to add this style to our div
+```
+<div className="Person" style={style}>
+```
+
+Don't forget to import
+```
+import Radium from 'radium';
+```
+
+...and export
+```
+export default Radium(person);
+```
+
+Then save and run in the browser
+...
+You can see we get a bunch of errors in the console
+
+We need to wrap our app in another component called styleRoot
+This is a component made available by Radium
+Wrapping with Radium is enough to handle sudo selectors but if you have any media queries you will also have to wrap with styleRoot
+Note that the error said we have to wrap our ENTIRE application in this so we need to import and add this to our App.js
+To import we can ammend our Radium import to the following:
+```
+import Radium, { StyleRoot } from 'radium';
+```
+
+Then we can wrap our application with styleRoot
+Inside of our return statement in App.js wrap it all in a ```<StyleRoot> ``` tag
+
+```
+return (
+  <StyleRoot>
+    <div className="App">
+      <h1> Hello there!</h1>
+      <p className={classes.join(' ')}>General Kenobi, you are a react app!</p>
+      <button 
+        style={style} 
+        onClick={this.togglePersonsHandler}>Toggle Name
+      </button>
+      {persons}
+    </div>
+  </StyleRoot>
+);
+```
+
+Now if we save and reload our application should work and we can see our boxes adjust when we narrow the browser to 500px
