@@ -196,7 +196,7 @@ Now let's add radium to help handle media queries
 We will do this in the person component
 We already have a Person.css that is linked so we could simply add the following to it:
 ```
-@media (min-width: 500px;) {
+@media (min-width: 500px) {
   .Person {
     width: 450px;
   }
@@ -321,7 +321,7 @@ const person = (props) => {
       padding: 16px;
       text-align: center;
 
-    @media (min-width: 500px;) {
+    @media (min-width: 500px) {
       width: 450px;
     }
     `
@@ -347,7 +347,7 @@ const StyledDiv = styled.div`
   padding: 16px;
   text-align: center;
 
-  @media (min-width: 500px;) {
+  @media (min-width: 500px) {
     width: 450px;
   }
 `
@@ -367,7 +367,7 @@ const StyledDiv = styled.div`
   padding: 16px;
   text-align: center;
 
-  @media (min-width: 500px;) {
+  @media (min-width: 500px) {
     width: 450px;
   }
 `
