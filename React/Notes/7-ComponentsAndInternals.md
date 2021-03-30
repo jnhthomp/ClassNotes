@@ -1447,3 +1447,1109 @@ Now we are using the spread operator to take the props and distribute them withi
 
 ___
 ## 108. Setting State Correctly
+
+Now we will get back to our regular components that use state like App.js
+We are already using setState correctly but there is a way to use it incorrectly that we need to be aware of 
+
+Let's say when the name changes (we execute `nameChangedHandler()`) we want to count every time this is called (basically counting the number of keystrokes/changes)
+
+So to do this we would want to add a counter to our state
+```
+...
+showCockpit: true,
+changeCounter: 0
+```
+
+Then in `nameChangedHandler()` in our set state call we can incrememnt our changeCounter
+```
+nameChangedHandler = (event, id) => {
+  const personIndex = this.state.persons.findIndex(p => {
+    return p.id === id;
+  });
+
+  const person = {
+    ...this.state.persons[personIndex]
+  }
+
+  person.name = event.target.value;
+  
+  const persons = [...this.state.persons];
+  persons[personIndex] = person;
+  this.setState({ persons: persons, changeCounter: this.state.changeCounter + 1 });
+}
+```
+If we run our code like this we will see the changeCounter go up as we type but we are updating state incorrectly
+This is because we are not triggering an update of the component and a rerender cycle
+So if we had another method going that also updated `changeCounter` and then we ran this one again the this.state we are referring to may not have actually been updated to be the correct value yet 
+This is because this.state.changeCounter makes sure we are pointing to the last value that was stored in state at the last rerender + any changes that this specific method has made
+The danger is that this.state.changeCounter can end up being behind the real value because of the timing of updates and retreival of data 
+See the below scenario for a visual of what I'm trying to explain
+
+```
+this.state.value = 0
+
+method 1 starts
+
+method 1 retreives this.state.value
+
+method 2 starts
+
+method 2 retreives this.state.value
+
+method 1 updates this.state.value to be +1 
+
+method 1 saves this.state.value as 2
+
+method 2 updates this.state.value to be +1
+
+method 2 saves this.state.value as 2
+```
+In the above example this.state.value should have been updated to 3 but because of the timing of the calls it was only updated to 2
+In the above if we had forced a rerender and saving of the state then we could have ensured that method 2 was adding to the most recent and up to date value in state
+
+When you want to update state in a way that is dependent on the previous value there is a better way to do it
+Instead of just passing in our object to `setState()` we can pass in an anonymous function
+This function will receive 2 argument
+The first argument is the previous state (prevState)
+The second argument are the curent props (props)
+Then in our function we will return the new state object
+Now instead of referring to this.state we can refer to prevState
+```
+this.setState((prevState, props) => {
+  return {
+    persons: persons,
+    changeCounter: prevState.changeCounter + 1
+  };
+});
+```
+
+
+
+
+___
+## 109. Using PropTypes
+
+Now we will explore how we can improve the way we are receiving props
+Specifically we will look at the person component
+There we have `name` `age` and `changed`
+There is nothing wrong with the  way we are doing it but we can be more clear about which props our component uses and to throw an error or warning if you try to pass in incorrect props
+
+If you are working alone on your own app this may not be important but when working as a team it can make it much easier to identify issues
+(For example they may try to pass in `age` as a string instead of a number and it must be a number you can use propTypes to help them find this error)
+
+You can do this by installing an extra package via npm
+```
+npm install --save prop-types
+```
+
+Now in our application we can use PropTypes by importing it
+```
+import PropTypes from 'prop-types';
+```
+
+Now in our component we can add an extra property after our component definition (before export)
+We call the name of our component and add a new property with a `.propTypes` and adding an object list of properties
+```
+Person.PropTypes = {
+  
+};
+```
+
+Now inside of this object you can define the props that this component uses and the datatypes of those props
+PropTypes gives us the ability to declare what type of data each prop is expecting:
+```
+Person.propTypes = {
+  click: PropTypes.func, // click prop will be function
+  name: PropTypes.string, // name prop will be string
+  age: PropTypes.number, // age prop will be number
+  changed: PropTypes.func // changed prop will be function
+};
+```
+
+Now our app will still work as expected but we can 'break' it by going to App.js and changing state.age to hold strings instead of numbers
+
+Now if we reload our page whenever we toggle our list of persons we can see an error in the console with the following message:
+```
+Warning: Failed prop type: Invalid prop `age` of type `string` supplied to `Person`, expected `number`.
+```
+
+This can be really helpful when people are trying to build onto unfamiliar code
+
+You don't have to use propTypes on every component but feel free to if you think it would be helpful 
+Definitely add them if you plan on sharing your library with other developers
+
+
+
+
+___
+## 110. Using Refs
+Now we have seen a lot of the features of react and its components 
+We will be retouching on everything discussed as we will be using this stuff throughout our react applications
+
+These sections are to introduce us to these concepts so when we use them or see them in action in a more realistic scenario we understand them already
+This will become clearer over time
+
+There are a few more things to touch on though
+In person what if we wanted to make it so that when the page loads the cursor is automatically focused on the last person element so you can begin typing and editing the name straight away
+
+One potential solution is to use `componentDidMount()` (remember it handles actions after the component has finished loading)
+Then we could use `document.querySelector.('input').focus()`
+```
+componentDidMount() {
+  document.querySelector('input').focus();
+}
+```
+
+This will actually kind of work and is valid since person is a class based component and therefore has access to `componentDidMount()` 
+However it will put the cursor on the very first Person element and we wanted it on the last one
+
+We could set up an id here and that would accomplish what we are looking for but react has an easier way built in
+
+To do this we can use a concept called refs
+On any element (including components) you can add a special keyword called 'ref'
+There are a couple of ways to use ref
+
+First way:
+Pass an anonymous arrow function into ref
+This function would accept an argument of a reference to the element you place this on (in this case you cuold use `inputEl`)
+Then in the function body you can add a new property of your choice to hold the element we want
+```
+<input 
+  key="i3"
+  ref={(inputEl) => {this.inputElement = inputEl}}
+  type="text" 
+  onChange={this.props.changed} 
+  value={this.props.name} 
+/>
+```
+What is happening here exactly?
+Well we are creating a new global value called inputElement and we are assigning it a reference value of the input box we are creating when we call the Person component
+Because the Person components are made sequentially the last one that is created overrides the previous call to assign an input box to `this.inputElement` with its own input box being assigned to `this.inputElement`
+
+Now in `componentDidMount()` we are able to call a focus method on that input box by referencing the global variable we created
+```
+componentDidMount(){
+    this.inputElement.focus();
+  }
+```
+
+The second way:
+Since react 16.3 there is another way to setup a reference using the constructor (again components need to be class based to use refs)
+We can use a method called `React.createRef()` on our `this.inputElementRef`
+(don't forget to call `super(props)`)
+```
+constructor(props) {
+  super(props)
+  this.inputElementRef = React.createRef();
+}
+```
+Now instead of passing a function into our ref attribute we can just pass in `this.inputElement`
+
+```
+ref={this.inputElementRef}
+```
+
+Now in `componentDidMount` we do have to do things slightly differently
+First we have to select a current reference, then we can focus it like before
+```
+componentDidMount() {
+  this.inputElementRef.current.focus();
+}
+```
+
+Now if we reload our page we should be able to toggle our list of people and focus the last input box again
+
+
+
+
+___
+## 111. Refs With React Hooks
+
+That was useful for class based components but what about functional components?
+We cannot use the the first method where we pass a function into refs but we can *kind of* do the second version
+
+To explore this we will make changes to Cockpit.jsx
+Let's say we want to automatically click the button in Cockpit on page load
+First of all we have to set up reference
+Since this is a functional component we don't have a contstructor we only have our function body
+
+Towards the top we can set up our reference by creating a new const variable
+In a functional component instead os assigning this to createRef as we did in Person we can instead use a new react hook called useRef
+
+To use this we need to first import it from react
+```
+import React, { useEffect, useRef } from 'react';
+```
+
+Then we can assign our button to it
+```
+const cockPit = props => {
+  const toggleBtnRef = useRef(null);
+}
+```
+
+Now we have a reference created with the useRef hook
+We have to pass this reference to our button
+```
+<button ref={toggleBtnRef} className={btnClass} onClick={props.clicked}>
+```
+
+Now that we have assigned our reference to our button we can try clicking it at the start of our method
+```
+const toggleBtnRef = useRef(null);
+toggleBtnRef.current.click();
+```
+
+If we save at this point we get an error about not being able to read property of 'null' on click
+
+This is because we are calling the click right after we initialized the reference and at that point the button hasn't been created and assigned to the reference yet (that doesn't happen until the return statement)
+So what we need to do is wait to activate our click until after the return statement has finished rendering our button
+
+Remember we can run functions after the render by utilizing `useEffect()`!
+Now we can initialize the reference at when the component is created, assign the button to the reference when it is rendered, and then click it after it has finished rendering.
+```
+useEffect(() => {
+  console.log('[Cockpit.js] useEffect');
+  // setTimeout(() => {
+  //   alert('I\'ll kill that jedi slime, myself!');
+  // }, 1000);
+  toggleBtnRef.current.click();
+  return () => {
+    console.log('[Cockpit.js] cleanup work in useEffect')
+  }
+}, []); 
+```
+
+Now instead of the timer with the alert running after the page has finished rendering we can instead click the button automatically
+
+```
+// Cockpit.js for reference:
+import React, { useEffect, useRef } from 'react';
+import classes from './Cockpit.css';
+
+const cockpit = (props) => {
+
+  const toggleBtnRef = useRef(null);
+
+
+  useEffect(() => {
+    console.log('[Cockpit.js] useEffect');
+    // setTimeout(() => {
+    //   alert('I\'ll kill that jedi slime, myself!');
+    // }, 1000);
+    toggleBtnRef.current.click();
+    return () => {
+      console.log('[Cockpit.js] cleanup work in useEffect')
+    }
+  }, []); 
+
+  useEffect(() => {
+    console.log('[Cockpit.js] 2nd useEffect')
+    return () => {
+      console.log('[Cockpit.js] cleanup work in 2nd use effect')
+    }
+  }); 
+  
+  const assignedClasses = [];
+
+  if (props.personsLength <= 2) {
+    assignedClasses.push(classes.red); // classes = ['red'];
+  }
+
+  if (props.personsLength <= 1) {
+    assignedClasses.push(classes.bold); // classes = ['red', 'bold'];
+  }
+
+
+  let btnClass = '';
+
+  if (props.showPersons) {
+    btnClass = classes.Red;
+  }
+
+  return (
+    <div className={classes.Cockpit}>
+      <h1> {props.title}</h1>
+      <p className={assignedClasses.join(' ')}>General Kenobi, you are a react app!</p>
+      <button ref={toggleBtnRef} className={btnClass} onClick={props.clicked}>
+        Toggle Name
+      </button>
+    </div>
+    
+  );
+};
+
+export default React.memo(cockpit);
+```
+
+
+
+
+___
+## 112. Understanding Prop Chain Problems
+The next feature we will look at will help us avoid overly long chains of props when creating elements
+What does that mean?
+We have a person component and lets say we managed an authentication status and we wanted to output whether or not we were authenticated to that person component but we want to manage the authentication in the cockpit
+We don't want to manage the status we just want to trigger a change
+So in our cockpit we can create a button that will receive a prop called 'login' to it's onClick handler
+```
+<button onClick={props.login}>Log in</button>
+```
+
+Now in App.js we need to add a login prop where we call our `<Cockpit>` component
+We will have to add a new method to our App.js component that called 'loginHandler'
+This will reach out to the state and set an authentication status to true from false so we will have to add our authentication status to state as well
+
+First add an 'authenticated' status to state:
+```
+...
+changeCounter: 0,
+authenticated: false
+```
+
+Then create the loginHandler method which will only set state.authenticated to true
+```
+loginHandler = () => {
+  this.setState({authenticated: true});
+}
+```
+
+Now we can make sure that this method is being passed as the login prop to our `<Cockpit>` element
+```
+<Cockpit 
+  title={this.props.appTitle}
+  clicked={this.togglePersonsHandler}
+  showPersons={this.state.showPersons} 
+  personsLength={this.state.persons.length} 
+  login={this.loginHandler}
+/>
+```
+
+Now remember we wanted to show the status of our authentication in the Person component
+We only have acces to the Persons component
+We can pass in our state.authenticated status into persons
+```
+<Persons 
+  persons={this.state.persons}
+  clicked={this.deletePersonHandler}
+  changed={this.nameChangedHandler} 
+  isAuthenticated={this.state.authenticated}
+/>
+```
+
+Then in the persons component we just need to forward this to the Person component
+```
+<Person 
+  key={person.id}
+  click={() => this.props.clicked(index)}
+  changed={(event) => this.props.changed(event, person.id)}             
+  name={person.name} 
+  age={person.age} 
+  isAuth={this.props.isAuthenticated}
+/>
+```
+
+Now inside of our person component we can do a ternary operation and if isAuth is true then we can output that to the screen 
+```
+<Aux>
+  {this.props.isAuth ? <p>Authenticated</p> : <p>Please Log In</p>}
+  ...
+```
+
+Luckily passing the data works as it should but this isn't the best implementation
+Part of the issue is that there is more code to maintain and more steps
+
+A feature called context allows us to help solve this issue and allows us to make data available to multiple components when we don't want to pass that data between multiple other layers of components that do not need that data (just to get it to the last component)
+a( has component)-> B -> C -> D (needs component)
+|_____________________________|
+React context allows you to send the data straight to the component that needs it
+
+
+
+
+___
+## 113. Using the Context API
+To get started using context we need to create a new folder/filer called src/contex/auth-contex.js
+In this file we create a context object (which is given to us by react so import react)
+By calling `React.createContext();
+Then don't forget to export your file
+```
+// auth-context.js
+import React from 'react';
+
+const authContext = React.createContext();
+
+export default authContext;
+```
+
+One thing createContext allows us to do is initialize it with a default value when we are creating it
+But what are we creating?
+Well context is basically a 'globally' available object except it isn't actually globally available
+It is only available where you want it to be available
+This can be passed to react components without props behind the scenes
+
+We can initialize ours with any value
+For ours we will add an 'authenticated' value of false and a login method
+Login will be an empty anonymous function
+```
+const authContext = React.createContext({
+  authenticated: false,
+  login: () => {}
+});
+```
+The reason we are adding this is because our ide will give us better autocompletion otherwise we don't really care in this instance
+
+Now in App.js we need to import our new AuthContext file
+```
+import AuthContext from '../context/auth-context';
+```
+
+Now we are able to call AuthContext as a component that wraps all parts of our application that need access to that context
+
+Here we need to add it to the cockpit component and the person component
+```
+return (
+  <Aux>
+    <button
+      onClick={() => {
+        this.setState({showCockpit: false});
+      }}
+    >Remove Cockpit</button>
+    <AuthContext.Provider>
+    {this.state.showCockpit ? (
+      <Cockpit 
+        title={this.props.appTitle}
+        clicked={this.togglePersonsHandler}
+        showPersons={this.state.showPersons} 
+        personsLength={this.state.persons.length} 
+        login={this.loginHandler}
+      />
+    ): null }
+
+    {persons}
+    </AuthContext.Provider>
+  </Aux> 
+);
+```
+
+Now Cockpit, Persons and App.js should all have access to the AuthContext
+App has access because we used .Provider
+.Provider also accepts a 'value' prop
+We can pass in values here that overwrite the default values we had set within AuthContext itself
+In this case we can pass in the status of state.authenticated as well as the loginHandler we created
+```
+<AuthContext.Provider 
+  value={{
+    authenticated: this.state.authenticated, 
+    login: this.loginHandler
+  }}
+>
+```
+
+Now how do we get access to this inside of our Persons component?
+First we have to import it again
+```
+import AuthContext from '../../context/auth-context';
+```
+
+Now instead of using a context .provider we will use a consumer
+This will wrap our Person div and pass it the values that we provided in app.js
+In order to keep our previous jsx valid we will need  to wrap it in {} and have it be the result of a function that accepts context as an argument (provided by the react context api)
+```
+render(){
+  console.log('[Persons.js] rendering...');
+  return 
+  <AuthContext.Consumer>
+    {(context) => this.props.persons.map((person, index) => {
+      return ( 
+        <Person 
+          key={person.id}
+          click={() => this.props.clicked(index)}
+          changed={(event) => this.props.changed(event, person.id)}             
+          name={person.name} 
+          age={person.age} 
+          isAuth={this.props.isAuthenticated}
+        />
+      );
+    })}
+  </AuthContext.Consumer>
+}
+```
+
+This kind of defeats the purpose though since we didn't want to have to pass anything through Persons in order to access it in person
+So lets reset persons back to how it was (remove the `<AuthContext>` tag along with the isAuth tag)
+```
+render(){
+  console.log('[Persons.js] rendering...');
+  return this.props.persons.map((person, index) => {
+    return ( 
+      <Person 
+        key={person.id}
+        click={() => this.props.clicked(index)}
+        changed={(event) => this.props.changed(event, person.id)}             
+        name={person.name} 
+        age={person.age} 
+      />
+    );
+  });
+}
+```
+
+Now instead lets import it straight into the Person component
+```
+import AuthContext from '../../../context/auth-context';
+```
+
+Now we want to add the consumer block where we wnat to add the data
+We only need it in the one line with our ternary operation to display 'authenticated' or 'log in
+Inside of our consumer element we have a jsx object which returns a function that receives context as an argument
+Now since we have passed the context in we can access it's values such as .authenticated
+```
+<Aux>
+  <AuthContext.Consumer>
+    {(context) => context.authenticated ? <p>Authenticated</p> : <p>Please Log In</p>}
+  </AuthContext.Consumer>
+  <p key="i1"onClick={this.props.click}> 
+    I'm {this.props.name} and I am {this.props.age} years old!
+  </p>
+  <p key="i2">{this.props.children} </p>
+  <input 
+    key="i3"
+    // ref={(inputEl) => {this.inputElement = inputEl}}
+    ref={this.inputElementRef}
+    type="text" 
+    onChange={this.props.changed} 
+    value={this.props.name} 
+  />
+</Aux>
+```
+
+Now our persons has access to the context we would like but we still have to update the Cockpit to allow it access
+First we have to import auth-context
+```
+import AuthContext from '../../context/auth-context';
+```
+
+Then wrap our button with it
+Remember we don't just wrap jsx code
+We wrap a function that receives context and returns jsx code accessing that context object
+```
+return (
+  <div className={classes.Cockpit}>
+    <h1> {props.title}</h1>
+    <p className={assignedClasses.join(' ')}>General Kenobi, you are a react app!</p>
+    <button ref={toggleBtnRef} className={btnClass} onClick={props.clicked}>
+      Toggle Name
+    </button>
+    <AuthContext.Consumer>
+      {(context) => <button onClick={context.login}> Log in</button>}
+    </AuthContext.Consumer>
+    
+  </div>
+  
+);
+``` 
+
+Now we should have the same functionality that we did before except now we are doing it by using the context api
+
+
+
+
+___
+## 114. `contextType` & `useContext()`
+There is another way to use context api in class based components
+
+There is also an alternative way to use them in functional components
+
+We will start with class based components 
+Look in Person since it is a class based component
+In class based components you can use an alternative pattern
+One other advantage of this pattern is it gives you access to this context outside of our jsx code 
+Previously we could only use the context if it was to be executed in our jsx return but we couldn't pass in a value that would be used in a function for example
+
+What if we needed to access the context in something like `componentDidMount()`?
+Thankfully react has this covered
+You can add a special static property called contextType
+It has to be named exactly like this and it has to be a static property
+A static property is a property that can be accessed from the outside without the need to instantiate it within the class (react will handle this)
+We set this `contextType` equal to our context module that we imported
+```
+static contextType = AuthContext;
+```
+
+Now React is able to connect the Person component and the AuthContext component behind the scenes
+Now we can access our context values with `this.context`
+Let's console.log our authentication status after our component mounts
+```
+componentDidMount(){
+  // this.inputElement.focus();
+  this.inputElementRef.current.focus();
+  console.log(this.context.authenticated)
+}
+```
+Now we are able to access our context outside of the return statement so this is a little more useful than the other way we were doing it
+
+Now instead of using the `<AuthContext.Consumer>` tag we can instead simply say:
+```
+return (
+  <Aux>
+    {this.context.authenticated ? <p>Authenticated</p> : <p>Please Log In</p>}
+    ...
+```
+
+Now in functional components this is not available
+Lets take a look at our Cockpit where we were utilizing context
+In order to use the alternate method for context we can use react hooks
+First we must import the react hook
+```
+import React, { useEffect, useRef, useContext } from 'react';
+```
+
+Then in our component body we simply define a constant using useContext
+Then we pass in the context that we imported as an argument
+```
+const authContext = useContext(AuthContext);
+```
+
+Now `authContext` will be a constant that will hold our context data
+To check we can console.log
+```
+console.log(authContext.authenticated);
+```
+
+Next we can replace our jsx call with our new authContext call and point our button to the correct attributee
+```
+<button onClick={authContext.login}> Log in</button>     
+```
+
+Now if we save and reload our login button will still work
+
+There is another tool that helps with this concept called redux but it is generally for more complicated applications
+
+
+
+
+___
+## 115. Wrap Up
+That covered a lot of behind the scenes stuff in react and its components as well as a lot of react features
+Think of this module as a reference module that lightly covers all these topics which we will dive more deeply into later
+Come back here when you see something in the course that is covered here that you need to remember or need to brush up on something
+
+
+
+
+___
+## 116. Useful Resources & Links
+Useful Resources:
+
+- More on useEffect(): https://reactjs.org/docs/hooks-effect.html
+
+- State & Lifecycle: https://reactjs.org/docs/state-and-lifecycle.html
+
+- PropTypes: https://reactjs.org/docs/typechecking-with-proptypes.html
+
+- Higher Order Components: https://reactjs.org/docs/higher-order-components.html
+
+- Refs: https://reactjs.org/docs/refs-and-the-dom.htmls
+
+
+
+___
+## Final version of code to this point:
+```
+App.js
+import React, { Component } from 'react';
+import classes from './App.css';
+import Persons from '../components/Persons/Persons';
+import Cockpit from '../components/Cockpit/Cockpit';
+import withClass from '../hoc/withClass';
+import Aux from '../hoc/Aux';
+import AuthContext from '../context/auth-context';
+
+class App extends Component {
+
+  constructor (props) {
+    super(props);
+    console.log('[App.js] constructor')
+  }
+
+  state = {
+    persons: [
+      {id: 'lwkvciw', name: 'Max', age: 27},
+      {id: 'mv0wvo2', name: 'Manu', age: 29},
+      {id: 'q2v021n', name: 'Marcy', age: 26}
+    ],
+    showPersons: false,
+    showCockpit: true,
+    changeCounter: 0,
+    authenticated: false
+
+  }
+
+  static getDerivedStateFromProps(props, state){
+    console.log('[App.js] getDerivedStateFromProps', props, state)
+    return state;
+  }
+
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
+    });
+
+    const person = {
+      ...this.state.persons[personIndex]
+    }
+
+    person.name = event.target.value;
+    
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+    
+    // Don't do this:
+    // this.setState({ persons: persons, changeCounter: this.state.changeCounter + 1 });
+    // Do this instead:
+    this.setState((prevState, props) => {
+      return {
+        persons: persons,
+        changeCounter: prevState.changeCounter + 1
+      };
+    });
+  }
+
+  togglePersonsHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState({showPersons: !doesShow})
+  }
+
+  loginHandler = () => {
+    this.setState({authenticated: true});
+  }
+
+  deletePersonHandler = (personIndex) => {
+    const persons = [...this.state.persons];
+    persons.splice(personIndex, 1);
+    this.setState({persons: persons});
+  }
+
+  render() {
+
+    console.log('[App.js] render')
+
+    let persons = null;
+    
+    if (this.state.showPersons) {
+      persons = (
+        <div>
+          <Persons 
+            persons={this.state.persons}
+            clicked={this.deletePersonHandler}
+            changed={this.nameChangedHandler} 
+            isAuthenticated={this.state.authenticated}
+          />
+        </div>
+      );     
+    }
+
+    return (
+      <Aux>
+        <button
+          onClick={() => {
+            this.setState({showCockpit: false});
+          }}
+        >Remove Cockpit</button>
+        <AuthContext.Provider 
+          value={{
+            authenticated: this.state.authenticated, 
+            login: this.loginHandler
+          }}
+        >
+        {this.state.showCockpit ? (
+          <Cockpit 
+            title={this.props.appTitle}
+            clicked={this.togglePersonsHandler}
+            showPersons={this.state.showPersons} 
+            personsLength={this.state.persons.length} 
+            login={this.loginHandler}
+          />
+        ): null }
+
+        {persons}
+        </AuthContext.Provider>
+      </Aux> 
+    );
+  }
+
+  // componentWillMount(){
+  //   console.log('[App.js] componentWillMount');
+  // }
+
+  componentDidMount(){
+    console.log('[App.js] componentDidMount');
+  }
+
+  shouldComponentUpdate(nextProps, nextState){
+    console.log('[App.js] shouldComponentUpdate');
+    return true;
+  }
+
+  componentDidUpdate(){
+    console.log('[App.js] componentDidUpdate');
+  }
+
+}
+
+export default withClass(App, classes.App);
+
+
+```
+```
+Cockpit.jsx
+import React, { useEffect, useRef, useContext } from 'react';
+import classes from './Cockpit.css';
+import AuthContext from '../../context/auth-context';
+
+const cockpit = (props) => {
+
+  const toggleBtnRef = useRef(null);
+
+  const authContext = useContext(AuthContext);
+  console.log(authContext.authenticated);
+
+  useEffect(() => {
+    console.log('[Cockpit.js] useEffect');
+    // setTimeout(() => {
+    //   alert('I\'ll kill that jedi slime, myself!');
+    // }, 1000);
+    toggleBtnRef.current.click();
+    return () => {
+      console.log('[Cockpit.js] cleanup work in useEffect')
+    }
+  }, []); 
+
+  useEffect(() => {
+    console.log('[Cockpit.js] 2nd useEffect')
+    return () => {
+      console.log('[Cockpit.js] cleanup work in 2nd use effect')
+    }
+  }); 
+  
+  const assignedClasses = [];
+
+  if (props.personsLength <= 2) {
+    assignedClasses.push(classes.red); // classes = ['red'];
+  }
+
+  if (props.personsLength <= 1) {
+    assignedClasses.push(classes.bold); // classes = ['red', 'bold'];
+  }
+
+
+  let btnClass = '';
+
+  if (props.showPersons) {
+    btnClass = classes.Red;
+  }
+
+  return (
+    <div className={classes.Cockpit}>
+      <h1> {props.title}</h1>
+      <p className={assignedClasses.join(' ')}>General Kenobi, you are a react app!</p>
+      <button ref={toggleBtnRef} className={btnClass} onClick={props.clicked}>
+        Toggle Name
+      </button>
+      <button onClick={authContext.login}> Log in</button>     
+    </div>
+    
+  );
+};
+
+export default React.memo(cockpit);
+```
+```
+Persons.jsx
+import React, { PureComponent } from 'react';
+import Person from './Person/Person';
+
+class Persons extends PureComponent {
+  // static getDerivedStateFromProps(props,state){
+  //   console.log('[Persons.js] getDerivedStateFromProps');
+  //   return state;
+  // }
+
+  // shouldComponentUpdate(nextProps, nextState) {
+
+  //   console.log('[Persons.js] shouldComponentUpdate');
+
+  //   if (nextProps.persons !== this.props.persons || 
+  //       nextProps.changed !== this.props.changed || 
+  //       nextProps.clicked !== this.props.clicked) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
+  getSnapshotBeforeUpdate(prevProps, prevState){
+    console.log('[Person.js] getSnapshotBeforeUpdate');
+    return null;
+  }
+
+  componentDidUpdate() {
+    console.log('[Persons.js] componentDidUpdate');
+  }
+
+  componentWillUnmount(){
+    console.log('[Persons] componentWillUnmount');
+  }
+
+  render(){
+    console.log('[Persons.js] rendering...');
+    return this.props.persons.map((person, index) => {
+      return ( 
+        <Person 
+          key={person.id}
+          click={() => this.props.clicked(index)}
+          changed={(event) => this.props.changed(event, person.id)}             
+          name={person.name} 
+          age={person.age} 
+        />
+      );
+    });
+  }
+}
+
+export default Persons;
+
+// Function Persons Component
+// import React from 'react';
+// import Person from './Person/Person';
+
+// const persons =  (props) => {
+//   console.log('[Persons.js] rendering...');
+//   return props.persons.map((person, index) => {
+//     return (
+//       <Person 
+//         key={person.id}
+//         click={() => props.clicked(index)}
+//         changed={(event) => props.changed(event, person.id)}             
+//         name={person.name} 
+//         age={person.age} 
+//       />
+//     );
+//   });
+// };
+
+
+// export default persons;
+```
+```
+Person.jsx
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classes from './Person.css';
+import Aux from '../../../hoc/Aux';
+import withClass from '../../../hoc/withClass';
+import AuthContext from '../../../context/auth-context';
+
+class Person extends Component {
+  constructor(props) {
+    super(props);
+    this.inputElementRef = React.createRef();
+  }
+
+  static contextType = AuthContext;
+
+  componentDidMount(){
+    // this.inputElement.focus();
+    this.inputElementRef.current.focus();
+    console.log(this.context.authenticated)
+  }
+  
+  render(){
+    console.log('[Person.js] render');
+    return (
+      <Aux>
+        {this.context.authenticated ? <p>Authenticated</p> : <p>Please Log In</p>}
+        <p key="i1"onClick={this.props.click}> 
+          I'm {this.props.name} and I am {this.props.age} years old!
+        </p>
+        <p key="i2">{this.props.children} </p>
+        <input 
+          key="i3"
+          // ref={(inputEl) => {this.inputElement = inputEl}}
+          ref={this.inputElementRef}
+          type="text" 
+          onChange={this.props.changed} 
+          value={this.props.name} 
+        />
+      </Aux>
+    );
+  }
+}
+
+Person.propTypes = {
+  click: PropTypes.func,
+  name: PropTypes.string,
+  age: PropTypes.number,
+  changed: PropTypes.func
+};
+
+export default withClass(Person, classes.Person);
+
+
+// Functional Person Component
+// import React from 'react';
+// import classes from './Person.css';
+
+// const person = (props) => {
+//   console.log('[Person.js] render');
+//   return (  
+//     <div className={classes.Person}>
+//       <p onClick={props.click}> I'm {props.name} and I am {props.age} years old!</p> 
+//       <p>{props.children} </p>
+//       <input type="text" onChange={props.changed} value={props.name} />
+//     </div>
+    
+//   )
+// };
+
+// export default person;
+```
+```
+auth-context.js
+import React from 'react';
+
+const authContext = React.createContext({
+  authenticated: false,
+  login: () => {}
+});
+
+export default authContext;
+```
+```
+Aux.js
+const aux = (props) => props.children;
+
+export default aux;
+```
+```
+withClss.js
+import React from 'react';
+
+const withClass = (WrappedComponent, className) => {
+  return props => (
+    <div className={className}>
+      <WrappedComponent {...props} />
+    </div>
+  );
+};
+
+
+// const withClass = (props) => (
+//   <div className={props.classes}>
+//     {props.children}
+//   </div>
+// );
+
+export default withClass;
+```
