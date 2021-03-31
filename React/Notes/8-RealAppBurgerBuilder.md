@@ -299,3 +299,126 @@ Now for some cleanup work we can:
 - update `<title>` tag in index.html
 
 Now our app should be ready to start building!
+
+
+
+
+___
+## 124. Creating a Layout Component
+
+Now with our app read to run use `$npm run start` to make sure it is working properly
+If everything is working properly we can move on
+(you may want to add something to app.js and rename to app.jsx)
+
+Now we can start building out our components
+The first one that we will need is the layout component which is important because it will help define where each of our components will sit on the page
+
+Inside of this component we will be able to organize the toolbar and burger builder content
+Later in this course we will pass other pages into this component other than the burger builder
+
+We could just use App.js into a layout component and that would be fine but in order to keep our code as clean and modular as possible we will put it into its own component
+
+We can start by making a couple of folders (inside src)
+- components
+- containers
+
+Components will be used to hold our stateless components ('dumb')
+Containers will be used to hold our statefull components ('smart')
+
+We can also go ahead and add the assets folder
+
+Now we can create our layout.jsx file
+Layout will get its own folder inside of our components folder
+This is because layout doesn't need to manage state so it is a component and not a container
+Now in our layout.jsx we can begin creating our component
+remember to import react
+```
+import React from 'react';
+```
+
+Add an export
+```
+export default layout;
+```
+
+Then we can add our function that will be our component and define our layout
+```
+const layout = () => (
+
+)
+```
+
+Since we used () instead of {} we can simply define our return statement directly inside (aka put the html layout we want to use directly inside)
+
+Now we need to think about what we actually want this component to return
+We pretty much want two different areas
+One area will be to hold our Toolbar/SideDrawer/Backdrop (used when SideDrawer is out)
+The other area will hold our main content
+We can actually use the html main tag to do this since it was made for just this kind of thing
+We won't call that content in here though we will instead call that content in App.js
+It will be received by layout and displayed dynamically inside
+This way we can pass alternate pages into this component in the future as needed
+To access this we will need access to props.children
+```
+const layout = (props) => (
+  <div>Toolbar, SideDrawer, Backdrop</div>
+  <main>
+    {props.children}
+  </main>
+);
+```
+
+Now we still have an error because we did not include a wrapping div but there are a couple of ways to fix this
+One way would be to return an array of jsx elements instead and give each item a key
+The other way is to create an aux higher order component like we did in the last course
+This will wrap something and immediately output but will fulfill the requirement of having a wrapping element
+Lets go ahead and do it this way because then we can reuse this in the future
+
+So lets make the hoc folder and aux.js file
+Note that this one is .js because we don't actually return any jsx, we don't even need to import react
+We only need to create a function that returns the children inside of it and export it
+```
+const aux = (props) => props.children;
+
+export default aux;
+```
+
+Now back in our layout.jsx we can import this aux file and use it to wrap our two divs
+```
+import React from 'react';
+import Aux from '../../hoc/Aux';
+
+const layout = (props) => (
+  <Aux>
+    <div>Toolbar, SideDrawer, Backdrop</div>
+    <main>
+      {props.children}
+    </main>
+  </Aux>
+);
+
+export default layout;
+```
+
+Now we should be able to call the layout component we just created in App.js
+First import it
+```
+import Layout from './components/Layout/Layout';
+```
+
+Then we can call it with opening and closing tags 
+We are using opening and closing tags because we should be able to wrap other components/elements inside and have them display on the screen
+```
+function App() {
+  return (
+    <div>
+      <Layout>
+        <div>Hello there!</div>
+      </Layout>
+    </div>
+  );
+}
+```
+
+Now when we run the app make sure that the "Toolbar" list appears along with the div we passed in within App.js
+Another check to make is that the correct font has been loaded
