@@ -1055,3 +1055,365 @@ if (transformedIngredients.length < 1) {
 
 
 
+
+___
+## 131. Adding the Build Control Component
+Now we are ready to start adding the controls so users can add and change the number of burger ingedients dynamically
+For that we will need to start creating the `BuildControls` component
+This component will have its own subfolder (called `BuildControls`) inside the burger component and be called `BuildControls.jsx`
+
+In this new file we can add our component (import, function that returns jsx, export yada yada yada)
+```
+import React from 'react'
+
+const buildControls = (props) => (
+  
+);
+
+export default buildControls;
+```
+
+Now what do we want to return?
+Well first we want a div that we can use to set a style and adjust the size of easily
+This will allow us to easily control the size of our control panel
+To do this we will also need a `BuildControls.module.css` along with a class to set size
+```
+.BuildControls {
+  width: 100%;
+  background-color: #CF8F2E;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  box-shadow: 0 2px 1px #ccc;
+  margin: auto;
+  padding: 10px 0;
+}
+```
+
+Then we can add this css file to our `BuildControls` module
+```
+import React from 'react';
+import classes from './BuildControls.module.css';
+
+const buildControls = (props) => (
+  <div className={classes.BuildControls}>
+    
+  </div>
+);
+
+export default buildControls;
+```
+
+Now if we think about what our BuildControls module will have inside of it we will need multiple different sections within here
+Each section will need to:
+- display an ingredient name
+- show the current value of that ingredient
+- Have a button for increasing ingredient value
+- Have  abutton for decreasing ingredient value
+
+So we can go ahead and make another component called BuildControl
+This will be a singular section of the over BuildControl and will handle single ingredients
+We can create a new folder/file called `BuildControls/BuildControl/BuildControl.jsx` also create a `BuildControl.module.css` in this same folder which we will use later
+
+Now what do we put in this component?
+We know we will need at least 4 things so we can use a wrapping div to hold them all together
+We will use a wrapping div instead of the `Aux` component because we may want to add a class to this later
+Inside of this wrapping div we can add each of the items listed above
+First we can add an ingedient label with `props.label` which we will have to pass into this button (context maybe to avoid chaining the BuildControls?)
+Then we will need 2 buttons
+One of these buttons will receive a function that increases the count of the current ingredient
+The other will receive a function to do the opposite
+For now we will use placeholders and pass that functionality in later
+```
+const buildControl = (props) => (
+  <div>
+    <div>{props.label}</div>
+    <button>Less</button>
+    <button>More</button>
+  </div>
+);
+```
+
+Now to make sure everything looks good we can add a little css before making these functional
+Below is some suggestion but feel free to do whatever you want or make changes
+These were all provided by the instructor
+```
+.BuildControl {
+  display: fex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.BuildControl button {
+  display: block;
+  font: inherit;
+  padding: 5px;
+  margin: 0 5px;
+  width: 80px;
+  border: 1px solid #AA6817;
+  cursor: pointer;
+  outline: none;
+}
+
+.BuildControl button:disabled {
+  background-color: #AC9980;
+  border: 1px solid #7E7365;
+  color: #ccc;
+  cursor: default;
+}
+
+.BuildControl button:hover:disabled {
+  background-color: #AC9980;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.Label {
+  padding: 10px;
+  font-weight: bold;
+  width: 80px;
+}
+
+.BuildControl .Less {  
+  background-color: #D39952;
+  color: white;
+}
+
+.BuildControl .More {
+  background-color: #8F5E1E;
+  color: white;
+}
+
+.BuildControl .Less:hover, .BuildControl .Less:active {  
+  background-color: #DAA972;
+  color: white;
+}
+
+.BuildControl .More:hover,.BuildControl .More:active {
+  background-color: #99703F;
+  color: white;
+}
+```
+
+Now back in our BuildControl component we can apply these css styles to our divs
+```
+const buildControl = (props) => (
+  <div className={classes.BuildControl}>
+    <div className={classes.Label}>{props.label}</div>
+    <button className={classes.Less}>Less</button>
+    <button className={classes.More}>More</button>
+  </div>
+);
+```
+
+
+
+
+___
+## 132. Outputting Multiple Build Controls
+Now that we have a build control component created we need to add the functionality to create a couple different BuildControl components with different values
+We will need to add this functionality to BuildControls so that it can generate the appropriate buttons as needed
+So in order to handle this we want to create an array within `BuildControls`
+This array will hold several objects, each object will be an ingedient which we will have controls for
+Each object will have 2 keys: `label` & `type`
+These 2 keys will basically match each other except type will be lowercase
+Note that it is probably a good idea to put these in the same order as your state so they match visually
+```
+import React from 'react';
+import classes from './BuildControls.module.css';
+
+const controls = [
+  { label: 'Bacon', type: 'bacon'},
+  { label: 'Salad', type: 'salad'},
+  { label: 'Cheese', type: 'cheese'},
+  { label: 'Meat', type: 'meat'}
+]
+
+const buildControls = (props) => (
+  <div className={classes.BuildControls}>
+
+  </div>
+);
+
+export default buildControls;
+```
+
+Now we can start thinking about how we want to display content between our divs in `buildControls`
+We know that between these 2 divs we need to loop through the `controls` array and generate a `BuildControl` element for each item within the array
+To start we will need to access that `BuildControl` component so we can import it
+Now in our function we can add our loop to add these elements in the BuildControls div
+To start we will want to call `.map()` on our controls array
+With our `.map()` function we will want to loop through the controls array and each time generate a new `<BuildControl>` element
+This element will need to be assigned a key (we can use label since that will be unique still)
+We also need to pass in the label as a prop since that is displayed
+```
+const buildControls = (props) => (
+  <div className={classes.BuildControls}>
+    {controls.map((ctrl) => (
+      <BuildControls key={ctrl.label} label={ctrl.label}></BuildControls>
+    ))}
+  </div>
+);
+```
+
+Now we can add our `<BuildControls>` to the `BurgerBuilder` container and see if our compnents display
+
+```
+import React, { Component } from 'react';
+import Aux from '../../hoc/Aux';
+
+import Burger from '../../components/Burger/Burger';
+import BuildControls from '../../components/Burger/BuildControls/BuildControls';
+
+class BurgerBuilder extends Component {
+
+  state = {
+    // Current burger ingedients
+    ingredients: {
+      bacon:  0,
+      salad:  0,
+      cheese: 0,
+      meat:   0
+    }
+  }
+
+  render(){
+    return (
+      <Aux>
+        <Burger ingredients={this.state.ingredients} />
+        <BuildControls />
+      </Aux>
+    );
+  }
+}
+
+export default BurgerBuilder;
+```
+
+Now there should be an area below the burger with buttons and a list of ingredients
+
+
+
+
+___
+##  133. Connecting State to BuildControls
+Now we need to add our state.ingredients to the BuildControls so that the user is able to dynamically change the values in state and trigger the burger to update
+
+To do this we will need to add a couple of methods to our `BurgerBuilder.jsx` that allow us to update our state
+One method will allow users to add ingredients
+The other will allow users to remove ingredients
+These will be handlers since they will be attached to onClick methods
+
+Let's start with the `addIngredientHandler`
+This method will receive a type argument which it will use to help determine which ingredient we will be adding to
+First we need to know what the old ingedient count is and save it to a constant
+Then we will calculate the updated count which will be the old count + 1
+Next we need to create a new js object that is a copy of the current state
+Remember we have to create a new object since the state has to be updated in an immutable way
+Then we can update our copied version of the state.ingedients with the new values
+One thing before making our updates and finishing is that we also want to start keeping track of price now
+So add `totalPrice: 4` to the state (direct child of state sister to ingedient)
+Since we want different prices for different ingredients we will need to store this object of ingedients and prices
+We will store it outside of the BurgerBuilder class so that it can be a global constant (so name it in all caps as well)
+```
+const INGREDIENT_PRICES = {
+  bacon: 1.5,
+  salad: 0.5,
+  cheese: 0.25,
+  meat: 1.5
+}
+```
+Now back in our addIngredientHandler we can search this object to get the price we need to add to totalPrice 
+
+
+Finally we can push our updated copies of the state.ingredients and state.totaPrice to the state
+```
+import React, { Component } from 'react';
+import Aux from '../../hoc/Aux';
+
+import Burger from '../../components/Burger/Burger';
+import BuildControls from '../../components/Burger/BuildControls/BuildControls';
+
+// Hardcoded list of ingredient prices must have entry for every state.ingredient key
+const INGREDIENT_PRICES = {
+  bacon: 1.5,
+  salad: 0.5,
+  cheese: 0.25,
+  meat: 1.5
+}
+
+class BurgerBuilder extends Component {
+
+  state = {
+    // Current burger ingedients
+    ingredients: {
+      bacon:  0,
+      salad:  0,
+      cheese: 0,
+      meat:   0
+    },
+    totalPrice: 4
+  }
+
+  addIngedientHandler = (type) => {
+    const oldCount = this.state.ingredients[type];
+    const updatedCount = oldCount + 1;
+    const updatedIngredients = {
+      ...this.state.ingredients
+    }
+    updatedIngredients[type] = updatedCount;
+    const priceAddition = INGREDIENT_PRICES[type];
+    const oldPrice = this.state.totalPrice;
+    const newPrice = oldPrice + priceAddition;
+    this.setState({ingredients: updatedIngredients, totalPrice: newPrice});
+  }
+
+  render(){
+    return (
+      <Aux>
+        <Burger ingredients={this.state.ingredients} />
+        <BuildControls />
+      </Aux>
+    );
+  }
+}
+
+export default BurgerBuilder;
+```
+
+Now we should be able to hook this handler up to our button in our controls
+To do that we can pass in as a property to the build controls
+```
+<BuildControls 
+  ingredientAdded={this.addIngredientHandler}
+/>
+```
+
+Now inside of `<BuildControls>` we need to pass it to the individual buildControl we are calling
+However this would mean we also need to pass type into our method as well
+We can actually save ourself this and instead add the reference to the method where the type that is being used to build the current BuildControl is passed into this function
+Then the method would be available and we wouldn't have to worry about the type chaning on accident
+This is because the type for our addition button is determined before the component is even rendered
+```
+<BuildControl 
+  key={ctrl.label} 
+  label={ctrl.label}
+  added={() => props.ingredientAdded(ctrl.type)}
+/>
+```
+
+Now the last thing we need to do is add the `added` property to our button so the defined function will execute when it is clicked
+To do that we can simply go into our BuildControl.jsx and add it to our More button: (may have accidentally been a div before, change it)
+```
+const buildControl = (props) => (
+  <div className={classes.BuildControl}>
+    <div className={classes.Label}>{props.label}</div>
+    <button className={classes.Less}>Less</button> //change this one too
+    <button className={classes.More} onClick={props.added}>More</button>
+  </div>
+);
+```
+Now if you save the add button should work and dynamically add ingredients to our burger
+
+Now we have to do something similar with the minus button
