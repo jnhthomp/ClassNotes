@@ -1417,3 +1417,171 @@ const buildControl = (props) => (
 Now if you save the add button should work and dynamically add ingredients to our burger
 
 Now we have to do something similar with the minus button
+
+
+
+
+___
+## 134. Removing Ingredients Safely
+Now that we are able to add ingredients we have to also add the ability to remove them
+We can add the `removeIngredientsHandler` to our BurgerBuilder
+
+It should be pretty similar to the `addIngredientHandler` so for now we can copy/paste it and make some minor changes
+One change is to subtract to get our updated count instead of add
+Then we should updated our `priceAddition` to be a `priceDeduction` and subtract it to get `newPrice` instead of add
+```
+removeIngredientHandler = (type) => {
+  const oldCount = this.state.ingredients[type];
+  const updatedCount = oldCount - 1;
+  const updatedIngredients = {
+    ...this.state.ingredients
+  }
+  updatedIngredients[type] = updatedCount;
+  const priceDeduction = INGREDIENT_PRICES[type];
+  const oldPrice = this.state.totalPrice;
+  const newPrice = oldPrice - priceDeduction;
+  this.setState({ingredients: updatedIngredients, totalPrice: newPrice});
+}
+```
+
+Now we should be set to pass this function into our button
+To do this we will first have to pass it into our `<BuildControls>` component
+```
+<BuildControls 
+  ingredientAdded={this.addIngredientHandler}
+  ingredientRemoved={this.removeIngredientHandler}
+/>
+```
+
+Then we pass this method to our individual `<BuildControl>` as a prop
+```
+<BuildControl 
+  key={ctrl.label} 
+  label={ctrl.label}
+  added={() => props.ingredientAdded(ctrl.type)}
+  removed={() => props.ingredientRemoved(ctrl.type)}
+/>
+```
+
+Now in our `<BuildControl>` we can call this method on our button click
+```
+<button className={classes.Less} onClick={props.removed}>Less</button>
+```
+
+Now if we save everything and reload the page we should see that we have the ability to now remove ingredients that have been added to the burger
+
+However there is one big issue still
+The issue is that if there is no ingredient of a given type and then you try to remove and ingredient our entire page crashes
+This is because we are then setting that ingredient value to -1
+Then we try to make an array that has a length of -1 but that makes absolutely no sense and is ridiculous to even consider
+
+So what we have to do is keep our method from running if the ingredient we are removing is 0 (or less)
+This is easy enough to do do within our `removeIngredientHandler` with a simple if statement
+```
+removeIngredientHandler = (type) => {
+  const oldCount = this.state.ingredients[type];
+  if (oldCount <= 0) {
+    return;
+  }
+  const updatedCount = oldCount - 1;
+  const updatedIngredients = {
+    ...this.state.ingredients
+  }
+  updatedIngredients[type] = updatedCount;
+  const priceDeduction = INGREDIENT_PRICES[type];
+  const oldPrice = this.state.totalPrice;
+  const newPrice = oldPrice - priceDeduction;
+  this.setState({ingredients: updatedIngredients, totalPrice: newPrice});
+}
+```
+Now we will break out of our function if we don't have an ingredient to remove
+
+What would be really cool is if we could disable the button entirely when there are no ingredients to remove
+We need to add some logic to our render method
+We will create a copy of our state in there that will be used to check for the values of each of our ingredients when they are rendered
+If they are below a specific value then we will try to target the 'less' button for that ingredient and disable it
+
+First to add our variable that will check for these values in our render method
+```
+render(){
+  const disabledInfo ={
+    ...this.state.ingredients
+  }
+  
+  return (
+    <Aux>
+      <Burger ingredients={this.state.ingredients} />
+      <BuildControls 
+        ingredientAdded={this.addIngredientHandler}
+        ingredientRemoved={this.removeIngredientHandler}
+      />
+    </Aux>
+  );
+}
+```
+
+Now we want to loop through this object and check if the value is 0 or less
+To do that we can use a for loop
+Inside of this for loop we will want to convert each ingredient from a number to instead be true or false based on if the value is greater than 0 or not
+This is as simple as setting our current value for this equal to a boolean check using the current value and 0
+```
+render(){
+  const disabledInfo ={
+    ...this.state.ingredients
+  }
+
+  for (let key in disabledInfo) {
+    disabledInfo[key] = disabledInfo[key] <= 0
+  }
+...
+```
+Now we should have an object called `disabledInfo` that will hold true or false values for each ingredient
+```
+const disabledInfo = {
+  ...this.state.ingredients
+}
+// =>
+// disabledInfo = {
+// bacon:  0,
+//  salad:  0,
+//  cheese: 0,
+//  meat:   0
+// }
+// =>
+// diabledInfo = {
+//   bacon:  false,
+//   salad:  false,
+//   cheese: false,
+//   meat:   false
+// }
+```
+
+Now we can pass this object into our buildControls component
+```
+<BuildControls 
+  ingredientAdded={this.addIngredientHandler}
+  ingredientRemoved={this.removeIngredientHandler}
+  disabled = {disabledInfo}
+/>
+```
+
+Then in our `<BuildControls>` component we can use this
+Instead of calling the whole object though we can just get the value for the ingredient that matches the current build control we are working on with `ctrl.type`
+```
+<BuildControl 
+  key={ctrl.label} 
+  label={ctrl.label}
+  added={() => props.ingredientAdded(ctrl.type)}
+  removed={() => props.ingredientRemoved(ctrl.type)}
+  disabled={props.disabled[ctrl.type]}
+/>
+```
+Now lastly on our button we can set the disabled property on our button (which is a default property)
+We can simply pass in the true or false value that was passed into `<BuildConrol>` as a prop
+```
+<button 
+  className={classes.Less} 
+  onClick={props.removed} 
+  disabled={props.disabled}>Less</button>
+```
+Now when saving we shouldn't be able to edit our burger on page load since the initial values are set to 0
