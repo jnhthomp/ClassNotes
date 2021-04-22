@@ -1177,5 +1177,136 @@ export default Expenses;
 
 
 ___
-## The Concept of "Composition" ("children props")
+## 39. The Concept of "Composition" ("children props")
+Currently we have our Expenses component which is made up of muliple different smaller components (ExpenseItem -> ExpenseDate)
+This is called composition
 
+What if we wanted to create a component which serves as a shell around other content?
+Right now our components are very specific but what if we wanted to create something that might get reused to have multiple different things in it?
+For example we could create a component that acts as a container component and sets a style so that the content inside of it is displayed within a nice box
+
+One way we could do this is create a component which we simply wrap around other components like a div that we style to give a 'card' look
+To do this we will create a new component
+create: src/components/Expenses/Card.jsx
+
+Then we will create a css file that we will import into the component to give it styling
+create: src/components/Expenses/Card.jsx
+
+Then we can borrow some of the styling like the `border-radius` and `box-shadow` from expenses.css remove from there and add them to our new Card.css
+```
+.card{
+  border-radius: 12px;
+  box-shadow: 0 1px 8px rbga(0, 0, 0, 0.25);
+}
+```
+
+We will also need to remove the `border-radius` and `box-shadow` from ExpenseItem.css `.expense-item`
+
+Now be sure that within Card.jsx you have imported the css file, added the function and export statement, and then assigned the class to the div returned within the component
+```
+import './Card.css';
+
+const Card = () => {
+ return (
+   <div className="card">
+
+   </div>
+ )
+}
+
+export default Card
+```
+
+What we want to do is use this component like a wrapping div so that wherever we call it will have these styles by default (we can also assign additional classes when we call it if we like)
+How do we go about this?
+Lets just try it
+In ExpenseItem replace the wrapping div with the `.expense-item` class with our card component (don't forget to import it also leave the `.expense-item class attached)
+```
+import './ExpenseItem.css';
+import ExpenseDate from './ExpenseDate';
+import Card from '../Card';
+
+const ExpenseItem = (props) => {
+
+
+  return (
+    <Card className="expense-item">
+      <ExpenseDate date={props.date}/>
+      <div className="expense-item__description">
+        <h2>{props.title}</h2>
+        <div className="expense-item__price">${props.amount}</div>
+      </div>
+    </Card>
+  )
+}
+
+export default ExpenseItem
+```
+
+If we save and run our application then we can see that none of our ExpenseItems are showing up
+This is because you cannot do it like this out of the box.
+When we defined the return statement for our Card component we never told it what to do with children elements so it doesn't bother to try to render them since our component was not told to
+We have to specify where and how we want child components to be rendered within our Card component
+In order to do this we will need to accept props within our card component
+Then props will give us access to children components via `props.children`
+Wherever `props.children` is called is where any child elements where he Card component was originally called will be rendered within the Card component
+```
+import './Card.css';
+
+const Card = (props) => {
+ return (
+   <div className="card">
+    {props.children}
+   </div>
+ )
+}
+
+export default Card
+```
+
+This also means that the `className` that we tried to pass in was also passed as a prop
+In order for to get it to show we have to access `props.className` and assign it as a class within a div in our return statement
+To do that we will build a string that hold the card class along with whatever classnames are passed in as a string
+```
+const Card = (props) => {
+  const classes = 'card ' + props.className; 
+  return (
+    <div className={classes}>
+      {props.children}
+    </div>
+ )
+}
+```
+
+Now if we save we have a nice looking reusable wrapper component and have nice rounded edges on our ExpenseItems component
+We can also use this in our Expenses component
+Instead of using a div we can use the card component just like in ExpenseItem
+Simply import it and call it just like before
+```
+import './Expenses.css';
+import ExpenseItem from './ExpenseItem/ExpenseItem';
+import Card from './Card';
+
+const Expenses = (props) => {
+
+  let expensesList = props.expenses.map((el) => {
+    return (
+      <ExpenseItem
+        key={el.id}
+        date={el.date}
+        title={el.title}
+        amount={el.amount}
+      />
+    );
+  });
+  
+  return (
+    <Card className="expenses">
+      {expensesList}
+    </Card>
+  )
+}
+
+export default Expenses
+
+```
