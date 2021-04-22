@@ -1310,3 +1310,35 @@ const Expenses = (props) => {
 export default Expenses
 
 ```
+
+
+
+
+___
+## 40. A First Summary
+This section has mainly covered components (the most important concept of react)
+For that we had a look at react core syntax and jsx
+Had a detailed look at building, using, and working with components
+We also learned how to share data across components through props
+
+With all of these components we are just splitting our code across multiple files and building blocks
+We can reuse these building blocks instead of repeating that code multiple times
+In the end what ends up on the screen are just default html/css/js elements
+
+Ultimately every custom component that is built uses html elements or eventually uses a component that does
+
+The application as we have built it so far has a downside in that it is static
+We have an array in App.js that never changes our application is not dynamic and users cannot interact with it
+
+The next course section will bring this to life and teach another concept called state
+Before we get to that there are three things to take a closer look at
+
+JSX - See what it really is under the hood and how it works
+How to organize files
+How to write our functions
+
+
+
+
+___
+## 41. A Closer Look At JSX
