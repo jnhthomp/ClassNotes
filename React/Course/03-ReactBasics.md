@@ -1342,3 +1342,264 @@ How to write our functions
 
 ___
 ## 41. A Closer Look At JSX
+Before we mentioned that we can open our developer tools and see the js code that is responsible for everything happening on the page
+This looks much different than the functions we wrote because react has transformed our jsx into valid js/html syntax
+
+We could also write code intsead of jsx which is more readable than what we see with the developer tools when we inspect the page but not as readable as the jsx we are using
+it is improtant to be aware of what is happening behind the scenes
+
+One thing you may have wondered about is in package.json there is a list of dependencies most of which deal with behind the scenes transformations
+There are two dependencies related to react called `react` and `react-dom`
+
+If you look at index.js you can see that we are importing and using `react-dom` but we aren't using `react` anywhere
+This works in modern react setups made with `create-react-app`
+In other applications (older) you will see `react` imports even thought they are not used here
+This is because in the past you needed to import react in every react component file (every file that uses jsx)
+Now however we can omit this import because of modern react dark magic
+When we write jsx it is transformed into methods that are called on the react object which is why we need to import react in the past
+
+Let's take a look at a short piece of jsx code and what it would look like if we didn't have jsx available
+Consider the return statement from App.jsx
+```
+return (
+  <div>
+    <h2>Let's get started!</h2>
+    <Expenses items={expenses} />
+  </div>
+)
+```
+
+What react does is take this jsx, format it, and call it on a built in function to the React object called `.createElement()`
+This method receives 3 arguments 
+the first is an element such as div
+The second argument sets any attributes for this element
+The third argument is the content between the opening and closing tags
+You can have as many of these 'third' arguments as you want separated by commas
+If we want to have children elements in between the opening and closing tags (as compared to a string)
+we can use the `React.createElement()` again to render this child element
+```
+React.createElement('elementtype', {properties}, 'content', 'content2...')
+```
+
+If we apply this to our return statement from above we know that we will start by calling `.createElement()` on our react object (imported)
+Then for our first argument where we determine the element type we can say `'div'`
+Our div doesn't have any properties so we can use an empty object
+Then we need an h2 element so we will need to nest another `.createElement()` call on a react object
+Next we will need another `.createElement()` call to create our Expenses element
+Note that if we are using a custom component we do not use a string but instead just point directly at our imported component as a variable
+Then we can pass the properties in as an object 
+If there is no content between the opening and closing divs we can omit it
+In the end the transformed version would lok like this:
+```
+return React.createElement(
+  'div',
+  {},
+  React.createElement('h2', {}, "Let's get started!"),
+  React.createElement(Expenses, {items: expenses})
+);
+```
+
+You could write your entire react app like this but it is much more difficult to read and manage
+
+To emphasize that react is being used we will add react import statements to our files that return .jsx
+These files are: ExpenseDate.jsx, ExpenseItem.jsx, Card.jsx, Expenses.jsx, App.jsx, and index.js
+```
+import React from 'react';
+```
+
+Now that you know what jsx is transformed into it should be clear why you need a wrapping element around any children components
+
+
+
+
+___
+## 42. Organizing Component Files
+
+Now lets discuss how we should organize our files
+We have an extremely basic layout on our page and already are starting to get a lot of components built up
+Eventually it would become really hard to find what you need
+In order to avoid this it is best to organize your application so that it is easy to find any given component - especially since some components will get reused (like Card.jsx)
+
+We are going to want to organize our components into subfolders
+We have some genearl UI components which are not tied to any given feature (like card) as well as some feature specific components (like Expenses)
+
+In order to better organize this we could create two new folders within components called UI and Expenses to separate these two categories (you may have already done some of this)
+create: src/components/Expenses
+create: src/componetns/UI
+
+Move 'Card.css' and 'Card.jsx' into the UI folder
+Be sure to change any import statements in other files that use card vscode may do this for you automatically
+
+Move 'ExpenseDate.css', 'ExpenseDate.jsx', 'ExpenseItem.css', 'ExpenseItem.jsx', 'Expenses.css', and 'Expenses.jsx' into the Expenses folder
+Adjust your imports so your app still works
+
+I also added an ExpenseItem folder told hold the ExpenseItem and ExpenseDate components/css files but that is optional
+The important thing is that it is organized in a way that makes sense to you and your team (if applicable)
+
+
+
+
+___
+## 43. An Alternative Function Syntax
+There is an alternative syntax for writing functions
+The teacher has been writing them like this:
+```
+function App() {
+  const foo {
+    foo: bar
+  }
+
+  return (
+    <foo>
+      <bar></bar>
+    </foo>
+  )
+}
+```
+
+I have already been using this syntax so you may have noticed it in the notes but  you can instead use an arrow function sytax
+To do this instead of calling fucntion simply call const, give a name, then assign a value of an arrow function to this constant
+```
+const App  = () => {
+  const foo {
+    foo: bar
+  }
+  return (
+    <foo>
+      <bar></bar>
+    </foo>
+  )
+}
+```
+
+You would add any props or parameters into the () after the variable assignment
+This is standard js and all functions will probably be this from now on since I prefer it
+
+For more on js arrow functions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
+
+Make sure your application still works after changing the function types and moving our files around
+
+
+
+
+___
+## Quiz 1: Learning Check: React Basics, Componets, Props, & JSX
+
+```
+Q1
+Which Kind of code do you write when using React.js?
+A: Definitive JSX Code
+B: Imperative JavaScript Code
+C: Declarative JavaScript Code
+```
+```
+Q2
+What is "JSX"?
+A: It's a standard JavaScript syntax
+B: It's a special, non-standard syntax which is enabled in React projects
+C: It's a special string which you can pass to React functions
+```
+```
+Q3
+Why is React all about "Components"?
+A: Every UI in the end is made up of multiple building blocks (= components), hence it makes sense to think about user interfaces as "combinations of components"
+B: React projects are configured to only work with components, hence you have to use them when writing React code
+C: Components offer better performance than "standard user interfaces" that don't use components
+```
+```
+Q4
+What does "declarative" mean?
+A: "Declarative" is the same as "imperitive"
+B: You define the individual steps that need to be taken to achieve a desired outcome (e.g. a target UI)
+C: You define the desired outcome (e.g. a target UI) and let the library (React) figure out the steps
+```
+```
+Q5
+What is a "React Component"?
+A: It's a JavaScript function which typically returns HTML (JSX) code that should be displayed
+B: It's a replacement for standard HTML which is supported by modern browsers
+C: It's a JavaScript function that must not return anything
+```
+```
+Q6
+How many custom React components must a React app have?
+A: At least 2
+B: At most 99
+C: That's totally up to you
+```
+```
+Q7
+Which statement is correct?
+A: With React, you build multiple sibling component trees that are then mounted into the same DOM node
+B: With React, you build a component tree with one root component that's mounted into a DOM node
+C: With React, you always mount every component into it's own DOM node
+```
+```
+Q8
+What does "component tree" mean?
+A: It means that you have a root node which then has more components nested beneath it
+B: It means that you must always return more than one component or HTML element per component function
+C: It means that you can build multiple components
+```
+```
+Q9
+How do you pass data between components?
+A: Via global JavaScript variables that are available to all files
+B: Via "custom HTML attributes" (betteer known as props)
+C: Via standard HTML attributes which you can use in non-React apps as well
+```
+```
+Q10
+How can you output dynamic data in React components (i.e. in the returned JSX code)?
+A: You can use single curly braces (opening & closing) with any JS expresssion between them
+B: React has a special syntax that allows you to output variables values (i.e. values stored in variables) and nothing else: Opening & closing curly braces
+C: You can't
+```
+
+```
+Answers:
+Q1: C
+With React.js, you define the "goal" (i.e. what should be shown on the screen) and let React figure out how to get there.
+
+Q2: B
+React projects like the ones we create via "create-react-app" support JSX syntax. It gets compiled to standard JS code behind the scenes.
+
+Q3: A
+"Components" are really just a way of thinking about user interfaces. React embraces that concept and gives you tools to build components that you can then combine.
+
+Q4: C
+You define the target "state" (UI) and React figures out which JS commands need to be executed to bring that result to life.
+
+Q5: A
+A component is just that: A JS function that typically returns some HTML (or, to be precise: JSX) code which will be shown on the screen when that component is used.
+
+Q6: C
+You can have as many React components as you want / need.
+
+Q7: B
+You build a component tree that has one root node.
+
+Q8: A
+You build a tree by nesting components into each other - just as you build a HTML tree when building a standard HTML document.
+
+Q9: B
+You build your own "HTML elements" in the end, hence you can also define your own attributes (called "props" in React's world)
+
+Q10: A
+You can't put block statements (e.g. if statements) between those curly braces but you can output any result of any JS expression by using this special feature.
+```
+
+
+
+
+___
+## 44. Module Resources
+You may want to compare your code to the teachers (e.g. to find + fix errors).
+
+For that, you find multiple code snapshots for this module here in this Github repository: https://github.com/academind/react-complete-guide-code/tree/03-react-basics-working-with-components
+
+Usage instructions can be found on the page that link is leading to.
+
+Simply pick one of the snapshots in the /code folder - the subfolder names are chosen such that they are easy to match against lecture names in this course section.
+
+You also find section slides (if available) in that Github repository.
