@@ -76,7 +76,18 @@ Then it is Reacts job to reach the desired end state by following the logic you 
 
 
 ___
-## 27. Creating a New React Project
+## 27. A Note About New React Projects & NodeJS
+In the next lecture, we will need to install NodeJS (the tool we use for creating React projects uses it).
+
+You will learn how to create React projects and how to download + install NodeJS in the next lecture but make sure that you DON'T download NodeJS version 17! Because at the moment, the created projects won't work with that version.
+
+Instead, download the LTS version of NodeJS. You can download that version via this link (use the "LTS" version): https://nodejs.org/en/download/
+
+
+
+
+___
+## 28. Creating a New React Project
 To start our work and to start writing react code we need a react project
 The easiest way to do this is a tool called create-react-app
 You can find the github repo for this tool here: https://github.com/facebook/create-react-app
@@ -141,7 +152,7 @@ Whenever you make changes to your code they will be automatically applied and sh
 
 
 ___
-## 28. The Starting Project
+## 29. The Starting Project
 In case you skipped the previous lecture, attached you find the starting project snapshot: https://github.com/academind/react-complete-guide-code/tree/03-react-basics-working-with-components/code/01-starting-setup
 
 1. Download it
@@ -156,7 +167,7 @@ In case you skipped the previous lecture, attached you find the starting project
 
 
 ___
-## 29. Analyzing a Standard React Project
+## 30. Analyzing a Standard React Project
 Now lets'take a look at the project we have
 In the src folder is where most of our time/react code will be spent
 
@@ -251,7 +262,7 @@ This content is being rendered via index.js and then pushed into index.html into
 
 
 ___
-## 30. Introducing JSX
+## 31. Introducing JSX
 Now we will take a look at jsx
 jsx stands for javascript xml (html is a type of xml and that's why it is named this way)
 This allows us to use html within return statements of our js
@@ -286,7 +297,7 @@ This is valid js which when combined with the rest of the tools and framework th
 
 
 ___
-## 31. How React Works
+## 32. How React Works
 Now we have this html-ish code in a funcion but what do we do with it?
 Well ultimately we will be building our own custom html elements (components)
 They will be able to be reused and rendered on demand
@@ -326,7 +337,7 @@ You can add instructions and logic along the way but that is the gist of it
 
 
 ___
-## 32. Building a First Custom Component
+## 33. Building a First Custom Component
 We mentioned that React uses components and that `<App>` is a component
 Now lets try building our first custom component
 Since we want to build a finance tracker we will build one that is applicable to the tracker
@@ -388,7 +399,7 @@ The cool thing is that we can now call this as we would any other html element i
 
 
 ___
-## 33. Writing More Complex JSX Code
+## 34. Writing More Complex JSX Code
 Now we have created our first component
 Lets make it more exciting 
 For that we will tweak our html code that is being returned in `<ExpenseItem>`
@@ -453,7 +464,7 @@ export default ExpenseItem
 
 
 ___
-## 34. Adding Basic CSS Styling
+## 35. Adding Basic CSS Styling
 For styling we are using css and it is easy enough to add more css
 To add css for a specific component you just add it to the same folder as the component (with the same name but .css extension)
 
@@ -564,7 +575,7 @@ Now if we save we should have an expense item on the page that has a date, a nic
 
 
 ___
-## 35. Outputting Dynamic Data & Working with Expressions in JSX
+## 36. Outputting Dynamic Data & Working with Expressions in JSX
 
 Now that our component looks a little better lets do some more work on solving a problem
 We will not have only 1 expense and we definitely won't have the same expense over and over again
@@ -628,7 +639,7 @@ Now we need to figure out how we can make this ExpenseItem more reuseable and al
 
 
 ___
-## 36. Passing Data via "Props"
+## 37. Passing Data via "Props"
 How can we make this component reusable?
 Technically it already is!
 We can copy/paste it again in App.js if we want but we will be displaying the same data multple times
@@ -752,7 +763,7 @@ This is how you share data between components and allow them to be reusable and 
 
 
 ___
-## 37. Adding "normal" JavaScript Logic to Components
+## 38. Adding "normal" JavaScript Logic to Components
 Now our ExpenseItem component is pretty much done
 It looks how it is supposed to, and can dynamically display data that is chosen whenever we call it and are able to reuse it with different values
 
@@ -850,7 +861,7 @@ export default ExpenseItem
 
 
 ___
-## 38. Splitting Components Into Multiple Components
+## 39. Splitting Components Into Multiple Components
 As you work you will notice that your components start to get bigger as you add more logic and jsx to them
 That is why react uses components which allows you to split the application into smaller building blocks
 Where each block is focused on one core task
@@ -1177,7 +1188,7 @@ export default Expenses;
 
 
 ___
-## 39. The Concept of "Composition" ("children props")
+## 40. The Concept of "Composition" ("children props")
 Currently we have our Expenses component which is made up of muliple different smaller components (ExpenseItem -> ExpenseDate)
 This is called composition
 
@@ -1315,7 +1326,7 @@ export default Expenses
 
 
 ___
-## 40. A First Summary
+## 41. A First Summary
 This section has mainly covered components (the most important concept of react)
 For that we had a look at react core syntax and jsx
 Had a detailed look at building, using, and working with components
@@ -1341,7 +1352,7 @@ How to write our functions
 
 
 ___
-## 41. A Closer Look At JSX
+## 42. A Closer Look At JSX
 Before we mentioned that we can open our developer tools and see the js code that is responsible for everything happening on the page
 This looks much different than the functions we wrote because react has transformed our jsx into valid js/html syntax
 
@@ -1413,7 +1424,7 @@ Now that you know what jsx is transformed into it should be clear why you need a
 
 
 ___
-## 42. Organizing Component Files
+## 43. Organizing Component Files
 
 Now lets discuss how we should organize our files
 We have an extremely basic layout on our page and already are starting to get a lot of components built up
@@ -1440,7 +1451,7 @@ The important thing is that it is organized in a way that makes sense to you and
 
 
 ___
-## 43. An Alternative Function Syntax
+## 44. An Alternative Function Syntax
 There is an alternative syntax for writing functions
 The teacher has been writing them like this:
 ```
@@ -1593,7 +1604,7 @@ You can't put block statements (e.g. if statements) between those curly braces b
 
 
 ___
-## 44. Module Resources
+## 45. Module Resources
 You may want to compare your code to the teachers (e.g. to find + fix errors).
 
 For that, you find multiple code snapshots for this module here in this Github repository: https://github.com/academind/react-complete-guide-code/tree/03-react-basics-working-with-components
