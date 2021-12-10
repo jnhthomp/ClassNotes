@@ -49,7 +49,7 @@ If there were more sections then it would become much more complicated
 
 In react this is done with just a few components and a small method and we can easily add more sections and have them function independentally of each other while only having to write the code once
 
-The main issue is that with Javascript we have to write every single step that is taken (selectinga an element => getting the content => building an element => adding etc...)
+The main issue is that with Javascript we have to write every single step that is taken (selecting an element => getting the content => building an element => adding etc...)
 With react much of this is automated and easily done with very little code or complexity
 You can also repeat repetive tasks or generated items extremely easy since it is so modular
 
@@ -76,7 +76,7 @@ React is quite lean and not all features are built in (like routing)
 Some of these features are managed by the community and must be added to projects as extra third party libraries
 
 An alternative with more built in features would be Angular (the teacher Maximilian also has a course on this)
-Angular also component based but is more complete with more features built in
+Angular is also component based but is more complete with more features built in
 The amount of things included in angular can make it overkill for smaller projects but has more built in features
 Angular also uses typescript (syntax is slightly different)
 This can be beneficial for large projects since you don't need to rely on the community as much and you can expect features to exist and work as they should

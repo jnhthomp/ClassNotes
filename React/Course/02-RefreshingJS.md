@@ -64,7 +64,7 @@ console.log(myName);
 => "error" "TypeError: Assignment to constant variable."
 ```
 
-This is because we are unable to change the value of a const variable and it must retain its original value
+This is because we are unable to change the value of a `const` variable and it must retain its original value
 
 
 
@@ -146,12 +146,11 @@ person.js will export person by default unless otherwise specified (there is not
 utility has multiple methods/values that can be exported
 If we get them with the app 
 ```
-app.js
+# app.js #
 // Name here is up to you since it is the default and only export in the file
 // Both are shown as example
 import person from './person.js'
-import prs from './person.js'
-
+// import prs from './person.js' // This is also valid
 import { baseData } from './utility.js'
 import { clean } from './utility.js'
 ```
@@ -168,12 +167,13 @@ import { clean as wash } from './utility.js'
 or
 ```
 import * as bundled from './utility.js'
-//bundled.clean and bundled.baseData are both available
-```
-
+//bundled.clean and bundled.baseData are both available when importing this way
 ```
 Since some of these next gen features won't work in the browser we will use a feature which compiles the site and converts it to current gen js features so we can use next gen without shipping broken code
-```
+
+
+
+
 ____
 ## 15. Understanding Classes
 Classes are blueprints for js objects a class can have both properties and methods 
@@ -187,7 +187,7 @@ class Person {
 
 const myPerson = new Person()
 myPerson.call()
-console.log(myPerson.name)
+console.log(myPerson.name) //=>"Max"
 ```
 Classes also support inheritance
 
@@ -218,7 +218,7 @@ class Human {
     console.log(this.gender);
   }
 }
-class Person extends Human{ //add extends human to give people access to humane methods
+class Person extends Human{ //add extends human to give person objs access to human methods
   constructor() {
     super(); //Must be included when extending another class which executes the parent constructor
     this.name = 'Max';
@@ -273,7 +273,7 @@ class Human {
     console.log(this.gender);
   }
 }
-class Person extends Human{ //add extends human to give people access to humane methods
+class Person extends Human{ //add extends human to give people access to human methods
   constructor() {
     super(); //Must be included when extending another class which executes the parent constructor
     this.name = 'Max';
@@ -303,7 +303,7 @@ class Human {
     console.log(this.gender);
   }
 }
-class Person extends Human{ //add extends human to give people access to humane methods
+class Person extends Human{ //add extends human to give people access to human methods
   name = 'Max';
   gender = 'female'; //Can update gender here no problem
 
@@ -358,7 +358,7 @@ console.log(newNumbers) //=> [1, 2, 3, 4]
 //If spread operator didn't work
 const anotherNewNumbers = [numbers, 4]
 
-console.log(anotherNewNumbers) //=>[[1, 2, 3], 4]
+console.log(anotherNewNumbers) //=>[[1, 2, 3], 4] //This is an array where the first element is the original array, the values of the original array have not been distributed among the new array
 ```
 
 You can also do the same and use spread for objects
@@ -399,7 +399,7 @@ console.log(a); //=>'Hello'
 console.log(b); //=>'there'
 ```
 
-For object it is the same except with curly braces and instead of order we use the property name
+For an object it is the same except with curly braces and instead of order we use the property name
 ```
 {name} = {name:'Max', age:28};
 console.log(name); //=>'Max'

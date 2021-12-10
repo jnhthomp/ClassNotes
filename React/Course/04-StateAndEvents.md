@@ -215,7 +215,7 @@ We can use a modern js feature called array destructuring to assign both of thes
 ```
 const [title, setTitle] = useState(props.title); 
 ```
-Now when the component is caleld and useState is initially called it will take the value of props.title and assign it to a variable called `title`
+Now when the component is called and useState is initially called it will take the value of props.title and assign it to a variable called `title`
 This variable will be monitored for changes that are made by using the `setTitle` method which is returned by `useState` along with the state variable
 
 Now we can remove the title variable that we used before as well as the value assignment in `clickHandler` (we don't have to change the call to `title` in our returned jsx)
@@ -258,4 +258,4 @@ If not then react continues as normal but it is important that the check is made
 
 
 ___
-## 49. A Closer Look At The "useState" Hook
+## 50. A Closer Look At The "useState" Hook

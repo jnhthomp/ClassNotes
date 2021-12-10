@@ -50,7 +50,7 @@ With react you build these individual components and then tell react how to comb
 Succinctly components offer 2 advantages
 1. Reusability
     - Don't repeat yourself unnecessarily
-2. Sparation of Concerns
+2. Separation of Concerns
     - Don't do too many things in one and the same place (function)
     - Give things small, clear, and concise tasks to each function
 
@@ -110,7 +110,7 @@ $sudo apt-get install -y nodejs
 After node.js is installed in order to use (with npx you don't need to install) `create-react-app` use:
 ```
 $npx create-react-app app-name 
-$cd my-app
+$cd app-name
 $npm start
 ```
 This will run the create-react-app command 
@@ -132,12 +132,12 @@ Now open the app in vscode so we can take a look
 We will see a file called `package.json`
 Within here are the dependencies which our project is using
 
-The src folder hold the actual source code we will work on
+The src folder holds the actual source code we will work on
 
 There is a copy of this cleaned up project here: https://github.com/academind/react-complete-guide-code/tree/03-react-basics-working-with-components/code/01-starting-setup
 
 This is the project we will be continuing in
-If using this folder directly then run:
+If using this folder directly then run to install dependencies: (must be in project folder in terminal)
 ```
 $yarn install
 ```
@@ -159,16 +159,16 @@ In case you skipped the previous lecture, attached you find the starting project
 
 2. Extract it
 
-3. run npm install in the extracted folder
+3. run `$npm install`/`$yarn install` in the extracted folder
 
-4. Run npm start to start the development server.
+4. Run `$npm start` to start the development server.
 
 
 
 
 ___
 ## 30. Analyzing a Standard React Project
-Now lets'take a look at the project we have
+Now let's take a look at the project we have
 In the src folder is where most of our time/react code will be spent
 
 If you are using the same starting point as the last lecture then you will see 2 js files and 1 css file
@@ -193,7 +193,7 @@ Lets take a look line by line:
 ```
 import ReactDOM from 'react-dom';
 ```
-Here we can see that we are importing an object called ReactDOM from a third party 'react-dom' library
+Here we can see that we are importing an object called ReactDOM from a third party `react-dom` library
 This will give us access to methods that allow us to render react components to the DOM
 
 ```
@@ -201,7 +201,7 @@ import './index.css';
 ```
 Here we import css stying that will be used by our application to style the content that is rendered
 The handy thing about css and react is that you can use css modules (much more on this later)
-This allows you to easy scope your css properties and apply them very specifically when needed
+This allows you to easily scope your css properties and apply them very specifically when needed
 
 ```
 import App from './App';
@@ -342,18 +342,18 @@ We mentioned that React uses components and that `<App>` is a component
 Now lets try building our first custom component
 Since we want to build a finance tracker we will build one that is applicable to the tracker
 
-To work towards our expense tracker lets think of the components we have and might need
+To work towards our expense tracker let's think of the components we have and might need
 Even though the application looks fairly simple there are a lot of components we can break it up into
 
 The first component we will get started on is the expense item
 This is a row where we have a title, an amount, and a date for a given expense
 
 To build a component we will have to create a new file but where should we put it?
-It is considered best practice to store components in their own folders and only have 1 file per component
+It is considered best practice to store components in their own folders and only have 1 .jsx file per component
 To organize our code a little better we will add a new folder to hold our components
 Then inside of this folder we will create a folder for our expense item component
 Finally inside of that folder we will add our .jsx file that will be our component
-As you can see continuing to do this will build a sort of component tree where some components that are shared are stored in more shared folders within the folder tree and components that are very specific are stored in folders together
+As you can see continuing to do this will build a sort of component tree where some components that are shared are stored in more shared folders within the folder tree and components that are very specific are grouped in folders together
 
 create: src/components/ExpenseItem/ExpenseItem.jsx
 
@@ -543,9 +543,19 @@ import './ExpenseItem.css';
 
 Now we imported a css file that contains a bunch of classes that can be used to style html
 We need to add these classes to our html in order for the styling to work
+Notice that in javascript instead of using `class` to assign instead we have to use `className`
 Instead of typing `class="DesiredClass"` like we would in a regular html element to add a class
 Becuase this is jsx remember that this is all javascript that just looks like html right now
 Instead we have to use the javascript attribute of applying a classname which is instead `className="DesiredClass"`
+The difference here being that in html when assigning a class you simply use:
+```
+<div id="MyElement" class="classname">content</div>
+```
+However in pure javascript when assigning a class to a div you have to use:
+```
+document.getElementById("MyElement").className = "MyClass";
+```
+
 Now we can assign the classes that were defined in ExpenseItem.css to our divs
 Remember to assign the following:
 - expense-item
@@ -621,7 +631,7 @@ return (
     <div>{expenseDate.toISOString()}</div>
     <div className="expense-item__description">
       <h2>{expenseTitle}</h2>
-      <div className="expense-item__price">${expenseAmount}</div>
+      <div className="expense-item__price">$ {expenseAmount}</div> //Not leaving a space here can cause an error in some linters since `${}` is used for template literals
     </div>
   </div>
 )
@@ -671,8 +681,8 @@ Then imagine you want to display that variable within the component `<CourseGoal
 Unfortunately we don't have direct access to these variables between components as that would be a nightmare for security and variable naming
 
 However we can use props which allows us to pass data from the parent component to the child component
-To do this from our app component we can pass any values we want `<CourseGoalItem>` to use when we call it by adding these values as attributes like we would on an html element
-For example:
+To do this from our app component we can pass any values we want into `<CourseGoalItem>` to use when we call it by adding these values as attributes like we would on an html element
+For example within the `<App>` component:
 ```
 ...
 const goalItem = 'finish';
@@ -681,7 +691,7 @@ return(
   <CourseGoalItem text={goalItem} />
 )
 ```
-This will give our component access to this 'text' variable via an object called props and it will have the value of `goalItem`
+This will give our component access to this `text` variable via an object called props and it will have the value of `goalItem`
 Within `<CourseGoalItem>` we would use:
 ```
 <li>{props.text}</li>
@@ -689,7 +699,7 @@ Within `<CourseGoalItem>` we would use:
 In order to access the value that was passed into it
 
 Now lets apply this to our project
-Currently we are storing values for our `<ExpensItem>` within the ExpenseItem itself so the first thing we have to do is store those in the App component
+Currently we are storing values for our `<ExpenseItem>` within the ExpenseItem itself so the first thing we have to do is store those in the App component
 So remove them from ExpenseItem.js
 Now in App.js we will create an array which will hold multiple expense item objects which we will pass into our component via props
 ```
@@ -735,7 +745,7 @@ return (
 
 Now we need to use these values inside of our ExpenseItem component 
 Currently it is looking for these values as regular variables and not as props
-First we have to let the component know that it will be accepting props by adding the props variable as ar argument when we define our component function
+First we have to let the component know that it will be accepting props by adding the props variable as an argument when we define our component function
 Technically you can name it whatever you want but typically this is named props to make it clear
 ```
 const ExpenseItem = (props) => {
@@ -772,7 +782,7 @@ To do this we will use some js logic within our component to alter what the date
 Currently it is a long ugly string and we want it to look more like a calendar thing
 in order to do this we will need to change our html code
 Instead of returning the date in one line we want it in 3 lines stacked on top of each other
-The top line will displayt he month as a title, the middle line displays the year and the bottom shows the number 
+The top line will display the month as a title, the middle line displays the year and the bottom shows the number 
 We will need to break our one div up into three
 We want it to go from:
 ```
@@ -867,7 +877,7 @@ That is why react uses components which allows you to split the application into
 Where each block is focused on one core task
 This allows components to be small and manageable and build up and around them
 
-In our ExpenseItem component we could say that it could be split up
+In our `<ExpenseItem>` component we could say that it could be split up
 The date/calendar item could be treated as a separate component since it is kind of big and has its own logic and can operate seperately from this ExpenseItem as a whole 
 For example if we ever had a IncomeItem we might want to show a date that is consistent between the two items
 Splitting something into a new component can also make it easier to style
@@ -1103,7 +1113,7 @@ Add provided css and import in Expenses.jsx
 
 Add Expenses basic skeleton (function call and export statement)
 
-In the Expenses functoin we will return some code
+In the Expenses function we will return some code
 We can simply copy/paste the four existing ExpenseItems and move them into Expense.jsx
 However have to add all of this inside of a wrapping div
 Now import the ExpenseItem to the Expenses component
@@ -1111,7 +1121,7 @@ Now import the ExpenseItem to the Expenses component
 Next we need to add props as an argument
 We also need to pass the expenses array into the Expenses component from App.jsx
 To do this import the expenses component into App.jsx (you don't need ExpenseItems anymore)
-Call the Expences component and pass the expenses array (as items and rename within Expenses component when calling values on props) into it
+Call the Expenses component and pass the expenses array (as items and rename within Expenses component when calling values on props) into it
 ```
 // App.jsx
 import Expenses from './components/Expenses';
@@ -1260,7 +1270,7 @@ When we defined the return statement for our Card component we never told it wha
 We have to specify where and how we want child components to be rendered within our Card component
 In order to do this we will need to accept props within our card component
 Then props will give us access to children components via `props.children`
-Wherever `props.children` is called is where any child elements where he Card component was originally called will be rendered within the Card component
+Wherever `props.children` is called is where any child elements where the Card component was originally called will be rendered within the Card component
 ```
 import './Card.css';
 
@@ -1276,8 +1286,8 @@ export default Card
 ```
 
 This also means that the `className` that we tried to pass in was also passed as a prop
-In order for to get it to show we have to access `props.className` and assign it as a class within a div in our return statement
-To do that we will build a string that hold the card class along with whatever classnames are passed in as a string
+In order for us to get it to show we have to access `props.className` and assign it as a class within a div in our return statement
+To do that we will build a string that holds the card class along with whatever classnames are passed in as a string
 ```
 const Card = (props) => {
   const classes = 'card ' + props.className; 
@@ -1439,7 +1449,7 @@ create: src/components/Expenses
 create: src/componetns/UI
 
 Move 'Card.css' and 'Card.jsx' into the UI folder
-Be sure to change any import statements in other files that use card vscode may do this for you automatically
+Be sure to change any import statements in other files that use card (vscode may do this for you automatically)
 
 Move 'ExpenseDate.css', 'ExpenseDate.jsx', 'ExpenseItem.css', 'ExpenseItem.jsx', 'Expenses.css', and 'Expenses.jsx' into the Expenses folder
 Adjust your imports so your app still works
