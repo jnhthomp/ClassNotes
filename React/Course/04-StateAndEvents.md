@@ -259,3 +259,53 @@ If not then react continues as normal but it is important that the check is made
 
 ___
 ## 50. A Closer Look At The "useState" Hook
+Now that we know the basics of state we can take a closer look and make some clarifications
+One important thing from the last lesson is that `useState()` registers a state for the INSTANCE of a component in which it is called
+For example since `<ExpenseItem>` is being used 4 times there are 4 seperate states that are being created
+Each instance of `<ExpenseItem>` has it's own state that is completely seperate and unnaffected by any of the other instances of `<ExpenseItem>`
+Each of these states are managed independently by react
+If you were to change the values of the state for one of them (you could specifically target the state of just one instance instead of maing a change to all by perhaps using the value of the components unique key to set a value just for example) then that change would only be reflected in the single instance and not among every instance
+This is good because then if we make changes to the state of one of our instances of a component it won't update every instance
+
+You can see instances in action by adding a `console.log()` to our `<ExpenseItem>`
+Just underneath where we set state we can use (line 7):
+```
+import...
+...
+const ExpenseItem = (props) => {
+  const [title, setTitle] = useState(props.title);
+  const clickHandler = () => {setTitle('Updated!')};
+
+  console.log('ExpenseItem Evaluated by react');
+  
+  return(
+    ...
+  );
+}
+```
+
+If we run our page we can see that upon loading there are 4 console logs because there are 4 instances of the `<ExpenseItem>` component
+However if we update the title on just one we can see that we only get one additional console log
+This is because React will only update components that need updating and since only one instance of `<ExpenseItem>` had a value update in state it was the only one who re-ran the `console.log` function
+
+One other thing that might be weird is that we used const when we used array destructuring to assign values to the variable `title` and function `setTitle` that are returned by `useState()`
+This is strange because we do update the value of title (which is why we use `setTitle()`)
+What happens when we run `setTitle()` however is that the entire component is reoaded and re-ran
+This means that the previous value for title (and the array holding it) actually don't exist at all anymore
+Instead whenever this new component is ran new `title` value will be carried over to the updated version of the component and be assigned where we previously assigned title
+So the value of `title` is never actually changed instead the variable is wiped from existance and replaced with a new variable of the same name with a different value
+What about `props.title`?
+Why does it not get re-assigned to state when the component is reran?
+This is because react tracks `useState` and when components are ran
+It is smart enough to only use the `props.title` arguement that is passed in on the first time the instance is rendered
+When it rerenders react tracks this and knows it is not a new instance and ignores the `props.title` argument
+
+State in a nutshell
+1. Always register state with the `useState()` function
+2. `useState()` will always return 2 items
+  a. a value to hold the variable to be registered in state
+    - use this to access/display the value but do not try to update directly
+  b. a function used to update the value
+    - always use this to update the value of a state variable
+
+
