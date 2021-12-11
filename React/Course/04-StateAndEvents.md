@@ -319,3 +319,204 @@ Thus far, we update our state upon user events (e.g. upon a click).
 That's very common but not required for state updates! You can update states for whatever reason you may have.
 
 Later in the course, we'll see Http requests that complete (where we then want to update the state based on the Http response we got back) but you could also be updating state because a timer (set with setTimeout()) expired for example.
+
+
+
+
+___
+## 52. Adding Form Inputs
+Now that we can change state, pass props between components, and listen to events we can do more to make this more like a real website and dynamic
+The first way we can do this is by making it so we can add real expenses by gathering user input
+
+The very first thing that we will need to do is find a way to collect input from the user
+To do this we can use a new component and even create a new category of components
+So far our expense components have been about outputting and showing expenses and not for inputting information
+Our new component will focus on making new expenses and collecting user input and won't have much in common with our previous components
+We can go ahead and create a new folder and file called `NewExpense`
+
+create: src/components/NewExpense/NewExpense.jsx
+Also create: src/components/NewExpense/NewExpense.css
+Go to the lesson github and copy/paste the appropriate css or take from here
+```
+#NewExpense.css
+.new-expense {
+  background-color: #a892ee;
+  padding: 1rem;
+  margin: 2rem auto;
+  width: 50rem;
+  max-width: 95%;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+}
+
+.new-expense button {
+  font: inherit;
+  cursor: pointer;
+  padding: 1rem 2rem;
+  border: 1px solid #40005d;
+  background-color: #40005d;
+  color: white;
+  border-radius: 12px;
+  margin-right: 1rem;
+}
+
+.new-expense button:hover,
+.new-expense button:active {
+  background-color: #510674;
+  border-color: #510674;
+}
+
+.new-expense button.alternative {
+  color: #220131;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.new-expense button.alternative:hover,
+.new-expense button.alternative:active {
+  background-color: #ddb3f8;
+}
+```
+
+Now we can create our component within this new .jsx file
+```
+import './NewExpense.css'
+
+const NewExpense = () => {
+  return(
+    //jsx to be returned
+  );
+}
+
+export default NewExpense
+```
+
+This `<NewExpense>` component will be the "window" or card or area that will hold the form used to collect user input
+However it is possible that we will want to use the form elsewhere
+Say for example we later want to and income instead of expenses.
+You could use the same form but repurpose it instead of having to make a new form
+So will keep the actual form logic seperate then call the form into our `<NewExpense>` component so we will need to create yet another component
+
+create: src/components/NewExpense/ExpenseForm.jsx
+*Note: This is a temporary location for this file. If we do decide to reuse it we will bring the form out of the expense section and give it a new folder for better organisation but this is clear enough for now
+
+We will also have styling on our form
+create: src/components/NewExpense/ExpenseForm.css
+Get css from github or here
+```
+.new-expense__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.new-expense__control label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.new-expense__control input {
+  font: inherit;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 20rem;
+  max-width: 100%;
+}
+
+.new-expense__actions {
+  text-align: right;
+}
+```
+
+Now inside of `<ExpenseForm>` we can start creating our form using jsx
+To get input from the user we will create a form using html
+For more info: https://www.w3schools.com/html/html_forms.asp
+We can use the info from this page to get started and consider what kind of information we want to collect from the user
+The three main things we want are: an expense name, an expense cost (a number), and a date
+
+So we will need 3 input fields and for styling/organisation we will put each of these fields inside of a div
+We will also have a div to hold all of our fields within the form but that div will be inside of the `<form>` element tags
+
+```
+import './ExpenseForm.css';
+
+const ExpenseForm = () => {
+  return (
+    <form>
+      <div className="new-expense__controls"> // All form controls are inside this
+        <div className="new-expense__control"> //--
+          <label>Title</label>                 //  |-Title controls
+          <input type="text"/>                 //  |
+        </div>                                 //--
+        <div className="new-expense__control">          //--
+          <label>Amount</label>                         //  |-Amount controls
+          <input type="number" min="0.01" step="0.01"/> //  |
+        </div>                                          //--
+        <div className="new-expense__control">                    //--
+          <label>Date</label>                                     //  |-Date controls
+          <input type="date" min="2019-01-01" max="2022-12-31"/>  //  |
+        </div>                                                    //--
+      </div>
+    </form>
+  );
+};
+
+export default ExpenseForm;
+```
+
+Now that we have a way to collect inputs we need within the component we need an action to confirm them and submit them
+We need a button that a user can click after they have input their information that will submit and save the data
+We can add this to the bottom of our form (still within our styling div)
+```
+<button type="submit">Add Expense</button>
+```
+When we are done with the basic layout and styling of our expense form we can use it in our `<NewExpense>` component
+First we have to import it and then call it within our return statement
+Don't forget to assign the `new-expense` class on the surrounding divs
+```
+import './NewExpense.css';
+import ExpenseForm from './ExpenseForm.jsx';
+
+const NewExpense = () => {
+  return (
+    <div className="new-expense">
+      <ExpenseForm />
+    </div>
+  );
+};
+
+export default NewExpense;
+```
+
+Next in our App we have to render our `<NewExpense>` component since we are not calling it anywhere
+Again we have to import it and then call it somewhere
+```
+import React from 'react';
+import Expenses from './components/Expenses/Expenses';
+import NewExpense from './components/NewExpense/NewExpense'; // Import NewExpense
+
+const App = () => {
+  const expenses = [
+    { id: '85540',title: 'Car Insurance', amount: 135.35, date: new Date(2021, 2, 28) },
+    { id: '83918',title: 'Toilet Paper', amount: 94.12, date: new Date(2021, 3, 12) },
+    { id: '92370',title: 'New TV', amount: 799.49, date: new Date(2021, 8, 8) },
+    { id: '34495',title: 'New Desk (Wooden)', amount: 450, date: new Date(2021, 5, 15) },
+  ]
+  return (
+    <div className="App">
+      <NewExpense /> //Call and display NewExpense
+      <Expenses expenses={expenses}/>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+Now we should ahve a prety good looking NewExpense card above our expenses with inputs available for us to input data anda submit button (doesn't do anyting yet because there is `onClick` attached)
