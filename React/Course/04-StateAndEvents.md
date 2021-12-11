@@ -520,3 +520,87 @@ export default App;
 ```
 
 Now we should ahve a prety good looking NewExpense card above our expenses with inputs available for us to input data anda submit button (doesn't do anyting yet because there is `onClick` attached)
+
+
+
+
+___
+## 53. Listening to User Input
+Now that we have fields were a user can input data we have to actually collect and store that data for it to be saved or used
+
+Let's start with something a little more simple by listening for user input within `<ExpenseForm>` and simply outputting those inputs to the console
+
+For example in our text box we could use an `onChange` event to run a method every time any of our input fields have a changed value
+We could use other methods like `onClick` or `onKeystroke` or something but this will make our method applicable to all of our inputs
+One way we could use this is that we could have this method update a variable and then pass that updated variable to a `console.log` so we can see how collecting user input works
+For now all we want to do is set an `onChange` event listener in our title input box
+Then we will direct it to a `titleChangeHandler` function (remember this goes above the return statement)
+`titleChangedHandler` will simply run `console.log('Title Changed!)`
+
+Our expense form should then look like this: 
+```
+import './ExpenseForm.css';
+
+const ExpenseForm = () => {
+  const titleChangeHandler = () => {
+    console.log("Title Changed!");
+  }
+  return (
+    <form>
+      <div className="new-expense__controls">
+        <div className="new-expense__control">
+          <label>Title</label>
+          <input type="text" onChange={titleChangeHandler}/>
+        </div>
+        <div className="new-expense__control">
+          <label>Amount</label>
+          <input type="number" min="0.01" step="0.01"/>
+        </div>
+        <div className="new-expense__control">
+          <label>Date</label>
+          <input type="date" min="2019-01-01" max="2022-12-31"/>
+        </div>
+        <button type="submit">Add Expense</button>
+      </div>
+    </form>
+  );
+};
+
+export default ExpenseForm;
+```
+
+When we run this in our browser and pull up the console we can see that every time we type into the title input bar we get a message that the title was changed
+
+This is cool but what we actually want is to access the values inside of the input field
+So how do we do that?
+To understand how it works it is helpful to remember how we add event listeners in vanilla js
+Remember we would use something like:
+```
+document.getElementById(id).addEventListener('click', (event) => {functionhere});
+```
+When we do this we get access to the `event` object which describes the contents of that event
+
+Remember in react this is actually being done behind the scenes so we still have access to that event object
+We can see what kind of data that object has to offer by passing it into our function and logging it in the console like so:
+```
+const titleChangeHandler = (event) => {
+    console.log(event);
+}
+```
+
+If we do this we get an object that actually has a bunch of different properties and values we can look at and data about the event
+The part of this object we are most concerned with is:
+```
+event={
+  target:{
+    value: "test"
+  }
+}
+```
+
+Now we know that if we want those values instead of exporting the console.log of the entire event we can simply do the console.log of `event.target.value`
+```
+const titleChangeHandler = (event) => {
+  console.log(event.target.value);
+}
+```
