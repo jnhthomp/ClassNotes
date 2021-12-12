@@ -604,3 +604,128 @@ const titleChangeHandler = (event) => {
   console.log(event.target.value);
 }
 ```
+
+
+
+___
+## 54. Working With Multiple States
+Now that we have the input value from the user what do we want to do with it?
+We want to store it somewhere so that when the form is submitted we can use the value
+
+We will do a similar thing with the other 2 values in the form and combine all three into a single object containing all the needed information for a particular expense
+
+One way of storing this value and making sure that the function would survive should it need to be re-executed is to store these values in state like we did in `<App>`
+
+To do this we will again have to import `useState()` from react within `<ExpenseForm>`
+```
+import {useState} from 'react';
+```
+
+Then we can call state at the beginning of the component function and create a variable (and method to update it) for the title
+Don't forget that the argument passed into `useState` should be the initial value and we do not want one so we can use an empty string
+Then we will use array destructuring to store the variable and function that `useState` returns
+```
+[enteredTitle, setEnteredTitle]=useState('')
+```
+
+Now instead of outputting the entered value into the console we want to use the new `setEnteredTitle` method to update the `enteredTitle` value
+```
+  const titleChangeHandler = (event) => {
+    setEnteredTitle(event.target.value);
+  }
+```
+When finished `<ExpenseForm>` should look like this:
+```
+import {useState} from 'react';
+import './ExpenseForm.css';
+
+const ExpenseForm = () => {
+
+  const [enteredTitle, setEnteredTitle] = useState('');
+
+  const titleChangeHandler = (event) => {
+    setEnteredTitle(event.target.value);
+  }
+  
+  return (
+    <form>
+      <div className="new-expense__controls">
+        <div className="new-expense__control">
+          <label>Title</label>
+          <input type="text" onChange={titleChangeHandler}/>
+        </div>
+        <div className="new-expense__control">
+          <label>Amount</label>
+          <input type="number" min="0.01" step="0.01"/>
+        </div>
+        <div className="new-expense__control">
+          <label>Date</label>
+          <input type="date" min="2019-01-01" max="2022-12-31"/>
+        </div>
+        <button type="submit">Add Expense</button>
+      </div>
+    </form>
+  );
+};
+
+export default ExpenseForm;
+```
+What is different about this time is that we won't be using this value to update anything on the form instead we just want to store it for now and ensure that the value is not lost
+
+Now lets continue updating the component so that the amount and date are also stored in state
+Here is how I did it following the same pattern we did before
+Added a `useState` for each along with an event handler function to store the value in that is called in the `onChange` property
+I also added an `onClick` to the form that will console log what the current state values are just so I can easily check that it is working
+```
+import {useState} from 'react';
+import './ExpenseForm.css';
+
+const ExpenseForm = () => {
+
+  const [enteredTitle, setEnteredTitle] = useState('');
+  const [enteredAmount, setEnteredAmount] = useState('');
+  const [enteredDate, setEnteredDate] = useState('');
+
+  const titleChangeHandler = (event) => {
+    console.log(event.target.value)
+    setEnteredTitle(event.target.value);
+  }
+  const amountChangedHandler = (event) => {
+    console.log(event.target.value)
+    setEnteredAmount(event.target.value);
+  }
+  const dateChangedHandler = (event) => {
+    console.log(event.target.value)
+    setEnteredDate(event.target.value);
+  }
+
+  const outputState = () => {
+    console.log(`Title=${enteredTitle}\n amount=${enteredAmount}\n date=${enteredDate}`);
+  }
+
+  return (
+    <form onClick={outputState}>
+      <div className="new-expense__controls">
+        <div className="new-expense__control">
+          <label>Title</label>
+          <input type="text" onChange={titleChangeHandler}/>
+        </div>
+        <div className="new-expense__control">
+          <label>Amount</label>
+          <input type="number" min="0.01" step="0.01" onChange={amountChangedHandler}/>
+        </div>
+        <div className="new-expense__control">
+          <label>Date</label>
+          <input type="date" min="2019-01-01" max="2022-12-31" onChange={dateChangedHandler}/>
+        </div>
+        <button type="submit">Add Expense</button>
+      </div>
+    </form>
+  );
+};
+
+export default ExpenseForm;
+```
+
+One thing about doing it this way is that this uses multiple states since we are calling the `useState` method multiple times
+if we update any of these states it will be done independently of each other
