@@ -990,3 +990,30 @@ const [userInput, setUserInput] =  useState({
 
 export default ExpenseForm;
 ```
+
+
+
+
+___
+## 58. Adding Two-Way Binding
+Now that we can collect the user input we want to clear the inputs after the user submits otherwise they will be filled with old data
+By using state we have an advantage called two way binding
+This means that we can not only just listen for changes but we can also pass a new value back in to reset or change the input
+All we have to do is add the `value` attribute to our input and set it equal to our `userInput.enteredTitle` value (obviously changed for different inputs)
+```
+<input type="text" value={userInput.enteredTitle} onChange={titleChangeHandler}/>
+```
+Doing this not only does our state change when we change the input but our input will change when we change the state (hence two way binding)
+This may sound like it would create a loop but it doesn't
+The advantage is that within our `submitHandler` we can call `setUserInput` and set our title (and other properties) back to an empty string with two way binding
+By doing this we are overriding the values in the state AFTER the user submits them which in turn changes what the input displays
+```
+setUserInput({
+  enteredTitle: '',
+  enteredAmount: '',
+  enteredDate: ''
+})
+```
+
+After doing this all our inputs should clear after clicking submit (don't forget to add two way binding to other inputs like we did for title)
+
