@@ -867,4 +867,126 @@ const titleChangeHandler = (event) => {
 }
 ```
 
-The teacher reverts his project to a multistate approach but I am going to keep this as one state. If you want to go backthat is fine
+The teacher reverts his project to a multistate approach but I am going to keep this as one state. If you want to go back that is fine
+
+
+
+
+___
+## 57. Handling Form Submission
+Now that we are able to retrieve and store input from users we need to 'submit' this data
+Normally this might also be going to a webserver or database or maybe even creating a cookie to store this data but for now we will simply log the object to the console
+
+We could do this by adding a click listener to our button but this is not the best way to do it because there is a default behavior built into browsers and forms on webpages called submit
+If a button with type submit is pressed inside of a form the overall form element will emit an event we can listen to called `onSubmit`
+So instead of an event listener on the button we want it on the form as a whole
+```
+...
+return (
+  <form onSubmit={submitHandler}>
+  ...
+)
+```
+
+Then like we do with any other event listener we should create a handler method that should take place when this is executed called `submitHandler`
+
+One thing to note is that whenever a form is submited it is a default browser behavior to send that data to the webserver that is hosting the page if not specified otherwise
+
+We need to specify what we want to happen with this data or we won't be able to see it before it is gone
+Luckily javascript allows you to disable this behavior by using the event object
+On this object we can call `preventDefault()` method
+Then we can simply add a console log that outputs our variables or object as we wanted
+
+You can also just `console.log` the whole object if you want
+If you used the multistate approach this is probably a good idea
+If you used the single state approach you already have an object but it may not be a bad idea to create a new object to have updated variable names
+```
+  const submitHandler = (event) => {
+    event.preventDefault()
+    
+    const expenseData = {
+      title: userInput.enteredTitle,
+      amount: userInput.enteredAmount,
+      date: new Date(userInput.enteredDate) //creates a date object which we can do more with
+    };
+
+    console.log(expenseData);
+  }
+```
+
+When finished our component should look like this:
+```
+import {useState} from 'react';
+import './ExpenseForm.css';
+
+const ExpenseForm = () => {
+
+  // ##MultiState
+  // const [enteredTitle, setEnteredTitle] = useState('');
+  // const [enteredAmount, setEnteredAmount] = useState('');
+  // const [enteredDate, setEnteredDate] = useState('');
+const [userInput, setUserInput] =  useState({
+    enteredTitle: '',
+    enteredAmount: '',
+    enteredDate: ''
+  });
+
+  // ##MultiState (repeat for each handler)
+  // const titleChangeHandler = (event) => {
+  //   console.log(event.target.value)
+  //   setEnteredTitle(event.target.value);
+  // }
+  const titleChangeHandler = (event) => {
+    console.log(event.target.value);
+    setUserInput((prevState) => {
+      return {...prevState, enteredTitle: event.target.value};
+    });
+  }
+  const amountChangedHandler = (event) => {
+    console.log(event.target.value)
+    setUserInput((prevState) => {
+      return { ...prevState, enteredAmount: event.target.value };
+    });
+  }
+  const dateChangedHandler = (event) => {
+    console.log(event.target.value)
+    setUserInput((prevState) => {
+      return { ...prevState, enteredDate: event.target.value };
+    });
+  }
+
+  const submitHandler = (event) => {
+    event.preventDefault()
+
+    const expenseData = {
+      title: userInput.enteredTitle,
+      amount: userInput.enteredAmount,
+      date: new Date(userInput.enteredDate)
+    };
+    
+    console.log(expenseData);
+  }
+
+  return (
+    <form onSubmit={submitHandler}>
+      <div className="new-expense__controls">
+        <div className="new-expense__control">
+          <label>Title</label>
+          <input type="text" onChange={titleChangeHandler}/>
+        </div>
+        <div className="new-expense__control">
+          <label>Amount</label>
+          <input type="number" min="0.01" step="0.01" onChange={amountChangedHandler}/>
+        </div>
+        <div className="new-expense__control">
+          <label>Date</label>
+          <input type="date" min="2019-01-01" max="2022-12-31" onChange={dateChangedHandler}/>
+        </div>
+        <button type="submit">Add Expense</button>
+      </div>
+    </form>
+  );
+};
+
+export default ExpenseForm;
+```
