@@ -1104,3 +1104,31 @@ const NewExpense = (props) => {
   };
 ...
 ```
+
+
+
+
+___
+## 60. Lifting the State Up
+Last lecture we learned how to pass data from child components to parent components
+This is closely related to another concept which we have used without realizing called 'lifting state up'
+What does this mean?
+Consider a tree like below (pretty much what we have)
+```
+       |--<Expenses>
+<App>--|
+       |--<NewExpense>--<ExpesenseForm>
+```
+
+In this tree `<NewExpense>` generates data (or state) since we are fetching user input here
+it is common to fetch data from a component but we may not need it in that component
+Instead we need to access it in `<Expenses>`
+It will be slightly transformed and packed into an object but it is the same data
+We want to hand that data over as easily as possible but we can't pass it directly from `<NewExpense>` to `<Expenses>` since they are not directly connected
+Instead we have to first pass them through `<App>` since that is where they are connected
+We cannot communicate between two sibling (child) components we can only communicate from parent to child and from child to parent
+That is why we have to pass data through `<App>` first because it is the closest component that has direct access to both components
+
+We are already lifting the state and doing this by utilizing props and calling functions from a parent component to pass data from a child to that parent such as from `<ExpenseForm>`
+Passing data is what is important here and what makes this considered 'lifting state'
+
