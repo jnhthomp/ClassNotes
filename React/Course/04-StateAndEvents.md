@@ -1017,3 +1017,90 @@ setUserInput({
 
 After doing this all our inputs should clear after clicking submit (don't forget to add two way binding to other inputs like we did for title)
 
+
+
+
+___
+## 59. Child-to-Parent Component Communication (Bottom Up)
+Now that we have our data from the user we need to do something with it
+If you think about the flow of our app and how the data will flow the form is kind of a dead end in that once we get the data from the form we don't push it further forward into a new and "deeper" component
+Instead we want it to go back to the parent components (all the way to `<App>` to be specific) so the data can be used to create a new expense entry 
+Previously we have only passed data into child components so how do we go about passing data from a child component to a parent component?
+Well in a way we have but just haven't noticed see for example our `<input>` that we are using to collect title
+Within that we are using `onChange` to trigger an event but behind the scenes `onChange` is just a prop that we are passing our `titleChangeHandler` function into which is triggered by react in default ways (on a click)
+We can actually add our own default event props and add functions as values
+This will let us pass values from a parent component to a child component
+This works by passing a variable from `<App>` to `<NewExpense>` to `ExpenseForm` then in `ExpenseForm` we update the value of that variable and `<App>` should be able to access that new value
+
+First lets start by passing our `expenseData` from `<ExpenseForm>` to `<NewExpense>`
+Within `<NewExpense>` we will have to add a new prop whenever we call `<ExpenseForm>` (called `onSaveExpenseData`)
+```
+<ExpenseForm onSaveExpenseData={saveExpenseHandler}/>
+```
+Then we will have to define a function to pass into this prop
+The function will accept the `enteredExpenseData` that we save in `ExpenseForm` as an argument
+Within that funciton we will simply create a new object (`expenseData`) and use the spread operator(`...`) to fill in the values of `enteredExpenseData which were passed in
+Then the last thing we want to do is add an id so we can identify each expense
+For now we can simply use Math.random.toString()
+Note that this isn't a perfect id system because you could technically get the same id even though it is unlikely but will work for now
+```
+const NewExpense = () => {
+  const saveExpenseHandler = (enteredExpenseData) => {
+    const expenseData = {
+      ...enteredExpenseData,
+      id: Math.random().toString()
+    };
+  };
+  ...
+```
+Now we just have to call `onSaveExpenseData` within `<ExpenseForm>` when we save and pass in the entered data as an argument
+Don't forget that you have to include props in your expense form to access this function
+```
+const submitHandler = (event) => {
+  event.preventDefault()
+
+  const expenseData = {
+    title: userInput.enteredTitle,
+    amount: userInput.enteredAmount,
+    date: new Date(userInput.enteredDate)
+  };
+  
+  props.onSaveExpenseData(expenseData);
+
+  setUserInput({
+    enteredTitle: '',
+    enteredAmount: '',
+    enteredDate: ''
+  })
+}
+```
+
+Now that we have passed the input data from `<ExpenseForm>` to `<NewExpense>` we have to continue to pass it up to `<App>`
+We can do this by following the exact same pattern
+
+First in `<App>` we need to make sure that we have a prop and method ready to receive this data
+So when we call `<NewExpense>` we need to add our prop and function there
+```
+<NewExpense onAddExpense={addExpenseHandler} />
+```
+Then we need a handler to accept the expense object
+For now we will just output it as a console instead of adding it to our expenses list
+```
+const addExpenseHandler = (expense) => {
+  console.log('In App.js');
+  console.log(expense);
+}
+```
+
+Then in `<NewExpense>` we need to prepare it to accept props and run the `onAddExpense` function (which is really our `addExpenseHandler`) and pass in the expense data object that we were previously outputting
+```
+const NewExpense = (props) => {
+  const saveExpenseHandler = (enteredExpenseData) => {
+    const expenseData = {
+      ...enteredExpenseData,
+      id: Math.random().toString()
+    };
+    props.onAddExpense(expenseData);
+  };
+...
+```
