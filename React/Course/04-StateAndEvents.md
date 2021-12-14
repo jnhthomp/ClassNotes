@@ -729,3 +729,142 @@ export default ExpenseForm;
 
 One thing about doing it this way is that this uses multiple states since we are calling the `useState` method multiple times
 if we update any of these states it will be done independently of each other
+
+
+
+
+___
+## Using One State Instead (And What's Better)
+Notice that in our last lecture we added handers and multiple 'state slices' by using `useState` more than once
+This is totally ok however there is another way to do this
+Since the three variables within state that we are saving are all so closely related one might argue that they should actually be one item instead of 3
+We can do this by passing in an object whenver we call `useState` instead of passing in an empty string (for a single variable)
+If we pass in the entire object we will receive a variable that has access to this objects properties as well as a method to change the value of that object (or its properties!)
+
+Lets start by removing our 3 previous state calls (comment them out for notes)
+and replacing those with a single state call and pass in an object with the variables we will need
+Don't forget to use array destructuring to capture the object variable and update method that is returned
+```
+const [userInput, setUserInput] =  useState({
+    enteredTitle: '',
+    enteredAmount: '',
+    enteredDate: ''
+  });
+
+```
+
+Then instead of calling the old 'set' methods inside of our handlers we need to update them
+We simply need to call our new `setUserInput` method instead and pass in an object with an updated value
+We will need to make sure our other values aren't lost though when we update our state
+To do this we can use the spread operator and copy the values from our `userInput` object that we created before we update the title/amount/date
+```
+const titleChangeHandler = (event) => {
+  console.log(event.target.value);
+  setUserInput({
+    ...userInput,
+    enteredTitle: event.target.value
+  })
+}
+```
+
+Now our `<ExpenseForm>` component should look like:
+```
+import {useState} from 'react';
+import './ExpenseForm.css';
+
+const ExpenseForm = () => {
+
+  // const [enteredTitle, setEnteredTitle] = useState('');
+  // const [enteredAmount, setEnteredAmount] = useState('');
+  // const [enteredDate, setEnteredDate] = useState('');
+const [userInput, setUserInput] =  useState({
+    enteredTitle: '',
+    enteredAmount: '',
+    enteredDate: ''
+  });
+
+  const titleChangeHandler = (event) => {
+    console.log(event.target.value);
+    setUserInput({
+      ...userInput,
+      enteredTitle: event.target.value
+    });
+  }
+  const amountChangedHandler = (event) => {
+    console.log(event.target.value)
+    setUserInput({
+      ...userInput,
+      enteredAmount: event.target.value
+    });
+  }
+  const dateChangedHandler = (event) => {
+    console.log(event.target.value)
+    setUserInput({
+      ...userInput,
+      enteredDate: event.target.value
+    });
+  }
+
+  const outputState = () => {
+    console.log(`Title=${enteredTitle}\n amount=${enteredAmount}\n date=${enteredDate}`);
+  }
+
+  return (
+    <form onClick={outputState}>
+      <div className="new-expense__controls">
+        <div className="new-expense__control">
+          <label>Title</label>
+          <input type="text" onChange={titleChangeHandler}/>
+        </div>
+        <div className="new-expense__control">
+          <label>Amount</label>
+          <input type="number" min="0.01" step="0.01" onChange={amountChangedHandler}/>
+        </div>
+        <div className="new-expense__control">
+          <label>Date</label>
+          <input type="date" min="2019-01-01" max="2022-12-31" onChange={dateChangedHandler}/>
+        </div>
+        <button type="submit">Add Expense</button>
+      </div>
+    </form>
+  );
+};
+
+export default ExpenseForm;
+```
+
+However there are still some issues with how we update the state here and it isn't completely correct so we will fix that next
+
+
+
+
+___
+## 56. Updating State That Depends On the Previous State
+In our last lesson we combined our three state calls into one but learned we were updating state in a not entirely correct way
+While it would technically work there are niche cases were it could fail and there are better practices?
+Whenever you update state and you depend on the previous state you shoulddo it by calling the `setUserInput` function as we did before but we want to pass in another function (an anonymous arrow function) 
+Within that function we are granted access to an argument that we can pass called `prevState`
+we can use this within our anonymous arrow function to return the new state
+```
+setUserInput((prevState) => {
+  return {...prevState, enteredTitle: event.target.value};
+});
+```
+So what is different?
+When we use `...userInput` to fill in the value of the object
+`userInput` here is a snapshot of the previous state 
+However updates to state are scheduled and don't necessarily happen instantly
+Theoretically if we were to update the state many times quickly we could be relying on an outdated snapshot of our state
+Doing it this way ensures that we always use the previous version of state and react will make sure of it
+
+Now our handlers should look like this:
+```
+const titleChangeHandler = (event) => {
+  console.log(event.target.value);
+  setUserInput((prevState) => {
+    return {...prevState, enteredTitle: event.target.value};
+  });
+}
+```
+
+The teacher reverts his project to a multistate approach but I am going to keep this as one state. If you want to go backthat is fine
