@@ -229,3 +229,44 @@ This isn't the best fix since if someone were to use this in a different timezon
     })
   }
 ```
+
+
+
+
+___
+## 66. Understanding "Keys"
+You may have noticed that in the `<App>` `INITIAL_EXPENSES` array objects I have a value for `id`
+
+Also when creating a new expense object we assign `id: Math.random()toString()` within `<NewExpense>`
+
+This is because of a concept called keys which react uses on lists of components, especially dynamically rendered ones
+
+This is used so that react can know which component to interact with if it needs to target a specific instance component (say like to delete or edit a specific expense)
+
+The teacher hadn't added them yet at this point so if you were following him you may not have these keys assigned to the expenses listed within the `INITIAL_EXPENSES` array
+If that is the case then you should be getting a warning in the console when your page loads that says something like:
+```
+Warning: Each child in a list should have a unique 'key' prop
+```
+
+What happens when this warning is active is that instead of targetting an individual instance of a component to rerender data like when adding an expense all of the instances of `<Expense>` are targetted and totally rerendered
+If `<Expense>` had state within it that it was managing then any changes made within would be lost when changes are made to other instances
+
+So how do we fix it?
+All you have to do is go to where we are rendering our instances of `<ExpenseItem>` and assign a special prop called `key` luckily we already have an id value we can use from when we received the `enteredExpenseData` within `<NewExpense>` by assigning `id: Math.random().toString()` as mentioned above
+We simply have to assign that value to key the same way we assigned `title`, `amount`, and `date`
+```
+let expensesList = props.expenses.map((el) => {
+  return (
+    <ExpenseItem
+      key={el.id} // <=Assign key here - el.id is from Math.random and should be fairly unique
+      date={el.date}
+      title={el.title}
+      amount={el.amount}
+    />
+  );
+});
+```
+
+If you make these changes you should see that any new divs rendered to the screen are the only divs that are updating
+To get rid of the error message simply make sure that there is an `id` value within the `INITIAL_EXPENSES` array as well
