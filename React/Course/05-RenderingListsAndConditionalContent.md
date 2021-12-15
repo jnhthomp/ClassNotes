@@ -151,3 +151,81 @@ let expensesList = props.expenses.map((el)=>{
 This will create an array of valid jsx with the appropriate data just like we want
 
 Now our page should continue loading and showng the list but this means that we can now change this array dynamically to change the data that is shown on the screen especially if we were to add it to `<App>` state
+
+
+
+
+___
+## 65. Using Stateful Lists
+Now how can we update the expenses array when a new expense is being added?
+We will have to make changes to `<App>` since that is where the array lives
+Inside of there we have an `addExpenseHandler()` from the previous section where we output a `console.log()` of the expense once one is made with the top section
+Obviously this has access to a new expense we would want to add but how can we add it to the expenses array?
+Obviously we can't just add it to the array because react won't update components just because a variable changes
+Instead we have to add `expenses` to the `<App>` components state so that way when we make changes to that array they are reflected in the application
+
+To add state we will need to add an import statement
+```
+import {useState} from 'react;
+```
+
+Then we will do something a little different and remove our `expenses` component and store it outside of our `<App>` component function
+We will also rename it to an all caps `INITIAL_EXPENSES`
+This will just be dummy data we can use to initialize our state with
+```
+...
+import NewExpense from './components/NewExpense/NewExpense';
+
+const INITIAL_EXPENSES = [
+  { id: '85540', title: 'Car Insurance', amount: 135.35, date: new Date(2021, 2, 28) },
+  { id: '83918', title: 'Toilet Paper', amount: 94.12, date: new Date(2021, 3, 12) },
+  { id: '92370', title: 'New TV', amount: 799.49, date: new Date(2021, 8, 8) },
+  { id: '34495', title: 'New Desk (Wooden)', amount: 450, date: new Date(2021, 5, 15) },
+]
+
+const App = () => {
+  ...
+```
+
+Now inside of our `<App>` component we want to call `useState` and initialize it with our dummy values
+```
+const [expenses, setExpenses] = useState(INITIAL_EXPENSES); 
+```
+
+Now that we have our expenses saved to state and a way to update those expenses we can start adding new expenses within our `addExpenseHandler()`
+Remember that when we are updating an object or array we want to pass a function into `setExpense()` so we can utilize `prevState` instead of just adding the values or may not update correctly
+This function that we pass in as an argument will receive `prevState` as an argument and then return an array with the new expense at the beginning and using the spread operator with `prevState` to fill in the remaining values
+```
+const addExpenseHandler = (expense) => {
+  setExpenses((prevState)=>{
+    return ([expense, ...prevState]);
+  });
+```
+
+Now our state will update using old data correctly instead of using potentially outdated versions of state
+
+Now since we are using our `<Expenses>` state to pass in information to the array we were already displaying it should be dynamic and we should be able to add new items to it
+
+Note: When doing this I noticed that there is a bug with date since it is by default saved as GMT
+If you are in a far enough timezonne (like eastern) you may want to specify that for a quick fix so the correct date shows for now
+To do this in the `<ExpenseForm>` where we set the date I just used a template literal to add a timezone to the end of the timezone (line 7)
+This isn't the best fix since if someone were to use this in a different timezone it would still be wrong but it will work for now 
+```
+ const submitHandler = (event) => {
+    event.preventDefault()
+
+    const expenseData = {
+      title: userInput.enteredTitle,
+      amount: userInput.enteredAmount,
+      date: new Date(`${userInput.enteredDate} EST`) // Adds timezone so correct date shows
+    };
+
+    props.onSaveExpenseData(expenseData);
+
+    setUserInput({
+      enteredTitle: '',
+      enteredAmount: '',
+      enteredDate: ''
+    })
+  }
+```
