@@ -1463,3 +1463,69 @@ export default ExpenseItem
 
 Keep in mind that stateful components are not inherently better than stateless components they are just used differently
 Most components will only focus on outputting something and maybe transforming logic but only a few components typically actually handle state
+
+
+
+
+___
+## Quiz 2: Learning Check: Working With Events & State
+Question 1: How should you NOT listen to events when working with React?
+  A: Adding an event  listener (e.g. via "addEventListener") manually. 
+  B: Setting an event handler function via props (e.g. onClick={...})
+  C: You can't listen to events, React is about outputting data only
+
+Question 2: Which value should you pass to event listener props like onCLick?
+  A: The code that should execute when that event occurs
+  B: The result of calling a function that should execute when the event occurs
+  C: A pointer at the function that should execute when the event occurs 
+
+Qustion 3: How can you communicate from one of your components to a parent (i.e. higher level) component?
+  A: you can accept a function via props and call it from inside the lower-level (child) component to then trigger some action in the parent component (which passed the function) 
+  B: You can accept an event via props and trigger it from inside the lower-level (child) component to then trigger some action in the parent component (which passed the function)
+  C: You can't communicate up, only down -i.e. you can only pass props down to pass data down to a component. You can't trigger an action ina higher level component
+
+Question 4: How can you change what a component displays on the screen?
+  A: Use a regular JavaScript variable, change the value and output the variables value in JSX
+  B: You can't change the output - components are static in React apps
+  C: Create some "state" value (via useState) which you can then change and output in JSX 
+
+Question 5: Why do you need this extra "state" concept instead of regular JS variables which you change and use?
+  A: Because it's less code
+  B: Because standard js variables don't cause React components to be re-evaluated 
+  C: Because standard JS variables are not supported in React components
+
+Question 6: Which statement about useState is NOT correct?
+  A: It receives an (optional) initial state value as an assignment
+  B: Calling useStateagain will update the state value 
+  C: It returns an array with exactly two elements
+
+Question 7: How can you update component state (created via useState)?
+  A: You can assign a new value to the state variable
+  B: You can call the state updating function which useState also returned 
+  C: You can call useState again
+
+Question 8: How much state may you manage in one single component?
+  A: You can have as many state slices as you need/want 
+  B: You should at most have one state (merge multiple states into a state object)
+  C: You can have multiple state slices if at least one of them is an object
+
+Question 9: What's wrong about this code snippet?
+```
+const [counter, setCounter] = useState(1);
+...
+setCounter(counter + 1);
+```
+  A: There's nothing wrong about it
+  B: State can't be a number
+  C: If you update state that depends onthe previous state, you should use the "function form" of the state updating function instead 
+
+Answers
+1:A
+2:C
+3:A
+4:C
+5:B
+6:B
+7:B
+8:A
+9:C
