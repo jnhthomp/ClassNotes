@@ -1132,3 +1132,278 @@ That is why we have to pass data through `<App>` first because it is the closest
 We are already lifting the state and doing this by utilizing props and calling functions from a parent component to pass data from a child to that parent such as from `<ExpenseForm>`
 Passing data is what is important here and what makes this considered 'lifting state'
 
+
+
+
+___
+## Assignment 2. Time To Practice: Working with Events & State
+Time to practice what you learned about events and state in React apps.
+
+We are almost done with the module and in the next section we will make our expense list dynamic and render the list so that it can be added to but this can't be done right now
+
+Before that we will practice what we learned in the module
+To do that we will add a new component called the filter component
+This component will allow us to use a dropdown and set a filter by picking a year
+
+To build this component using the styling and js that is provided below (see links or copy/paste) 
+- JS: https://github.com/academind/react-complete-guide-code/blob/04-react-state-events/extra-files/ExpensesFilter.js
+  - ```
+      import React from 'react';
+
+      import './ExpensesFilter.css';
+
+      const ExpensesFilter = () => {
+        return (
+          <div className='expenses-filter'>
+            <div className='expenses-filter__control'>
+              <label>Filter by year</label>
+              <select>
+                <option value='2022'>2022</option>
+                <option value='2021'>2021</option>
+                <option value='2020'>2020</option>
+                <option value='2019'>2019</option>
+              </select>
+            </div>
+          </div>
+        );
+      };
+
+      export default ExpensesFilter;
+    ```
+- CSS: https://github.com/academind/react-complete-guide-code/blob/04-react-state-events/extra-files/ExpensesFilter.css
+  - ```
+      .expenses-filter {
+        color: white;
+        padding: 0 1rem;
+      }
+
+      .expenses-filter__control {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        margin: 1rem 0;
+      }
+
+      .expenses-filter label {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      .expenses-filter select {
+        font: inherit;
+        padding: 0.5rem 3rem;
+        font-weight: bold;
+        border-radius: 6px;
+      }
+    ```
+
+You should also add the `<ExpenseFilter>` component into the `<Expenses>` component
+
+Then forward the picked year from `<ExpensesFilter>` and store it somewhere in the `<Expenses>` state
+You don't need to make the filter actually functional just add the component, collect data, and pass it up to the `<Expenses>` component
+
+Goals:
+1. Add `<ExpensesFilter>` component (call within `<Expenses>`)
+2. Add `<ExpensesFilter>` css
+3. Use `onChange` event to collect the year selected by the user
+4. Pass the year selected up to the `<Expenses>` component
+5. Add the year selected to the `<Expenses>` component state
+
+Solution
+1. Add `<ExpensesFilter>` component (call within `<Expenses>`)
+  - create new folder/file: `src/components/Expenses/ExpensesFilter/ExpensesFilter.jsx`
+  - copy/paste jsx from lesson into file
+    - (comment out css import for now to remove errors)
+  - within `<Expenses>` add `<ExpensesFilter />` as a child within the `<Card>` component
+2. Add `<ExpensesFilter>` css
+  - create new file: 'src/components/Expenses/ExpensesFilter/ExpensesFilter.css
+  - copy/paste css from lesson into file
+    - (uncomment import from jsx to enable css)
+3. Use `onChange` event to collect the year selected by the user
+  - within `<ExpensesFilter>` inside `<select>` add `onChange` along with a handler method 
+    - `<select onChange={yearSelectHandler}>`
+  - create `yearSelectHandler` method pass the event into it as an argument (available by default through `onChange` with js)
+  -  For now simply use `console.log` to output value of `event.target.value`
+  -  ```
+      const yearSelectHandler = (event) => {
+        console.log(event.target.value)
+      }
+     ```
+4. Pass the year selected up to the `<Expenses>` component
+  - Within `<Expenses>` where we call `<ExpensesFilter>` pass an `onYearSelect` prop with a `yearSelectHandler` as the method to be passed
+    - `<ExpensesFilter onYearSelect={yearSelectHandler} />`
+  - Create a `yearSelectHandler` method that accepts the year selected by the user as an argument and outputs it in a `console.log`
+    - ```
+      const yearSelectHandler = (yearSelected) => {
+        console.log('In <Expenses>');
+        console.log(yearSelected);
+      };
+      ```
+  - Within `<ExpensesFilter>` allow it to accept props as an argument
+    - `const ExpensesFilter = (props) => { ...`
+  - call `props.onYearSelect()` and pass in the year that was selected as an argument
+    - You can either assign this to a variable before passing it to make it more clear what this value is when troubleshooting or leave it as `event.target.value` either should work but the first way is probably a better practice
+5. Add the year selected to the `<Expenses>` component state
+  - add `useState` to imports within `<Expenses>` component
+    -  `import {useState} from 'react';`
+  - Initialize state within expenses with `useState` (must be within expenses component function but not nested in any other functions)
+    - `const [yearFilter, setYearFilter ] = useState('')`
+  - call `setYearFilter` inside `yearSelectHandler` and pass in `yearSelected` as an argument
+    - `setYearFilter(yearSelected);`
+ - To double check that this is updating the state properly we want to `console.log` the new state but `setState` is async. To fix this we import something called `useEffect` in the same way that we imported `useState` then call it within the component and pass in an anonymous arrow function that logs the `yearFilter` value. `useEffect` will run at the beginnning of a page load or when state changes
+  - import: `import { useState, useEffect } from 'react';`
+  - call:   `useEffect(() => console.log(yearFilter));`
+
+
+Changed Pages:
+
+```
+## ExpensesFilter.jsx
+import './ExpensesFilter.css';
+
+const ExpensesFilter = (props) => {
+
+  const yearSelectHandler = (event) => {
+    const yearSelected = event.target.value;
+    props.onYearSelect(yearSelected);
+  }
+
+  return (
+    <div className='expenses-filter'>
+      <div className='expenses-filter__control'>
+        <label>Filter by year</label>
+        <select onChange={yearSelectHandler}>
+          <option value='2022'>2022</option>
+          <option value='2021'>2021</option>
+          <option value='2020'>2020</option>
+          <option value='2019'>2019</option>
+        </select>
+      </div>
+    </div>
+  );
+};
+
+export default ExpensesFilter;
+```
+```
+## ExpensesFilter.css
+.expenses-filter {
+  color: white;
+  padding: 0 1rem;
+}
+
+.expenses-filter__control {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+
+.expenses-filter label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.expenses-filter select {
+  font: inherit;
+  padding: 0.5rem 3rem;
+  font-weight: bold;
+  border-radius: 6px;
+}
+```
+```
+## Expenses.jsx
+import { useState, useEffect } from 'react';
+import './Expenses.css';
+import ExpenseItem from './ExpenseItem/ExpenseItem';
+import Card from '../UI/Card';
+import ExpensesFilter from './ExpensesFilter/ExpensesFilter';
+
+const Expenses = (props) => {
+
+  const [yearFilter, setYearFilter ] = useState('')
+
+  // useEffect method will run whenever the page reloads (such as after a state change)
+  useEffect(() => console.log(yearFilter));
+
+  let expensesList = props.expenses.map((el) => {
+    return (
+      <ExpenseItem
+        key={el.id}
+        date={el.date}
+        title={el.title}
+        amount={el.amount}
+      />
+    );
+  });
+
+  const yearSelectHandler = (yearSelected) => {
+    
+    setYearFilter((prevState) => {
+      return yearSelected
+    });
+  };
+  
+  return (
+    <Card className="expenses">
+      <ExpensesFilter onYearSelect={yearSelectHandler} />
+      {expensesList}
+    </Card>
+  )
+}
+
+export default Expenses
+```
+
+Teacher Solution:
+(The teachers version is very similar to mine so I am not going to copy/paste every bit of code this should be available in the section github linked at the beginning of the section as well)
+
+Create both ExpensesFilter.jsx and ExpensesFilter.css and copy/paste in example code the teacher just put them within the Expenses folder
+
+Now we can focus on the first task which is to listen to changes on the `<select>` element within `<ExpensesFilter>`
+We can do this just like we did in the form with an `onChange` attribute
+We want to pass a function handler into there as well
+We want to pass the event object into the handler tha tyou create and output the `event.target.value`
+
+Now in the `<Expenses>` component we want to add a div and add the `<ExpensesFilter>` component inside of our `<Card>`component
+
+Next we need to forward the value to `<Expenses>` and add it to state
+We can forward from child to parent by using the event approach
+To do this in `<Expenses>` add a handler along with an event listener to `<ExpensesFilter>`
+Then when creating the handler allow it to accept a selected year as an argument and output it
+Inside of `<ExpensesFilter>` allow props and add the event listener to the `onChange` handler and pass the selected year from the event into it
+
+Now we want to save this value to state
+Within `<Expenses>` import `useState`
+initialize `useState` and set the return value and function to variables
+call the function returned by `useState` to update the value of state within the handler where year is updated
+
+Bonus:
+Use two way binding to bind the `yearFilter` value to `<ExpensesFilter>` so that if we set an initial value with state then that will be reflected in the dropdown
+
+To do this in expenses add a property whenever we call `<ExpensesFilter>` where we can pass in the current state value for year
+```
+<ExpensesFilter selected={yearFilter} onYearSelect={yearSelectHandler} />
+```
+
+Then in `<ExpensesFilter>` we can set a default value within the select statement by just using the `value` attribute and passing in the `selected` prop we just created
+```
+<select value={props.selected} onChange={yearSelectHandler}>
+  ...
+```
+
+Now back in `<Expenses>` we can set an initial value in state and it should change within the dropdown depending on what year we select
+```
+const [yearFilter, setYearFilter ] = useState('2021');
+```
+
+If you want to be fancy you can pass in the current year so that way if you reopen this app at a later date the correct date will be shown
+Simply create a new Date object, get the current year from it, convert it to a string and save it to a variable 
+Then set that variable as the default value for state
+```
+const initialYear = new Date().getFullYear().toString();
+
+const [yearFilter, setYearFilter ] = useState(initialYear);
+```
