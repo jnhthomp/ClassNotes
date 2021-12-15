@@ -1407,3 +1407,59 @@ const initialYear = new Date().getFullYear().toString();
 
 const [yearFilter, setYearFilter ] = useState(initialYear);
 ```
+
+
+
+
+___
+## 61. Controlled vs Uncontrolled Components & Stateless vs Stateful Components
+Last lesson we did something in React that we have done before but haven't put a name to
+We created something called a controlled component
+Whenever you use two way binding you are controlling a component
+What does this mean?
+It means a value used within the component is passed on to a parent component and is received from a parent component
+Both the currently set value and the function which sets the value is not part of `<ExpensesFilter>`
+Instead `<ExpensesFilter>` is just a component that has a ui, a dropdown, and some listeners/props but the logic is in the parent component
+Technically there is no difference, `<ExpensesFilter>` is still a regular component, this is just a name for this pattern of usage
+```
+Controlled components short: Values within the component are not controlled by the component itself but rather by a parent component  
+```
+
+Another important term/concept is presentational vs stateful or stateless vs stateful or dumb vs smart components
+These are all different names for the same thing
+Basically it is what it sounds like
+In stateful components the component manages state
+Components that don't manage any state are just
+
+We can go ahead and make our `<ExpenseItem>` stateless instead of stateful now by removing the button that changes the title since it was only there for demoing `onChange`
+
+Remove the button line 
+Remove the `clickHandler` line
+Remove state import
+remove `useState` method and line
+change `<h2>{title}</h2>` to `<h2>{props.title}</h2>`
+
+Afterwords `<ExpenseItem>` should look like this:
+```
+import './ExpenseItem.css';
+import ExpenseDate from './ExpenseDate';
+import Card from '../../UI/Card';
+
+const ExpenseItem = (props) => {
+
+  return (
+    <Card className="expense-item">
+      <ExpenseDate date={props.date} />
+      <div className="expense-item__description">
+        <h2>{props.title}</h2>
+        <div className="expense-item__price">$ {props.amount}</div>
+      </div>
+    </Card>
+  );
+}
+
+export default ExpenseItem
+```
+
+Keep in mind that stateful components are not inherently better than stateless components they are just used differently
+Most components will only focus on outputting something and maybe transforming logic but only a few components typically actually handle state
