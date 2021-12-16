@@ -466,3 +466,177 @@ if(filteredExpensees.length > 0) {
 }
 ```
 Both these approaches do the same thing in just about the same way so either approach should be fine
+
+
+
+
+___
+## 68. Adding Conditional Return Statements
+Before we continue let's restructure the expenses component and we will extract the list logic to a new component just to make the expenses component a little more lean
+
+To do that we will add an `<ExpensesList>` component to our project
+create: `src/components/Expenses/ExpensesList.jsx`
+create: `src/components/Expenses/ExpensesList.css`
+
+For `ExpensesList.css` copy/paste the following: https://github.com/academind/react-complete-guide-code/blob/05-rendering-lists-conditional-content/extra-files/ExpensesList.css
+```
+.expenses-list {
+  list-style: none;
+  padding: 0;
+}
+
+.expenses-list__fallback {
+  color: white;
+  text-align: center;
+}
+```
+
+Then in `ExpenseList.jsx` we will add our import, component function, and export statement
+
+This is where the teachers approach being different starts to rub with our app
+Since he has done the filtering seperately from mapping on his array he has an inbetween step where he can handle his `expensesContent` variable that we don't have
+He wants to continue leaving the filter within `<Expenses>` and only pass the needed filtered array into `<ExpenesesList>` where it will be mapped
+If we were to convert straight from how I have the project both the filtering and the mapping would be done in `<ExpensesList>` which is also fine, I just need to make those adjustments and pass in `yearFilter` into `<ExpensesList>` when I pass in the other data so I can filter within `<ExpensesList>`
+I actually think this is a better approach anyway since if I wanted to reuse this list I wouldn't have to copy the filter functionality from `<Expenses>` I would simply need to pass a year into the component and the filter would work
+First I need to remove the `expensesList` variable where I filter and map and the if statement that outputs the 'No Expenses Found' message from `<Expenses>`
+```
+import ExpensesFilter from './ExpensesFilter/ExpensesFilter';
+
+const Expenses = (props) => {
+
+  const initialYear = new Date().getFullYear().toString();
+
+  const [yearFilter, setYearFilter ] = useState(initialYear);
+
+  // useEffect method will run whenever the page reloads (such as after a state change)
+  //useEffect(() => console.log(yearFilter));
+
+  const yearSelectHandler = (yearSelected) => {
+    setYearFilter((prevState) => {
+      return yearSelected
+    });
+  };
+
+  return (
+    <Card className="expenses">
+      <ExpensesFilter selected={yearFilter} onYearSelect={yearSelectHandler} />
+      {expensesList}
+    </Card>
+  )
+}
+
+export default Expenses
+```
+
+For now I just dropped them both into `<ExpensesList>`
+Next I want to make sure that `<ExpensesList>` has access to everything theses this variable and if statement need
+We can see that the `expensesList` uses the `<ExpenseItem>` component when it is mapping so we will need to import that
+```
+import ExpenseItem from './ExpenseItem/ExpenseItem';
+```
+The next thing that I see is that I am accessing `props.expenses` to access the expenses array so I will need to make sure that is passed in when this component is called as well as `yearFilter` which is a variable from `<Expenses>` that should also be passed in as a prop and be adjusted accordingly
+```
+let expensesList = props.expenses.filter(el =>
+    el.date.getFullYear().toString() === props.yearFilter).map((el) => {
+      return (
+        <ExpenseItem
+          key={el.id}
+          date={el.date}
+          title={el.title}
+          amount={el.amount}
+        />
+      );
+    }
+    );
+```
+
+Now we want to go back to `<Expenses>` and import our new component, call it, and be sure to pass in the variables it needs access to as props
+```
+import ExpensesList from './ExpensesList';
+```
+
+```
+<ExpensesList expenses={props.expenses} yearFilter={yearFilter} />
+```
+
+Now it should be just about ready but we still need to return jsx from `<ExpensesList>` for it to be a valid component
+Currently it build the expenses list and can tell if that list has items and should show an alternate message or not but it doesn't ever actually output that result
+
+For our return we want to return and create an unorderd list and give this unordered list a className of `expenses-list`
+Inside of this unordered list we want to output our `expensesList` just as we did before
+```
+return (
+  <ul className="expenses-list">
+    {expensesList}
+  </ul>
+);
+```
+
+At this point the teacher actually made a change to make his project closer to mine by showing the map results by default within the jsx return (still inline but pretty much the same approach as what I am doing I just use a variable and include filtering)
+But his if statement will return the error message if there are no items in his `expenseList` just like mine since it is set to 0
+
+The differnce here though is that his if statement will return alternate jsx instead of re-assigning the value of `expensesList` this is different because it avoids the original return statement of the component all together and gives a completely alternate return jsx 
+Before we only wanted to change a small part so we couldn't take this approach
+
+```
+import './ExpensesList.css';
+import ExpenseItem from './ExpenseItem/ExpenseItem';
+
+const ExpensesList = props => {
+  let expensesList = props.expenses.filter(el =>
+    el.date.getFullYear().toString() === props.yearFilter).map((el) => {
+      return (
+        <ExpenseItem
+          key={el.id}
+          date={el.date}
+          title={el.title}
+          amount={el.amount}
+        />
+      );
+    }
+    );
+
+  if (expensesList.length === 0) {
+    return <h2 className="expenses-list__fallback">No Expenses Found For Selected Year</h2>
+  }
+
+  return (
+    <ul className="expenses-list">
+      {expensesList}
+    </ul>
+  );
+
+}
+
+export default ExpensesList
+```
+
+Now if the length of `expensesList` is 0 then we will avoid the components normal return statement entirelyand instead the component will return the jsx within the if statement
+
+If you load the page it should work just as before
+The only change suggestion to consider would be to get our project 100% in line with the teachers version we could remove filtering from here and set it equal to a variable within `<Expenses>` and pass that variable in instead of the current one but it is unecessary and a quick fix later if we need
+
+One last tiny tweak is that since we are rendering an unordered list we want each `<ExpenseItem>` to be wrapped in a `<li>` tag by wrapping the card component call in `<ExpenseItem>`
+```
+import './ExpenseItem.css';
+import ExpenseDate from './ExpenseDate';
+import Card from '../../UI/Card';
+
+const ExpenseItem = (props) => {
+
+  return (
+    <li>
+      <Card className="expense-item">
+        <ExpenseDate date={props.date} />
+        <div className="expense-item__description">
+          <h2>{props.title}</h2>
+          <div className="expense-item__price">$ {props.amount}</div>
+        </div>
+      </Card>
+    </li>
+  );
+}
+
+export default ExpenseItem
+
+```
