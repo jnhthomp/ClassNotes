@@ -330,3 +330,139 @@ const filteredExpensees = props.items.filter (expense => {
 ```
 
 Now instead of mapping `props.items` the teacher then maps the `filteredExpenses` array he just created which is what we did
+
+
+
+
+___
+## 67. Outputting Conditional Content
+Now our filter is working but when we look at pages that have no data (such as if we never added any expenses for the year 2019 or something)it is just kind of blank 
+It would be better if we had some kind of messag like "No Expenses Within Given Time Period" to display IF there are no expences
+
+The teacher wants to do this in-line with our jsx return
+
+We cannot use if statements in jsx expressions but we can use ternary operators which will work
+remember ternary operators work by `condition ? execute if true : execute if false`
+
+So first we will set the condition which is that the length of our filtered expenses list is 0
+If that is true and it is 0 then we want to output a short sentence explaining that there were no expenses
+If that is false and expensesList.length > 0  then we will output the expensesList as normal
+```
+expensesList.length === 0 ? <p>No Expenses Found</p> : expensesList
+```
+
+If we replace our original jsx `expensesList` variable call with this expression then we will get exactly the functionality we were looking for
+```
+<Card className="expenses">
+  <ExpensesFilter selected={yearFilter} onYearSelect={yearSelectHandler} />
+  {expensesList.length === 0 ? <p>No Expenses Found For Time Period</p> : expensesList}
+</Card>
+```
+
+The teacher then shared another trick/approach we can use
+It turns out that in js if you use `comparison && return` and if the comparison turns out to be true then the return is returned
+It basically works like a short if statement so we could instead turn our ternary expression into 2 of these short expressions
+```
+{expensesList.length === 0 && <p>No Expenses Found</p>}
+{expensesList.length > 0 && expensesList}
+```
+Keep in mind that the teacher still has his `filteredExpenses` list being mapped inline with his jsx return so his looks like:
+```
+{filteredList.length === 0 && <p>No Expenses Found</p>}
+{filteredList.length > 0 && 
+  filteredList.map((el) => (
+      <ExpenseItem
+        key={el.id}
+        date={el.date}
+        title={el.title}
+        amount={el.amount}
+      />
+    );
+  );}
+```
+
+This can start to get really busy so I think that he is going to transition to doing it closer to my way to clean up his jsx return statement a little bit
+
+The teacher decided to make a new variable called `expensesContent` that is assigned a default value of our message of no content being found
+We can return this value within our jsx and have it show as normal as I have been doing with `expensesList`
+```
+let expensesConst = <p>No Expenses Found</p>
+```
+
+Now before the return statement he adds an if statement to check if his `filteredExpenses.length > 0` and if so then return the jsx `.map` stuff he is doing up top
+
+For me it is a little more simple
+Since I already have the returned `<ExpenseItem>` calls stored in a variable and it is my filterd list I can just show it as I have been except if it has a length of 0 set expensesList to be the 'No Expenses Found' message
+```
+import { useState, useEffect } from 'react';
+import './Expenses.css';
+import ExpenseItem from './ExpenseItem/ExpenseItem';
+import Card from '../UI/Card';
+import ExpensesFilter from './ExpensesFilter/ExpensesFilter';
+
+const Expenses = (props) => {
+
+  const initialYear = new Date().getFullYear().toString();
+
+  const [yearFilter, setYearFilter ] = useState(initialYear);
+
+  // useEffect method will run whenever the page reloads (such as after a state change)
+  //useEffect(() => console.log(yearFilter));
+
+  let expensesList = props.expenses.filter(el => 
+    el.date.getFullYear().toString() === yearFilter).map((el) => 
+      {
+        return (
+          <ExpenseItem
+            key={el.id}
+            date={el.date}
+            title={el.title}
+            amount={el.amount}
+          />
+        );
+      }
+  );
+
+  const yearSelectHandler = (yearSelected) => {
+    setYearFilter((prevState) => {
+      return yearSelected
+    });
+  };
+
+  if (expensesList.length === 0){
+    expensesList = <p>No Expenses Found For Time Period</p>
+  }
+
+  return (
+    <Card className="expenses">
+      <ExpensesFilter selected={yearFilter} onYearSelect={yearSelectHandler} />
+      {expensesList}
+    </Card>
+  )
+}
+
+export default Expenses
+```
+
+The teachers solution is similar except instead of setting `expensesList`
+He instead sets `expensesContent` and it is initially equal to the 'No Expenses Found' string
+Then he checks the length of his filtered expenses with an if statement and if is long enough those expenses are mapped to `<ExpenseItem>` calls
+```
+const filteredExpenses = props.items.filtere((expense) => {
+  return expense.date.getFullYear().toString() === filteredYear:
+});
+
+let expensesContent = <p>No Expenses Found</p>
+
+if(filteredExpensees.length > 0) {
+  expensesContent = filteredExpenses.map((expense) => (
+    <ExpenseItem
+      key={expense.id}
+      title={expense.title}
+      amount={expense.amount}
+      date={expense.date}
+    />
+  ));
+}
+```
+Both these approaches do the same thing in just about the same way so either approach should be fine
