@@ -270,3 +270,63 @@ let expensesList = props.expenses.map((el) => {
 
 If you make these changes you should see that any new divs rendered to the screen are the only divs that are updating
 To get rid of the error message simply make sure that there is an `id` value within the `INITIAL_EXPENSES` array as well
+
+
+
+
+___
+## Assignment 3: Time to Practice: Working with Lists
+Time to practice what you learned about outputting list content.
+
+Now we have learned how to output lists of data the challenge is to try to make the filter work correctly
+That is if 2021 is the selected year in the filter then only expenses from 2021 are shown etc.
+
+There are 2 hints:
+1. You can filter arrays with the `.filter()` method (look this up if you aren't familiar)
+2. You shouldn't think too complicated - you should not change the overall expenses array. Instead you might want to show a new array based on the full expenses array which would be a subset of the full expenses array for the chosen filter. 
+
+My Solution:
+Since we don't want to change the `expenses` array from state we only want to filter through it
+We can try to utilize the `filter()` method
+`filter()` will accept a check on an element and if it returns true add it to an array that is returned after all elements are processed. 
+This is kind of like a selective version of map except you aren't making changes to the data although they can be used as alternatives to each other if you set it up with the right if statements
+what we want to check is that the year of the element we are checking is equal to the year being shown if it is then we want that returned to an array we wil run our already existing map function on
+so to do  that we would use something like
+```
+array.filter((el) => el.date.getFullYear() == yearFilter)
+```
+
+we can just plug this in right where we are creating our `<ExpenseItems>` within `<Expenses>` and since `yearFilter` is tied to state when it is updated we should get a rerender and don't have to worry about this not updating
+```
+  let expensesList = props.expenses.filter(el => el.date.getFullYear() == yearFilter).map((el) => {
+    return (
+      <ExpenseItem
+        key={el.id}
+        date={el.date}
+        title={el.title}
+        amount={el.amount}
+      />
+    );
+  });
+```
+
+Now when you use the dropdown the correct years should be filtered out and if you add ones outside of the year currently displayed you will see them as soon as you switch to that year
+
+
+Teacher Solution:
+The teacher also chooses to start in the `<Expenses>` component and filter based on `props.expenses` where before he had the expenses list being written in-line he now chooses to create a new const called `filteredExpenses` where he will run the filter method called on `props.expenses`
+```
+const filteredExpenses = props.items.filter()
+```
+
+Now to fill in the argument for the filter method
+The filter method will accept a function that has the current element available then you make a comparison and if that comparison returns true that element is returned
+So we want to check if the date for an expense has a year that matches our filterd year
+He takes the same approach and runs the `getFullYear()` on expenses except he does convert it to a string with `toString()` which allows him to use strict equality which is much better
+```
+const filteredExpensees = props.items.filter (expense => {
+  return exepense.date.getFullYear().toString() === filteredYear;
+});
+```
+
+Now instead of mapping `props.items` the teacher then maps the `filteredExpenses` array he just created which is what we did
