@@ -1401,3 +1401,30 @@ const expenseData = {
   date: new Date(`${userInput.enteredDate} EST`)
 };
 ```
+
+
+
+
+___
+## Quiz 3: Learning Check: Outputting Lists & Conditional Content
+Question 1: What does this code snippet do?
+```
+someArray.map((element) => <p>{element}</p>);
+```
+  A: It's a special React syntax that tells react to loop through a list of elements and output some JSX code
+  B: It transforms an array (someArray) into a new array full of JSX elements (which can be output by React)
+  C: It tells React to output this paragraph conditionally
+
+Question 2: Why should you add the special "key" prop to list JSX elements
+  A: It's required for React to be able to loop through the elements
+  B: It's required for the map() method to work correctly
+  C: It's required for React to correctly identify and update (if needed) the list elements
+
+Question 3: What's true about outputting conditional content in React components
+  A: You need a special conditional content syntax in your JSX code
+  B: You need to create multiple, alternative components from which React then chooses
+  C: You can work with regular ternary expressions or if checks to output or return different results in/from your component
+
+  1:B
+  2:C
+  3:C
