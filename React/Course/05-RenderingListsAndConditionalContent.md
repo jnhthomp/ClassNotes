@@ -640,3 +640,297 @@ const ExpenseItem = (props) => {
 export default ExpenseItem
 
 ```
+
+
+
+
+___
+## Assignment 4: Time To Practice: Conditional Content
+Now that we know about conditional content we can practice
+Currently there is a form at the top of the screen that is always show and used to add new expenses
+
+We want to make it so that when a new expense is added and the 'Add Expense' button is clicked the data is still submitted but then the form is hidden from view
+While the form is hidden there should be an 'Add Expense' button visible that when clicked brings the form back to view again
+When the form is in view there should be a new button that says 'cancel'
+when clicked this button hides the form from view and does not submit the form content as a new expense
+
+Goals
+1. 'Add Expense' button on form hides form after submitting data
+2. 'Cancel' button on form hides form without submitting data
+3. 'New Expense' button is displayed when form is hidden
+4. When 'New Expense' button is clicked form is shown to user
+
+
+My Solution
+First I know that the expense form is displayed within the `<NewExpense>` component
+From an organizational standpoint it would make sense to control whether the form is hidden or not from within the `<NewExpense>` component and if the form shouldn't be show then to hide/replace it there
+However in order to get everything to re-render when needed it is necessary to change state to see these changes
+We could always add state to our newExpense to help track which isn't too hard
+First we need to import `useState`
+```
+import {useState} from 'react';
+```
+
+Then we want to add a variable to our state to track whether or not we are showing the form
+This can be a simple boolean
+```
+const [showForm, setShowForm] = useState(true);
+```
+
+Now we want to add an if statement that shows a button instead of the form if `showForm` is false
+```
+if(!showForm){return <button>New Expense</button>}
+```
+
+We can test that this works simply by manually setting the default value for `showForm` to false in our `useState` statement
+```
+const [showForm, setShowForm] = useState(false);
+```
+
+Now we have the basic functionality switch set we can clean this up a little more so that it will be easier to implement
+Right now the button that appears is not styled and we lose our background because when we call button we are no longer returning jsx wrapped in the `"new-expense"` class div
+Instead of returning jsx we can adjust the value of a variable and put that variable within our jsx so that we don't have to rewrite that div
+Then if we ever change the class name on that div we only have to change it in one place
+We will make a new variable called `newExpenseContent` then we will write 2 if statements
+one will be if `showForm==true` then we will set `newExpenseContent` to be filled with jsx for the `<ExpenseForm>` component
+The other will be if `showForm==false` then we will set `newExpenseContent` to be the button
+```
+let newExpenseContent=null;
+```
+```
+if(showForm){
+  newExpenseContent=(<ExpenseForm onSaveExpenseData={saveExpenseHandler} />)
+}
+if(!showForm){
+  newExpenseContent=(<button>New Expense</button>)
+}
+```
+
+Then just remember to plug in the `newExpenseContent` into our returned jsx
+```
+return (
+  <div className="new-expense">
+    {newExpenseContent}
+  </div>
+);
+```
+
+Now we have the functionality totally working we just have to force it to happen at the correct time
+The first thing we need to make happen is get the form to hide when we add a new expense
+Remember to switch the default value of `showForm` back to true so we can see the form on page load again
+```
+const [showForm, setShowForm] = useState(true);
+```
+
+Now we need to create a function that will call `setShowForm` to change the value to false
+```
+const hideFormHandler = () => {
+  setShowForm(false);
+}
+```
+I also went ahead and made the opposite function to show the form since we will need that later
+```
+const showFormHandler = () => {
+  setShowForm(true);
+}
+```
+
+Now we can just call this `hideForm` function where needed
+The first place we need it is when an expense is saved
+at the very end of our `saveExpenseHandler` we can call this function to hide the form as the last action after submitting the data to `<App>` via the `onAddExpense` prop/function
+```
+const saveExpenseHandler = (enteredExpenseData) => {
+  const expenseData = {
+    ...enteredExpenseData,
+    id: Math.random().toString()
+  };
+  props.onAddExpense(expenseData);
+  hideFormHandler();
+};
+```
+
+Now when we add an expense the expense will show up in our list still but the form will be hidden away immediately
+
+Next we can add the show form function to the button that is displayed while the form is hidden
+Since we already have both the button and the function we just have to connect them with `onClick`
+```
+if (!showForm) {
+  newExpenseContent = (<button onClick={showFormHandler}>New Expense</button>)
+}
+```
+
+The last thing to do is to add a new cancel button to our `<ExpenseForm>` which will hide the expense form as needed
+We can actually just pass the `hideFormHandler` function in as a prop
+Then activate that function as an `onClick`
+```
+if (showForm) {
+  newExpenseContent = (<ExpenseForm onCancelFormHide={hideFormHandler} onSaveExpenseData={saveExpenseHandler} />)
+}
+```
+Then just add this button above or below the add expense button in the form
+```
+<button onClick={props.onCancelFormHide}>Cancel</button>
+```
+
+Now all of the functionality should be there
+The form is shown by default
+If you click save it will save and then hide the form
+If you click cancel it will hide the form without submitting
+If you click new expense it will reshow the form
+
+Here is my completed `<NewExpense>` component:
+NewExpense.jsx
+```
+import { useState } from 'react';
+import './NewExpense.css';
+import ExpenseForm from './ExpenseForm';
+
+const NewExpense = (props) => {
+  let newExpenseContent = null;
+
+  const [showForm, setShowForm] = useState(true);
+
+  const hideFormHandler = () => {
+    setShowForm(false);
+  }
+
+  const showFormHandler = () => {
+    setShowForm(true);
+  }
+
+  const saveExpenseHandler = (enteredExpenseData) => {
+    const expenseData = {
+      ...enteredExpenseData,
+      id: Math.random().toString()
+    };
+    props.onAddExpense(expenseData);
+    hideFormHandler();
+  };
+
+  if (showForm) {
+    newExpenseContent = (<ExpenseForm onCancelFormHide={hideFormHandler} onSaveExpenseData={saveExpenseHandler} />)
+  }
+  if (!showForm) {
+    newExpenseContent = (<button onClick={showFormHandler}>New Expense</button>)
+  }
+
+  return (
+    <div className="new-expense">
+      {newExpenseContent}
+    </div>
+  );
+};
+
+export default NewExpense;
+```
+
+ExpenseForm.jsx only had one line change and that was to add the button it is a long component so I will only include the relevant snippet
+ExpenseForm.jsx
+```
+...
+       <div className="new-expense__control">
+          <label>Date</label>
+          <input 
+            type="date" 
+            min="2019-01-01" 
+            max="2022-12-31" 
+            value={userInput.enteredDate} 
+            onChange={dateChangedHandler}
+          />
+        </div>
+        <button onClick={props.onCancelFormHide}>Cancel</button> //<=This Button
+        <button type="submit">Add Expense</button>
+      </div>
+    </form>
+  );
+};
+```
+
+Teacher Solution:
+The teacher takes the same approach as me and thinks that we should be triggering the change for the form in our `<NewExpense>` component
+In order to get started he just goes ahead and adds the button now
+
+```
+<div className="new-expense">
+  <button>Add New Expense</button>
+  <ExpenseForm onSaveExpenseData={saveExpenseHandler} />
+</div>
+```
+
+Now the teacher is again on the same track as me and reasons that because we have two different states to maintain (one were the form is hidden and one where the form is showing) we will need to register and manage state in this component
+First import `useState`
+```
+import { useState } from 'react';
+```
+
+Then we can call it within the component
+Again the teacher agrees that the best bet is to use a boolean that simply tells whether the form should be shown or not with an initial value of false
+```
+const [isEditing, setIsEditing] = useState(false);
+```
+
+Then he creates a `startEditingHandler` which changes the value of `isEditing` to true
+This is the same thing as my `showFormHandler`
+```
+const startEditingHandler = () => {
+  setIsEditing(true);
+}
+```
+This function should be triggered when the "Add New Expense" button that he created above is clicked so we can add the `onClick` prop to that button and point it at this function
+```
+<div className="new-expense">
+  <button onClick={startEditingHandler}>Add New Expense</button>
+  <ExpenseForm onSaveExpenseData={saveExpenseHandler} />
+</div>
+```
+Now we can use the `isEditing` state to control which of the two elements below are show (button or form)
+
+He does this inline with the && technique that we discussed earlier instead of changing the value of a variable like I do which he mentions is also valid or you could use a ternary expression inline
+With the && technique remember it is `condition && returnedIfTruthy`
+We want the button to show when `isEditing` is false so we can use `!isEditing && buttonStuff...`
+We want the form to show when `isEditing` is true so we can use `isEditing && formStuff...`
+```
+<div className="new-expense">
+  {!isEditing && <button onClick={startEditingHandler}>Add New Expense</button>}
+  {isEditing && <ExpenseForm onSaveExpenseData={saveExpenseHandler} />}
+</div>
+```
+Now when the page loads you see the button instead of the form and if you click the button you see the form
+
+Now he is going to add the cancel button inside of the form and make sure when the form is submitted we also stop editing
+
+Within `<ExpenseForm>` he adds a cancel button above the 'Add Expense' button
+One thing he did that I did not do was set the type of the button to button just to ensure that it does not accidentally submit the form
+Then he addsd a click handler which will execute a function when the button is pressed
+We will put this function in the `<NewExpense>` component though so the button will need to get this function passed down from props he calls this `onCancel` but the name is up to you
+```
+...
+<button type="button" onClick={props.onCancel}>Cancel</button>
+<button type="submit">Add Expense</button>
+```
+Next we have to add this method to the `<NewExpense>` component and pass it down to the form so it can be used in the button
+First we will go ahead and just add it to the form since we already have a name for it 
+```
+{isEditing && <ExpenseForm onSaveExpenseData={saveExpenseHandler} onCancel={stopEditingHandler} />}
+```
+Then we need to create the `stopEditingHandler` which will simply change the value of `isEditing` to false
+This is just the opposite of the `startEditingHandler` above and the same as my `hideFormHandler`
+```
+const stopEditingHandler = () => {
+  setIsEditing(false);
+}
+```
+
+Lastly he needs to connect the `stopEditingHandler` to the `saveExpenseDataHandler` instead of calling the `stopEditingHandler` though he just manually sets `isEditing` to false with `setIsEditing`
+I just kept it pointing at stopEditingHandler because if we wanted to do something else whenever we stop editing in the future we only have to make changes in one place
+```
+const saveExpenseHandler = (enteredExpenseData) => {
+  const expenseData = {
+    ...enteredExpenseData,
+    id: Math.random().toString()
+  };
+  props.onAddExpense(expenseData);
+  setIsEditing(false);
+};
+```
+Now after doing all of this all buttons and functionality should work as expected
