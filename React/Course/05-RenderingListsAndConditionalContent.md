@@ -934,3 +934,157 @@ const saveExpenseHandler = (enteredExpenseData) => {
 };
 ```
 Now after doing all of this all buttons and functionality should work as expected
+
+
+
+
+___
+## 69. Demo App: Adding a Chart
+Now our expense tracker is taking shape and is pretty much finished in that it has most of the core functionality and features
+Part of the original state that is still missing is the chart that shows a graphical representation of our expenses per month
+This is the part that we will cover next
+
+To do this we will start by making a new component folder called `'chart'` since it will hold all of the components needed for the chart
+There will be two main components for the chart
+The first is the chart itself
+The second is inside of the chart we have bars which will be their own component that are called and displayed inside the chart
+
+Get the lesson CSS:
+Chart.css: https://github.com/academind/react-complete-guide-code/blob/05-rendering-lists-conditional-content/extra-files/Chart.css
+```
+.chart {
+  padding: 1rem;
+  border-radius: 12px;
+  background-color: #f8dfff;
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+  height: 10rem;
+}
+```
+ChartBar.css: https://github.com/academind/react-complete-guide-code/blob/05-rendering-lists-conditional-content/extra-files/ChartBar.css
+```
+.chart-bar {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart-bar__inner {
+  height: 100%;
+  width: 100%;
+  border: 1px solid #313131;
+  border-radius: 12px;
+  background-color: #c3b4f3;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.chart-bar__fill {
+  background-color: #4826b9;
+  width: 100%;
+  transition: all 0.3s ease-out;
+}
+
+.chart-bar__label {
+  font-weight: bold;
+  font-size: 0.5rem;
+  text-align: center;
+}
+```
+
+Create the following four files
+Create: src/components/Chart/Chart.css (copy/paste css from above)
+Create: src/components/Chart/Chart.jsx
+Create: src/components/Chart/ChartBar.css (copy/paste css from above)
+Create: src/components/Chart/ChartBar.jsx
+
+Now lets start with the `<Chart>` component
+Start by just creating the component function and export statement
+```
+export const Chart = () => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default Chart;
+```
+
+Now how should we approach this chart?
+Within the chart we want to render chart bars but how?
+Eventually we will import the `<ChartBar>` component so we can go ahead and add it now
+```
+import ChartBar from './ChartBar.jsx';
+```
+
+now we can add the chart className from our css file to our returned div
+```
+import './Chart.css';
+import ChartBar from './ChartBar.jsx';
+export const Chart = () => {
+  return (
+    <div className="chart">
+      
+    </div>
+  )
+}
+
+export default Chart;
+```
+
+Nowe inside of this div is where we want our bars
+We could render 12 chart bars which would be easy and dirty but we can make it cleaner and dynamic
+Doing it this way means that we aren't necessarily restricted to months so we can display charts for other periods of time too like weeks or years
+To do this we can say something like
+When we use the `<Chart>` component in our application we should receive the data points that would be used as props
+This would make the chart component pretty configurable and any components that use the chart can decide for themselves what kind of data to send/show
+So to do this we will display our data dynamically by going through an array of data points and mapping them to a chart bar
+We have done something similar before when rendering expenses so this isn't entirely new
+Since we know we want to receive our data as props we can start writing as if we have that data and then push it in later
+
+What we are going to want to do is receive these data points as an array from props, run `map` on that array and for each data point map it to a `<ChartBar>` component
+In the most simple form that would look something like this:
+```
+props.dataPoints.map(dataPoint => <ChartBar />)
+```
+At this point we don't have any data passed to our component yet but since we are writing this we can decide now what we should receive from each data point
+The important things to receive are the date and amount
+These will both need to be passed to the `<ChartBar>` component as props so it knows how big to make each bar as well as where to place it within the `<Chart>` component
+```
+<ChartBar 
+  value={dataPoint.value}
+  label={dataPoint.label} //<= Will be a date value
+/>
+```
+
+Now there are two more things that we still need to pass into here
+In order for our chart to have any sense of scale we need to know how 'tall' to make it
+This needs to be dynamic in that it will be equal to the number of the highest bar in the chart
+To do this we will pass in a `maxValue` prop to `<ChartBar>` but set it initially as null
+We will use logic later to extract the highest `dataPoint.value` value from our list and update it with that number
+```
+<ChartBar 
+  value={dataPoint.value}
+  maxValue={null}
+  label={dataPoint.label} //<= Will be a date value
+/>
+```
+The very last thing is one of the same things we needed to include when we were making our expenses list
+This is a key that is used by react as a unique identifier for each instance of the component
+Remember we just have to use the special keyword `key` prop and set a unique identifier
+We can either use the date label since there will only be 1 bar for each period of time or we can use an id either one is fine
+```
+<ChartBar 
+  key={dataPoint.label}
+  value={dataPoint.value}
+  maxValue={null}
+  label={dataPoint.label} //<= Will be a date value
+/>
+```
+Now we are set to start working on the `<ChartBar>` component and it should be receiving all the props it needs once we connect `<Chart>` to the rest of our app and pass it data
