@@ -1376,3 +1376,28 @@ pass the filtered list down to `<ExpensesList>` component
 
 Now the Expenses Tracker is complete!
 That's not to say there aren't improvements or things that could be done better but there is still plenty to learn in further lessons
+
+
+
+
+___
+## 72. Fixing a Small Bug
+The demo application has a small bug at the moment: When adding multiple values, those values are added as strings instead of numbers.
+
+Fixing it is easy though, simply make sure you enforce a number conversion:\
+In `<ExpenseForm>` change the following in the `submitHandler` function:
+```
+const expenseData = {
+  title: userInput.enteredTitle,
+  amount: userInput.enteredAmount,
+  date: new Date(`${userInput.enteredDate} EST`)
+};
+```
+to:
+```
+const expenseData = {
+  title: userInput.enteredTitle,
+  amount: +userInput.enteredAmount,
+  date: new Date(`${userInput.enteredDate} EST`)
+};
+```
