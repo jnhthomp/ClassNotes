@@ -1087,4 +1087,121 @@ We can either use the date label since there will only be 1 bar for each period 
   label={dataPoint.label} //<= Will be a date value
 />
 ```
+When finished our `<Chart>` component should look like this:
+```
+import './Chart.css';
+import ChartBar from './ChartBar.jsx';
+export const Chart = () => {
+  return (
+    <div className="chart">
+      {props.dataPoints.map(dataPoint =>( 
+        <ChartBar
+          key={dataPoint.label}
+          value={dataPoint.value}
+          maxValue={null}
+          label={dataPoint.label} //<= Will be a date value
+        />
+      ))}
+    </div>
+  )
+}
+
+export default Chart;
+```
+
 Now we are set to start working on the `<ChartBar>` component and it should be receiving all the props it needs once we connect `<Chart>` to the rest of our app and pass it data
+
+
+
+
+___
+## 70. Adding Dynamic Styles
+Now we have to build the `<ChartBar>` component
+We can start by importing the css we downloaded last lesson as well as creating a component function that accepts props and exporting it
+```
+import './ChartBar.css';
+
+const ChartBar = (props) => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default ChartBar
+```
+For our return statement we want to include a `'chart-bar'` className to match our css 
+Then within that div we want a nested div with a className of `'chart-bar__inner'`
+nested within the `'chart-bar__inner'` div we need to include two children that are siblings (not nested within each other)
+The first is `'chart-bar__fill'`
+The second is `'chart-bar__label'`
+```
+    <div className="chart-bar">
+      <div className="chart-bar__inner">
+        <div className="chart-bar__fill"></div>
+        <div className="chart-bar__label"></div>
+      </div>
+    </div>
+```
+The label div we just created will hold the label that we are passing into `<ChartBar>` via props so we can fill that now
+```
+<div className="chart-bar__label">{props.label}</div>
+```
+We  will also need to change the `chart-bar__fill` div
+This will work by defining how much the chart bar will be filled and define the background color
+There is still an important piece of information though and that is the overall height of the chart bar
+Of course the bar element has a height itself which is 100% of the chart but how much we fill each bar depends on how close each data point is to the max value
+We want to fill our chart bar by comparing our value for the given bar with the max value of the bars to be displayed
+For example if the max value was 100 and the bar we were showing was 50 then it should be about half the height of the chart and the other bar
+So we can use the thought process: 
+```(currentBarValue/maxValue)*100=chart-bar__fillPercentage```
+
+Lets make this function so we can start to pass values into our fill div
+First we will make a placeholder variable to hold an initial value of 0%
+This will be stored as a string value because we will pass it into our css which can only accept strings
+```
+let barFillHeight='0%'
+```
+
+Then we want to see if our `props.maxValue` is greater than 0 (double checking that our bars even have values)
+If so then we can use the thought process above to extract a percentage from our known values
+```
+  if(props.maxValue > 0) {
+    barFillHeight = Math.round((props.value/props.maxValue)*100)
+  }
+```
+We also added `Math.round` to get an even number
+Don't forget that we need a percentage sign on the end of this and it needs to be a string for `barFillHeight` to be how it was when we initialized it and so we can pass it in as a css value
+Adding a '%' as a string to the end will add the symbol for us and convert it to a string
+```
+barFillHeight = Math.round((props.value/props.maxValue)*100) + '%';
+``` 
+
+Now we want to set this value as the css height value for our `chart-bar__fill` div
+To do this we will set the style dynamically which we haven't done before
+To do this we can add a `style` attribute on our element which is a default attribute
+This is available in plain html but it works a little differently in react
+the style attribute wants to receive an object instead of a string
+This might look weird because of the double curly braces
+The first set is signifying we will be inserting a js expression
+The second set is signifying that expression will be an object
+Within this object we should use the css property keynames as our keynames
+The values will obviously set to the appropriate css values
+In our case we want to set the css `height` property to the `barFillHeight` value we just created above
+```
+<div className="chart-bar__fill" style={{height: barFillHeight}}></div>
+```
+```
+NOTE: Unrelated to the current lesson but if we wanted to set a css property that has a dash in it (like `background-color`) we would have to do it like this:
+
+style={{'background-color': 'red'}}
+
+We must add the quotes around it because adding a dash is not valid js and will throw an error but you can have a key that is a string which react will recognize and assign to the correct property
+Alternatively you can also use the camel case version of that name 
+style ={{backgroundColor: 'red'}}
+
+We aren't using this property right now but is important to know
+```
+
+Now the `<ChartBar>` component is complete we just need to use the `<Chart>` component and pass in the data points it needs
