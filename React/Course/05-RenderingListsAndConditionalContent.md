@@ -1205,3 +1205,174 @@ We aren't using this property right now but is important to know
 ```
 
 Now the `<ChartBar>` component is complete we just need to use the `<Chart>` component and pass in the data points it needs
+
+
+
+
+___
+## 71. Wrap Up & Next Steps
+Now we need to use the chart and pass in our data points
+To do this we will create yet another component that will hold the chart within expenses for us
+This is because if we were to ever add an income maybe we would want to reuse the chart and this would make it easier
+create: `src/componenets/Expenses/ExpensesChart.jsx `
+Add the react component function knowing that we will need to receive props to pass onto the chart itself
+We will be returning the chart itself so add that component to the return and make sure you are importing the file
+```
+import Chart from '../Chart/Chart.jsx';
+
+export const ExpensesChart = (props) => {
+  return (
+    <Chart />
+  )
+}
+```
+Now we need to define the data points that are passed into the chart
+To setup the data points in `<ExpensesChart>` we will create a new constant that is an array of objects 
+Remember we expected an array in Chart because we ran `map` on the datapoints we passed in
+Then on each of those datapoints we expected an object with multiple pieces of information
+The information we are expecting it to have is a `label` and `value` key
+`label` will correlate with a different month so we can prefill those with month names
+`value` will initially be 0 and we will add to the values as we take in data
+```
+const chartDataPoints = [
+  { label: 'Jan', value: 0 },
+  { label: 'Feb', value: 0 },
+  { label: 'Mar', value: 0 },
+  { label: 'Apr', value: 0 },
+  { label: 'May', value: 0 },
+  { label: 'Jun', value: 0 },
+  { label: 'Jul', value: 0 },
+  { label: 'Aug', value: 0 },
+  { label: 'Sep', value: 0 },
+  { label: 'Oct', value: 0 },
+  { label: 'Nov', value: 0 },
+  { label: 'Dec', value: 0 }
+]
+```
+For our data it would be best if we receive the `filteredExpenses` variable as a prop because it is already selected for a 12 month range as our chart is
+We will use this to go through all of the expenses for a selected year
+Determine the month it was in and add the value of the expense to the appropriate month in `chartDataPoints`
+We will use a for loop for this
+```
+for (const expense of props.expenses) {
+
+}
+```
+
+Now within the for loop we can extract the month because we are using a date object and dates have the functionality available to them and we can save this to a variable
+```
+for(const expense of props.expenses){
+  const expenseMonth = expense.date.getMonth(); // Starting at 0 => Jan
+}
+```
+remember getMonth will return a number correlating to the month but starting at 0 instead of 1
+This is actually fine (and even better) because we are storing our months in an array which also starts at 0 so our months already line up without any changes
+
+We can just use the month returned here as an index of `chartDataPoints` and be accessing the correct month 
+For example `chartDataPoints[expenseMonth]` with a march expense would give us access to the march object
+So we want to access that object and update that objects value by increasing it by the value of the current expense
+```
+for(const expense of props.expenses){
+  const expenseMonth = expense.date.getMonth();
+  chartDataPoints[expenseMonth].value += expense.amount;
+}
+```
+
+Now whenever we receive an list of expenses it will go through and add all of their values to the appropriate month
+Keep in mind that this list will need to be filtered by year as we do in `<Expenses>` because otherwise you would have months from multiple different years being added together instead of showing a single month
+
+We can pass these `chartDataPoints` to our `<Chart>` component
+```
+return (
+  <Chart dataPoints={chartDataPoints} />
+)
+```
+
+You might also remember we had a `max-value` within our chart that we never assigned the value of
+Now that we know all of the values that are being passed from `<ExpensesChart>` we can look at each month and determine which one has the highest value and what that value is
+
+Within `<Chart>` component we will create a new variable to hold the highest value
+```
+const totalMaximum = 
+```
+One js tool we have is called `Math.max()` this will find the biggest number in a list of numbers but it expects a comma separated list and we have an array of objects 
+That is ok because we can simply call `.map()` on our array of data points and at each object extract the value and add that to an array
+```
+const dataPointValues= props.dataPoints.map(el => el.value)
+```
+Now we have an array of values but `Math.max()` still wants a comma separated list
+We can handle that by simply using the spread operator!
+```
+const totalMaximum = Math.max(...dataPointValues)
+```
+Note that you should be able to combine the two lines above into one line:
+```
+const totalMaximum = Math.max(...(props.dataPoints.map(el => el.value)));
+```
+Now we just need to plug the `totalMaximum` into our `maxValue` argument to `<ChartBar>`
+```
+<ChartBar
+  key={dataPoint.label}
+  value={dataPoint.value}
+  maxValue={totalMaximum}
+  label={dataPoint.label}
+/>
+```
+
+Now the last thing to do is within our `<Expenses>` component to call our `<ExpensesChart>` component and pass in the data that it needs
+Remember to first import it then add it between the filter and the list and pass in the filtered expenses
+```
+return (
+  <Card className="expenses">
+    <ExpensesFilter selected={yearFilter} onYearSelect={yearSelectHandler} />
+    <ExpensesChart expenses={filteredExpenses} />
+    <ExpensesList expenses={props.expenses} yearFilter={yearFilter} />
+  </Card>
+)
+```
+Except remember if you did it my way the `filteredExpenses` are actually in the `<ExpenseList>` component
+That is ok we can fix that remember this is what we have in `<ExpensesList>`
+```
+let expensesList = props.expenses.filter(el =>
+  el.date.getFullYear().toString() === props.yearFilter).map((el) => {
+    return (
+      <ExpenseItem
+        key={el.id}
+        date={el.date}
+        title={el.title}
+        amount={el.amount}
+      />
+    );
+  }
+);
+```
+We are just passing the full list of expenses down to `<ExpensesList>` and filtering it there
+We just need to remove the filter and add it to `<Expenses>` and set the result equal to a variable
+Then we just need to pass that variable down to `<ExpensesList>` through props and run map on it
+```
+let expensesList = props.expenses.map((el) => {
+  return (
+    <ExpenseItem
+      key={el.id}
+      date={el.date}
+      title={el.title}
+      amount={el.amount}
+    />
+  );
+});
+```
+Add the filter to `<Expenses>` component
+```
+const filteredExpenses = props.expenses.filter(el => el.date.getFullYear().toString() === yearFilter);
+```
+pass the filtered list down to `<ExpensesList>` component
+```
+<Card className="expenses">
+  <ExpensesFilter selected={yearFilter} onYearSelect={yearSelectHandler} />
+  <ExpensesChart expenses={filteredExpenses} />
+  <ExpensesList expenses={filteredExpenses} yearFilter={yearFilter} />
+</Card>
+```
+
+Now the Expenses Tracker is complete!
+That's not to say there aren't improvements or things that could be done better but there is still plenty to learn in further lessons
