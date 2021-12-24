@@ -153,3 +153,32 @@ to:
 ```
 updatedGoals.unshift({ text: enteredText, id: Math.random().toString() });
 ```
+
+
+
+
+___
+## 87. Using the React Dev Tools
+Now we will look at a tool which can help us with react specific problems and can help us understand react better
+It is called "React Dev Tools"
+If you search for this you should find an entry here: https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en
+
+It is available for firefox as well but I have heard it works best with chrome 
+Simply click "add to chrome" and it should install itself
+You may need to restart your browser
+
+Once you have added them in your dev tools you will have two new tabs
+- components
+- profiler
+
+We will look at profiler alter in the course but will check out components now
+
+If we click the components tab we should see a little component tree
+What is good here is that you can see each individual component and component structure instead of just the html elements in the dom
+We can also see props and children that these components are getting
+You can also search for components and pick some settings
+
+You can also see hooks and not just props
+Remember how we said `useState` is a react hook?
+That is why it is listed there
+You can also change state values in here which can be helpful
