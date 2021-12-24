@@ -155,3 +155,83 @@ Now one issue with this approach is that it makes us do our of our styling inlin
 We could obviously copy or colors from the css file but that is not ideal and requires copy/paste and then our css file is only setting an initial style
 We only want to set conditional styling when the input is invalid but want to use the css we already have when the input is valid
 We will cover this in the next lesson
+
+
+
+
+___
+## 76. Setting CSS Classes Dynamically
+Now alternatively to setting inline styles we can instead apply classes
+This is a little cleaner since inline styles can get messy and difficult to keep clean
+
+What we can do to accomplish this is very similar to the last lesson only instead of applying a single style we want to change the `className` 
+We could have a class in our css file called `"invalid"` or something similar that gets applied when necessary and applies the regular classes all other times
+
+First lets prepare a class within `CoursInput.css` that does just that
+```
+.form-control.invalid input{
+  border-color: red;
+  background: #ffd7d7;
+}
+
+.form-control.invalid label {
+  color: red;
+}
+```
+This might look weird and how css works is not in the scope of this class but I will explain this snippet as best I can
+This will look for a div with the class `form-control` and also an `invalid` class attached to the same div
+Then on any `input` fields within that div the first set of style options would be applied
+On any `label` fields within that div the second set of style options would be applied
+You can see within our form we do infact have a div with the `form-control` class name and inside there are both input and label fields within that can receive the styling
+The only thing we have to do is add the `invalid` class to the parent div when needed
+```
+<form onSubmit={formSubmitHandler}>
+  <div className="form-control">
+    <label style={{color: !isValid ? 'red' : 'black'}}>Course Goal</label>
+    <input 
+      style={{borderColor: !isValid ? 'red' : 'black', backgroundColor: !isValid ? 'salmon' : 'transparent'}} 
+      type="text" 
+      onChange={goalInputChangeHandler} 
+    />
+  </div>
+  <Button type="submit">Add Goal</Button>
+</form>
+```
+
+So how do we apply the `invalid` class dynamically?
+First delete the old styling that we had appied before to `<input>` and `<label>`
+```
+...
+  <label>Course Goal</label>
+  <input type="text" onChange={goalInputChangeHandler} />
+...
+```
+
+Now on the div where we want to apply the `invalid` class we will need to use an expression instead of a string so it can utilize logic to be dynamic
+For this expression we want the final result to have two different outcomes
+When isValid is true we want the string to be `'form-control'` only
+When isValid is false we want the string to be `'form-control invalid'`
+To do this we will use backticks (`` same key as ~) and create something called a template literal
+
+Template literals are used to construct strings except they allow us to inject js logic into them much like how we can inject js logic into jsx with brackets `{}`
+To do this inside of the backticks we type anything we want to be a normal string as normal but any js logic goes inside of brackets preceeded by a dollar sign like this: 
+```
+`Normal string here ${js logic here}`
+```
+
+Since we always want the `form-control` class we can add that to the regular string part
+For the js logic we want to use a ternary expression that simply adds a string that says 'invalid' when `isValid` is false much like below
+Otherwise we don't want to add another class and just enter an empty string
+When finished the div should look like:
+```
+<div className={`form-control ${!isValid ? 'invalid' : ''}`}>
+  <label>Course Goal</label>
+  <input type="text" onChange={goalInputChangeHandler} />
+</div>
+```
+
+Now when `isValid` is true our div will only have the class `'form-control '` but when `isValid` is false our div will have the classes `'form-control invalid'`
+
+Now if done correctly you should see that with an invalid entry we still get our error styling but when valid input is detected it immediately goes back to the default styling
+
+This technique is very powerful because we are working with css style sheets and classes instead of inline styles which is generally a better practice
