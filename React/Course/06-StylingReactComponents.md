@@ -836,3 +836,114 @@ export default Button;
 
 Now if you preview the page and set the screen size to be smaller than 768 pixels (there is a tool in inspect element to make this easier if you weren't aware) you will see the button go to full width allowed in the div when taking into consideration padding and margins
 Otherwise the button is only as big as it needs to be
+
+
+
+
+___
+## 80. Using CSS Modules
+Whether you like how styled components works or not is a personal decision it is not wrong to prefer to use it or not it is just another approach that you can use
+Here we will practice yet another way to scope our styles called css modules
+
+The teacher (as well as me) personally prefer to leave our css outside of our js files and only have it live within css files
+Of course to do this we can use the approach we used at the beginning with global styles where we are careful with our naming
+However there is another approach that keeps the css patterns we are used to and allows us to scope our styling
+This is called css modules
+
+This feature is only available in projects that are configured to support it because it needs a code transformation that needs to happen before our code runs in the browser
+The good thing is that react projects created with `create-react-app` (which we did) are already configured to support these modules
+If you look within the `create-react-app` docs you will see how you can utilize css modules by default
+More infomation here: https://create-react-app.dev/docs/adding-a-css-modules-stylesheet
+
+It is simple to utilize these so lets get started
+We will again do this styling on our button so go ahead and comment out the styled component we made as well as the import but leave the code commented so it is available for reference
+Then re-add our old code that used jsx
+```
+
+
+
+// _______________styled-component version____________________
+// import styled from 'styled-components';
+
+// const Button = styled.button`
+//   width: 100%;
+//   font: inherit;
+//   padding: 0.5rem 1.5rem;
+//   border: 1px solid #8b005d;
+//   color: white;
+//   background: #8b005d;
+//   box-shadow: 0 0 4px rgba(0, 0, 0, 0.26);
+//   cursor: pointer;
+  
+//   @media (min-width: 768px) {
+//     width: auto;
+//   }
+
+//   &:focus {
+//     outline: none;
+//   }
+
+//   &:hover,
+//   &:active {
+//     background: #ac0e77;
+//     border-color: #ac0e77;
+//     box-shadow: 0 0 8px rgba(0, 0, 0, 0.26);
+//   }
+// `; 
+
+const Button = props => {
+  return (
+    <button type={props.type} className="button" onClick={props.onClick}>
+      {props.children}
+    </button>
+  );
+};
+
+export default Button;
+```
+
+We already have our `Button.css` file with our styles and we can leave that as is but there is one thing we need to change somewhere else
+We need to re-add our import to our button component that we were previously using for css except do it a little differently
+This time instead of just importing the file we are going to import a variable from the file (the name is irrelevant but we will call it styles)
+```
+import styles from './Button.css';
+```
+
+One more thing that we will need to do is rename our `Button.css` file
+Instead we will call it `Button.module.css`
+This will tell our code to transform our css into a code that will work with css modules
+
+Now we have the import but we haven't used the import yet
+We will use it to apply class names to our button
+Instead of adding the classname as a string we apply something dynamic and refer to the styles object we imported 
+Within that object we will have every class defined inside of that style sheet available as a property
+This means since we created a button class within our css file that class can be assigned with `styles.button`
+```
+const Button = props => {
+  return (
+    <button type={props.type} className={styles.button} onClick={props.onClick}>
+      {props.children}
+    </button>
+  );
+};
+```
+
+```
+SideNote:
+You must import react for css modules to work
+include: import React from 'react';
+```
+
+Now if we inspect our page we will see a different class added to the button
+It probably looks something like:
+```
+<button type="submit" class="Button_button__2tCdX">Add Goal</button>
+```
+The pattern is component name, underscore, classname, double underscore, unique hash
+This is making sure that each instance where this class is applied it receives a different classname but will receieve the correct css styles
+This ensures that our styles are scoped to our components and are only applied exactly where we want them applied
+
+What is happening behind the scenes is it is taking the classes from the css file and changes the names so they are unique
+If you import into the button component it will make unique versions of those classes for that component
+
+You can actually see this if you look at the style tags in inspect element you will see the button classes listed there
