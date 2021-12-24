@@ -446,3 +446,327 @@ This is done because it looks at the styles that we assigned
 Then it wraps these styles into generated classnames where it guarantees that every classname is unique
 Then it adds these classes as global css
 However since styled-components ensures these are unique we will never be able to affect other components within the app because the classnames are all unique
+
+
+
+
+___
+## 78. Styled Components & Dynamic Props
+Styled components are super useful but can theybe used for something like the `<div>` within `<CourseInput>`?
+Short answer yes
+If we want to style a component that is only used in that file we can also create the styled component in that file 
+We can also create a brand new file like we did with button
+However the difference is that buttons are kind of standalone and may be used in other areas of the app whereas this div may only be used and styled here
+The important thing is that it is possible to have multiple components within a single file 
+
+It does make sense that we can have multiple components within a file too because we have already worked with that
+Remember back when we were importing react?
+```
+import react from 'react';
+```
+`react` is the default export of the react file
+However whenever we needed access to `useState`
+```
+import React, { useState } from 'react';
+```
+In this case `useState` is not the default export but is also within the 'react' file so we also have to name it as the export
+This is just one example of using multiple components within a file
+
+How do we implement this?
+We can do it just like we did for our button
+We will create a new component called `FormControl` making sure it is WITHIN the `CourseInput.js` file but outside of the `<CourseInput>` component itself
+Also instad of using the `styled.button` method we will use the `styled.div` method
+Don't forget to import `styled-components`
+```
+import React, { useState } from 'react';
+import styled from 'styled-components';
+
+import Button from '../../UI/Button/Button';
+import './CourseInput.css';
+
+const FormControl = styled.div``
+
+const CourseInput = props => {
+  const [enteredValue, setEnteredValue] = useState('');
+  const [isValid, setIsValid] = useState(true);
+
+  const goalInputChangeHandler = event => {
+    if(event.target.value.trim().length > 0){
+      setIsValid(true);
+    }
+    setEnteredValue(event.target.value);
+  };
+
+  const formSubmitHandler = event => {
+    event.preventDefault();
+    if (enteredValue.trim().length === 0) {
+      setIsValid(false);
+      return;
+    }
+    props.onAddGoal(enteredValue);
+  };
+
+  return (
+    <form onSubmit={formSubmitHandler}>
+      <div className={`form-control ${!isValid ? 'invalid' : ''}`}>
+        <label>Course Goal</label>
+        <input type="text" onChange={goalInputChangeHandler} />
+      </div>
+      <Button type="submit">Add Goal</Button>
+    </form>
+  );
+};
+
+export default CourseInput;
+
+```
+
+Now within our backticks form our new `<FormControl>` components we want to add our styles
+Copy/paste from CourseInput.css and remove the import for CourseInput.css
+```
+const FormControl = styled.div`
+.form-control {
+  margin: 0.5rem 0;
+}
+
+.form-control label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-control input {
+  display: block;
+  width: 100%;
+  border: 1px solid #ccc;
+  font: inherit;
+  line-height: 1.5rem;
+  padding: 0 0.25rem;
+}
+
+.form-control input:focus {
+  outline: none;
+  background: #fad0ec;
+  border-color: #8b005d;
+}
+
+.form-control.invalid input{
+  border-color: red;
+  background: #ffd7d7;
+}
+
+.form-control.invalid label {
+  color: red;
+}
+`;
+```
+Now just like before get rid of the classnames
+Also just like before if you need to apply styles to a subclass do the same thing you did for sudoselectors and replace the classname with `&`
+```
+const FormControl = styled.div`
+
+margin: 0.5rem 0;
+
+
+& label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+& input {
+  display: block;
+  width: 100%;
+  border: 1px solid #ccc;
+  font: inherit;
+  line-height: 1.5rem;
+  padding: 0 0.25rem;
+}
+
+& input:focus {
+  outline: none;
+  background: #fad0ec;
+  border-color: #8b005d;
+}
+
+&.invalid input{
+  border-color: red;
+  background: #ffd7d7;
+}
+
+&.invalid label {
+  color: red;
+}
+`;
+```
+
+Now that we have done this we can replace our div with the `<FormControl>` component
+```
+import React, { useState } from 'react';
+import styled from 'styled-components';
+
+import Button from '../../UI/Button/Button';
+import './CourseInput.css';
+
+const FormControl = styled.div`
+
+margin: 0.5rem 0;
+
+
+& label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+& input {
+  display: block;
+  width: 100%;
+  border: 1px solid #ccc;
+  font: inherit;
+  line-height: 1.5rem;
+  padding: 0 0.25rem;
+}
+
+& input:focus {
+  outline: none;
+  background: #fad0ec;
+  border-color: #8b005d;
+}
+
+&.invalid input{
+  border-color: red;
+  background: #ffd7d7;
+}
+
+&.invalid label {
+  color: red;
+}
+`;
+
+const CourseInput = props => {
+  const [enteredValue, setEnteredValue] = useState('');
+  const [isValid, setIsValid] = useState(true);
+
+  const goalInputChangeHandler = event => {
+    if(event.target.value.trim().length > 0){
+      setIsValid(true);
+    }
+    setEnteredValue(event.target.value);
+  };
+
+  const formSubmitHandler = event => {
+    event.preventDefault();
+    if (enteredValue.trim().length === 0) {
+      setIsValid(false);
+      return;
+    }
+    props.onAddGoal(enteredValue);
+  };
+
+  return (
+    <form onSubmit={formSubmitHandler}>
+      <FormControl>
+        <label>Course Goal</label>
+        <input type="text" onChange={goalInputChangeHandler} />
+      </FormControl>
+      <Button type="submit">Add Goal</Button>
+    </form>
+  );
+};
+
+export default CourseInput;
+```
+
+This is a good start and at first looks like it works
+However if we submit an invalid entry none of our styles change
+We have to add this dynamic style change by attaching the `'invalid'` class as we did before
+
+One great thign about styled components is it will forward any props we pass into it into the undrelying component and we can access them
+So we can still add the classname as a prop
+Except now we no longer need to set the `form-control` class since the div already has that class and styling
+```
+<FormControl className={!isValid && 'invalid'}>
+  <label>Course Goal</label>
+  <input type="text" onChange={goalInputChangeHandler} />
+</FormControl>
+```
+With this syntax above if `isValid` is false then it will add the `'invalid'` class
+Otherwise it will not add any other classes since we do not need them
+
+Now we should have our functionality back
+
+This is only one way of doing this
+We can also utilize another feature provided by styled-components
+We can also utilize props and call them within the backticks of our component
+This allows us to easily change styles dynamically
+
+How do we do this?
+Where we call `<FormControl>` instead of adding a className we can instead add a prop 
+The teacher uses a prop of `invalid` but you could also use `valid` either way you are going to use the opposite but for simplicity sake I will follow what the teacher does which is a prop of `invalid`
+Since we are using invalid it will be a boolean and the opposite of `isValid`
+For example if `isValid` is true then `invalid` would be false and vice versa so we want to pass in the opposite of `isValid` as our value of `invalid`
+Then within our `<FormControl>` component we will apply logic to apply certain styling when that prop is true vs false
+For now just add the `invalid` prop to our `<FormControl>` call
+```
+<FormControl invalid={!isValid}>
+```
+
+Now this `invalid` prop can be used inbetween the backticks for our `<FormControl>` component but how?
+We want to change the border of the input for example
+we will go to the place where we set the border color
+Since we are inbetween backticks we can use the `${}` syntax that we have learned and replace the color of our border with logic to determine the color
+Here we can pass in an arrow function to check the value of `props.invalid` and if it is false set the color we had pereviously but if it is true set a different color
+Make sure that your arrow function receives `props` as an argument
+```
+& input {
+  display: block;
+  width: 100%;
+  border: 1px solid ${(props)=> props.invalid ? 'red' : '#ccc'};
+  font: inherit;
+  line-height: 1.5rem;
+  padding: 0 0.25rem;
+}
+```
+We now have a dynamic way to change styles based on props passed to our component
+
+We can repeat the same idea for background color:
+```
+& input {
+  display: block;
+  width: 100%;
+  border: 1px solid ${(props)=> props.invalid ? 'red' : '#ccc'};
+  background: ${(props) => props.invalid ? '#ffd7d7' : 'transparent'};
+  font: inherit;
+  line-height: 1.5rem;
+  padding: 0 0.25rem;
+}
+```
+
+With that we can remove the `$.invalid input` area that we were previously using when we added the `.invalid` class but are no longer using
+Remove:
+```
+&.invalid input{
+  border-color: red;
+  background: #ffd7d7;
+}
+```
+
+Now let's make the changes we need to the label style
+Again we want to add the same logic as we have been except apply the style to the color
+```
+& label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: ${(props) => props.invalid ? 'red' : 'black'};
+}
+```
+
+Now we can remove the styling we used when we were applying the invalid class
+Remove:
+```
+&.invalid label {
+  color: red;
+}
+```
