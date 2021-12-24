@@ -947,3 +947,107 @@ What is happening behind the scenes is it is taking the classes from the css fil
 If you import into the button component it will make unique versions of those classes for that component
 
 You can actually see this if you look at the style tags in inspect element you will see the button classes listed there
+
+
+
+
+___
+## 81. Dynamic Styles with CSS Modules
+Now that we are using css modules let's apply it to the `<CourseInput>` component with dynamic styles
+
+Remember we will need to change the name of the corresponding css file to accept modules
+Change:
+```
+CourseInput.css
+```
+To:
+```
+CourseInput.module.css
+```
+
+Then in our `<CourseInput>` component we import `styles` from this file
+```
+import styles form 
+```
+
+Now that we have this imported we can remove our import for styled components (just comment it out)
+Also comment out the `<FormControl>` component since we won't use it anymore
+
+Instead we will go back to just using a div again
+```
+<div className={styles.form-control}>
+```
+However this still isn't completely correct since we cannot have a dash in the name in js
+Instead we can use this syntax to still be able to use css names that would be invalid in js
+```
+<div className={styles['form-control']}>
+```
+What we are doing is simply putting it within square brackets and then within quotes and js and css modules will be able to assign the appropriate class since strings are valid
+Alternatively you could pick a different name without dashes
+
+Our default styling is back but our invalid styling still needs to be applied. To do this we need to ensure tta the `invalid` class gets added whenever `isValid` is false
+
+To do this we can go back to using a template literal again
+We will add two values the first being the style we already have the second will use ab expression to check `isValid` and apply the `invalid` class if needed as we have done before
+```
+<div className={`${styles['form-control']} ${!isValid && styles.invalid}`}>
+```
+The above will always add the `'form-control'` class and will add the `'invalid'` class if `isValid` is false
+
+This approach is very similar to how we were previously adding class except we are just accessing them through this `styles` object
+
+Now what about media queries?
+For this we need to go back to the `<Button>`
+We already had a media query there commented out from when we were using styled components so we can copy that media query and use it
+We will just copy this media query and paste it to the bottom or our `Button.module.css`
+```
+@media (min-width: 768px) {
+  width: auto;
+}
+```
+
+The difference though is that we do need to readd our selector since that is needed in css
+```
+@media (min-width: 768px) {
+  .button {
+    width: auto;
+  }
+}
+```
+
+Also set width to 100% in the box class
+```
+.button {
+  width: 100%;
+  font: inherit;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #8b005d;
+  color: white;
+  background: #8b005d;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.26);
+  cursor: pointer;
+}
+
+.button:focus {
+  outline: none;
+}
+
+.button:hover,
+.button:active {
+  background: #ac0e77;
+  border-color: #ac0e77;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.26);
+}
+
+@media (min-width: 768px) {
+  .button {
+    width: auto;
+  }
+}
+```
+
+Now our media query should work as expected
+
+Ultimately it is up to you whether you choose css only, styled-components, or css modules
+Each has pros and cons and some may feel better than others
+For this course both me and the teacher will use css modules because we prefer the scoping and keeping css and js seperate 
