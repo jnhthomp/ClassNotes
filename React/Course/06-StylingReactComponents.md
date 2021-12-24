@@ -235,3 +235,214 @@ Now when `isValid` is true our div will only have the class `'form-control '` bu
 Now if done correctly you should see that with an invalid entry we still get our error styling but when valid input is detected it immediately goes back to the default styling
 
 This technique is very powerful because we are working with css style sheets and classes instead of inline styles which is generally a better practice
+
+
+
+
+___
+## 77. Introducing Styled Components
+Being able to set styles and classes dynamically is important and now we can do that
+Now let's move on to the styling itself
+
+Currently we use regular css for styling
+We are using regular selectors like class selectors and tag selectors
+We are importing these styles into our component files but that does not mean those styles are scoped to only that component
+This means that if we had any other element somewhere else in the dom that had a `'form-control'` css class on it then the `.form-control` class in `CourseInput.css` would style it
+
+This isn't necessarily a problem and we can use differently named class selectors or id selectors and ensure these are only used within specific components
+
+However this isn't necessarily the best approach and especially in larger projects where there are a lot of developers or many components that get styled it is very likely that you may use the same classname as another developer and cause issues 
+Instead it is much easier to scope our css so it only affects the areas we want it to
+
+There are two approaches to accomplish this which will be covered here
+The first approach is to use a package called "styled-components"
+You can find more info here: https://styled-components.com/
+
+This is a package that helps you build components with styles attached where these styles only really affect the components they are attached to and not other components
+
+To get started we first need to install this package
+To do this you should close your development server if it is running and run the following command INSIDE OF THE PROJECT FOLDER:
+```
+$npm install --save styled-components
+```
+
+Doing this will download this package and store it in the `node_modules` folder
+You will see it added to the `package.json` as well as the `package-lock.json`
+When finished you can restart your development server with `$npm start`
+
+Now lets start using this package you can look through the official page for more information if you get stuck
+
+Lets say we want to style our button
+we created a button component because we wanted to add some default styling to the button with css which is a valid approach but how can we do this with `styled-components`?
+
+First we will have to rebuild our button so go ahead and comment out the function part of our component for now
+```
+import React from 'react';
+
+import './Button.css';
+
+// const Button = props => {
+//   return (
+//     <button type={props.type} className="button" onClick={props.onClick}>
+//       {props.children}
+//     </button>
+//   );
+// };
+
+export default Button;
+
+```
+Instead we will start writing this from scratch 
+The first step is to import styled components to our `<Button>` component and remove the old css import
+```
+import styled from 'styled-components
+```
+Now instead of using a functional component we will use someting called a tagged template literal which is a new concept
+To call this we build our component with the following syntax where we use backticks instead of curly braces
+```
+const Button = styled.button``;
+```
+This is a new default js feature but what does it do?
+`.button` is a method on the `styled` object which we are importing to our component
+In the end this will be executed as a method and what is passed in between the backticks will be passed into this `styled.button` method in a special way
+There is more information about what goes on behind the scenes on the styled-components website linked above
+For now we just need to know that what we pass between the backticks will end up in the `.button` method
+This `.button` method will return a new `<Button>` component
+Styled has methods for all default html tags such as `<p>`,`<div>`, `<h1>`, etc...
+
+Now between these two backticks we can provide the styles that we want the buttons to have
+For now copy and paste the entire `Button.css` file within these backticks
+We will need to make some changes for this to work but it will be easier to get all of our properties and values in this way and tweak them as needed
+```
+import React from 'react';
+import styled from 'styled-components';
+
+const Button = styled.button`
+.button {
+  font: inherit;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #8b005d;
+  color: white;
+  background: #8b005d;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.26);
+  cursor: pointer;
+}
+
+.button:focus {
+  outline: none;
+}
+
+.button:hover,
+.button:active {
+  background: #ac0e77;
+  border-color: #ac0e77;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.26);
+}
+
+`; 
+
+// const Button = props => {
+//   return (
+//     <button type={props.type} className="button" onClick={props.onClick}>
+//       {props.children}
+//     </button>
+//   );
+// };
+
+export default Button;
+```
+
+Now what tweaks do we need to do to get this styling working?
+Currently we are assigning classes which is unnecessary since every style we pass in will affect this button component
+Instead remove anywhere we assign a class by itself such as the `.button` class
+Turn it from this:
+```
+.button {
+  font: inherit;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #8b005d;
+  color: white;
+  background: #8b005d;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.26);
+  cursor: pointer;
+}
+```
+To this: (remove .class assignment and brackets)
+```
+  font: inherit;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #8b005d;
+  color: white;
+  background: #8b005d;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.26);
+  cursor: pointer;
+```
+
+Now what about sudo selectors such as `.button:focus`, `.button:hover`, and `.button:active`?
+For those we remove the `.button` class in from in front of the selector and replace it with `&`
+So it will look like `&:focus`, `&:hover`, and `&:active`
+
+Now our component can look like this:
+```
+import styled from 'styled-components';
+
+const Button = styled.button`
+  font: inherit;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #8b005d;
+  color: white;
+  background: #8b005d;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.26);
+  cursor: pointer;
+
+
+&:focus {
+  outline: none;
+}
+
+&:hover,
+&:active {
+  background: #ac0e77;
+  border-color: #ac0e77;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.26);
+}
+`; 
+
+// const Button = props => {
+//   return (
+//     <button type={props.type} className="button" onClick={props.onClick}>
+//       {props.children}
+//     </button>
+//   );
+// };
+
+export default Button;
+```
+Note that we still call this in the same way as before
+```
+<Button type="submit">Add Goal</Button>
+```
+
+```
+Personal note:
+I was confused as to how we still had access to the `onClick` method that is passed via props.
+However we never actually use that method
+Remember that where we call the button within `<CourseInput>` we only set a type to submit (which is a default type and handled by styled-components)
+Then within the form we have an `onSubmit` property that when the submit button is activated the form runs this function
+This means that we are actually processing the button click on the form itself and not on the button which is why we don't have to pass an onClick handler to the button
+
+You can confirm this by using the original button component and simply removing the onClick prop from the jsx return
+The app will still function completely normal confirming we aren't using that property
+```
+
+Now when we load the page we should see the button showing up as expected
+If you use developer tools to inspect though you will see a difference
+For the classnames there are two strings of gibberish instead of normal classnames like before:
+```
+<button type="submit" class="sc-bdvvtL jVWwiR">Add Goal</button>
+```
+These were dynamically generated by styled components 
+This is done because it looks at the styles that we assigned
+Then it wraps these styles into generated classnames where it guarantees that every classname is unique
+Then it adds these classes as global css
+However since styled-components ensures these are unique we will never be able to affect other components within the app because the classnames are all unique
