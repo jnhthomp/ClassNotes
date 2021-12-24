@@ -182,3 +182,22 @@ You can also see hooks and not just props
 Remember how we said `useState` is a react hook?
 That is why it is listed there
 You can also change state values in here which can be helpful
+
+
+
+
+___
+## 88. Module Resources
+You may want to compare your code to mine (e.g. to find + fix errors).
+
+For that, you find multiple code snapshots for this module here in this Github repository: https://github.com/academind/react-complete-guide-code/tree/07-debugging
+
+Usage instructions can be found on the page that link is leading to.
+
+Simply pick one of the snapshots in the /code folder - the subfolder names are chosen such that they are easy to match against lecture names in this course section.
+
+You also find section slides (if available) in that Github repository.
+
+
+___
+<h3><center>---Section 7 Complete---</center></h3>
