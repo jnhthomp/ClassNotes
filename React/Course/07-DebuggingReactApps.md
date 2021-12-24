@@ -92,3 +92,29 @@ src/App.js
 Search for the keywords to learn more about each error.
 ```
 Again this gives us a hint as to why there is a disconnect between when we call the function and the function to be excecuted
+
+
+
+
+___
+## 85. Analyzing Code Flow & Warnings
+That error is solved and our application is running 
+We can try adding goals
+Say we add `test 1`, `test 2`, and `test 3` as goals
+However if we click on `test 2` or `test 3` to delete them we can see test 1 is the one that gets deleted
+
+If we follow the logic of our delete it looks like it all makes sense but what if we look at the logic of our `addGoalHandler`?
+`addGoalHandler` is indeed always assigning the same id of `goal1` to every object it creates
+This is a problem because this id is supposed to be unique and used to target an element for deletion
+If we have multiple elements with the same id then it becomes difficult for react to target the correct instance
+We can see this because if we open developer tools in the browser and trigger our bug we will see an error
+```
+Warning: Encountered two children with the same key, `goal1`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+    at ul
+    at CourseGoalList (http://localhost:3000/static/js/main.chunk.js:764:21)
+    at section
+    at div
+    at App (http://localhost:3000/static/js/main.chunk.js:266:95)
+```
+
+We can see that there are multiple components with the same key so that is where our issue lies
