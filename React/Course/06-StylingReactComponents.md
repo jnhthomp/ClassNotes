@@ -770,3 +770,69 @@ Remove:
   color: red;
 }
 ```
+
+
+
+
+___
+## 79. Styled Components and Media Queries
+There is one more use case with styled-components
+These are called media queries and are important to get the right look
+These are used to set the styling for different sized screens
+For example lets say that we want our submit button to onlly be as big as it needs on a computer screen but we want it to span the entire width of the form if it is on a mobile screen
+To do this we would need to use media queries
+
+How do we use these?
+It is very simple we will apply these changes within our `<Button>` component
+Just use `@media` as normal and define your criteria such as `min-width` then put your styles into brackets as you would with a normal media query
+These styles will take place when the condition for the media query is met
+```
+@media (min-width: 768px) {
+  width: auto;
+}
+```
+This is saying as long as the screen width is above 768pixels then let the button determine its own width based on the content inside (length of text)
+
+We want to add a defult width that is applied in all other cases (the screen has a width of less than 768 pixels) where the width of the button is 100%
+```
+import styled from 'styled-components';
+
+const Button = styled.button`
+  width: 100%;
+  font: inherit;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #8b005d;
+  color: white;
+  background: #8b005d;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.26);
+  cursor: pointer;
+  
+  @media (min-width: 768px) {
+    width: auto;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover,
+  &:active {
+    background: #ac0e77;
+    border-color: #ac0e77;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.26);
+  }
+`; 
+
+// const Button = props => {
+//   return (
+//     <button type={props.type} className="button" onClick={props.onClick}>
+//       {props.children}
+//     </button>
+//   );
+// };
+
+export default Button;
+```
+
+Now if you preview the page and set the screen size to be smaller than 768 pixels (there is a tool in inspect element to make this easier if you weren't aware) you will see the button go to full width allowed in the div when taking into consideration padding and margins
+Otherwise the button is only as big as it needs to be
