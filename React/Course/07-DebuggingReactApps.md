@@ -118,3 +118,38 @@ Warning: Encountered two children with the same key, `goal1`. Keys should be uni
 ```
 
 We can see that there are multiple components with the same key so that is where our issue lies
+
+
+
+
+___
+## 86. Working With Breakpoints
+Another approach we can take is to go to the sources tab in our developer tools
+This shows all the files that are used to construct the website including our js code
+Normally react bundles all of our code together so that it is vanilla js and executable in the browser but very difficult to make sense of with a lot of other js that we didn't write
+However react also gives a bunch of extra information to our browser so that we can see the source files as we wrote them as well
+This allows us to debug our code in the browser
+Sometimes the folders containing our react code are in different places so check the webpack folder if you can't find it or continue looking
+
+We can go into our `<CourseGoalItem>` component and add a breakpoint by clicking the line number where we want to pause the execution of our code
+In our case we will place one where we call `props.onDelete(props.id)`
+Just click the line number and it should highlight the number
+Once this breakpoint is added we can try executing this action by clicking a item to delete
+You can see that instead of just deleting it the page pauses once it reaches this step of the code
+Then we can step through the code step by step
+To do this click the arrow that is labeled "Step into next function call"
+When you click that it will take you to the next line that executes in the `deleteItemHandler`
+You are also able to hover over variables to see their current values
+For example if you hover over goalId you will see it is equal to "g1" or whatever you clicked
+Then if we do the same again we might notice that the next one we click also has a value of "g1" and we might start to notice that is not correct
+Now we know that we can look at the code where we add goals since that is where we set id's
+By looking at it it should be clear (it won't always be though) why our `goalId` is getting assigned incorrectly
+Now we can fix our line by changing 
+from:
+```
+updatedGoals.unshift({ text: enteredText, id: 'Goal1' });
+```
+to:
+```
+updatedGoals.unshift({ text: enteredText, id: Math.random().toString() });
+```
