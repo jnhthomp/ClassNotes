@@ -1324,3 +1324,141 @@ export default Card
 ```
 
 Now our input field should look much nicer
+
+
+
+
+___
+## 92. Adding a Re-usable "Button" Component
+Now we need to make the button for our form too look nicer
+If we were building a bigger application we would probably want to use a similar looking button in other palces so we will create it as a new custom component
+This will go within the UI folder
+Create: src/Components/UI/Button.jsx
+Then fill it with an empty component function to get started except instead of a regular div we are going to want to return a button
+```
+import React from 'react'
+
+const Button = (props) => {
+  return (
+    <button>
+      
+    </button>
+  )
+}
+
+export default Button
+
+```
+Next we are going to create a css module and import a class to our button element
+create:src/Components/UI/Button.jsx
+Copy and paste the following:
+```
+.button {
+  font: inherit;
+  border: 1px solid #4f005f;
+  background: #4f005f;
+  color: white;
+  padding: 0.25rem 1rem;
+  cursor: pointer;
+}
+
+.button:hover,
+.button:active {
+  background: #741188;
+  border-color: #741188;
+}
+
+.button:focus {
+  outline: none;
+}
+```
+Make sure you are importing this to the `<Button>` component and then
+apply the `.button` classname to the button element
+```
+import React from 'react'
+import styles from './Button.module.css';
+
+const Button = (props) => {
+  return (
+    <button className={styles.button}></button>
+  )
+}
+
+export default Button
+
+```
+
+Next we want to make sure we can set the type of button when we call our custom component since different buttons will be used for different things
+For example in our form it will be a submit button but in our modal it may just be a regular button since it isn't submitting anything
+To do this we will expect to receive the type via props
+If someone forgets to pass in a type or doesn't want to we can set a default value of button with the or operator (`||`)
+```
+<button className={styles.button} type={props.type || 'button'}></button>
+```
+
+The button will need to be clickable and will therefore need to receive a function to execute when it is clicked
+So we need to add an `onClick` handler to our button and it will expect a method to be pased via props
+```
+return (
+  <button 
+    className={styles.button} 
+    type={props.type || 'button'}
+    onClick={props.onClick}
+  >
+  </button>
+)
+```
+
+Lastly we will want to be able to pass text into this button via children so make sure that is displayed between the two button tags
+```
+import React from 'react'
+import styles from './Button.module.css';
+
+const Button = (props) => {
+  return (
+    <button 
+      className={styles.button} 
+      type={props.type || 'button'}
+      onClick={props.onClick}
+    >
+      {props.children}
+    </button>
+  )
+}
+
+export default Button
+
+```
+Now our button component should be ready to call within our `<AddUser>` component
+Be sure you import the `<Button>` component and replace the existing button call with our custom component
+```
+import React from 'react'
+import Card from '../UI/Card.jsx';
+import Button from '../UI/Button.jsx';
+import styles from './AddUser.module.css';
+
+const AddUser = (props) => {
+
+  const addUserHandler = (event) => {
+    event.preventDefault();
+  }
+
+  return (
+    <Card className={styles.input}>
+      <form onSubmit={addUserHandler}>
+        <label htmlFor="username">Username</label>
+        <input id="username" type="text" />
+        <label htmlFor="age">Age (years)</label>
+        <input id="age" type="number" />
+        <Button type="submit">Add User</Button>
+      </form>
+    </Card>
+  )
+}
+
+export default AddUser
+
+```
+
+Now our button should look much nicer and work within our form without even needing to pass an `onClick` method in because it has a type of 'submit'
+This means when it is clicked by default it passes the action to our form which does have a handler method attached for submission
