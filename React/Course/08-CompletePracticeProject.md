@@ -2183,3 +2183,126 @@ const ErrorModal = (props) => {
 export default ErrorModal
 
 ```
+
+
+
+
+___
+## 98. Managing The Error State
+Now we want to make sure that we only show the error modal when necessary
+Currently if one of our validation checks are triggered because of invalid input we exit the submission method which we want to continue doing
+However we also want a way to dynamically trigger the modal to show when this validation is hit
+
+We need to update our ui based on whether we have an error or not which means we need an error state that we can track
+That way we can set it to we either have an error or we do not
+So we will need to add a new state value called error with an initial value of undefined
+```
+const [error, setError] = useState()
+```
+The teacher is going to manage the error as an object
+This will allow him to pass in different values to the modal itself using this state
+```
+const addUserHandler = (event) => {
+  event.preventDefault();
+  if(enteredUsername.trim().length === 0 || enteredAge.trim().length === 0){
+    setError({
+      title: 'Invalid Input',
+      message: 'Please enter a valid name and age (non-empty values).'
+    })
+    return;
+  }
+...
+```
+Now we will repeate this for the other validation check
+```
+if(+enteredAge < 1){
+  setError({
+    title: 'Invalid Input',
+    message: 'Please enter a valid age (> 0)'
+  })
+  return;
+}
+```
+Now when we have an error we can receive one of two objects which have the same properties but different values and save them to the error state
+
+If an error is hit then there will be an object but if one is not hit then our error state will be empty
+So we can just check if `error` exists and if so we can output the modal
+Otherwise nothing will render
+```
+return (
+  <div>
+    {error && <ErrorModal title="Hello there." message="General Kenobi, you are a bold one." />}
+    <Card className={styles.input}>
+      <form onSubmit={addUserHandler}>
+        <label htmlFor="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          onChange={usernameChangeHandler}
+          value={enteredUsername}
+        />
+        <label htmlFor="age">Age (years)</label>
+        <input
+          id="age"
+          type="number"
+          onChange={ageChangeHandler}
+          value={enteredAge}
+        />
+        <Button type="submit">Add User</Button>
+      </form>
+    </Card>
+  </div>
+)
+```
+Now our error modal will only be output if we output the error
+We can also plug in our title and message values since we have them stored in `error`
+```
+{error && <ErrorModal title={error.title} message={error.message} />}
+```
+
+Now if we submit an empty form or invalid age we will get our modal to pop up
+
+However it is still not dismissable since the button does not work
+To do this we need to clear our `error` state and set it to empty again
+We can do this by setting it to any falsey value like `false`, `undefined`, or `null`
+To do this we will add a new function called `errorHandler` which will receive no argument
+It will simply call `setError` and set `error` to `null` (or another falsey value)
+Then we just pass this method into our `<ErrorModal>` via props
+```
+{error && <ErrorModal title={error.title} message={error.message} closeModal={errorHandler}/>}
+```
+We will call this method on both the backdrop and the button
+Remember we set up our button to be able to accept `onClick` actions
+```
+const ErrorModal = (props) => {
+  return (
+    <div>
+      <div className={styles.backdrop} onClick={props.closeModal} />
+      <Card className={styles.modal}>
+        <header className={styles.header}>
+          <h2>{props.title}</h2>
+        </header>
+        <div className={styles.content}>
+          <p>{props.message}</p>
+        </div>
+        <footer className={styles.actions}>
+          <Button onClick={props.closeModal}>Okay</Button>
+        </footer>
+      </Card>
+    </div>
+  ) 
+}
+
+```
+
+Now clicking the backdrop or button will dismiss the modal
+
+Now our App is complete it has all the features we planned for
+It is not too complex but we used all the core features we have discussed thus far
+- Components
+- props 
+- use state
+- lifting state
+- styling
+- passing functions between components
+- other core patterns and concepts
