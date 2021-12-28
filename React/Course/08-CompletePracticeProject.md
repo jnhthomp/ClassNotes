@@ -1626,3 +1626,156 @@ This should generally work in js but you can be safe by forcing a conversion of 
 Now if we click add user without entering any data we will not get a log message since we are hitting our if and using return to exit the method
 
 We will handle adding extras to our validation like messages later but the important thing is that we are only accepting valid user input which we will add to a list 
+
+
+
+
+___
+## 95. Adding a Users List Component
+Now that we can accept valid input we need to display it
+The first question is where do we want to output this list and then where do we want to manage this list of users?
+
+First where do we want to output?
+We receive user information within the `<AddUser>` component and we could technically use that information to render a list below the form and manage the list of users with state in `<AddUser>` 
+We could do this and it would technically work but it isn't really the best way to do this
+The idea of react is that we keep components small and focused where each component has it's own specific purpose and doesn't do too much outside of that
+It would be better if we had one component to fetch user data (we do) and then have another component that is responsible for outputting that data so that the two tasks are split
+
+To do this we will add a new component called `<UsersList>`
+create: src/Components/Users/UsersList.jsx
+Inside of this component we are going to want to return an unordered list where we go through a list of users and output a list item for every user
+```
+import React from 'react'
+
+const UsersList = (props) => {
+  return (
+    <ul>
+      
+    </ul>
+  )
+}
+
+export default UsersList
+
+``` 
+It would probably be best to receive the list of users (an array) via props
+We will then cycle through this list of users and create an `<li>` element with the data needed for each one
+To do this we can use a `.map()` function in between the `<ul>` tags
+You can alternatively run `.map()`  and set the result to a variable array and call that array between the `<ul>` tags
+```
+return (
+  <ul>
+    {props.users.map(user=>(
+      <li>
+        {user.name} ({user.age} years old)
+      </li>
+    ))}
+  </ul>
+)
+```
+We are making a couple of assumptions when writing this
+1. whenever we call `<UsersList>` we will be passing in a prop called users which will be an array of user objects
+2. each user object will have a name property and value 
+3. each user object will have an age property and value
+
+We need to make sure these requirements are met later when we call this component and when we create our list of users within state
+
+Now we can make sure that this list shows up neatly by importing and using the card component and calling it around the unordered list
+```
+import React from 'react'
+import Card from '../UI/Card.jsx';
+
+const UsersList = (props) => {
+
+  return (
+    <Card>
+      <ul>
+        {props.users.map(user=>(
+          <li>
+            {user.name} ({user.age} years old)
+          </li>
+        ))}
+      </ul>
+    </Card>
+  )
+}
+
+export default UsersList
+
+```
+We will need to add some styling and to do that we will need to make a css module for `<UsersList>`
+create: src/Components/Users/UsersList.module.css
+Then copy/paste the following:
+```
+.users {
+  margin: 2rem auto;
+  width: 90%;
+  max-width: 40rem;
+}
+
+.users ul {
+  list-style: none;
+  padding: 1rem;
+}
+
+.users li {
+  border: 1px solid #ccc;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+}
+```
+Be sure to import this css module to our component and then add the `.users` class to our `<Card>` component
+Remember we set it up earlier so that it could accept a `className` as a prop
+```
+import React from 'react'
+import styles from './UsersList.module.css';
+import Card from '../UI/Card.jsx';
+
+const UsersList = (props) => {
+
+  return (
+    <Card className={styles.users}>
+      <ul>
+        {props.users.map(user=>(
+          <li>
+            {user.name} ({user.age} years old)
+          </li>
+        ))}
+      </ul>
+    </Card>
+  )
+}
+
+export default UsersList
+
+```
+
+Now our `<UsersList>` is ready but where should we add it?
+We could of course add it within `<AddUser>` underneath our form but that doesn't really make sense
+This is because it is called ADD users which is a very specific action it should be limited to performing that limited action
+I think the best place for this is directly within the `<App>` component
+This is also where we will  call `<AddUser>` so it makes sense to have `<UsersList>` as a sibling to that component
+Be sure to import the component to `<App>` and then call it within the wrapping div below `<AddUser>`
+```
+import React from 'react';
+import AddUser from './Components/Users/AddUser.jsx';
+import UsersList from './Components/Users/UsersList.jsx';
+
+
+function App() {
+  return (
+    <div>
+      <AddUser />
+      <UsersList />
+    </div>
+  );
+}
+
+export default App;
+
+```
+Note that doing this will cause an error because we are running `.map()` on a dataset that does not exist
+The browser doesn't know how to process this so we will need some data to keep this error from happening
+In order to fx this we will have to pass an array with user objects into `<UsersList>` as a prop called `users`
+We can set the `users` prop when we call `<UsersList>` to an empty array and it should get rid of our error
+There will not be a list of users but there won't be an error either and we will be able to see an empty card which we can fill with users
