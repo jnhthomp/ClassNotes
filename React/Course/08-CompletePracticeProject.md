@@ -992,3 +992,134 @@ ErrorModal.module.css
 ```
 
 The github link for my version of this project can be found at: https://github.com/jnhthomp/practice-user-list
+
+
+
+
+___
+## 90. Adding A "User" Component
+Above includes my approach and how to complete the project
+It does meet all the goals and objectives but may not be the best way to do it
+It might be a way that makes sense but I like to see multiple approaches so for the rest of the section we will cover how the teacher approached this project
+
+He provides a starting code that can be found at: https://github.com/academind/react-complete-guide-code/tree/08-practice-project/code/01-starting-project
+
+The easiest way to get started in this project is to:
+1. clone the entire academind/react-complete-guide-code (all branches)
+2. checkout the branch for section 8
+3. Move into the code folder
+4. Move into 01-starting-project folder
+5. Copy paste all files in this folder to a new directory where you want the project to be
+6. Run `$npm install` to install all dependencies
+7. Run `$git init` to create a github directory with these files
+(make sure you ahve a .gitignore file with `/node_modules` listed before making an initial commit)
+
+Now that we have the app on our local machine we can start working on this section and building our application
+Run `$npm start` to see changes to our application as we code
+
+Within the application we will need a couple different components
+- one to enter name and age
+- one to handle the error modal
+- one as a button to submit and confirm the error
+- list of users that have been created
+
+We will start by roughly planning these components
+To do this first create a component folder as well as a UI folder within it
+This will hold general UI components such as the button
+The next folder Will be the Users folder (also within components)
+this will hold user related components
+Create: src/components/UI
+Create: src/components/Users
+
+Now within these files we can start adding files and building components
+The first one we will work on is the `AddUser` component which will accept user input to create new users
+Create src/component/Users/AddUser.jsx
+
+Now we can add our component function to this `AddUser.jsx` file and make it a component 
+(HINT: you can use a snippet in vscode to create this function automatically by typing "rafce" and then tab for autocomplete) 
+```
+import React from 'react'
+
+const AddUser = (props) => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default AddUser
+```
+We will use props so be sure those are included
+
+Now what do we want in here?
+We want to render something which allows the user to enter a name, age, and a button to confirm
+We can use a form for this
+Inside of this form we will want a label for username, and input for username, a label for age, an input for age, and a button
+One new thing we can do is for accessibility add an id to the input and the property `htmlFor` to the label and set it to the input id
+This will help bind the two for screenreaders as well as autocomplete
+```
+return (
+  <form>
+    <label htmlFor="username">Username</label>
+    <input id="username" type="text" />
+  </form>
+)
+```
+Now we can add the other label and input as well as the button which will be type of submit so we can handle the submit through the form as we have done before
+Since we are adding this button and setting it to type submit we can go ahead and add the `onSubmit` prop to the form tag as well and pass in a function to handle submission which we will write shortly
+```
+import React from 'react'
+
+const AddUser = (props) => {
+  return (
+    <form onSubmit={addUserHandler}>
+      <label htmlFor="username">Username</label>
+      <input id="username" type="text" />
+      <label htmlFor="age">Age (years)</label>
+      <input id="age" type="number" />
+      <button type="submit">Add User</button>
+    </form>
+  )
+}
+
+export default AddUser
+```
+
+Now what will our `addUserHandler` do?
+It will get an event object since it is attached to the form and the first thing we should do is prevent the default submission action so the browser doesn't reload and try to submit our data somewhere
+Remember this is stopped by using the `.preventDefault()` method that is available to our event object
+```
+const addUserHandler = (event) => {
+  event.preventDefault();
+}
+```
+
+Now that we have the skeleton for our `<AddUser>` component we can go to our `<App>` component and import it so we can use it
+
+```
+import React from 'react';
+import AddUser from './Components/Users/AddUser.jsx';
+
+
+function App() {
+  return (
+    <div>
+      <AddUser></AddUser>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+Now we have a fairly ugly but working component
+Just to make it a little nicer we will apply some small styling to our `index.css`
+Within the html selector add a background color of `#1f1f1f`
+```
+html {
+  font-family: sans-serif;
+  background: #1f1f1f;
+}
+```
