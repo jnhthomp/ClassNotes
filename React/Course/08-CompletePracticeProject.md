@@ -1557,3 +1557,72 @@ const addUserHandler = (event) => {
   console.log(enteredUserName, enteredAge);
 }
 ```
+
+
+
+
+___
+## 94. Adding Validation & Resetting Logic
+Now lets implement resetting and validation logic
+Whenever someone submits input we want to be able to reset the the values to be blank
+We will do this in the `addUserHandler`
+All we have to do is use `setEnteredUsername` and `setEnteredAge` back to empty values
+Be sure you don't reset these values before logging/submitting them
+Then we can use two way binding to use these values within input so the input fields are cleared 
+```
+const addUserHandler = (event) => {
+  event.preventDefault();
+  console.log(enteredUsername, enteredAge);
+  setEnteredUsername('');
+  setEnteredAge('');
+}
+```
+Then we can set the value of the inputs equal to the state values for username and age and they should clear whenever state is cleared on submission
+```
+return (
+  <Card className={styles.input}>
+    <form onSubmit={addUserHandler}>
+      <label htmlFor="username">Username</label>
+      <input 
+        id="username" 
+        type="text" 
+        onChange={usernameChangeHandler} 
+        value={enteredUsername}
+      />
+      <label htmlFor="age">Age (years)</label>
+      <input 
+        id="age" 
+        type="number" 
+        onChange={ageChangeHandler} 
+        value={enteredAge}
+      />
+      <Button type="submit">Add User</Button>
+    </form>
+  </Card>
+)
+```
+* Make sure that you have `username` typed consistently as I had a bad habit of being inconsistent with capitalizing the n or not. Make sure it is the same everywhere
+
+Now we can work on validation
+For the validation we want to make sure that everyting in `addUserHandler` only activates if the name and age are both valid
+
+For that we can add an if check
+First we want to check if `enteredUsername` or `enteredAge` is not empty by checking the length of both after trimming
+In this case we just want to return and do nothing else for now
+```
+if(enteredUsername.trim().length === 0 || enteredAge.trim().length === 0){
+  return;
+}
+```
+Next we will check if age is smaller than one since that would also be invalid
+```
+if(+enteredAge < 1){
+  return;
+}
+```
+Note that anything entered in these inputs will always be retrieved as a string but here we are comparing it to a number
+This should generally work in js but you can be safe by forcing a conversion of `enteredAge` to a number by adding a "+" in front of it
+
+Now if we click add user without entering any data we will not get a log message since we are hitting our if and using return to exit the method
+
+We will handle adding extras to our validation like messages later but the important thing is that we are only accepting valid user input which we will add to a list 
