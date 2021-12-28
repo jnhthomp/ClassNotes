@@ -1900,3 +1900,286 @@ return (
 Now most of the app is done
 We are able to input user data, it is validated, and then displayed
 Next we just have to create the error modal and add the functionality for it
+
+
+
+
+___
+## 97. Adding the "ErrorModal" Component
+Now we want to build an error modal
+That is an overlay box and could be considered a ui element that we would want to use in other places of the app
+So we will add this modal to the UI folder
+create: src/Components/UI/ErrorModal.jsx
+```
+import React from 'react'
+
+const ErrorModal = (props) => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default ErrorModal
+
+```
+
+There are a couple different ways to do this but one thing we can do to make things easy is to reuse the `<Card>` component
+So we will import that and call it as well
+```
+import React from 'react'
+import Card from './Card.jsx';
+
+const ErrorModal = (props) => {
+  return (
+      <Card></Card>
+  )
+}
+
+export default ErrorModal
+
+```
+
+Inside of this card we will have a few different sections the first will be a header with an h2 tag to hold the title
+The second will be a div with  p tag to hold any text or error messages
+Then below that we will have a footer with a button
+Luckily we already made one so we can import that and use it
+```
+import React from 'react'
+import Card from './Card.jsx';
+import Button from './Button.jsx';
+
+const ErrorModal = (props) => {
+  return (
+    <Card>
+      <header>
+        <h2></h2>
+      </header>
+      <div>
+        <p></p>
+      </div>
+      <footer>
+        <Button>Okay</Button>
+      </footer>
+    </Card>
+  ) 
+}
+
+export default ErrorModal
+
+```
+Between the h2 tags we will want a title and to keep the modal reusable we don't want to hardcode it
+Instead we will assume we will receive some text to use as a title when we call the component via props
+
+Then between the p tags we will want to add a configurable message just like the title that is passed via props
+```
+import React from 'react'
+import Card from './Card.jsx';
+import Button from './Button.jsx';
+
+const ErrorModal = (props) => {
+  return (
+    <Card>
+      <header>
+        <h2>{props.title}</h2>
+      </header>
+      <div>
+        <p>{props.message}</p>
+      </div>
+      <footer>
+        <Button>Okay</Button>
+      </footer>
+    </Card>
+  ) 
+}
+
+export default ErrorModal
+
+```
+Lastly we will need some styling
+Create: src/Components/UI/ErrorModal.module.css
+Copy/paste the following:
+```
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.modal {
+  position: fixed;
+  top: 30vh;
+  left: 10%;
+  width: 80%;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.header {
+  background: #4f005f;
+  padding: 1rem;
+}
+
+.header h2 {
+  margin: 0;
+  color: white;
+}
+
+.content {
+  padding: 1rem;
+}
+
+.actions {
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (min-width: 768px) {
+  .modal {
+    left: calc(50% - 20rem);
+    width: 40rem;
+  }
+}
+```
+
+Then we will want to import this to our modal and apply the approriate classes
+```
+import React from 'react'
+import style from './ErrorModal.module.css';
+import Card from './Card.jsx';
+import Button from './Button.jsx';
+
+const ErrorModal = (props) => {
+  return (
+    <Card className={style.modal}>
+      <header className={style.header}>
+        <h2>{props.title}</h2>
+      </header>
+      <div className={style.content}>
+        <p>{props.message}</p>
+      </div>
+      <footer className={style.actions}>
+        <Button>Okay</Button>
+      </footer>
+    </Card>
+  ) 
+}
+
+export default ErrorModal
+
+```
+
+Now where do we render this?
+You could argue that it should be inside of `<AddUser>` since it is an error within `<AddUser>` that will trigger this modal
+You could also argue that it should be within `<App>` since it is an overlay and more of a general UI component
+The teacher is going to put it in the `<AddUser>` component but either one is fine
+I will follow what he did since I already did mine within `<App>` 
+
+Since we want to add our modal to `<AddUser>` we will need to first import it
+Then we can call it within our return statement
+Remember when we call it our modal will be expecting some values such as title and message
+We can hardcode these for now but will make them dynamic later 
+Since the modal and Card should be siblings of each other we will need to wrap them both in an extra div
+```
+import React, {useState} from 'react'
+import Card from '../UI/Card.jsx';
+import Button from '../UI/Button.jsx';
+import ErrorModal from '../UI/ErrorModal.jsx';
+import styles from './AddUser.module.css';
+
+const AddUser = (props) => {
+
+  const [enteredUsername, setEnteredUsername] = useState('')
+  const [enteredAge, setEnteredAge] = useState('')
+
+  const addUserHandler = (event) => {
+    event.preventDefault();
+    if(enteredUsername.trim().length === 0 || enteredAge.trim().length === 0){
+      return;
+    }
+    if(+enteredAge < 1){
+      return;
+    }
+    props.onAddUser(enteredUsername, enteredAge);
+    setEnteredUsername('');
+    setEnteredAge('');
+  }
+
+  const usernameChangeHandler = (event) => {
+    setEnteredUsername(event.target.value);
+  }
+  
+  const ageChangeHandler = (event) => {
+    setEnteredAge(event.target.value);
+  }
+
+  return (
+    <div>
+      <ErrorModal title="Hello there." message="General Kenobi, you are a bold one." />
+      <Card className={styles.input}>
+        <form onSubmit={addUserHandler}>
+          <label htmlFor="username">Username</label>
+          <input
+            id="username"
+            type="text"
+            onChange={usernameChangeHandler}
+            value={enteredUsername}
+          />
+          <label htmlFor="age">Age (years)</label>
+          <input
+            id="age"
+            type="number"
+            onChange={ageChangeHandler}
+            value={enteredAge}
+          />
+          <Button type="submit">Add User</Button>
+        </form>
+      </Card>
+    </div>
+  )
+}
+
+export default AddUser
+```
+
+Now if we reload it doesn't look too bad
+It isn't dynamic yet and we can't dismiss it and there is no backdrop
+
+First let's add the backdrop
+We will add an extra div next to our `<Card>` component call within our `<ErrorModal>` component
+This means we will need to use a wrapping div to hold the two sibling elements
+Then on the div that is a sibling to card we can add the `.backdrop` class from our css module
+```
+import React from 'react'
+import styles from './ErrorModal.module.css';
+import Card from './Card.jsx';
+import Button from './Button.jsx';
+
+const ErrorModal = (props) => {
+  return (
+    <div>
+      <div className={styles.backdrop} />
+      <Card className={styles.modal}>
+        <header className={styles.header}>
+          <h2>{props.title}</h2>
+        </header>
+        <div className={styles.content}>
+          <p>{props.message}</p>
+        </div>
+        <footer className={styles.actions}>
+          <Button>Okay</Button>
+        </footer>
+      </Card>
+    </div>
+  ) 
+}
+
+export default ErrorModal
+
+```
