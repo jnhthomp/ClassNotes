@@ -1123,3 +1123,204 @@ html {
   background: #1f1f1f;
 }
 ```
+
+
+
+
+___
+## 91. Adding a Re-usable "Card" Component
+Now we will build the card component which we will have around our form
+I also did a similar component but we will see how the teacher applies this
+
+First he will just apply a `<Card>` component around the form within `<AddUser>` 
+He hasn't written this component yet but will show up as soon as we make the component
+This component will  be stored in the UI folder so we can go ahead and add the import now too so it will show up right away
+```
+import React from 'react'
+
+const AddUser = (props) => {
+
+  const addUserHandler = (event) => {
+    event.preventDefault();
+  }
+
+  return (
+    <Card>
+      <form onSubmit={addUserHandler}>
+        <label htmlFor="username">Username</label>
+        <input id="username" type="text" />
+        <label htmlFor="age">Age (years)</label>
+        <input id="age" type="number" />
+        <button type="submit">Add User</button>
+      </form>
+    </Card>
+  )
+}
+
+export default AddUser
+
+```
+
+Now we can start writing the `<Card>` component
+Create: src/Components/UI/Card.jsx
+```
+import React from 'react'
+
+const Card = (props) => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default Card
+
+```
+
+Now we have to htink about what we want this card component to do
+We want to return a div and inside of that div we want to output the content that `<Card>` is wrapped around when we call it (children)
+Remember that we can show any children by using `props.children`
+```
+return (
+  <div>
+    {props.children}
+  </div>
+)
+```
+Now we can assign a classname and write a css module to style this wrapping div and make it look like a card
+For now I will use class name `.card`
+Then create our css module
+create: src/Components/UI/Card.module.css
+and inside we will write css for the `.card` class
+We will apply the following css
+```
+.card {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.26);
+  border-radius: 10px;
+}
+```
+Make sure you are importing the css as well as the card component within `<AddUser>`
+```
+import React from 'react'
+import styles from './Card.module.css';
+
+const Card = (props) => {
+  return (
+    <div className={styles.card}>
+      {props.children}
+    </div>
+  )
+}
+
+export default Card
+```
+```
+import React from 'react'
+import Card from '../UI/Card.jsx';
+
+const AddUser = (props) => {
+
+  const addUserHandler = (event) => {
+    event.preventDefault();
+  }
+
+  return (
+    <Card>
+      <form onSubmit={addUserHandler}>
+        <label htmlFor="username">Username</label>
+        <input id="username" type="text" />
+        <label htmlFor="age">Age (years)</label>
+        <input id="age" type="number" />
+        <button type="submit">Add User</button>
+      </form>
+    </Card>
+  )
+}
+
+export default AddUser
+```
+
+This is still not exactly correct so we will need to create a css module for `<AddUser>` 
+create: src/Components/Users/AddUser.module.css
+
+Then paste in the following:
+```
+.input {
+  margin: 2rem auto;
+  padding: 1rem;
+  width: 90%;
+  max-width: 40rem;
+}
+
+.input label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.input input {
+  font: inherit;
+  display: block;
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 0.15rem;
+  margin-bottom: 0.5rem;
+}
+
+.input input:focus {
+  outline: none;
+  border-color: #4f005f;
+}
+```
+Import this module to `<AddUser>`
+Then we just have to apply the input class name where we call `<Card>`
+```
+import React from 'react'
+import Card from '../UI/Card.jsx';
+import styles from './AddUser.module.css';
+
+const AddUser = (props) => {
+
+  const addUserHandler = (event) => {
+    event.preventDefault();
+  }
+
+  return (
+    <Card className={styles.input}>
+      <form onSubmit={addUserHandler}>
+        <label htmlFor="username">Username</label>
+        <input id="username" type="text" />
+        <label htmlFor="age">Age (years)</label>
+        <input id="age" type="number" />
+        <button type="submit">Add User</button>
+      </form>
+    </Card>
+  )
+}
+
+export default AddUser
+```
+
+Now because `<Card>` is a custom component and not a preconfigured element it doesn't know what to do with `className` and uses it as a prop
+So we will have to do something with that prop within our `<Card>` component
+We also want the classes that are already being applied to the div though so we will need to apply both any classnames passed in as well as the classname we already have
+We can do this using template literals
+Inside we will just pass in both classes within and if no classname is passed in via props then only the default card css will be applied
+```
+import React from 'react'
+import styles from './Card.module.css';
+
+const Card = (props) => {
+  return (
+    <div className={`${styles.card} ${props.className}`}>
+      {props.children}
+    </div>
+  )
+}
+
+export default Card
+```
+
+Now our input field should look much nicer
