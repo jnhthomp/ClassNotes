@@ -1779,3 +1779,124 @@ The browser doesn't know how to process this so we will need some data to keep t
 In order to fx this we will have to pass an array with user objects into `<UsersList>` as a prop called `users`
 We can set the `users` prop when we call `<UsersList>` to an empty array and it should get rid of our error
 There will not be a list of users but there won't be an error either and we will be able to see an empty card which we can fill with users
+
+
+
+
+___
+## 96. Managing a List of Users Via State
+At this point we are able to feed a list of users to `<UsersList>` but so far we can only feed an empty array
+We are also able to accept input from the user but we never add it to any list
+It is time to combine these two to get the functionality we have been aiming for
+When we add a user we will create a new user object which we will return to `<App>` so it can add this user object to an array that will be passed into `<UsersList>`
+
+First we need to add state to our `<App>` components so it can hold, remember, and rerender based on the users array
+We will initialize this state with an empty array
+We will want to forward this state value to the `<UsersList>` component as the `users` prop
+```
+import React, {useState} from 'react';
+import AddUser from './Components/Users/AddUser.jsx';
+import UsersList from './Components/Users/UsersList.jsx';
+
+
+function App() {
+
+  const [usersList, setUsersList] = useState([]);
+  
+  return (
+    <div>
+      <AddUser />
+      <UsersList users={usersList}/>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+Now we have an array to hold all of our users and a function that allows us to update that list
+Now we need to forward the data from `<AddUser>` to app via props
+To do this we will add a prop when we call `<AddUser>` that will access a method witin `<App>`
+This method will accept an argument containing the values we need and use those values to update state in `<App>`
+We will make a prop called `onAddUser` and pass in a function called `addUserHandler`
+```
+import React, {useState} from 'react';
+import AddUser from './Components/Users/AddUser.jsx';
+import UsersList from './Components/Users/UsersList.jsx';
+
+
+function App() {
+
+  const [usersList, setUsersList] = useState([]);
+
+  const addUserHandler = () => {
+    
+  }
+  
+
+  return (
+    <div>
+      <AddUser onAddUser={addUserHandler}/>
+      <UsersList users={usersList}/>
+    </div>
+  );
+}
+
+export default App;
+
+```
+Now inside of our addUserHandler we will expect two values
+One will be the users name and the other will be the userse age
+We will run `setUsersList` to update our list of users with these new values but since we want to keep the previous values in state we need to use the functional form
+This will give us access to `prevState`
+The function within `setUsersList` will return an array that uses the spread operator to fill this array with the previous array
+Then we will append a new object to the end with a name field and age field and we will pass the appropriate arguments into each
+```
+const addUserHandler = (uName, uAge) => {
+  setUsersList((prevUsersList) => {
+    return [...prevUsersList, {name: uName, age: uAge}];
+  })
+}
+```
+Now we need to give `<AddUser>` access to this and pass in the validated user input and we should be able to add users to our `userList`  array and these values should be displayed by our `<UserList>` component
+We just need to replace the `console.log` where we output the values we want to pass with the prop method we just wrote
+```
+const addUserHandler = (event) => {
+  event.preventDefault();
+  if(enteredUsername.trim().length === 0 || enteredAge.trim().length === 0){
+    return;
+  }
+  if(+enteredAge < 1){
+    return;
+  }
+  props.onAddUser(enteredUsername, enteredAge);
+  setEnteredUsername('');
+  setEnteredAge('');
+}
+```
+
+We do have one slight issue in that we do not have unique keys for each list item we render in `<UsersList>`
+This is easy to fix by simply adding a key prop to each list item
+We can generate this whenever we save a user with `Math.random()`
+```
+ return [...prevUsersList, {name: uName, age: uAge, id: Math.random().toString()}];
+```
+Then just add this key to the list item each time one is generated
+```
+return (
+  <Card className={styles.users}>
+    <ul>
+      {props.users.map(user=>(
+        <li key={user.id}>
+          {user.name} ({user.age} years old)
+        </li>
+      ))}
+    </ul>
+  </Card>
+)
+```
+
+Now most of the app is done
+We are able to input user data, it is validated, and then displayed
+Next we just have to create the error modal and add the functionality for it
