@@ -31,3 +31,964 @@ Short:
   - has "okay" button to dismiss
   - Can also dismiss by clicking on the backdrop
   - entering a negative age gives a different error
+
+
+## My Approach:
+I am not going to go super deep into details on exactly how I did this as I will be uploading to github and the full version will be there
+Also I will be working through the teacher solution as well and that should provide plenty of explanation
+
+First we need to create a new react app before we do anything
+MAKE SURE YOU ARE IN THE DIRECTORY YOU WANT YOUR PROJECT ROOT FOLDER TO BE
+```
+
+user/dev/reactProjects: $create-react-app practice-user-list
+```
+It is a good idea to make an initial commit now just in case we need to roll back our project to the beginning
+
+Then we can start thinking about how to approach this
+The obvious thing we will need is a state that will hold a list of users and maybe some dummy data to start
+So within `<App>` (but outside of the component function) create a dummy array to hold some user objects 
+Each user object should have a name, age, and id
+```
+const INITIAL_USER_VALUES = [
+  { userName: 'LukeSkywalker', userAge: 19, userID: 'Red_Five'},
+  { userName: 'HanSolo', userAge: 35, userID: 'Echo_Seven' },
+  { userName: 'AnakinSkywalker', userAge: 19, userID: 'Black_Leader' },
+  { userName: 'Obi-WanKenobi', userAge: 19, userID: 'Red_Leader' }
+]
+```
+
+Now that we have some data we need a way to display that data
+To do this we will create 2 components. This first will be a card component that simply accepts children and gives a white background with a rounded border
+The second will be used to display each individual user object
+First we will work on the card
+crate a new component folder called ui and a jsx and css module for a `<Card>` component
+create: src/Components/UI/Card/Card.jsx
+create: src/Components/UI/Card/Card.module.css
+
+Within Card we will just create a div that holds card styling
+This styling will center the card on the page, add a border color, and add a background color
+Then there will be another class that aligns text for children elements so we can put a heading
+`<Card>` should look like
+```
+import React from 'react'
+import styles from './Card.module.css';
+const Card = props => {
+  return (
+    <div className={styles.card}>
+      <div className={styles.children}>
+        {props.children}
+      </div>
+    </div>
+  );
+};
+
+export default Card;
+```
+Card.module.css
+```
+.card{
+  /* Centering */
+  margin: auto;
+  padding: 10px;
+  width: 50%;
+  /* Coloring */
+  border: 2px solid black;
+  border-radius: 10px;
+
+  background-color: white;
+}
+
+.children{
+  text-align: center;
+}
+```
+Then call `<Card>` within `<App>` and pass an h1 tag to test the title centering
+```
+return (
+  <div>
+    <h1>Practice-User-List</h1>
+    <Card>
+      <h1>Users</h1>
+    </Card>
+  </div>
+);
+```
+
+Now that we are displaying a card we need a component to display individual user objects
+It will need to accept an object as a prop and then display the data from that object
+We can make one simply by creating a new component, allowing it access to props then calling those props within the return
+```
+import styles from './UserItem.module.css';
+
+const UserItem = props => {
+  return(
+    <div className={styles.item}>
+      {`${props.user.userName} (${props.user.userAge} years old)`}
+    </div>
+  );
+}
+
+export default UserItem
+```
+Styling simply adds a border and centers the div
+```
+.item {
+  border: 1px solid grey;
+  margin: auto;
+  padding: 10px;
+  width: 50%;
+
+}
+```
+
+To test simply call this within `<App>` as a child of the card component and pass in an single object
+```
+return (
+  <div>
+    <h1 style={{textAlign: 'center'}}>Practice-User-List</h1>
+    <Card>
+      <h1>Users</h1>
+      <UserItem user={userList[0]}/>
+    </Card>
+  </div>
+);
+```
+
+Now we need to make this more dynamic by cycling through our state `userList` array, calling `<UserItem>` for each object, and displaying each instance by passing in a user object
+We can accomplish this with `.map()` and save the array of jsx components generated to a variable that is displayed
+Remember to pass in the `userID` as a key so react can identify each instance
+```
+const generatedUserItems = userList.map(el => {
+  return (
+    <UserItem user={el} key={el.userID} />
+  )
+});
+```
+Then we just display this variable as a child within the `<Card>` component
+```
+return (
+  <div>
+    <h1 style={{textAlign: 'center'}}>Practice-User-List</h1>
+    <Card>
+      <h1>Users</h1>
+      {generatedUserItems}
+    </Card>
+  </div>
+);
+```
+
+Now we are able to display the full list of our user objects it might be a good idea to make a commit
+
+Next we need to be able to add more user objects
+We will create a form that will have two inputs and a button to receive a username and age
+This will be placed as a child in another `<Card>` component call to keep things tidy
+This form will follow the following pattern for jsx
+```
+<form>
+  <div to hold all form child elements>
+    <div for name section>
+      <div for name label />
+      <div for name input />
+    </div>
+    <div for age section>
+      <div for age label />
+      <div for age input />
+    </div>
+    <button to submit />
+  </div>
+</form>
+```
+I will also create a button component that will go to the UI folder so I can place the same button in multiple places
+
+Once we have the inputs and button setup
+it should look like this:
+Form:
+```
+import styles from './NewUserItem.module.css';
+import Button from '../UI/Button/Button.jsx';
+
+const NewUserItem = () => {
+
+  return (
+    <form onSubmit={formSubmitHandler}>
+      <div className={styles.newUserItem__controls}>
+        <div className={styles.newUserItem__control}>
+          <label>Name:</label>
+          <input type="text"/>
+        </div>
+        <div className={styles.newUserItem__control}>
+          <label>Age:</label>
+          <input type="number" />
+        </div>
+      </div>
+      <Button type='submit'>Add User</Button>
+    </form>
+  );
+};
+
+export default NewUserItem;
+```
+Form css:
+```
+label {
+  padding-right: 2px;
+}
+.newUserItem__controls {
+  background-color: inherit;
+  display: block;
+}
+.newUserItem__control {
+  margin: auto;
+  padding: 5px;
+  display: inline;
+}
+
+```
+Button:
+```
+import styles from './Button.module.css'
+
+const Button = props => {
+  return (
+    <button type={props.type} className={styles.button} onClick={props.onClick}>
+      {props.children}
+    </button>
+  )
+}
+
+export default Button;
+```
+Button css:
+```
+.button {
+  text-align: center;
+  background-color: purple;
+  color: white;
+}
+```
+
+Now that we have a skeleton for a form we will need to add the action
+The first thing we will want to do is collect the input and add it to state with `onChange` methods
+We will need to do this for both the name input and the age input
+
+Of course in order to add to state we will also need a state to add it to so don't forget to initialize a new state within `<NewUserItem>`
+```
+const [userInput, setUserInput] = useState({
+  enteredName: '',
+  enteredAge: ''
+})
+```
+
+Then just create handlers for name and age and use them as `onChange` methods for the appropriate inputs
+I used `parseInt()` when passing in age so that the value would be saved as a number instead of a string
+```
+const nameChangeHandler = (event) => {
+  setUserInput((prevState) => {
+    return {...prevState, enteredName: event.target.value}
+  });
+}
+```
+```
+const ageChangeHandler = (event) => {
+  setUserInput((prevState) => {
+    return {...prevState, enteredAge: parseInt(event.target.value)}
+  })
+}
+```
+Now we can add two way binding to our input fields by adding a value to the inputs and setting them equal to the corresponding state values
+```
+return (
+  <form onSubmit={formSubmitHandler}>
+    <div className={styles.newUserItem__controls}>
+      <div className={styles.newUserItem__control}>
+        <label>Name:</label>
+        <input 
+          type="text" 
+          onChange={nameChangeHandler} 
+          value={userInput.enteredName} 
+        />
+      </div>
+      <div className={styles.newUserItem__control}>
+        <label>Age:</label>
+        <input 
+          type="number" 
+          onChange={ageChangeHandler} 
+          value={userInput.enteredAge}
+        />
+      </div>
+    </div>
+    <Button type='submit'>Add User</Button>
+  </form>
+);
+```
+
+Now we just need to handle the submission of this data to the `<App>` state
+To do this we will need a method within `<App>` that will update state and accept an object to do so
+Then we will pass this method down from `<App>` to our `<NewUserItem>` component to make it available and call it from within there
+Within `<App>` just accept the user object and use it to update state
+Be sure to use the functional form so we have access to `prevState`
+```
+const addUserHandler = (user) => {
+  console.log(user);
+  setUserList((prevState) => {
+    return ([user, ...prevState])
+  })
+}
+```
+Now we just pass this as a prop to our `<NewUserItem>` component
+Within `<NewUserItem>` we can make a `formSubmitHandler()` to process the object we want to send to `<App>` so it is getting the correct user object
+First we will we want to prevent the default submission so be sure to do that first
+Then we will bundle the data from `userInput` to a new object with the correct field names as well as add a randomly generated id
+Finally pass this object into the method in props that was passed down from `<App>` to update `<App>`
+```
+const formSubmitHandler = (event) => {
+  event.preventDefault();
+  const userData = {
+    userName: userInput.enteredName,
+    userAge: +userInput.enteredAge,
+    userID: Math.random().toString()
+  }
+  props.addUser(userData);
+}
+```
+
+The last touch before we start doing validation is clearing the form on submission
+To do that we just can update state from within our `formSubmitHandler` and since we are using two way binding already it should update in the input fields
+```
+const formSubmitHandler = (event) => {
+  event.preventDefault();
+  const userData = {
+    userName: userInput.enteredName,
+    userAge: +userInput.enteredAge,
+    userID: Math.random().toString()
+  }
+  props.addUser(userData);
+  setUserInput({
+    enteredName: '',
+    enteredAge: ''
+  });
+}
+```
+
+At this point we have the base of the application completed
+We can show a list of users as well as add more users to that list
+Now would be a good point to make a new commit
+Now we can move onto the validation and modal section of the application
+
+First we need to run validation
+This will be run within the `formSubmitHandler()`
+Within there we will call a method that takes the current value of state (both user inputs)
+Then it will perform a few checks
+- Name value is not empty or spaces
+- age is not negative
+
+There needs to be a different response if either or both of these checks fail 
+
+The first check will be if name is empty and age is negative
+If this fails the method will return: `"Please enter a valid name and age"`
+
+The second check will see if the name is empty
+If this fails the method will return `"Please enter a valid name"`
+
+The third check will see if the age is negative or empty
+If this fails the method will return `"Please enter a valid age"`
+
+If all three of these pass the method will return a simple boolean called true
+
+Then within form submit handler we will check the value that was returned
+If the value was true (the boolean) we will continue with the form submission as we do currently
+
+If the value is anyting else (any of the above strings) that string will be passed to a new component that we will build and not be submitted to state
+For now we will just `console.log` the message
+
+First create the validation method and `console.log` the result
+```
+const validateUserInput = (userData) => {
+  console.log(userData);
+  if(userData.userName.trim()==='' && userData.userAge < 0){
+    return "Please enter a valid name and age"
+  }
+  if(userData.userName.trim()===''){
+    return "Please enter a valid name"
+  }
+  if(userData.userAge < 0){
+    return "Please enter a valid age"
+  }
+  else{
+    return true
+  }
+}
+```
+Now that we are able to collect a validation response we can do something with this response
+First we will handle what to do if the response is true
+In this case we want to forward the data to the `addUser` method passed from `<App>`
+```
+const formSubmitHandler = (event) => {
+  event.preventDefault();
+  const userData = {
+    userName: userInput.enteredName,
+    userAge: +userInput.enteredAge,
+    userID: Math.random().toString()
+  }
+  let isValid=validateUserInput(userData);
+  if(isValid === true){
+    props.addUser(userData);
+    setUserInput({
+      enteredName: '',
+      enteredAge: ''
+    });
+  }
+}
+```
+Above I set the response for our validation to a variable then check if the variable value was true
+Next I will set a condition that if it is not true (in this case it will be a string with a different value)
+If so I will call a modal pop-up method (which will be passed from `<App>`) and pass in the string I reveived
+This string will be the message that gets displayed within the modal
+
+First we will just work on having the modal show at all
+To do this we will create a new component called `<ErrorModal>`
+This will have two main pieces to it
+The first will be a div to be used backdrop which is simply dark with an opacity and has an `onClick` method available to it
+The second will be the div that we can actually see and will serve as the modal
+We hadn't done anything like this before and since I'm not great with css I did have to take a look at the teachers css notes although I was pretty sure we would be using z-index.
+When complete the modal should look like this:
+```
+import Button from '../Button/Button';
+import styles from './ErrorModal.module.css';
+
+const ErrorModal = (props) => {
+  return (
+    <div className={styles.backdrop}>
+      <div className={styles.modalBox}>
+        <div className={styles.heading}>
+          <h2>Invalid Input</h2>
+        </div>
+        <div className={styles.content}>
+          {props.errorMessage}
+        </div>
+        <div className={styles.actions}>
+          <Button>Okay</Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default ErrorModal
+```
+Css used should look like this:
+```
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 10;
+  width: 100%;
+  height:100vh;
+}
+
+.heading {
+  background-color: purple;
+  height: 20%;
+  color: white;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+  padding: 1rem;
+  margin-bottom: 10%;
+}
+.heading h2 {
+  height: 100%;
+  line-height: 100%;
+  padding-left: 5%;
+}
+.modalBox {
+  width: 50%;
+  height: 50%;
+  margin: auto;
+  margin-top: 10%;
+  opacity: 100;
+  background-color: white;
+  border-radius: 15px;
+}
+
+.content {
+  margin-left: 20px;
+  height: 20%;
+}
+
+.actions {
+  height: 15%;
+  display: flex;
+  justify-content: flex-end;
+}
+.actions Button{
+  width: 15%;
+  height: 100%;
+  margin-right: 10px;
+  margin-left: auto;
+}
+```
+
+Now that the modal exists and can accept a string of text to display we just have to work on making it display
+We can simply add a state boolean that if true will show the modal and if false will not show it
+To do this we will set a variable that will hold either a null value or the `<ErrorModal>` to be displayed
+create state variable:
+```
+const [showModal, setShowModal] = useState(true) //will be false when complete
+```
+Variable for modal content and set based on state
+```
+let modalContent = null;
+if(showModal){
+  modalContent = (<ErrorModal errorMessage='Can I type here?' />)
+}
+
+if(!showModal){
+  modalContent = null;
+}
+```
+Call modal content within return statement
+```
+return (
+  <div>
+    {modalContent}
+    <h1 style={{textAlign: 'center'}}>Practice-User-List</h1>
+    <Card>
+      <h1>New User</h1>
+      <NewUserItem addUser={addUserHandler}/>
+    </Card>
+    <Card>
+      <h1>Users</h1>
+      {generatedUserItems}
+    </Card>
+  </div>
+);
+```
+Now the last thing we have to do is trigger this modal to show whenever `<NewUserItem>` fails validation
+We want to do this by looking at what the validation method returns 
+If it returns anything other than `true` (not truthy or not null must be a value of true) then we want to trigger a method in `<App>` that will set `showModal` to true
+If it is `true` then we want to trigger a method that will set `showModal` to false
+This was a little tricky and I had to save the modal message to state 
+Otherwise it would get overritten to its original value when state triggered a reload
+
+```
+const showModalHandler = (arg) => {
+  if (arg === true){
+    setShowModal(false)
+  }
+  else{
+    setShowModal(true)
+    setmodalMessage(arg)
+  } 
+}
+```
+Then I just called this method within the form submit handler and passed in the validation check
+```
+  const formSubmitHandler = (event) => {
+    event.preventDefault();
+    const userData = {
+      userName: userInput.enteredName,
+      userAge: +userInput.enteredAge,
+      userID: Math.random().toString()
+    }
+    let isValid=validateUserInput(userData);
+    if(isValid === true){
+      props.addUser(userData);
+      setUserInput({
+        enteredName: '',
+        enteredAge: ''
+      });
+    }
+    props.modalHandler(isValid);
+  }
+```
+
+Now the last thing to do is make the modal dismissable
+To do that we simply need a method called `hideModalHandler` that we will pass into the modal itself
+This will be used as an onClick event for the okay button and also on the backdrop
+All it needs to do is set `showModal` to false
+
+When complete the project should look like this:
+
+App.jsx
+```
+import {useState} from 'react';
+import './App.css';
+import Card from './Components/UI/Card/Card.jsx';
+import NewUserItem from './Components/NewUserItem/NewUserItem.jsx';
+import UserItem from './Components/UserItem/UserItem.jsx';
+import ErrorModal from './Components/UI/ErrorModal/ErrorModal';
+
+const INITIAL_USER_VALUES = [
+  { userName: 'LukeSkywalker', userAge: 19, userID: 'Red_Five'},
+  { userName: 'HanSolo', userAge: 35, userID: 'Echo_Seven' },
+  { userName: 'AnakinSkywalker', userAge: 19, userID: 'Black_Leader' },
+  { userName: 'Obi-WanKenobi', userAge: 19, userID: 'Red_Leader' }
+]
+
+function App() {
+  const [userList, setUserList] = useState(INITIAL_USER_VALUES);
+  const [showModal, setShowModal] = useState(false)
+  const [modalMessage, setmodalMessage] = useState(null)
+
+  const generatedUserItems = userList.map(el => {
+    return (
+      <UserItem user={el} key={el.userID} />
+    )
+  });
+
+  const addUserHandler = (user) => {
+    console.log(typeof(user.userAge));
+    setUserList((prevState) => {
+      return ([user, ...prevState])
+    })
+  }
+
+  const showModalHandler = (arg) => {
+    if (arg === true){
+      setShowModal(false)
+    }
+    else{
+      setShowModal(true)
+      setmodalMessage(arg)
+    } 
+  }
+
+  const hideModalHandler = () => {
+    setShowModal(false);
+  }
+
+  let modalContent = null;
+
+  if(showModal){
+    console.log(modalMessage)
+    modalContent = (<ErrorModal errorMessage={modalMessage} hideModal={hideModalHandler}/>)
+  }
+
+  if(!showModal){
+    modalContent = null;
+  }
+
+  return (
+    <div>
+      {modalContent}
+      <h1 style={{textAlign: 'center'}}>Practice-User-List</h1>
+      <Card>
+        <h1>New User</h1>
+        <NewUserItem addUser={addUserHandler} modalHandler={showModalHandler} />
+      </Card>
+      <Card>
+        <h1>Users</h1>
+        {generatedUserItems}
+      </Card>
+    </div>
+  );
+}
+
+export default App;
+```
+App.css
+```
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+```
+Card.jsx
+```
+import React from 'react'
+import styles from './Card.module.css';
+const Card = props => {
+  return (
+    <div className={styles.card}>
+      <div className={styles.children}>
+        {props.children}
+      </div>
+    </div>
+  );
+};
+
+export default Card;
+```
+Card.module.css
+```
+.card{
+  /* Centering */
+  margin: auto;
+  padding: 10px;
+  width: 50%;
+  /* Coloring */
+  border: 2px solid black;
+  border-radius: 10px;
+
+  background-color: white;
+}
+
+.children{
+  text-align: center;
+}
+```
+NewUserItem.jsx
+```
+import {useState} from 'react';
+import styles from './NewUserItem.module.css';
+import Button from '../UI/Button/Button.jsx';
+
+const NewUserItem = (props) => {
+  
+  const [userInput, setUserInput] = useState({
+    enteredName: '',
+    enteredAge: ''
+  })
+
+  const validateUserInput = (userData) => {
+    if(userData.userName.trim()==='' && userData.userAge < 1){
+      return "Please enter a valid name and age"
+    }
+    if(userData.userName.trim()===''){
+      return "Please enter a valid name"
+    }
+    if(userData.userAge < 1){
+      return "Please enter a valid age"
+    }
+    else{
+      return true
+    }
+  }
+
+  const formSubmitHandler = (event) => {
+    event.preventDefault();
+    const userData = {
+      userName: userInput.enteredName,
+      userAge: +userInput.enteredAge,
+      userID: Math.random().toString()
+    }
+    let isValid=validateUserInput(userData);
+    if(isValid === true){
+      props.addUser(userData);
+      setUserInput({
+        enteredName: '',
+        enteredAge: ''
+      });
+    }
+    props.modalHandler(isValid);
+  }
+
+  const nameChangeHandler = (event) => {
+    setUserInput((prevState) => {
+      return {...prevState, enteredName: event.target.value}
+    });
+  }
+
+  const ageChangeHandler = (event) => {
+    setUserInput((prevState) => {
+      return {...prevState, enteredAge: parseInt(event.target.value)}
+    })
+  }
+
+  return (
+    <form onSubmit={formSubmitHandler}>
+      <div className={styles.newUserItem__controls}>
+        <div className={styles.newUserItem__control}>
+          <label>Name:</label>
+          <input 
+            type="text" 
+            onChange={nameChangeHandler} 
+            value={userInput.enteredName} 
+          />
+        </div>
+        <div className={styles.newUserItem__control}>
+          <label>Age:</label>
+          <input 
+            type="number" 
+            onChange={ageChangeHandler} 
+            value={userInput.enteredAge}
+          />
+        </div>
+      </div>
+      <Button type='submit'>Add User</Button>
+    </form>
+  );
+};
+
+export default NewUserItem;
+```
+NewUserItem.module.css
+```
+label {
+  padding-right: 2px;
+}
+.newUserItem__controls {
+  background-color: inherit;
+  display: block;
+}
+.newUserItem__control {
+  margin: auto;
+  padding: 5px;
+  display: inline;
+}
+
+```
+Button.jsx
+```
+import styles from './Button.module.css'
+
+const Button = props => {
+  return (
+    <button type={props.type} className={styles.button} onClick={props.onClick}>
+      {props.children}
+    </button>
+  )
+}
+
+export default Button;
+```
+Button.module.css
+```
+.button {
+  text-align: center;
+  background-color: purple;
+  color: white;
+}
+```
+UserItem.jsx
+```
+import styles from './UserItem.module.css';
+
+const UserItem = props => {
+  return(
+    <div className={styles.item}>
+      {`${props.user.userName} (${props.user.userAge} years old)`}
+    </div>
+  );
+}
+
+export default UserItem
+```
+UserItem.module.css
+```.item {
+  border: 1px solid grey;
+  margin: auto;
+  padding: 10px;
+  width: 50%;
+
+}
+```
+ErrorModal.jsx
+```
+import Button from '../Button/Button';
+import styles from './ErrorModal.module.css';
+
+const ErrorModal = (props) => {
+  return (
+    <div className={styles.backdrop} onClick={props.hideModal}>
+      <div className={styles.modalBox}>
+        <div className={styles.heading}>
+          <h2>Invalid Input</h2>
+        </div>
+        <div className={styles.content}>
+          {props.errorMessage}
+        </div>
+        <div className={styles.actions}>
+          <Button onClick={props.hideModal}>Okay</Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default ErrorModal
+
+```
+ErrorModal.module.css
+```
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 10;
+  width: 100%;
+  height:100vh;
+}
+
+.heading {
+  background-color: purple;
+  height: 20%;
+  color: white;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+  padding: 1rem;
+  margin-bottom: 10%;
+}
+.heading h2 {
+  height: 100%;
+  line-height: 100%;
+  padding-left: 5%;
+}
+.modalBox {
+  width: 50%;
+  height: 50%;
+  margin: auto;
+  margin-top: 10%;
+  opacity: 100;
+  background-color: white;
+  border-radius: 15px;
+}
+
+.content {
+  margin-left: 20px;
+  height: 20%;
+}
+
+.actions {
+  height: 15%;
+  display: flex;
+  justify-content: flex-end;
+}
+.actions Button{
+  width: 15%;
+  height: 100%;
+  margin-right: 10px;
+  margin-left: auto;
+}
+```
+
+The github link for my version of this project can be found at: https://github.com/jnhthomp/practice-user-list
