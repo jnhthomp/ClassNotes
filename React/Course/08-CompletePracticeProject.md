@@ -1462,3 +1462,98 @@ export default AddUser
 
 Now our button should look much nicer and work within our form without even needing to pass an `onClick` method in because it has a type of 'submit'
 This means when it is clicked by default it passes the action to our form which does have a handler method attached for submission
+
+
+
+
+___
+## 93. Managing the User Input State
+Now we want to continue and make sure that we can fetch user input so that way when we get to the next step we can render it as a list of users
+
+We have our `<AddUser>` component which has handler for when the form is submitted
+The goal is to collect 2 values (username and age) and use them
+We can use state management to update the state with each keystroke and save what the user enters into a state
+Then we can use the values within the state as the values to export when the form is submitted
+To do this we will need to import `useState` to our `<AddUser>` component and also initialize state
+We will use two seperate states one to store the username and one to store the age both will be initialized with '' empty values
+```
+import React, {useState} from 'react'
+import Card from '../UI/Card.jsx';
+import Button from '../UI/Button.jsx';
+import styles from './AddUser.module.css';
+
+const AddUser = (props) => {
+
+  const [enteredUserName, setEnteredUserName] = useState('')
+  const [enteredAge, setEnteredAge] = useState('')
+
+  const addUserHandler = (event) => {
+    event.preventDefault();
+  }
+
+  return (
+    <Card className={styles.input}>
+      <form onSubmit={addUserHandler}>
+        <label htmlFor="username">Username</label>
+        <input id="username" type="text" />
+        <label htmlFor="age">Age (years)</label>
+        <input id="age" type="number" />
+        <Button type="submit">Add User</Button>
+      </form>
+    </Card>
+  )
+}
+
+export default AddUser
+```
+Now that we have somewhere to store user inputs and a method to update that storage we have to create a method that will be called on each keystroke and use `setState` accordingly
+We will create a new function called `usernameChangeHandler` which will receive the input from the username field
+Then it will use that new value to overwrite whatever state was before
+This method will be triggered by the `onChange` action attached to the username input field
+Remember that `onChange` gives us access to the event object which we can pass into our handlers and use to access the input values
+```
+import React, {useState} from 'react'
+import Card from '../UI/Card.jsx';
+import Button from '../UI/Button.jsx';
+import styles from './AddUser.module.css';
+
+const AddUser = (props) => {
+
+  const [enteredUserName, setEnteredUsername] = useState('')
+  const [enteredAge, setEnteredAge] = useState('')
+
+  const addUserHandler = (event) => {
+    event.preventDefault();
+  }
+
+  const usernameChangeHandler = (event) => {
+    setEnteredUsername(event.target.value);
+  }
+  
+  const ageChangeHandler = (event) => {
+    setEnteredAge(event.target.value);
+  }
+
+  return (
+    <Card className={styles.input}>
+      <form onSubmit={addUserHandler}>
+        <label htmlFor="username">Username</label>
+        <input id="username" type="text" onChange={usernameChangeHandler}/>
+        <label htmlFor="age">Age (years)</label>
+        <input id="age" type="number" onChange={ageChangeHandler}/>
+        <Button type="submit">Add User</Button>
+      </form>
+    </Card>
+  )
+}
+
+export default AddUser
+```
+
+Now we can `console.log` the values for each within our `addUserHandler` to ensure that our state and onChangeHandlers are working correctly
+```
+const addUserHandler = (event) => {
+  event.preventDefault();
+  console.log(enteredUserName, enteredAge);
+}
+```
