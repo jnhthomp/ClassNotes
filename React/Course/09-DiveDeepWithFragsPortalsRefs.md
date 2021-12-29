@@ -353,3 +353,52 @@ import React, {useState, Fragment} from 'react';
 ```
 
 Usually we will use this fragment instead of writing our own wrappers but it is important to understand how it works
+
+
+
+
+___
+## 104. Introducing React Portals
+Fragments are used to clean up our code and reduce unnecessary html elements
+React Portals are another feature that help us also keep our code clean
+
+Consider the following
+You have two jsx elements side by side wrapped in a fragment that is being returned
+```
+return (
+  <React.Fragment>
+    <MyModal />
+    <MyInputForm />
+  </React.Fragment>
+);
+```
+
+Then the html that is actually rendered to the dom looks like this because these components are returning jsx of their own or could be returning more components
+```
+<section>
+  <h2>Some other content...</h2>
+  <div class="my-modal">
+    <h2>A Modal Title!</h2>
+  </div>
+  <form>
+    <label>Username</label>
+    <input type "text" />
+  </form>
+</section>
+```
+What is wrong with this?
+Well nothing but there is something in this code that is not ideal and that is the modal
+The modal in the dom will work as long we apply the correct styling but semantically it is not ideal from a "clean html structure" perspective
+It should not be nested because it is an overlay of the entire page
+This would be similar for side-drawers or other dialogs
+
+Since it is over the entire page logically it should be above everything else
+Although it could technically work because of styling it isn't a good representation of how the page should be laid out
+It is deeply structured in other html code when it is actually displayed on top of the rest of our page
+
+It would be like creating a button by styling a div like a button and adding an event listener
+yes this will work but it is not the correct way to do things
+
+What we want to do is find a way to keep the structure on the left so that the modal is tied to the import form but to render it differently in the real dom and render the modal html content somewhere else other than where it would normally go to
+We want the jsx code and structure to not change but we want to rendered dom to be different
+We can accomplish this with react portals
