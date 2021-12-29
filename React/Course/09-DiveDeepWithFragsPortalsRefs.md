@@ -209,3 +209,62 @@ Imagine you were using nested css selectors and and someone updated a component 
 
 Even if it doesn't break your styling it is still not a good practice because you are rendering too many html elements 
 The browser has to render all of these elements and react has to check them so it may make your application run slow
+
+
+
+
+___
+## 102. Creating a Wrapper Component
+Now we will explore a solution
+What if we used a trick?
+In the project from the previous section we will create a new folder called helpers
+Create: src/Components/Helpers/Wrapper.js
+
+Inside we will write our functional component as normal but we won't be returning any jsx
+Instead we will only return `props.children`
+This keeps our components free of wrapping divs and allows us to have siblings that when rendered do not have wrapping divs around them
+Note that because we aren't returning any jsx we don't need to import react (we don't need to anyway) and our file can be .js instead of .jsx
+```
+const Wrapper = (props) => {
+  return props.children;
+}
+
+export default Wrapper
+```
+
+Now we can import the `<Wrapper>` component to `<AddUser>` and not need the unnecessary wrapping div and instead use this new component
+```
+return (
+  <Wrapper>
+    {error && <ErrorModal title={error.title} message={error.message} closeModal={errorHandler}/>}
+    <Card className={styles.input}>
+      <form onSubmit={addUserHandler}>
+        <label htmlFor="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          onChange={usernameChangeHandler}
+          value={enteredUsername}
+        />
+        <label htmlFor="age">Age (years)</label>
+        <input
+          id="age"
+          type="number"
+          onChange={ageChangeHandler}
+          value={enteredAge}
+        />
+        <Button type="submit">Add User</Button>
+      </form>
+    </Card>
+  </Wrapper>
+)
+```
+
+If we compare the actual html that is rendered to the dom you can see that there is no longer a wrapping div around the `<Card>` component in the dom
+
+Even though wrapper is an empty component it is enough to fulfill the requirement jsx has of making sure that all returns only return a single root component
+It is an element that is not rendered in anyway to the dom but the requirement for jsx is not about what is rendered to the dom just that it receives a single root element as a return statement
+That root element does not have to be rendered or do anything
+The root element also only returns one thing which is it's children
+
+This is a technical requirement of js that we are working around and still only returning a single thing in each of our components
