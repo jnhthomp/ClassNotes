@@ -268,3 +268,88 @@ That root element does not have to be rendered or do anything
 The root element also only returns one thing which is it's children
 
 This is a technical requirement of js that we are working around and still only returning a single thing in each of our components
+
+
+
+
+___
+## 103. React Fragments
+Now that we have a custom wrapper component we are able to use a trick to fulfill the requirement by react and not have div soup
+Because this is convenient and obvious this wrapper component is not a component that we need to build on our own
+Instead it does come with react
+It is called the `<React.Fragment>` component
+You can always access this by simply calling it as done above or you can import it from react
+Some projects will also allow you to use a blank element but it will depend on your project setup
+
+Ways to call `<React.Fragment>`
+```
+return (
+  <React.Fragment>
+    <h2>Hello There!</h2>
+    <p>General Kenobi! You are a bold one</p>
+  </React.Fragment>
+)
+```
+```
+return (
+  <>
+    <h2>Hello There!</h2>
+    <p>General Kenobi! You are a bold one</p>
+  </>
+)
+```
+
+This is the exact same as our wrapper and will render an empty wrapper which doesn't render anything to the dom
+
+We can adjust our project to use the empty tags
+```
+  return (
+    <>
+      {error && <ErrorModal title={error.title} message={error.message} closeModal={errorHandler}/>}
+      <Card className={styles.input}>
+        <form onSubmit={addUserHandler}>
+          <label htmlFor="username">Username</label>
+          <input
+            id="username"
+            type="text"
+            onChange={usernameChangeHandler}
+            value={enteredUsername}
+          />
+          <label htmlFor="age">Age (years)</label>
+          <input
+            id="age"
+            type="number"
+            onChange={ageChangeHandler}
+            value={enteredAge}
+          />
+          <Button type="submit">Add User</Button>
+        </form>
+      </Card>
+    </>
+  )
+```
+
+We can also do this in `<App>` 
+```
+return (
+  <React.Fragment>
+    <AddUser onAddUser={addUserHandler}/>
+    <UsersList users={usersList}/>
+  </React.Fragment>
+);
+```
+
+If you wanted to you could also import Fragment and simply call it that way
+```
+import React, {useState, Fragment} from 'react';
+...
+...
+  return (
+    <Fragment>
+      <AddUser onAddUser={addUserHandler}/>
+      <UsersList users={usersList}/>
+    </Fragment>
+  );
+```
+
+Usually we will use this fragment instead of writing our own wrappers but it is important to understand how it works
