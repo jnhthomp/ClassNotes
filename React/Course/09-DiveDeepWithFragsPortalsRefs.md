@@ -402,3 +402,132 @@ yes this will work but it is not the correct way to do things
 What we want to do is find a way to keep the structure on the left so that the modal is tied to the import form but to render it differently in the real dom and render the modal html content somewhere else other than where it would normally go to
 We want the jsx code and structure to not change but we want to rendered dom to be different
 We can accomplish this with react portals
+
+
+
+
+___
+## 15. Working with Portals
+In our project we have an error modal
+(you can add a react fragment here instead of a wrapping div too)
+
+This is a good example of where we can use a portal
+That is because this modal shouldn't be rendered where it is actually being rendered currently
+Right now this modal is being rendered as a child of the root div as a sibling to the form and list
+This isn't an issue in a project this size but in a larger project it may end up quite nested in the dom tree
+You may actually want the ErrorModal and backdrop div to actuall show up as children in the `<body>` tag instead of as a child of the `<root>` tag within `<body>` 
+With portals we can move it up a level
+
+Not only could we move the backdrop div up to be a direct child of the body but we could also move the actual modal up to also be a direct child of the body
+
+How do we use portals to do this?
+Portals need two things
+1. A place to port the portal too
+2. Let the component know it should have portal to that place
+
+How do we mark the place for a portal?
+We can do this by going into the `'/public'` folder and go into `index.html`
+There you should add a div with an id that you can use to identify it later
+```
+ <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="backdrop-root"></div>
+    <div id="modal-root"></div>
+    <div id="root"></div>
+  </body>
+```
+Here we are using `overlay-root` instead of a `modal-root` because you could use it as a portal for other overlays such as zoomed in pictures, modals, sidedrawers etc
+We will use that instead of `modal-root` 
+
+Now back in our components we need to tell react that our backdrop div as well as our `<Card>` we are using for our modal should be portaled somewhere else
+
+To do this and to make it simpler we will add a new component WITHIN our `ErrorModal.jsx` file called backdrop which will simply return the div we are currently using for backdrop
+```
+const Backdrop = (props) => {
+  return <div className={styles.backdrop} onClick={props.closeModal} />;
+}
+```
+Now we will do the same for a modal overlay component
+```
+const ModalOverlay = (props) => {
+  return (
+    <Card className={styles.modal}>
+      <header className={styles.header}>
+        <h2>{props.title}</h2>
+      </header>
+      <div className={styles.content}>
+        <p>{props.message}</p>
+      </div>
+      <footer className={styles.actions}>
+        <Button onClick={props.closeModal}>Okay</Button>
+      </footer>
+    </Card>
+  );
+}
+```
+Now we have basically split our component into two seperate parts, backdrop and overlay
+This will make it easier to use portals with them
+
+Now how do we call these and portal them?
+We want to call a function within our jsx that is a part of the `react-dom` library
+This is a different library than `react` but is included as a part of React already
+Think of `react` having all the react features like state management built in
+`react-dom` uses react to bring that logic and features to the dom
+`react` doesn't actually care if you are using react to build a dom or a native react application
+You could actually use `react-native` to build mobile apps (but that is a whole other course)
+Basically `react-dom` is the translator for react to the browser
+Since we are portalling to something in the dom we will need to access `react-dom` and therefore need to import it
+```
+// Note ReactDOM can be named however you want 
+import ReactDOM from 'react-dom';
+```
+
+Now on ReactDom which we have imported we can call the `.creatPortal()` method
+This method takes two arguments the first is the react component or jsx that should be rendered
+The second is the id of the element that this component should be rendered to
+To do that we will use `document.getElementByID()` and pass in the id of the div to target just like good old plain vanilla js
+Don't forget to forward the `closeModal` function to the backdrop
+```
+const ErrorModal = (props) => {
+  return (
+    <React.Fragment>
+      {ReactDOM.createPortal(<Backdrop closeModal={props.closeModal} />, document.getElementById('backdrop-root'))}
+      
+    </React.Fragment>
+  ) 
+}
+```
+
+One place you can see something very similar to this already in action is in `index.js`
+There it uses `ReactDOM` and the `.render()` method to render our `<App>` component (and therefore our app)
+And targets the `root` div with the same `.getElementById` method
+
+Now if we go back and enter an invalid user the backdrop will appear (and is functional) but the modal will not since we haven't portalled that yet
+You will also notice that the `backdrop-root` div is now being rendered as a child of the body instead of with the root div
+We also could have targetted the body itself if we really wanted to and didn't want a wrapper div around the backdrop
+
+Let's go back and add a portal for the error modal as well
+Remember to forward the props it needs and pay attention to the naming
+```
+const ErrorModal = (props) => {
+  return (
+    <React.Fragment>
+      {ReactDOM.createPortal(
+        <Backdrop closeModal={props.closeModal} />, 
+        document.getElementById('backdrop-root')
+      )}
+      {ReactDOM.createPortal(
+        <ModalOverlay 
+          title={props.title} 
+          message={props.message} 
+          closeModal={props.closeModal}
+        />, 
+        document.getElementById('overlay-root')
+      )}
+    </React.Fragment>
+  ) 
+}
+```
+
+Now if we save the modal should both render and be functional and it should be portalled to the `overlay-root` div in the dom
+Now we can use the error modal and the `<AddUser>` component in the exact same way but now it will always show up in the correct place in the dom no matter where we call it or how nested it is within our React application
