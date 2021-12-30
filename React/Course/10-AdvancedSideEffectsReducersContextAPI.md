@@ -525,3 +525,55 @@ useEffect(() => {
 Now when we type into our inputs the cleanup will run and cancel the previous timer as soon as `useEffect` is called that ensures that we don't get multiple 'Checking form validity' logs meaning we are only running that function when the user pauses
 
 If the order is not clear to you play more with the console log statements
+
+
+
+
+___
+## 115. useEffect Summary
+`useEffect` besides `useState` is the most important react hook we have besides `useState` 
+So be sure that you are clear when to use it and when each part kicks in and executes
+
+To do this within login we will add a `useEffect` call where we only add the first argument
+(for the mooment no second argument)
+Within there we will log 'EFFECT RUNNING'
+```
+useEffect(() => {
+  console.log('EFFECT RUNNING');
+})
+```
+Now we don't have any dependencies we just have the first argument
+Although this is valid you will rarely use `useEffect` like this
+The reason for this is that it will execute as the last step every single time after the component is mounted or rerendered including the first time
+
+This changes if we add an empty array
+```
+useEffect(() => {
+  console.log('EFFECT RUNNING');
+}, []);
+```
+Now the component will only execute the `useEffect` after the first time the component is rendered/mounted
+
+any rerendering due to state changes will not trigger `useEffect`
+
+We can add a dependency like `enteredEmail` or `enteredPassword`
+```
+useEffect(() => {
+  console.log('EFFECT RUNNING');
+}, [enteredEmail]);
+```
+Now `useEffect` will only run at the end of the component being rendered the first time and then only if the component is reloaded AND the value of `enteredEmail` is changed
+Changes to `enteredPassword` and rerenders that are caused by that would not trigger `useEffect`
+
+
+We also have the cleanup function which is returned by the function within `useEffect`
+```
+useEffect(() => {
+  console.log('EFFECT RUNNING');
+
+  return () => {
+    console.log('EFFECT CLEANUP');
+  }
+}, [enteredEmail]);
+```
+After `useEffect` has been run once this will run after subsequent calls to the same `useEffect` and when the component it is attached to is removed or unmounted from the dom
