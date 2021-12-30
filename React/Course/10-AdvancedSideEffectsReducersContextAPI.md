@@ -268,3 +268,99 @@ const logoutHandler = () => {
 };
 ```
 Watch changes to local storage in the browser to make sure this works or you won't be able to logout without clearing it maunually with dev tools
+
+
+
+
+___
+## 112. useEffect & Dependencies
+Last lesson we learned about `useEffect` without dependencies
+However often you will need to have dependencies to trigger useEffect instead of just on page reloads or initial loads
+
+An example of this can be in the `<Login>` component
+There is quite a bit of validation built in
+- The inputs will turn red if the username or password does not meet the requirements 
+- The login button is greyed out if there is not valid username and password
+
+This works with every keystroke there is an event handler run that checks the values in the email field and sees if it has certain values
+Then there is another validation that runs whenever the input is "blurred" or unselected and the user goes to the next input
+
+Where can we use `useEffect` here?
+We could use it to restructure our validation logic
+Currently we have very similar logic within the `emailChangedHandler` and the `passwordChangedHandler`
+we can use `useEffect` to have one place to mark the form as valid or invalid with a singular piece of logic
+This should trigger when either the email or the password change and will then check both
+This is where we will need to make use of dependencies
+Remember to import `useEffect` and then we will call it below where we initialize all the state values
+```
+import React, { useState, useEffect } from 'react';
+
+import Card from '../UI/Card/Card';
+import classes from './Login.module.css';
+import Button from '../UI/Button/Button';
+
+const Login = (props) => {
+  const [enteredEmail, setEnteredEmail] = useState('');
+  const [emailIsValid, setEmailIsValid] = useState();
+  const [enteredPassword, setEnteredPassword] = useState('');
+  const [passwordIsValid, setPasswordIsValid] = useState();
+  const [formIsValid, setFormIsValid] = useState(false);
+
+  useEffect(() => {
+    
+  }, [])
+...
+...
+```
+Now in our function we will call `setFormisValid` with the email validation just like in `emailChangeHandler` except instead of checking the event we will check the state value for entered Email
+```
+  useEffect(() => {
+    setFormIsValid(
+      enteredEmail.target.value.includes('@') && enteredPassword.trim().length > 6
+    );
+  }, [])
+```
+Again this function is only going to be run once as is when the component is rendered and that is not what we want
+If we remove the logic from `emailChangeHandler` and `passwordChangeHandler` the form never gets enabled because in input is never going to be valid on page load
+
+We want this `useEffect` call to be re-evaluated and potentially set state for the form being valid for every keystroke within the email and password changed handler
+
+Now if we were to completely omit the dependencies array like this:
+```
+  useEffect(() => {
+    setFormIsValid(
+      enteredEmail.target.value.includes('@') && enteredPassword.trim().length > 6
+    );
+  })
+```
+This would trigger an infinite loop since this would run on over and over because we are setting state and re-evaluating every time the component rerenders instead of just the first time like when we had the empty array
+So this is definitely not what we want
+
+But empty dependencies is also not what we want since then it will only run once on page load
+
+There is a simple rule, you add as dependencies what you are using in the side effect function
+We are currently using: `setFormisValid`, `enteredEmail`, `enteredPassword`
+So we can add all three of these as dependencies in the array
+Remember not to add the execution of `setFormIsValid()` because then you would be adding the result of that function and not the function itself
+```
+useEffect(() => {
+  setFormIsValid(
+    enteredEmail.target.value.includes('@') && enteredPassword.trim().length > 6
+  );
+}, [setFormIsValid, enteredEmail, enteredPassword]);
+```
+We can actually omit `setFormIsValid` because state setting functions from react are composed by default to never change so looking for a change in it is non necessary
+
+Now everytime `enteredEmail` and `enteredPassword` is changed the function in `useEffect` is ran and the form is set to valid or not based on that validation
+This only changes the button from being greyed out to not greyed out and clickable though
+This is a good example of using `useEffect` to run a function when certain data or props change
+
+One thing that is confusing is that we are not working with local storage, setting http requests, or setting a timer
+Instead we are updating the react state 
+This can be confusing since in the slide from a previous lecture we were told that managing state was not a typical function of `useEffect` 
+To clear that up it is called `useEffect` it has on main job and that job is to manage side effect
+Often that means performing the above mentioned tasks but it is also a side effect to listen to every keystroke and then save that data we also then want to trigger another action IN RESPONSE TO THAT
+Triggering that other action is a side effect of that data changing
+`useEffect` is super helpful for dealing with code that should be executed in response to something
+Something could be the component being loaded or the email address being updated or anything
+Whenever there is an action that should be activated in response to another action `useEffect` can help
