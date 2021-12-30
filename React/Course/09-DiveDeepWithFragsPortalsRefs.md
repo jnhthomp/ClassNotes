@@ -767,3 +767,21 @@ Because their internal state (the value within them) is not controlled by react
 We don't feed that data back into the input with react and access it with a react feature but that is not the same as having a state that we can manipulate directly
 Even though we are using js we are just using the default dom api to set the value when we used our hacky approach to reset our input fields instead of setting that value through react like we would with a state based approach
 
+
+
+
+___
+## 108. Module Resources
+You may want to compare your code to mine (e.g. to find + fix errors).
+
+For that, you find multiple code snapshots for this module here in this Github repository: https://github.com/academind/react-complete-guide-code/tree/09-fragments-portals-refs
+
+Usage instructions can be found on the page that link is leading to.
+
+Simply pick one of the snapshots in the /code folder - the subfolder names are chosen such that they are easy to match against lecture names in this course section.
+
+You also find section slides (if available) in that Github repository.
+
+
+___
+<h3><center>---Section 8 Complete---</center></h3>
