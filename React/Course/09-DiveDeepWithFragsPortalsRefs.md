@@ -751,3 +751,19 @@ export default AddUser
 There are some use cases where using a state based approach like we were before is better and sometimes using a ref based approach is better
 Usually if you just want to read a value quickly and not make changes to the dom element in that ref (except maybe value)
 Using state as a keylogger though is probably not the best approach
+
+
+
+
+___
+## 107. Controlled vs Uncontrolled Components
+In the last lecture we spoke about refs and how they give an alternative way of accessing user input fields
+We also so the hacky approach of manipulating the input fields and resetting them
+
+This approach of using refs to interact with dom elements (specifically input refs) are called uncontrolled components
+
+Why uncontrolled?
+Because their internal state (the value within them) is not controlled by react
+We don't feed that data back into the input with react and access it with a react feature but that is not the same as having a state that we can manipulate directly
+Even though we are using js we are just using the default dom api to set the value when we used our hacky approach to reset our input fields instead of setting that value through react like we would with a state based approach
+
