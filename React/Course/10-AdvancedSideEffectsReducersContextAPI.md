@@ -416,3 +416,112 @@ In this example:
 `myTimer` is NOT added as a dependency because it's not a component-internal variable (i.e. not some state or a prop value) - it's defined outside of the component and changing it (no matter where) wouldn't cause the component to be re-evaluated
 
 `setTimeout` is NOT added as a dependency because it's a built-in API (built-into the browser) - it's independent from React and your components, it doesn't change
+
+
+
+
+___
+## 114. Using the useEffect Cleanup Function
+There is one last important thing about `useEffect` we need to know
+It is a built in feature of `useEffect`
+We learned about the function that gets passed as well as dependencies and what happens if you pass an empty dependency array, or ommit dependencies, and how to add dependencies
+
+Sometimes you also have an effect that needs to do cleanup work
+An example of this would be
+In our useEffect we are running it on every keysroke since state is updating on every keystroke and the dependency is changed 
+What we do in the function could be a problem although it is not in this case
+Within ours we are updating state and this may not be ideal 
+This means that it triggers another call for our component and react checks if it needs to change something
+But that may not be something we really want to do for every keystroke
+Imagine you would do something more complex like send an http request to a backend where we check if a username is already in use
+We don't want to do that with every keystroke because if we do we will be sending a lot of requests
+That may be a lot of unnecessary network traffic so you will want to avoid that
+You might want to collect a certain amount of keystrokes or wait for a pause after the keystrokes and only if the pause is long enough should we do the function
+For example while the user is actively typing we won't want to check if it a valid email address
+We only care about when the user stops typing
+Let the user type and then when they stop for maybe 500 miliseconds or longer should we check that what they entered is valid
+(and the same for password)
+
+This is a technique called debouncing
+This means we want to check user input but not on every keystroke, only after the user has made a pause during typing
+With `useEffect` this is easy
+We can use `setTimeout()` which is a method built into the browser and we can make it wait 500 ms before it executes some function
+```
+useEffect(() => {
+  setTimeout(() => {
+    //this stuff will happen after 500ms
+  }, 500);
+  setFormIsValid(
+    enteredEmail.includes('@') && enteredPassword.trim().length > 6
+  );
+}, [enteredEmail, enteredPassword]);
+```
+In this function we will want to check and update our form validity
+```
+useEffect(() => {
+  setTimeout(() => {
+    setFormIsValid(
+      enteredEmail.includes('@') && enteredPassword.trim().length > 6
+    );
+  }, 500);
+}, [enteredEmail, enteredPassword]);
+```
+Now we are only doing this after 500ms
+Now if we move this into our form we see that it doesn't do much
+We are still logging every keystroke just waiting 500ms to do so
+This makes sense because for every keystroke we are setting a timer and after 500ms doing the function
+The trick is that we actuallys ave the timer and then during the next keystroke we clear it
+Then we will only have one ongoing timer going at a time and only the last timer will ever complete
+As long as the timer keeps on going we always clear subsequent calls of it
+Then only 1 timer will complete after 500ms and submit the `formIsValid` once with the last most up to date version
+This may sound complicated but `useEffect` makes this easy 
+Within `useEffect` we can do something we have never done before
+You can return something
+The something you return has to be a specific thing which is a function itself
+It could be a named function but we will do an anonymous arrow function
+This function that is returned is called a "cleanup" function
+this will run as a cleanup process to run before `useEffect` executes its function the next time
+To be clear except for the first time whenever `useEffect` runs the cleanup function will run first
+In addition the cleanup function will run whenever the component you are specifying the effect in unmounts from the dom
+The cleanup function runs before every new `useEffect`  side effect function is used and when the component is umounted from the dom and does not run before the first side effect function execution
+After the first time it will run before the next side effect function execution
+
+You can see this in action by adding a couple `console.logs`
+```
+useEffect(() => {
+  setTimeout(() => {
+    console.log("Checking form validity");
+    setFormIsValid(
+      enteredEmail.includes('@') && enteredPassword.trim().length > 6
+    );
+  }, 500);
+
+  return () => {
+    console.log('Cleanup');
+  }
+}, [enteredEmail, enteredPassword]);
+```
+On the initial page load there is no log for 'Cleanup' but as soon as you type you can see 'Cleanup' in the logs and then the next 'Checking form validity' is shown
+
+With this in mind we can use the fact that `setTimeout()` returns a handler/identifier that we can use to clear the timer with the built in `clearTimeout()` function
+We want to run this in our cleanup function
+there we want to run the `clearTimeout()` function and pass in the identifier to it
+This will ensure that if the timer is cancelled the function inside of it does not run
+```
+useEffect(() => {
+  const identifier = setTimeout(() => {
+    console.log("Checking form validity");
+    setFormIsValid(
+      enteredEmail.includes('@') && enteredPassword.trim().length > 6
+    );
+  }, 500);
+
+  return () => {
+    console.log('Cleanup');
+    clearTimeout(identifier)
+  }
+}, [enteredEmail, enteredPassword]);
+```
+Now when we type into our inputs the cleanup will run and cancel the previous timer as soon as `useEffect` is called that ensures that we don't get multiple 'Checking form validity' logs meaning we are only running that function when the user pauses
+
+If the order is not clear to you play more with the console log statements
