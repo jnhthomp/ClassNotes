@@ -531,3 +531,223 @@ const ErrorModal = (props) => {
 
 Now if we save the modal should both render and be functional and it should be portalled to the `overlay-root` div in the dom
 Now we can use the error modal and the `<AddUser>` component in the exact same way but now it will always show up in the correct place in the dom no matter where we call it or how nested it is within our React application
+
+
+
+
+___
+## 106. Working With "ref"s 
+With fragments and portals we ended up with a way to do the same thing but keep our code cleaner
+With these features we end up with more semantically correct html
+It makes it more accessible
+Makes sure you aren't rendering unecessary divs
+Show you know what you are doing
+Now for the last key feature
+This does something different than fragments and portals
+
+These are called ref's which is short for references
+These are quite powerful but basically allow us to get access to other dom elements and allow us to work with them
+To see what this means we will look at the `<AddUser>` component
+
+There we collect inputs and save it to state by updating state with every keystroke
+That is fine and it works but we are updating state with every keystroke when we really only need the value of state when we submit
+This is how refs can help us although they can be used in other ways
+
+How does this work?
+With refs we can set up a connection with the html elements that are being rendered and our js code
+To do that we need to create a ref which we do by using another react hook
+This is simply called `useRef` which we can import the same way we import `useState`
+```
+import React, {useState, useRef} from 'react'
+```
+
+Then we can simply call this in our component
+```
+const AddUser = (props) => {
+  useRef()
+...
+```
+
+Now what does this return and what arugments can it accept?
+It takes a default value to initialize it to but we don't need that right now
+However we do need what it returns
+It retuns a value which allows us to work with the ref later (the element we will connect it to)
+We will call this value `nameInputRef` for now
+```
+const nameInputRef = useRef()
+```
+Now we can duplicate this by calling it again and making a ref for age as well
+```
+const nameInputRef = useRef()
+const ageInputRef = useRef()
+```
+
+Now we have two refs but how do we use them? They are initialize to undefined but we aren't using them otherwise
+We can let React know that we want to connect a ref to an html element by going to the html element and adding a special prop called `ref`
+Like key this is a special default prop that is available to us because of react
+You can connect any html element to a ref
+You will often do it to inputs because you will want to fetch data from it but you can use them with any element
+
+So we just have to add the ref prop and pass the value returned by the ref function above
+```
+<input
+  id="username"
+  type="text"
+  onChange={usernameChangeHandler}
+  value={enteredUsername}
+  ref={nameInputRef} 
+/>
+```
+Now when we load our dom it will load with the value that `useRef` used to initialize (blank)
+Why is this important?
+Lets see how this works by logging the values of these refs when we submit (right after we prevent default)
+```
+const addUserHandler = (event) => {
+  event.preventDefault();
+  console.log(nameInputRef, ageInputRef);
+...
+```
+If you log this and submit a user name you will see that an object is output in the console
+This object has a property called `current`
+Ref is ALWAYS an object 
+it ALWAYS has a `current` property
+The `current` property tracks what value the ref is connected with
+It should look something like:
+```
+{current: input#username}
+```
+Sidenote: you can see a couple of methods that might be helpful within this object called `getValue` and `setValue` those might come in handy
+
+What is cool about this is it is storing the actual dom node and not just a value
+Technically you could manipulate this dom node like this but it is not recommended
+The dom node should only be manipulated by react
+We can read the data from here without doing any damage though
+Instead of logging `nameInputRef` we can instead log the current value it is holding by using:
+```
+console.log(nameInputRef.current.value, ageInputRef.current.value);
+```
+
+When you do this you should get a log with the values that were entered in the input fields
+
+That means we can get access to the value whenever we need without having to log every keystroke and be sure that value is up to date because it is pulled directly from the dom
+So we don't need state to hold the user entered data at all
+
+We can simply save this value and store them in a variable within the `addUserHandler` and access that variable instead of accessing state
+```
+const addUserHandler = (event) => {
+  event.preventDefault();
+  console.log(nameInputRef.current.value, ageInputRef.current.value);
+  const enteredNameRef = nameInputRef.current.value;
+  const enteredAgeRef = ageInputRef.current.value;
+```
+Now we just have to check these values instead of the state values
+```
+const addUserHandler = (event) => {
+  event.preventDefault();
+  console.log(nameInputRef.current.value, ageInputRef.current.value);
+  const enteredNameRef = nameInputRef.current.value;
+  const enteredAgeRef = ageInputRef.current.value;
+  if(enteredNameRef.trim().length === 0 || enteredAgeRef.trim().length === 0){
+    setError({
+      title: 'Invalid Input',
+      message: 'Please enter a valid name and age (non-empty values).'
+    })
+    return;
+  }
+  if(+enteredAgeRef < 1){
+    setError({
+      title: 'Invalid Input',
+      message: 'Please enter a valid age (> 0)'
+    })
+    return;
+  }
+  props.onAddUser(enteredNameRef, enteredAgeRef);
+```
+Lastly when we reset the inputs we are resetting them in state but that isn't how we should do that since we aren't using state to get those values anymore
+
+So we can actually remove our `useState` calls for both name and age and get rid of our `usernameChangeHandler` as well as the `ageChangeHandler`
+
+We can also remove the `value` prop and the `onChange` prop from the inputs
+
+But we still have get back our resetting logic
+To do this with refs we can do something we should rarely do but is ok in this exact context
+I know that we were told that we should not do this and the dom should always have values set through react this is the rare instance when this is perfectly ok
+This is ok because we aren't adding a new element or changing the structure of the dom we are just changing a value that is displayed instead
+If you still didn't want to do this you could revert back to a state approach
+```
+nameInputRef.current.value = '';
+ageInputRef.current.value = '';
+```
+Now when we add a user the values should be cleared
+```
+import React, {useState, useRef} from 'react'
+import Card from '../UI/Card.jsx';
+import Button from '../UI/Button.jsx';
+// import Wrapper from '../Helpers/Wrapper.jsx';
+import ErrorModal from '../UI/ErrorModal.jsx';
+import styles from './AddUser.module.css';
+
+const AddUser = (props) => {
+  const nameInputRef = useRef()
+  const ageInputRef = useRef()
+
+  const [error, setError] = useState()
+
+  const addUserHandler = (event) => {
+    event.preventDefault();
+    console.log(nameInputRef.current.value, ageInputRef.current.value);
+    const enteredNameRef = nameInputRef.current.value;
+    const enteredAgeRef = ageInputRef.current.value;
+    if(enteredNameRef.trim().length === 0 || enteredAgeRef.trim().length === 0){
+      setError({
+        title: 'Invalid Input',
+        message: 'Please enter a valid name and age (non-empty values).'
+      })
+      return;
+    }
+    if(+enteredAgeRef < 1){
+      setError({
+        title: 'Invalid Input',
+        message: 'Please enter a valid age (> 0)'
+      })
+      return;
+    }
+    props.onAddUser(enteredNameRef, enteredAgeRef);
+    nameInputRef.current.value = '';
+    ageInputRef.current.value = '';
+  }
+
+  const errorHandler = () => {
+    setError(null);
+  }
+
+  return (
+    <React.Fragment>
+      {error && <ErrorModal title={error.title} message={error.message} closeModal={errorHandler}/>}
+      <Card className={styles.input}>
+        <form onSubmit={addUserHandler}>
+          <label htmlFor="username">Username</label>
+          <input
+            id="username"
+            type="text"
+            ref={nameInputRef} 
+          />
+          <label htmlFor="age">Age (years)</label>
+          <input
+            id="age"
+            type="number"
+            ref={ageInputRef}
+          />
+          <Button type="submit">Add User</Button>
+        </form>
+      </Card>
+    </React.Fragment>
+  )
+}
+
+export default AddUser
+```
+
+There are some use cases where using a state based approach like we were before is better and sometimes using a ref based approach is better
+Usually if you just want to read a value quickly and not make changes to the dom element in that ref (except maybe value)
+Using state as a keylogger though is probably not the best approach
