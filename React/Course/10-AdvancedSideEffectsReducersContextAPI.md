@@ -1003,3 +1003,126 @@ const passwordReducer = (state, action) => {
 };
 ```
 Now we should have `useReducer` applied to both email and password
+
+
+
+
+___
+## 118. useReducer & useEffect
+Now the teacher will show us how he did the assignment from the end of last lesson
+First create the password reducer function
+He just copy/pasted the one for the email directly below and changed the validation so it ended up looking just like mine
+```
+const passwordReducer = (state, action) => {
+  if (action.type === 'USER_INPUT') {
+    return {value: action.val, isValid: action.val.trim().length > 6};
+  }
+  if (action.type === 'INPUT_BLUR') {
+    return {value: state.value, isValid: state.value.trim().length > 6};
+  }
+  return {value: '', isValid: false};
+};
+```
+
+Then he makes is `useReducer` call 
+```
+const [passwordState, dispatchPassword] = useReducer(passwordReducer, {value: '', isValid: null})
+```
+Now he just goes through and updates calls to `enteredPassword` to reference `passwordState.value` instead and changes calls to `passwordIsValid` to reference `passwordState.isValid`
+
+Next he makes his calls to `dispatchPassword` and passes in the type and value when needed
+```
+const passwordChangeHandler = (event) => {
+  dispatchPassword({type: 'USER_INPUT', val: event.target.value})
+
+  setFormIsValid(
+    emailState.isValid && passwordState.isValid
+  );
+};
+```
+
+```
+const validatePasswordHandler = () => {
+  dispatchPassword({type: 'INPUT_BLUR'})
+};
+```
+Now the project should be set to continue and work as expected
+
+This is the exact same as what we did for email reducer
+It is possible to use 1 reducer instead of 2 but it would take a little bit more work
+
+However the form validity is still being derived from the value of these two states which we want to avoid
+Notice that within `emailChangeHandler` and `passwordChangeHandler` we are calling `setFormIsValid` and relying on `emailState.isValid` and `passwordState.isValid` to be up to date which they may not be
+
+To fix this issue we wil comment out the `setFormIsValid` within these two handlers and go back to the `useEffect` solution we used before
+We will need to change any references to old states to make the reference our `useReducer` states instead
+```
+useEffect(() => {
+  const identifier = setTimeout(() => {
+    console.log("Checking form validity");
+    setFormIsValid(
+      emailState.isValid && passwordState.isValid
+    );
+  }, 500);
+
+  return () => {
+    console.log('Cleanup');
+    clearTimeout(identifier)
+  }
+}, [emailState, passwordState]);
+
+const emailChangeHandler = (event) => {
+  dispatchEmail({type: 'USER_INPUT', val: event.target.value})
+
+  // setFormIsValid(
+  //   emailState.isValid && passwordState.isValid
+  // );
+};
+
+const passwordChangeHandler = (event) => {
+  dispatchPassword({type: 'USER_INPUT', val: event.target.value})
+
+  // setFormIsValid(
+  //   emailState.isValid && passwordState.isValid
+  // );
+};
+```
+
+Now this is a fine way to call `setFormIsValid` because `useEffect` will guarantee we have the correct state values
+
+We do still have a problem though
+This will run correctly and have the bouncing like we wanted
+The problem we have is that our `useEffect` runs too often
+It will run whenever `emailState` or `passwordState` values change at all which may not be what we want
+That is because our dependency is the entire `emailState` and `passwordState` and not just the validity of it
+
+Instead we can use a technique called object destructuring to pull certain properties of objects
+For example for emailState we can pull out `isValid` and store it in a new constant 
+```
+const { isValid: emailIsValid } = emailState;
+const { isValid: passwordIsValid} = passwordState
+```
+This is an alias assignment because it is part of object destructuring syntax
+
+Now we have these constants we can use as our dependencies and our values within `useEffect` remember that dependencies should match values within `useEffect`
+```
+const { isValid: emailIsValid } = emailState;
+const { isValid: passwordIsValid } = passwordState;
+
+useEffect(() => {
+  const identifier = setTimeout(() => {
+    console.log("Checking form validity");
+    setFormIsValid(
+      emailIsValid && passwordIsValid
+    );
+  }, 500);
+
+  return () => {
+    console.log('Cleanup');
+    clearTimeout(identifier)
+  }
+}, [emailIsValid, passwordIsValid]);
+```
+
+Now the advantage to this is that because we are pulling out the `isValid` state whenever the value changes but not the validity then `useEffect` will not rerun 
+This results in more efficient code and ensures we are not running `useEffect` to update the state of `formIsValid` only when necessary
