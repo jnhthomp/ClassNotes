@@ -577,3 +577,77 @@ useEffect(() => {
 }, [enteredEmail]);
 ```
 After `useEffect` has been run once this will run after subsequent calls to the same `useEffect` and when the component it is attached to is removed or unmounted from the dom
+
+
+
+
+___
+## 116. Intorucing useReducer & Reducers in General
+`useReducer` is another built in hook and will help us with state management
+It is a bit like `useState` but with more abilities and more useful with complex states
+States can be considered more complex when you have multiple states, multiple ways of changing state, or dependencies to other states
+Like if you have multiple states that manage the same thing but different properties of that thing
+`useState` often becomes hard or error prone to use
+it is easy to write bad inefficient or buggy code in such scenarios
+`useReducer` can be used as a replacement for `useState` if you neeed more powerful state management
+That doesn't mean you should ALWAYS use it in place of `useState` because it is more complex to use and requires more setup
+For a majority of scenarios `useState` will be the best choice but there are some scenarios where gettting `useReducer` to work is worth it
+
+For a concrete example we can look at the `<Login>` component in our project
+Within there we are managing several different `useState` calls
+```
+const [enteredEmail, setEnteredEmail] = useState('');
+const [emailIsValid, setEmailIsValid] = useState();
+const [enteredPassword, setEnteredPassword] = useState('');
+const [passwordIsValid, setPasswordIsValid] = useState();
+const [formIsValid, setFormIsValid] = useState(false);
+```
+There is some related state in that we manage entered emails and password and we check the validity of the email and password and then we check the validity of the whole form
+You could easily argue that these should all be in the same state or at least treat the inputs as one state (the email and the validity of the email should be together)
+We do have some redundency because we check the validity of the entire form 
+This checks the validity of username and password even though we already have handlers to determine if email and password are valid
+
+We could rewrite this and pass in two states to `useEffect` to check validity
+but we still have two states which belong together (email and password) and should be managed together
+Also we want to come back to something that we don't have anymore since we are using `useEffect`
+Remember before in `emailChangedHandler` and `passwordChangedHandler` we had different code
+We had logic to check the validity within the handler on each keypress and it was using the `event.target.value` to check instead of the state value as we do in our `useEffect`
+
+Imagine for a second that we didn't go the route of `useEffect` and instead of caling `setFormIsValid` in `useEffect` we were calling it in both the `emailChangedHandler` and the `passwordChangedHandler` as we were before
+Like this:
+```
+  const emailChangeHandler = (event) => {
+    setEnteredEmail(event.target.value);
+    setFormIsValid(
+      event.target.value.includes('@') && enteredPassword.trim().length > 6
+    );
+  };
+```
+Here we kind of have a problem because we are updating a state based on the value of state 
+This is okish but since we don't rely on the previous value of `setFormIsValid` but it is still possible to use an outdated state when checking form validity
+However we can't use the functional form of `setState` for `setFormIsValid` because `prevState` would only have the previous state of `formIsValid` and not have the most up to date version of `enteredPassword`
+
+This is a scenario we could use `useReducer` in
+It is good to use for state that belongs together or you have state updates that depend on other state
+
+We don't have to revert our code like I mentioned in the example because we are actually already breaking the rule of setting state based on the value of another state within our `validateEmailHandler` and `valiatePasswordHandler` 
+Within there we are using the value of `enteredEmail` or `enteredPassword` and using the value of that to determine what the values of `emailIsValid` and `passwordIsValid` should be
+```
+  const validateEmailHandler = () => {
+    // set value of emailIsValid based on value of enteredEmail both in state
+    setEmailIsValid(enteredEmail.includes('@'));
+  };
+
+  const validatePasswordHandler = () => {
+    // set value of passwordIsValid based on value of enteredPassword both in state
+    setPasswordIsValid(enteredPassword.trim().length > 6);
+  };
+```
+Yes both of these states are related but they are different states and could become out of sync and are deriving one value based on the other which could cause problems
+Most of the time yes it will work but it is not a good practice or habit
+Normally we would use the functional form of `setEmailIsValid` (and the same for password)
+However that would only give us access to the most up to date version of `emailIsValid` and not necessarily the most up to date version of `enteredEmail` like we are interested in
+
+`useReducer` is a good choice here because we are updating a state based on another state 
+Then merging them into one state may be a good idea 
+We could of course make them into a single object but that can make larger states much more complicated
