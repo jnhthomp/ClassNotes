@@ -651,3 +651,355 @@ However that would only give us access to the most up to date version of `emailI
 `useReducer` is a good choice here because we are updating a state based on another state 
 Then merging them into one state may be a good idea 
 We could of course make them into a single object but that can make larger states much more complicated
+
+
+
+
+___
+## 117. Using the useReducer() Hook
+Now that we know when we might want to use `useReducer` we can learn how it works
+This is how it looks when you write it:
+```
+const [state, dispatchFn] = useReducer(reducerFn, initialState, initFn)
+```
+What does each of this mean?
+Well `useReducer` always returns an array with exactly two values
+You can use array destructuring just like we did with `useState` to give these returned items variables to access them with
+These two values are
+
+state: The latest state snapshot used in the component re-render/re-evaluation cycle
+
+dispatchFn: A function that can be used to dispatch a new action (i.e. trigger an update of the state)
+Again this is similar to `useState` but this doesn't set a value it dispatches an action
+That action will be consumed by the first argument we pass to `useReducer` (reducerFn above)
+
+reducerFn: `(prevState, action) => newState`
+This is a function that is triggered automatically once an action is dispatched (via `dispatchFn`)
+This is a function which gets the latest state snapshot automatically and it gets the action that was dispatched
+React will call this reducerFn whenever a new action is dispatched
+So it gets the latest state snapshot by react and the action that was dispatched that triggered the reducer function execution
+
+initialState: an initial state that can be set
+
+initFn: a function to set the initial state programmatically
+
+Lets try this in action
+Remember we said we could use `useReducer` to combine our entered values and validity checks for the email and password and we could also use it to manage the form state with it
+We can either use it to manage one big state or multiple smaller states
+To keep things simple we will start by managing our email state with `useReducer` 
+The goal is to combine the email itself and the validity into one state managed by `useReducer` 
+
+First of all we need to import `useReducer` in the same way import `useState` and `useEffect`
+```
+import React, { useState, useEffect, useReducer } from 'react';
+```
+
+Now we can call `useReducer` directly under our `useState` statements
+remember it returns an array so we will use array destructuring to capture the two values it returns
+Since we will be working with email we will call the two values `emailState` and `dispatchEmail`
+```
+const [emailState, dispatchEmail] = useReducer(reducerFn, initialState, initFn)
+```
+
+Now we know that `useReducer` accepts a function for the first argument
+We could use an anonymous arrow function but to make it easier to read we will define a function outside of this `useReducer` call and call it `emailReducer`
+```
+const emailReducer = () => {};
+
+const Login = (props) => {
+  const [enteredEmail, setEnteredEmail] = useState('');
+  const [emailIsValid, setEmailIsValid] = useState();
+  const [enteredPassword, setEnteredPassword] = useState('');
+  const [passwordIsValid, setPasswordIsValid] = useState();
+  const [formIsValid, setFormIsValid] = useState(false);
+
+  const [emailState, dispatchEmail] = useReducer(emailReducer, initialState)
+```
+
+Note that we created the `emailReducer` function outside of the component function because we won't need any data that is generated within the component for this function
+It doesn't need to interact with anything defined inside of the component function
+All of the data that is needed by this function will be passed into it when it is executed by react automatically
+
+This email reducer function receives to arguments as mentioned above
+`state` The last sttate snapshot
+`action` the action that was dispatched (we will cover this shortly)
+Within our function we will be returning a new state
+It will be an object with a `value` and `isValid` keys 
+```
+const emailReducer = (state, action) => {
+  return {value: '', isValid: false};
+};
+```
+
+This object can also be the second argument we pass to `useReducer`
+This will be the initial state we pass for our initial state snapshot
+```
+const [emailState, dispatchEmail] = useReducer(emailReducer, {value: '', isValid: false})
+```
+
+
+To make this next part more clear we will also go the route of commenting out `useEffect` and adding the `setFormIsValid` back into the `emailChangeHandler` and `passwordChangeHandler` as mentioned a couple of lessons ago
+```
+  // useEffect(() => {
+  //   const identifier = setTimeout(() => {
+  //     console.log("Checking form validity");
+  //     setFormIsValid(
+  //       enteredEmail.includes('@') && enteredPassword.trim().length > 6
+  //     );
+  //   }, 500);
+
+  //   return () => {
+  //     console.log('Cleanup');
+  //     clearTimeout(identifier)
+  //   }
+  // }, [enteredEmail, enteredPassword]);
+
+  const emailChangeHandler = (event) => {
+    setEnteredEmail(event.target.value);
+
+    setFormIsValid(
+      enteredEmail.includes('@') && enteredPassword.trim().length > 6
+    );
+  };
+
+  const passwordChangeHandler = (event) => {
+    setEnteredPassword(event.target.value);
+
+    setFormIsValid(
+      enteredEmail.includes('@') && enteredPassword.trim().length > 6
+    );
+  };
+```
+
+Now instead ofaccessing `enteredEmail` we will want to access `emailState.value` since that is where we are going to be storing the value for these emails now
+```
+const emailChangeHandler = (event) => {
+  setEnteredEmail(event.target.value);
+
+  setFormIsValid(
+    emailState.value.includes('@') && enteredPassword.trim().length > 6
+  );
+};
+
+const passwordChangeHandler = (event) => {
+  setEnteredPassword(event.target.value);
+
+  setFormIsValid(
+    emailState.value.includes('@') && enteredPassword.trim().length > 6
+  );
+};
+```
+
+However we can actually do better than this
+We are going to use `emailState.isValid` to check the validity of `emailState.value` so instead of rechecking validity we can just check the value of `emailState.isValid`
+```
+const emailChangeHandler = (event) => {
+  setEnteredEmail(event.target.value);
+
+  setFormIsValid(
+    emailState.isValid && enteredPassword.trim().length > 6
+  );
+};
+
+const passwordChangeHandler = (event) => {
+  setEnteredPassword(event.target.value);
+
+  setFormIsValid(
+    emailState.isValid && enteredPassword.trim().length > 6
+  );
+};
+```
+
+We can also use the same idea for the `validateEmailHandler`
+```
+const validateEmailHandler = () => {
+  setEmailIsValid(emailState.isValid);
+};
+```
+
+Also within `submitHandler` we can access `emailState.value` instead of `enteredEmail` 
+```
+  const submitHandler = (event) => {
+    event.preventDefault();
+    props.onLogin(emailState.value, enteredPassword);
+  };
+```
+
+Then in our jsx we want to access `emailState.isValid` instead of `emailIsValid`
+as well as a set value to `enteredEmail` that we can update to `emailState.value`
+```
+return (
+  <Card className={classes.login}>
+    <form onSubmit={submitHandler}>
+      <div
+        className={`${classes.control} ${
+          emailState.isValid === false ? classes.invalid : ''
+        }`}
+      >
+        <label htmlFor="email">E-Mail</label>
+        <input
+          type="email"
+          id="email"
+          value={emailState.value}
+          onChange={emailChangeHandler}
+          onBlur={validateEmailHandler}
+        />
+      </div>
+  ...
+```
+
+Now we aren't using `enteredEmail` and `emailIsValid` anywhere so we can remove both `useState` calls (just comment them out)
+
+Now we are closer to what we want to do but currently we are only returning an object with an empty and false value inside which is not what we want
+Instead we need to dispatch an action eventually
+We want to dispatch it in `emailChangeHandler` when we want to update the value and `validateEmailHandler` when we want to update the validity
+
+First we will start with the value
+We start by calling `dispatchEmail` instead of `setEnteredEmail` within `emailChangeHandler` and we pass in what is called an action
+It is up to us what this action is sometimes this is just a string and sometimes this is a number
+Often times it is an object which we will use in this case
+When doing this you should use a `type` key which should have a valiue of a string that makes it easily identifiable (all caps is convention)
+Then we can add a second key to that object but we don't have to 
+We will want to since we want to access the value that was entered by the user
+So we could use something like `val: event.target.value` to pass that value in
+```
+const emailChangeHandler = (event) => {
+  dispatchEmail({type: 'USER_INPUT', val: event.target.value})
+
+  setFormIsValid(
+    emailState.isValid && enteredPassword.trim().length > 6
+  );
+};
+```
+
+Now we have an action
+It is an object with a type field that describes the data and a value that was collected from the user
+This will now trigger the `emailReducer` function since that is the action we passed into `useReducer`
+`emailReducer` will have access to this object through the action variable that was passed in
+We can use an if statement to check the value of type and if it is `USER_INPUT` then we can set the value of `emailState.value` instead of empty as well as check the validity
+```
+const emailReducer = (state, action) => {
+  if (action.type === 'USER_INPUT'){
+    return {value: action.val, isValid: action.val.includes('@')};
+  }
+  return {value: '', isValid: false};
+};
+```
+
+Now we are updating both `emailState.value` and `emailState.isValid` whenever we receive the `USER_INPUT` action
+For any other action that might reach the reducer a default state of `emailState.value` is empty and `emailState.isValid` is false
+
+We also need to dispatch an action on the `validateEmailHandler`
+instead of setting the email as valid within there we will use our reducer to determine that
+
+Again inside of `validateEmailHandler` we want to call `dispatchEmail` and pass in an action object
+Since we already used an object with `.type` and are checking that we should be consistent and pass in another object with a type key and string which we will check in our reducer function
+This time we will call it `INPUT_BLUR` since this is triggered whenever the user moves off of the input (which is called blurring as mentioned several lessons ago see the blur prop this method is passed to)
+
+```
+const validateEmailHandler = () => {
+  dispatchEmail({type: 'INPUT_BLUR'})
+  // setEmailIsValid(emailState.isValid);
+};
+```
+We don't need to add a value key here because we don't need any extra data we just need to know that the input field lost focus
+
+Now within `emailReducer` we will check for this new action type and if so we will return a new state snapshot
+The value of the object we return should not be empty but we do have access to the last state via the `state` argument that is passed in
+```
+const emailReducer = (state, action) => {
+  if (action.type === 'USER_INPUT'){
+    return {value: action.val, isValid: action.val.includes('@')};
+  }
+
+  if(action.type === 'INPUT_BLUR') {
+    return {value: state.value, isValid: state.value.includes('@')};
+  }
+  return {value: '', isValid: false};
+};
+```
+
+Now if we save and look at our page you will see that the email field has a red color becausd `isValid` is initiallized to false
+If we change that to `null` or `undefined` we can get rid of this error
+```
+const [emailState, dispatchEmail] = useReducer(emailReducer, {value: '', isValid: null})
+```
+
+Now when typing and using the application it should work as before (not with the delay from `useEffect` since we commented that out)
+
+Now try to do the same for the password before the next lesson
+
+MY SOLUTION:
+First I will get the outline for the `useReducer` function written
+```
+const [passwordState, dispatchPassword] = useReducer(passwordReducer, {value: '', isValid: null})
+```
+
+Now we can write our `passwordReducer` function
+```
+const passwordReducer = (state, action) => {
+  return {value: '', isValid: false}
+};
+```
+
+Next we can replace calls to `enteredPassword` to instead access `passwordState.value`
+These are in: `emailChangeHandler`, `passwordChangeHandler`, `validatePasswordHandler`, `submitHandler`, and the value within the password input field in jsx
+Except when we are running validation on `enteredPassword.value` such as when we call `setFormIsValid` we can actually just check `enteredPassword.isValid` instead of running validation
+
+Replace this logic:
+```
+setFormIsValid(
+  emailState.isValid && passwordState.value.trim().length > 6)
+);
+
+```
+With this:
+```
+setFormIsValid(
+  emailState.isValid && passwordState.isValid
+);
+```
+
+Next in the `passwordChangeHandler` we want to call our dispatch function to update the password
+Remember to do this we pass in a type so we can use an if statement to determine what action to take as well as the value that we will get from the `onChange` event
+```
+const passwordChangeHandler = (event) => {
+  dispatchPassword({type: 'USER_INPUT', val: event.target.value})
+
+  setFormIsValid(
+    emailState.isValid && passwordState.isValid
+  );
+};
+```
+
+Now we will write that if statement and tell the reducer what to do when `dispatchPassword` receives an object with a key/value `type: 'USER_INPUT'`
+Remember we have access to the value through the action object and we can run our validation to set the value of `passwordState.isValid`
+```
+const passwordReducer = (state, action) => {
+  if (action.type === 'USER_INPUT') {
+    return {value: action.val, isValid: action.val.trim().length > 6}
+  }
+  return {value: '', isValid: false}
+};
+```
+
+Then in the `validatePasswordHandler` we want to call our dispatch function to update the state
+```
+const validatePasswordHandler = () => {
+  dispatchPassword({type: 'INPUT_BLUR'})
+};
+```
+
+Now we can use an if statement to return the last value of state and update whether it is valid or not
+```
+const passwordReducer = (state, action) => {
+  if (action.type === 'USER_INPUT') {
+    return {value: action.val, isValid: action.val.trim().length > 6}
+  }
+  if (action.type === 'INPUT_BLUR') {
+    return {value: state.value, isValid: state.value.trim().length > 6}
+  }
+  return {value: '', isValid: false}
+};
+```
+Now we should have `useReducer` applied to both email and password
