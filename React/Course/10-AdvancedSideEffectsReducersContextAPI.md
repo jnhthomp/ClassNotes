@@ -1569,3 +1569,49 @@ const Navigation = (props) => {
 ```
 Now we can save this and it will work just because we are using the `useContext` hook 
 This is much more elegant and clean than the other way using `Consumer`
+
+
+
+
+___
+## 124. Making Context Dynamic
+We are using `useContext` to pass the `isLoggedIn` state to our components
+This is fine but we are still passing the `onLogout` function which is a handler to `<App>` via props which we want to avoid
+
+It would be nicer if we could call the `<MainHeader>` within app without passing any props at all
+At the moment we cannot do that
+If we were to remove that we would never be logged out
+
+We can set up a dynamic context where we don't just pass data but also other functions
+To do this all we need to do within our provider is pass in a function called `onLogout` where we pass in the `logoutHandler`
+```
+<AuthContext.Provider value={{
+  isLoggedIn: isLoggedIn,
+  onLogout: logoutHandler
+}}>
+```
+If we do this then every listening component that listens to `AuthContext` will be able to access `onLogout` through `ctx.onLogout`
+Now we can make that change within our `<Navigation>` component
+```
+<li>
+  <button onClick={ctx.onLogout}>Logout</button>
+</li>
+```
+
+Now loging out should work again
+Now we can pass down more than values and pass down functions as well
+We are using a component wide context object to manage our state and the component that changes the state
+Now we don't need to pass the `logoutHandler` down to `<MainHeader>` and we don't need to pass it from `<MainHeader>` down to `<Navigation>`
+In fact `<Navigation>` doesn't need to accept any props at all and our functionality will still work
+
+Now in our main section we will still be passing down via props since we are directly using the handlers within those components and not forwarding them to children components
+We are passing it into our `<Button>` component but we don't want context inside of our button because then we will have to set it up within button each time instead of just passing an action 
+This would mean our button can now only log people out and cannot be used in other situations which is not what we want
+
+In most cases we will use props to pass data to components 
+This is because this is the easiest way to make components reuseable in different scenarios
+You should only use `useContext` to pass data that would normally be forwarded through several components and you are forwarding it to a component that does something very specific (like navigation where the button will always log the user out)
+
+One last note is in regards to the object we passed into the `auth-context.js` file
+Technically we don't need (or more accurately use) this as it is only used in situations where a component does not have a provider with a value prop as a parent within the tree 
+In this instance the default value will be used from the `auth-context.js` file we created
