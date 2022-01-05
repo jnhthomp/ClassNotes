@@ -1160,3 +1160,28 @@ useEffect(() => {
 Why?
 
 Because now the effect function would re-run whenever ANY property of someObject changes - not just the one property (someProperty in the above example) our effect might depend on.
+
+
+
+
+___
+## 120. useReducer vs useState for State Management
+Now that we know about `useReducer` we will sum up what we know about `useReducer` and `useState`
+
+Generally you will know when you need `useReducer`
+This will become obvious because using `useState` starts to become cumbersome or you're getting bugs/unintended behaviors due to state
+
+To give a few ideas on when to use the two
+
+useState:
+ - Main state management "tool"
+ - Typically starts with useState and many times it is all you need
+ - Great for independent pieces of state/data
+ - Great if state updates are easy and limited to a few kinds of updates
+
+useReducer:
+ - Great if you need more power
+ - Can write a reducer function that contains more complex state updating logic
+ - Can potentially move complex logic out of the component body into a seperate reducer function to restructure code
+ - Should consider `useReducer` if you have related state values
+ - Can be helpful if you have complex state updates and different cases/actions that can change a state
