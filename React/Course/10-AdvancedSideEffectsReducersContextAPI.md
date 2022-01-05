@@ -1185,3 +1185,63 @@ useReducer:
  - Can potentially move complex logic out of the component body into a seperate reducer function to restructure code
  - Should consider `useReducer` if you have related state values
  - Can be helpful if you have complex state updates and different cases/actions that can change a state
+
+
+
+
+___
+## 121. Introducting React Context (Context API)
+Now that we have covered `useReducer` we will take a look at other problems you might face in larger applications (or in our tiny one)
+
+This problem is where we are passing a lot of data through a lot of components via props
+
+An example of this is the `isLoggedIn` state that we set in in the `<App>` component
+We are managing it within `<App>` because it has been lifted there 
+This is because we will need the status of that state just about everywhere in the application
+We can see within `<App>` that we are using `isLoggedIn` in the header to determine what buttons to show
+Then below that we are passing either a `loginHandler` or `logoutHandler` to the `<Login>` or `<Home>` components respectively
+
+Go ahead and add a button using our button component whose `onClick` action triggers this `logoutHandler` in the `<Home>` component 
+```
+const Home = (props) => {
+  return (
+    <Card className={classes.home}>
+      <h1>Welcome back!</h1>
+      <Button onClick={props.onLogout}>Logout</Button>
+    </Card>
+  );
+};
+```
+
+In short we are using the login state within a lot of different places in our application
+This is a simple app and even here we need to pass our state around a lot
+It isn't as big of a problem here but this can get very complicated and very messy very quickly
+It is common to pass values and functions through props but it can be a problem to forward state through multiple components
+This is something we are doing in the main header
+Here we pass both the value of `isLoggedIn` and the `logoutHandler` function
+We aren't calling either of these within the `<MainHeader>` component though
+Instead we simply pass these through the `<MainHeader>` and to the `<Navigation>` component 
+
+Again this may not be a problem here but in a larger app you may be passing these props down through many different components with this approach
+Consider this:
+```
+                  <App>
+     _______________|_______________
+     |              |               |
+   <Auth>         <Shop>          <Cart>
+     |              |              
+<LoginForm>     <Products>
+                    |
+                 <Product>
+```
+Here we have a very basic app component layout
+Within the `<LoginForm>` we may have a login event where we validate the login information and set the login status
+We might need that login status in different parts of the app
+We might need that status within the `<Shop>` component or the `<Cart>` component
+We might even need data from the `<Product>` component to traverse all the way to the cart so we can add products to the cart
+However it would be inefficient to store all of this state data in `<App>` and there are no direct connections between these components without going through `<App>` first
+In the case of going from `<Product>` to `<Cart>` we would be passing props through both `<Shop>` and `<Products>` and neither of those components would actually need that data
+
+Instead we can use the Context api in order to pass this data more efficiently
+Context is basically a component wide state storage that is built into react that can make this process simpler\
+We can trigger an action in our component wide state storage and directly pass data to the component that is interested without building a long prop chain
