@@ -1245,3 +1245,273 @@ In the case of going from `<Product>` to `<Cart>` we would be passing props thro
 Instead we can use the Context api in order to pass this data more efficiently
 Context is basically a component wide state storage that is built into react that can make this process simpler\
 We can trigger an action in our component wide state storage and directly pass data to the component that is interested without building a long prop chain
+
+
+
+
+___
+## 122. Using the React Context API
+As mentioned we have something available called react context which allows us to manage state behind the scenes in react but how do we use it?
+To do this we will add a new folder called 'store' (it doesn't have to be called this, can also be called 'state' or 'context')
+Since we will be managing authentication state within this we will create a file within here called 'auth-context'
+Create: src/store/auth-context.js
+
+Notice that this was not name with PascalCase and instead used a lowercase seperated by a dash 
+That is becuse PascalCase implies the file will contain a component and that is not really what we are creating
+
+As a sidenote you can have multiple context files per applicatoin or you can have a big context file for a big state it is up to you but first we will learn how it works
+
+Now what do we do inside of this file?
+First we will import react as if we were building a component but that is not what we are going to do 
+Instead we are going to call a function within React called `React.createContext`
+```
+import React from "react";
+
+React.createContext();
+```
+
+Now `createContext` takes a default context as an argument which is a component wide state
+It is up to us what that is
+If the state you need is just a string you can add a string
+```
+React.createContext('my state');
+```
+
+Often though it will be an object
+In our case it will be an object with an `isLoggedIn` key with an inital value of false
+```
+React.createContext({
+  isLoggedIn: false
+});
+```
+
+What we get back from this function is interesting
+It will be an object that contains components in this case we will name it `AuthContext`
+```
+const AuthContext = React.createContext({
+  isLoggedIn: false
+});
+```
+An important distinction here is that `AuthContext` itself is not a component but is instead an object that will contain components
+
+Now we don't need this object here, instead we will need it in other components so we will export it as the default so we can use it in other files
+```
+import React from "react";
+
+const AuthContext = React.createContext({
+  isLoggedIn: false
+});
+
+export default AuthContext;
+```
+Now we can import the `AuthContext` object
+To use context in our app we will need to do two things
+1. Provide the context (tell react here is the context) all components that are wrapped by it should have access to it (will come back to this shortly)
+2. Consume/hook into/listen to the context
+
+Providing means we wrap all the components that should be able to tap into this context or listen to this context
+Any apps that are not wrapped will not have access to this context
+
+If we know that we need this context within the entire application we will want to wrap everything within the `<App>` component with it
+If we knew that we only needed it in the `<Login>` component we would only wrap that component with it
+Since we need it everywhere we will wrap everything with our context
+Be sure to import it first
+```
+import AuthContext from './store/auth-context';
+```
+
+Then we can wrap our components
+Remember `AuthContext` itself is not a component but is an object containing components
+We can access these with `AuthContext.Provider` which contains the component
+```
+return (
+  <React.Fragment>
+    <AuthContext.Provider>
+      <MainHeader isAuthenticated={isLoggedIn} onLogout={logoutHandler} />
+      <main>
+        {!isLoggedIn && <Login onLogin={loginHandler} />}
+        {isLoggedIn && <Home onLogout={logoutHandler} />}
+      </main>
+    </AuthContext.Provider>
+  </React.Fragment>
+);
+```
+Now all of the components wrapped in this context AND THEIR CHILDREN will have access to this context
+Since we used `<AuthContext.Provider>` we can actually remove `<React.Fragment>` since `<AuthContext>` is acting as our wrapper
+```
+return (
+  <AuthContext.Provider>
+    <MainHeader isAuthenticated={isLoggedIn} onLogout={logoutHandler} />
+    <main>
+      {!isLoggedIn && <Login onLogin={loginHandler} />}
+      {isLoggedIn && <Home onLogout={logoutHandler} />}
+    </main>
+  </AuthContext.Provider>
+);
+```
+Now the context has been provided which was the first part we have to fulfill the second part which is listen to the context
+To get access to our value we have to listen
+We can listen with two ways
+1. Use `AuthContext.Consumer` 
+2. using a react hook
+
+We will typically use the react hook but will cover `<AuthContext.Consumer>` as well
+
+Let's say in `<Navigation>` we are interested in knowing whether the user is authenticated or not
+To do this we can use the consumer version and wrap our entire returned jsx in this context component (don't forget to import)
+```
+import React from 'react';
+
+import classes from './Navigation.module.css';
+import AuthContext from '../../store/auth-context';
+
+const Navigation = (props) => {
+  return (
+    <AuthContext.Consumer>
+      <nav className={classes.nav}>
+        <ul>
+          {props.isLoggedIn && (
+            <li>
+              <a href="/">Users</a>
+            </li>
+          )}
+          {props.isLoggedIn && (
+            <li>
+              <a href="/">Admin</a>
+            </li>
+          )}
+          {props.isLoggedIn && (
+            <li>
+              <button onClick={props.onLogout}>Logout</button>
+            </li>
+          )}
+        </ul>
+      </nav>
+    </AuthContext.Consumer>
+  );
+};
+
+export default Navigation;
+```
+The consumer works a little different and accepts a child which is a function in curly braces
+As an argument in this funciton we will get our context data
+In our case we will get the object that we created
+Then within the function we return the jsx code from our `<Navigation>` component
+```
+const Navigation = (props) => {
+  return (
+    <AuthContext.Consumer>
+      {(ctx) => {
+        return (<nav className={classes.nav}>
+          <ul>
+            {props.isLoggedIn && (
+              <li>
+                <a href="/">Users</a>
+              </li>
+            )}
+            {props.isLoggedIn && (
+              <li>
+                <a href="/">Admin</a>
+              </li>
+            )}
+            {props.isLoggedIn && (
+              <li>
+                <button onClick={props.onLogout}>Logout</button>
+              </li>
+            )}
+          </ul>
+        </nav>)
+      }}
+    </AuthContext.Consumer>
+  );
+};
+```
+
+Now within our jsx we have access to `ctx.isLoggedIn` because we are listening for that data with `<AuthContext.Consumer>`
+We can replace calls to `props.isLoggedIn` with these context calls instead
+```
+return (
+  <AuthContext.Consumer>
+    {(ctx) => {
+      return (<nav className={classes.nav}>
+        <ul>
+          {ctx.isLoggedIn && (
+            <li>
+              <a href="/">Users</a>
+            </li>
+          )}
+          {ctx.isLoggedIn && (
+            <li>
+              <a href="/">Admin</a>
+            </li>
+          )}
+          {ctx.isLoggedIn && (
+            <li>
+              <button onClick={props.onLogout}>Logout</button>
+            </li>
+          )}
+        </ul>
+      </nav>)
+    }}
+  </AuthContext.Consumer>
+);
+```
+However saving this will result in a crash
+This is because we have a default value 
+This default value would only normally be consumed if we did not have the provider
+Techinically the provider is not needed however you should memorize this pattern still
+You don't need it if you have a default value but generally we will use context to have a value that can change
+That is only possible with a provider
+To make sure this does not crash we will add a value prop with our default object to the provider
+```
+return (
+  <AuthContext.Provider value={{isLoggedIn: false}}>
+    <MainHeader isAuthenticated={isLoggedIn} onLogout={logoutHandler} />
+    <main>
+      {!isLoggedIn && <Login onLogin={loginHandler} />}
+      {isLoggedIn && <Home onLogout={logoutHandler} />}
+    </main>
+  </AuthContext.Provider>
+);
+```
+
+Now our page shouldn't crash and you will notice that we do not have a 'users' tab within navigation 
+This is because we are pulling data from the context and the value is always false. The users tab only shows up if that value is true
+Let's make sure we can change the value of context
+This is easy within the `<App>` component where we have `isLogged` in hardcoded with the provider
+Insetad of passing in `false` we can instead pass in `isLoggedIn` from the `<App>` state
+If we do that the value will be updated
+```
+<AuthContext.Provider value={{isLoggedIn: isLoggedIn}}>
+```
+When this is changed the new context value will be passed down to all components listening to this provider
+The difference to before is that we don't need to use a prop to forward this
+Instead we just add it to the provider and then we can listen to that with all child components
+We can remove the `isAuthenticated` prop from our `<MainHeader>` component call within `<App>` 
+```
+return (
+  <AuthContext.Provider value={{isLoggedIn: isLoggedIn}}>
+    <MainHeader onLogout={logoutHandler} />
+    <main>
+      {!isLoggedIn && <Login onLogin={loginHandler} />}
+      {isLoggedIn && <Home onLogout={logoutHandler} />}
+    </main>
+  </AuthContext.Provider>
+);
+```
+Then we can remove the prop from within `<MainHeader>` where we call `<Navigation>` 
+```
+const MainHeader = (props) => {
+  return (
+    <header className={classes['main-header']}>
+      <h1>A Typical Page</h1>
+      <Navigation onLogout={props.onLogout} />
+    </header>
+  );
+};
+```
+Then within `<Navigation>` as long we are pointing to the `ctx` instead of `props` for `isLoggedIn` we should have access to the correct value
+Now we can see the users tab show up since the value of `ctx.isLoggedIn` is updated
+This is just one way of consuming context
+It is an ok way but the teacher doesn't really like the syntax of returning a function
+There is a more elegant way to do this by utilizing the `useContext` hook
