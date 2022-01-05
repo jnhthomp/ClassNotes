@@ -1515,3 +1515,57 @@ Now we can see the users tab show up since the value of `ctx.isLoggedIn` is upda
 This is just one way of consuming context
 It is an ok way but the teacher doesn't really like the syntax of returning a function
 There is a more elegant way to do this by utilizing the `useContext` hook
+
+
+
+
+___
+## 123. Tapping Into Context With The useContext Hook
+Now we will look at the `useContext` hook
+To do this we will remove the consumer 
+```
+import React from 'react';
+
+import classes from './Navigation.module.css';
+import AuthContext from '../../store/auth-context';
+
+const Navigation = (props) => {
+  return (
+    <nav className={classes.nav}>
+      <ul>
+        {ctx.isLoggedIn && (
+          <li>
+            <a href="/">Users</a>
+          </li>
+        )}
+        {ctx.isLoggedIn && (
+          <li>
+            <a href="/">Admin</a>
+          </li>
+        )}
+        {ctx.isLoggedIn && (
+          <li>
+            <button onClick={props.onLogout}>Logout</button>
+          </li>
+        )}
+      </ul>
+    </nav>);
+};
+
+export default Navigation;
+```
+
+Now we are back to the old navigation component except we are still referring to ctx instead of props 
+We are still importing AuthContext and we can still use it by importing the `useContext` hook from react
+```
+import React, { useContext } from 'react';
+```
+To use this we just call it within our component function and pass a pointer for the context we want to use (in this case `AuthContext`)
+This will return a context value which we can store in a ctx variable
+```
+const Navigation = (props) => {
+  const ctx = useContext(AuthContext);
+  ...
+```
+Now we can save this and it will work just because we are using the `useContext` hook 
+This is much more elegant and clean than the other way using `Consumer`
