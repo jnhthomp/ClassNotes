@@ -2018,3 +2018,73 @@ We will explore a better tool for that called redux
 
 Context shouldn't be used to replace all component communicatoins and props
 components should still be configurable via props and short prop chains may not need replacement
+
+
+
+
+___
+## 127. Learning the "Rules of Hooks"
+We ahve learned a lot of new concepts and a lot of new hooks
+We have now covered `useState`, `useEffect`, `useReducer`, and `useContext`
+There are a bunch of hooks (plus more)
+It is important to learn about some rules when using them
+So far we have followed these rules but this is a formal definition that you can follow
+
+There are two main rules when working with react hooks
+1. You must only call react hooks within react functions (within component functions or within custom hooks which are covered later)
+  - An example of this can be seen in `Login.js`
+    There is an `emailReducer` that is next to our component function `<Login>` we cannot call `useState` within that reducer function because it is not a component function
+    We have to use `useState` within the `<Login>` function
+2. You must only call react hooks at the top level of our react component functions or custom hook functions
+  - Don't call hooks in nested functions
+  - Don't call hooks in any block statements
+  - Again within our `<Login>` component we are calling `useEffect`
+    We are not allowed to call `useContext` or anything like that within `useEffect`
+    We would not be allowed to use an if statement to trigger a hook
+
+There is a third rule that the teacher likes to add called the "Unofficial `useEffect` Rule"
+3. Make sure to ALWAYS add everything you refere to inside of `useEffect` as a dependency (unless there is a good reason not to)
+  - An example of this can be found within `<Login>`
+    There we have two different `useEffect` calls (one may be commented out)
+    In the first one we don't have any references so it is ok to not have any dependencies
+    ```
+    useEffect(() => {
+      console.log('EFFECT RUNNING');
+
+      return () => {
+        console.log('EFFECT CLEANUP');
+      }
+    }, []);
+    ```
+    However in the second one we do have multiple references (`setFormIsValid`, `emailIsValid`, `passwordIsValid`)
+    ```
+    useEffect(() => {
+      const identifier = setTimeout(() => {
+        console.log("Checking form validity");
+        setFormIsValid(
+          emailIsValid && passwordIsValid
+        );
+      }, 500);
+
+      return () => {
+        console.log('Cleanup');
+        clearTimeout(identifier)
+      }
+    }, [emailIsValid, passwordIsValid]);
+    ```
+    However because `setFormIsValid` is a function and the function itself is not going to change we do not have to list it as a dependency although we could if we really wanted and it would not be wrong to do so
+    Often times in modern setups if you forget to include a dependency that is needed you will get a warning
+
+```
+Rules of Hooks:
+
+1. Only Call React Hooks in React Functions
+  - React Component Functions
+  - Custom Hooks (Covered Later!)
+
+2. Only call React Hooks at the Top Level
+  - Don't call them in nested functions
+  - Don't call them in any block statements
+
++ extra, unofficial rule for useEffect(): ALWAYS add everyting you refer to inside of useEffect() as a dependency
+```
