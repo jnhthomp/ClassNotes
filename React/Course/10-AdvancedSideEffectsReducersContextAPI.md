@@ -2340,3 +2340,231 @@ Now we should have the same behavior as before except we have a seperate more re
 This is a good example of when we should use props instead of context
 This allows us to configure them from inside of the input but is not the main focus of this excercise
 This was just to set us up for the next lesson
+
+
+
+
+___
+## 129. Diving Into "Forward Refs"
+The next hook allows us to interact with the input components imperatively
+This means not by passing state to it which changes something in the component but by calling a function inside of the component
+
+This is something you won't need to do often and shouldn't do often because it is not the react pattern but sometimes it is helpful
+
+First let's remove the diabled prop from our button in `<Login>`
+Now our button will always be clickable
+
+Second since our button is always clickable we will go to the `submitHandler` and check the validity of the form before calling the `onLogin` function
+Otherwise we want to focus the first invalid input we find
+This is the interesting part
+For example if the email does not have the correct format we would focus the email input
+If the email does have the correct format but the password is not long enough we want to focus the password input
+To do this we can use an if-elseif-else statement
+
+The first if will check if the form is valid and if so perform the login action
+The second will check if the email is NOT valid and if so focus the email input
+The third will focus the password input since the other two if checks failed and that is the only remaining result
+```
+const submitHandler = (event) => {
+  event.preventDefault();
+  if (formIsValid){
+    ctx.onLogin(emailState.value, passwordState.value);
+  } else if (!emailIsValid) {
+
+  } else {
+    
+  }
+};
+```
+
+We have our if checks but how do we focus this? 
+With a regular input we could do this with refs
+Just as an example we could add this to our `<Input>` component
+Simply go in and import `useRef` and call it
+Then we could use `useEffect` to focus this input after the component is rendered
+To do this we would use `useEffect` since that runs after every component render cycle
+Assume we only want to run `useEffect` once upon initial render
+We would pass an empty array for this
+Then we can just add the ref prop to the input (of course passing in the constant we assigned)
+Then within `useEffect` we could call `current.focus()` on the `inputRef`
+```
+import React, { useRef, useEffect } from 'react'
+import classes from './Input.module.css'
+
+const Input = (props) => {
+  const inputRef = useRef();
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, [])
+  return (
+    <div
+      className={`${classes.control} ${props.isValid === false ? classes.invalid : ''
+        }`}
+    >
+      <label htmlFor={props.id}>{props.label}</label>
+      <input
+        ref={inputRef}
+        type={props.type}
+        id={props.id}
+        value={props.value}
+        onChange={props.onChange}
+        onBlur={props.onBlur}
+      />
+    </div>
+  )
+}
+
+export default Input
+```
+
+Now since we are rendering two `<Input>` components the password one will end up being focused since it is rendered second and therefore has its `useEffect` run second
+
+This is not the behavior we want but something we can do with refs and built in js functions
+
+We don't want to do this so we will remove `useEffect` but will leave `useRef` at least for now
+
+We want to use our own method within the input component (we will call it `activate`)
+Then within there we want to take the `inputRef` and call the `focus()` method on it
+```
+const activate = () => {
+  inputRef.current.focus();
+}
+```
+
+Now the issue is that activate needs to be called from outside of the `<Input>` component since we want the input to focus itself but will be calling it from a parent
+
+This is quite a rare scenario because you typically do not want to code your react app like this
+In rare cases it might be elegant to call `.focus()` on our input component so we can use our input component as we can built in one since the built in input component has a built in focus method
+
+You could think this isn't too hard because we can go to the login component where we use our inputs
+Then we can import and call `useRef` and have one for our email and one for the password
+```
+const emailInputRef = useRef();
+const passwordInputRef = useRef();
+```
+
+Then we can add these ref props to our inputs
+```
+<Input 
+  ref={emailInputRef}
+  isValid={emailIsValid}
+  id="email"
+  label="E-mail"
+  type="email"
+  value={emailState.value}
+  onChange={emailChangeHandler}
+  onBlur={validateEmailHandler}
+/>
+<Input 
+  ref={passwordInputRef}
+  isValid={passwordIsValid}
+  id="password"
+  label="Password"
+  type="password"
+  value={passwordState.value}
+  onChange={passwordChangeHandler}
+  onBlur={validatePasswordHandler}
+/>
+```
+Now we have references to our components and should be able to focus these in the correct if blocks by calling the `.activate()` method on them
+```
+const submitHandler = (event) => {
+  event.preventDefault();
+  if (formIsValid){
+    ctx.onLogin(emailState.value, passwordState.value);
+  } else if (!emailIsValid) {
+    emailInputRef.current.activate();
+  } else {
+    passwordInputRef.current.activate();
+  }
+};
+```
+If we try this it will not work because function components cannot be given refs
+This is not possible unfortunately
+Our `<Input>` component doesn't even accept a ref prop and doesn't use it anywhere even if we did ref is a reserved word and would get a warning
+
+However we can make this work
+We need to do two things
+1. Within `<Input>` we need to use another hook called `useImperativeHandle`
+  - This is a hook that allows us to use this component or functionalities inside of this component imperatively
+  This just means not through regular state props management or controlling the component from the parent
+  Instead we can directly call or manipulate something within the component
+  Again this is something you rarely want to use
+2. Use `React.forwardRef` to forward our functions refs to the parent
+
+First we need to import the hook of course
+Then we can callit and pass two paramaters to it
+We will start with the second thing to pass in
+It should be a function that should contain an object
+This object should contain all the data that you want to be able to use from outside
+For example we could add an `activate` or `focus` field and then point at the internal variable or method that should be accessible through that name
+```
+  useImperativeHandle(,() => {
+    return {
+      focus: activate
+    }
+  })
+```
+This basically creates  translation object between internal functionalities and what outside components call
+
+We also have a first argument we need to provide
+This is something that is available through our component function argument list
+So far we have only listed props and 99.9% of the time that is all you will need
+However there is a second argument that is available to us called ref
+This is a ref that will be assigned if a ref is set from outside (we will need to do something else still)
+Now we should be able to add a ref through the parent component because of this ref argument
+It is this ref that we should pass as the first argument to our `useImperativeHandle`
+```
+useImperativeHandle(ref,() => {
+  return {
+    focus: activate
+  }
+})
+```
+
+This still won't quite work because we need to export our component function in a special way
+We need to wrap it with something special called "`React.forwardRef`"
+This is a method that we execute that we pass our component function in
+```
+import React, { useRef, useImperativeHandle } from 'react'
+import classes from './Input.module.css'
+
+const Input = React.forwardRef((props, ref) => {
+  const inputRef = useRef();
+
+  const activate = () => {
+    inputRef.current.focus();
+  }
+
+  useImperativeHandle(ref,() => {
+    return {
+      focus: activate
+    }
+  })
+
+  return (
+    <div
+      className={`${classes.control} ${props.isValid === false ? classes.invalid : ''
+        }`}
+    >
+      <label htmlFor={props.id}>{props.label}</label>
+      <input
+        ref={inputRef}
+        type={props.type}
+        id={props.id}
+        value={props.value}
+        onChange={props.onChange}
+        onBlur={props.onBlur}
+      />
+    </div>
+  )
+})
+
+export default Input
+```
+Now our component function is the first argument of `React.forwardRef` which returns a component called `<Input>` 
+Now our component is capable of being bound to a ref
+We can pass a ref to it via `<Login>` as expected and as we could to a default html element
+
+This is a niche use case but with `useImperativeHandle` and `React.forwardRef` you can expose functionalities from a react component to its parent to use the component through the parent component through refs and trigger certain functionalities
