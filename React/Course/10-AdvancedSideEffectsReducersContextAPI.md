@@ -1615,3 +1615,383 @@ You should only use `useContext` to pass data that would normally be forwarded t
 One last note is in regards to the object we passed into the `auth-context.js` file
 Technically we don't need (or more accurately use) this as it is only used in situations where a component does not have a provider with a value prop as a parent within the tree 
 In this instance the default value will be used from the `auth-context.js` file we created
+
+
+
+
+___
+## 125. Building & Using a Custom Context Provider Component
+An enhancement we can make to our context is adding our functions to the default context as well
+The teacher just used an empty function as doing so will make the autocomplete in vscode work better
+```
+import React from "react";
+
+const AuthContext = React.createContext({
+  isLoggedIn: false,
+  onLogout: ()=>{}
+});
+
+export default AuthContext;
+```
+Another thing to consider is you might want to pull more logic out of the `<App>` component and create a seperate context management component
+
+To do this we would go to our 'auth-context.js' file and add a component to it and call it `<AuthContextProvider>`
+It will accept props so that we can wrap it around children components and then output those children
+Then make sure you are also exporting the `<AuthContextProvider>` in addition to the default
+```
+import React from "react";
+
+const AuthContext = React.createContext({
+  isLoggedIn: false,
+  onLogout: ()=>{}
+});
+
+
+export const AuthContextProvider = (props) => {
+  return <AuthContext.Provider>{props.children}</AuthContext.Provider>
+}
+
+export default AuthContext;
+```
+
+This is really important because now we can import `useState` and set the state within here and add our methods to change that state as well
+Then we can always refer to this context when we need to edit the authorization state values
+Import `useState`, add the `isLoggedIn` state to the new component, then add both the `loginHandler` and `logoutHandler` all either of these should do is change the value of `isLoggedIn` and add/remove from local storage just like in `<App>`
+```
+export const AuthContextProvider = (props) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const logoutHandler = () => {
+    localStorage.removeItem('isLoggedIn');
+    setIsLoggedIn(false);
+  }
+  
+  const loginHandler = () => {
+    localStorage.setItem('isLoggedIn', '1');
+    setIsLoggedIn(true);
+  }
+  
+  return <AuthContext.Provider>{props.children}</AuthContext.Provider>
+}
+```
+Now since provider needs values we can add `isLoggedIn` and the associated handlers
+```
+return (<AuthContext.Provider 
+        value={{ 
+          isLoggedIn: isLoggedIn,
+          onLogout: logoutHandler, 
+          onLogin: loginHandler
+        }}
+      >
+        {props.children}
+      </AuthContext.Provider>)
+```
+Don't forget to add `onLogin` to the default context and remember that it will need a username and password
+```
+const AuthContext = React.createContext({
+  isLoggedIn: false,
+  onLogout: () => {},
+  onLogin: (email, password) => {}
+});
+```
+Now we are able to hold and manage the entire login state within this context component and allows us to access it without passing data down through props 
+
+One last touch is that we need to move `useEffect` to the context provider since it also interacts with the `isLoggedIn` state (don't forget to import)
+```
+import React, { useState, useEffect } from "react";
+
+const AuthContext = React.createContext({
+  isLoggedIn: false,
+  onLogout: () => {},
+  onLogin: (email, password) => {}
+});
+
+
+export const AuthContextProvider = (props) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+
+  useEffect(() => {
+    const storedUserLoggedInInformation = localStorage.getItem('isLoggedIn');
+
+    if (storedUserLoggedInInformation === '1') {
+      setIsLoggedIn(true);
+    }
+  }, [])
+
+  const logoutHandler = () => {
+    localStorage.removeItem('isLoggedIn');
+    setIsLoggedIn(false);
+  }
+  
+  const loginHandler = () => {
+    localStorage.setItem('isLoggedIn', '1');
+    setIsLoggedIn(true);
+  }
+  
+  return (<AuthContext.Provider 
+          value={{ 
+            isLoggedIn: isLoggedIn,
+            onLogout: logoutHandler, 
+            onLogin: loginHandler
+          }}
+        >
+          {props.children}
+        </AuthContext.Provider>)
+}
+
+export default AuthContext;
+
+```
+
+Now we can strip the unnecessary parts from `<App>` that we have added to the context and pass our context component we made as the new  provider
+Remove all the methods that we just added to the context component (including `useState` and `useEffect` calls)
+Remove the imports for `useState` and `useEffect`
+Remove the call for `<AuthContext.Provider>` and return to `<React.Fragment>`
+Remove the import for `AuthContext`
+```
+import React from 'react';
+
+import Login from './components/Login/Login';
+import Home from './components/Home/Home';
+import MainHeader from './components/MainHeader/MainHeader';
+
+function App() {
+
+  return (
+    <React.Fragment>
+      <MainHeader />
+      <main>
+        {!isLoggedIn && <Login onLogin={loginHandler} />}
+        {isLoggedIn && <Home onLogout={logoutHandler} />}
+      </main>
+    </React.Fragment>
+  );
+}
+
+export default App;
+
+```
+This is much cleaner but none of our components have access to the context 
+We can give ALL of our components access to the login context by wrapping our `<App>` component in our newly created context component
+We do this directly in `index.js` where the `<App>` component is called just like we would do with any other component we want to give context to
+Be sure to import the `AuthContextProvider` component from `auth-context`
+```
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import './index.css';
+import App from './App';
+import { AuthContextProvider } from './store/auth-context.js';
+
+ReactDOM.render(
+  <AuthContextProvider>
+    <App />
+  </AuthContextProvider>, 
+  document.getElementById('root'));
+```
+This is much more focused and gives us a leaner app component which is not concerned with app wide state management
+
+Don't forget we still need to import `useContext` within `<App>` and set it to a constant that we can reference
+We can also remove the `onLogin` and `onLogout` props since we no longer have to pass these things through props
+```
+import React, { useContext } from 'react';
+
+import Login from './components/Login/Login';
+import Home from './components/Home/Home';
+import MainHeader from './components/MainHeader/MainHeader';
+import AuthContext from './store/auth-context';
+
+function App() {
+  const ctx = useContext(AuthContext);
+
+  return (
+    <React.Fragment>
+      <MainHeader />
+      <main>
+        {!ctx.isLoggedIn && <Login />}
+        {ctx.isLoggedIn && <Home />}
+      </main>
+    </React.Fragment>
+  );
+}
+
+export default App;
+
+```
+
+Now we of course have to access our context within the `<Home>` and `<Login>` components just as we did in `<App>`
+`<Home>` no longer needs to accept any props
+```
+import React, { useContext } from 'react';
+import Button from '../UI/Button/Button';
+
+import Card from '../UI/Card/Card';
+import classes from './Home.module.css';
+import AuthContext from '../../store/auth-context';
+
+const Home = () => {
+  const ctx = useContext(AuthContext);
+
+  return (
+    <Card className={classes.home}>
+      <h1>Welcome back!</h1>
+      <Button onClick={ctx.onLogout}>Logout</Button>
+    </Card>
+  );
+};
+
+export default Home;
+```
+
+in the `<Login>` component we will do something similar although it may look more complex because we have `useReducer`
+In reality we do the exact same thing
+Import `useContext`
+Import `AuthContext`
+Call `useContext` within the `<Login>` component function and pass in `AuthContext`
+Look for props that use anything related to the context (there is only 1 and we can remove the props call)
+```
+import React, { useState, useEffect, useReducer, useContext } from 'react';
+
+import Card from '../UI/Card/Card';
+import classes from './Login.module.css';
+import Button from '../UI/Button/Button';
+import AuthContext from '../../store/auth-context';
+
+const emailReducer = (state, action) => {
+  if (action.type === 'USER_INPUT'){
+    return {value: action.val, isValid: action.val.includes('@')};
+  }
+
+  if(action.type === 'INPUT_BLUR') {
+    return {value: state.value, isValid: state.value.includes('@')};
+  }
+  return {value: '', isValid: false};
+};
+
+const passwordReducer = (state, action) => {
+  if (action.type === 'USER_INPUT') {
+    return {value: action.val, isValid: action.val.trim().length > 6};
+  }
+  if (action.type === 'INPUT_BLUR') {
+    return {value: state.value, isValid: state.value.trim().length > 6};
+  }
+  return {value: '', isValid: false};
+};
+
+const Login = () => {
+  // const [enteredEmail, setEnteredEmail] = useState('');
+  // const [emailIsValid, setEmailIsValid] = useState();
+  // const [enteredPassword, setEnteredPassword] = useState('');
+  // const [passwordIsValid, setPasswordIsValid] = useState();
+  const [formIsValid, setFormIsValid] = useState(false);
+
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {value: '', isValid: null})
+  const [passwordState, dispatchPassword] = useReducer(passwordReducer, {value: '', isValid: null})
+  
+  const ctx = useContext(AuthContext)
+
+// EXAMPLE OF HOW useEffect() WORKS
+  // useEffect(() => {
+  //   console.log('EFFECT RUNNING');
+
+  //   return () => {
+  //     console.log('EFFECT CLEANUP');
+  //   }
+  // }, [enteredEmail]);
+
+  const { isValid: emailIsValid } = emailState;
+  const { isValid: passwordIsValid } = passwordState;
+
+  useEffect(() => {
+    const identifier = setTimeout(() => {
+      console.log("Checking form validity");
+      setFormIsValid(
+        emailIsValid && passwordIsValid
+      );
+    }, 500);
+
+    return () => {
+      console.log('Cleanup');
+      clearTimeout(identifier)
+    }
+  }, [emailIsValid, passwordIsValid]);
+
+  const emailChangeHandler = (event) => {
+    dispatchEmail({type: 'USER_INPUT', val: event.target.value})
+
+    // setFormIsValid(
+    //   emailState.isValid && passwordState.isValid
+    // );
+  };
+
+  const passwordChangeHandler = (event) => {
+    dispatchPassword({type: 'USER_INPUT', val: event.target.value})
+
+    // setFormIsValid(
+    //   emailState.isValid && passwordState.isValid
+    // );
+  };
+
+  const validateEmailHandler = () => {
+    dispatchEmail({type: 'INPUT_BLUR'})
+    // setEmailIsValid(emailState.isValid);
+  };
+
+  const validatePasswordHandler = () => {
+    dispatchPassword({type: 'INPUT_BLUR'})
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+    ctx.onLogin(emailState.value, passwordState.value);
+  };
+
+  return (
+    <Card className={classes.login}>
+      <form onSubmit={submitHandler}>
+        <div
+          className={`${classes.control} ${
+            emailState.isValid === false ? classes.invalid : ''
+          }`}
+        >
+          <label htmlFor="email">E-Mail</label>
+          <input
+            type="email"
+            id="email"
+            value={emailState.value}
+            onChange={emailChangeHandler}
+            onBlur={validateEmailHandler}
+          />
+        </div>
+        <div
+          className={`${classes.control} ${
+            passwordState.isValid === false ? classes.invalid : ''
+          }`}
+        >
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            value={passwordState.value}
+            onChange={passwordChangeHandler}
+            onBlur={validatePasswordHandler}
+          />
+        </div>
+        <div className={classes.actions}>
+          <Button type="submit" className={classes.btn} disabled={!formIsValid}>
+            Login
+          </Button>
+        </div>
+      </form>
+    </Card>
+  );
+};
+
+export default Login;
+```
+This change of putting state into context is not by any means a requirement
+It CAN just result in cleaner code but may not always be prefered or may not always be necessary 
+It really comes down to preferance
+
+Be sure to test your application to see that it still works
