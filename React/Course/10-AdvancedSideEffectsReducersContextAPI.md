@@ -2088,3 +2088,255 @@ Rules of Hooks:
 
 + extra, unofficial rule for useEffect(): ALWAYS add everyting you refer to inside of useEffect() as a dependency
 ```
+
+
+
+
+___
+## 128. Recactoring an Input Component
+There is one more hook that we are going to cover before moving on
+To cover this we will need to change our code a little bit
+
+We will create an input component which contains our input divs and receives all the data it needs through props
+This will make it reusable which is great because we want to use it for both the username and password inputs
+
+Go ahead and create one on your own if you would like to try
+We know it will need to accept a few different props of `type`, `id`, `value`, `onChange`, and `onBlur`
+Luckily we don't need to assign any classes
+Create: UI/Input/Input.jsx
+
+Then I simply make a call for input and instead of passing values in I pass prop values in
+```
+import React from 'react'
+
+const Input = (props) => {
+  return (
+    <input
+      type={props.type}
+      id={props.id}
+      value={props.value}
+      onChange={props.onChange}
+      onBlur={props.onBlur}
+    />
+  )
+}
+
+export default Input
+```
+
+Now I should be able to import and call this component in the `<Login>` component instead of the default input and not need to change any of the prop values/names passed in
+
+```
+return (
+  <Card className={classes.login}>
+    <form onSubmit={submitHandler}>
+      <div
+        className={`${classes.control} ${
+          emailState.isValid === false ? classes.invalid : ''
+        }`}
+      >
+        <label htmlFor="email">E-Mail</label>
+        <Input
+          type="email"
+          id="email"
+          value={emailState.value}
+          onChange={emailChangeHandler}
+          onBlur={validateEmailHandler}
+        />
+      </div>
+      <div
+        className={`${classes.control} ${
+          passwordState.isValid === false ? classes.invalid : ''
+        }`}
+      >
+        <label htmlFor="password">Password</label>
+        <Input
+          type="password"
+          id="password"
+          value={passwordState.value}
+          onChange={passwordChangeHandler}
+          onBlur={validatePasswordHandler}
+        />
+      </div>
+      <div className={classes.actions}>
+        <Button type="submit" className={classes.btn} disabled={!formIsValid}>
+          Login
+        </Button>
+      </div>
+    </form>
+  </Card>
+);
+```
+
+The teacher does it slightly different as I didn't realise he also wanted to include the wrapping divs and styling directly in `<Input>`
+Still create the new file but also create a css module for it as well
+create: UI/Input/Input.jsx
+create: UI/Input/Input.module.css
+
+Cut the following from `<Login>` and place it within `<Input>`
+```
+<div
+  className={`${classes.control} ${
+    emailState.isValid === false ? classes.invalid : ''
+  }`}
+>
+  <label htmlFor="email">E-Mail</label>
+  <input
+    type="email"
+    id="email"
+    value={emailState.value}
+    onChange={emailChangeHandler}
+    onBlur={validateEmailHandler}
+  />
+</div>
+```
+Now we just have to make any changes to ensure it works
+First make sure our classes work by importing the module we created
+Then we will add the needed css from the `Login.module.css`
+You will need to get everything except for the `.login` and `.actions` classes
+Add this to `Input.module.css`
+```
+.control {
+  margin: 1rem 0;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.control label,
+.control input {
+  display: block;
+}
+
+.control label {
+  font-weight: bold;
+  flex: 1;
+  color: #464646;
+  margin-bottom: 0.5rem;
+}
+
+.control input {
+  flex: 3;
+  font: inherit;
+  padding: 0.35rem 0.35rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.control input:focus {
+  outline: none;
+  border-color: #4f005f;
+  background: #f6dbfc;
+}
+
+.control.invalid input {
+  border-color: red;
+  background: #fbdada;
+}
+
+@media (min-width: 768px) {
+  .control {
+    align-items: center;
+    flex-direction: row;
+  }
+}
+```
+
+Now back in our input component we have data we need to get
+We don't really care about whether the `emailState` specifically is valid
+Instead we can just know whether this input should be considered valid so we can expect to receive a prop telling us this
+We should also be able to set the label so make sure that can be filled by props as well 
+we can set `htmlfor` to be the id since id will refer to what kind of input we want just like it does in the input field
+```
+import React from 'react'
+import classes from './Input.module.css'
+
+const Input = (props) => {
+  return (
+    <div
+      className={`${classes.control} ${props.isValid === false ? classes.invalid : ''
+        }`}
+    >
+      <label htmlFor={props.id}>{props.label}</label>
+      <input
+        type={props.type}
+        id={props.id}
+        value={props.value}
+        onChange={props.onChange}
+        onBlur={props.onBlur}
+      />
+    </div>
+  )
+}
+
+export default Input
+```
+
+Now our input component is reusable and we can call it twice within our `<Login>` component while passing in the relevant props
+We will have to be sure to assign the following props when calling this `<Input>` component
+`isValid`, `id`, `label`, `type`, `value`, `onChange`, `onBlur`
+
+For email input:
+```
+<Input 
+  isValid={emailIsValid}
+  id="email"
+  label="email"
+  type="email"
+  value={emailState.value}
+  onChange={emailChangeHandler}
+  onBlur={validateEmailHandler}
+/>
+```
+Now we can do the same for password but with different references
+For password input:
+```
+<Input 
+  isValid={passwordIsValid}
+  id="password"
+  label="password"
+  type="password"
+  value={passwordState.value}
+  onChange={passwordChangeHandler}
+  onBlur={validatePasswordHandler}
+/>
+```
+
+When complete the `<Login>` return jsx should look like:
+```
+return (
+  <Card className={classes.login}>
+    <form onSubmit={submitHandler}>
+      <Input 
+        isValid={emailIsValid}
+        id="email"
+        label="E-mail"
+        type="email"
+        value={emailState.value}
+        onChange={emailChangeHandler}
+        onBlur={validateEmailHandler}
+      />
+      <Input 
+        isValid={passwordIsValid}
+        id="password"
+        label="Password"
+        type="password"
+        value={passwordState.value}
+        onChange={passwordChangeHandler}
+        onBlur={validatePasswordHandler}
+      />
+      
+      <div className={classes.actions}>
+        <Button type="submit" className={classes.btn} disabled={!formIsValid}>
+          Login
+        </Button>
+      </div>
+    </form>
+  </Card>
+);
+```
+
+Now we should have the same behavior as before except we have a seperate more reusable input component
+This is a good example of when we should use props instead of context
+This allows us to configure them from inside of the input but is not the main focus of this excercise
+This was just to set us up for the next lesson
