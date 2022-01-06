@@ -1995,3 +1995,26 @@ It CAN just result in cleaner code but may not always be prefered or may not alw
 It really comes down to preferance
 
 Be sure to test your application to see that it still works
+
+
+
+
+___
+## 126. React Context Limitations
+React Context is great but there are limitations
+It can be great for appwide or component wide state but it is not a replacement for component configuration
+Consider our button component
+We could have it set to logout but then that button would only be a logout button we wouldn't be able to change the action it performs whenever we call it
+We use the same button component to login and logout users so this would not work
+
+We still have limitations
+React context is not optimized for high frequency changes
+If you have state changes every second or multiple times per second
+This is not the case in our example since authentication does not change to often
+If we had state changes that happen more frequently react context is not optimized for that
+
+What if we have appwide or component wide state that changes often?
+We will explore a better tool for that called redux
+
+Context shouldn't be used to replace all component communicatoins and props
+components should still be configurable via props and short prop chains may not need replacement
