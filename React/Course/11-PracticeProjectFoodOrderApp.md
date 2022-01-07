@@ -65,6 +65,7 @@ Obviously this will also need styling
 Create: src/Components/Layout/Header.module.jsx
 
 You can copy/paste from the teachers notes the css
+https://github.com/academind/react-complete-guide-code/blob/11-practice-food-order-app/extra-files/Header.module.css
 ```
 .header {
   position: fixed;
@@ -238,3 +239,218 @@ export default App;
 Now if you save you should be able to see the header along with an image directly below it
 
 The only issue that the "Cart" button does not look nice like it should so we will handle that next
+
+
+
+
+___
+## 134. Adding the "Cart" Button Component
+Now we will work on the button in the header
+We could create all the jsx for this within the `<Header>` component but we will create a seperate component instead
+We will call this `<HeaderCartButton>`
+Create: src/Components/Layout/HeaderCartButton.jsx
+
+Alternatively we could create the component and call it within the 'Header.jsx' file but to keep it lean we will just seperate the two
+
+Again we will need some styling so get the css for the project and add it to your project: https://github.com/academind/react-complete-guide-code/blob/11-practice-food-order-app/extra-files/HeaderCartButton.module.css
+```
+.button {
+  cursor: pointer;
+  font: inherit;
+  border: none;
+  background-color: #4d1601;
+  color: white;
+  padding: 0.75rem 3rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 25px;
+  font-weight: bold;
+}
+
+.button:hover,
+.button:active {
+  background-color: #2c0d00;
+}
+
+.icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-right: 0.5rem;
+}
+
+.badge {
+  background-color: #b94517;
+  padding: 0.25rem 1rem;
+  border-radius: 25px;
+  margin-left: 1rem;
+  font-weight: bold;
+}
+
+.button:hover .badge,
+.button:active .badge {
+  background-color: #92320c;
+}
+
+.bump {
+  animation: bump 300ms ease-out;
+}
+
+@keyframes bump {
+  0% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(0.9);
+  }
+  30% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+```
+
+Now that we have the styling we can start creating the component
+Within our component we want to return a button (obviously) 
+Inside of it we want to have an icon, some text, and a badge showing the current number of items in the cart
+To do this we will add 3 `<span>` tags within the `<button>` tag
+Each tag will hold one of the above three items
+```
+import React from 'react'
+
+const HeaderCartButton = (props) => {
+  return (
+    <button>
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  )
+}
+
+export default HeaderCartButton
+
+```
+
+For the icon the teacher has provided a finished icon that we can use (kind of like the image)
+Instead of a jpg though this is a js file 
+It simply returns an svg that will be the icon we are looking for
+This could be stored in either the "Cart" folder or the "Layout"/"UI" folder depending on how you look at it
+It is specific to the cart so it would make sense to store it there
+The argument for having it in layout is that is the only place we will be using it but that may not be the case for a larger application
+
+Either Copy the teachers 'CartIcon.js' file from the github repo to src/Components/Cart or create the following
+Create: src/Components/Cart/CartIcon.js
+```
+const CartIcon = () => {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 20 20'
+      fill='currentColor'
+    >
+      <path d='M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z' />
+    </svg>
+  );
+};
+
+export default CartIcon;
+```
+This will output the svg icon and we can just call it as we would any other component within our `<HeaderCartButton>`
+First import
+```
+import CartIcon from '../Cart/CartIcon.js';
+```
+Then call it within the first set of `<span>` tags
+```
+return (
+  <button>
+    <span>
+      <CartIcon />
+    </span>
+    <span></span>
+    <span></span>
+  </button>
+)
+```
+
+In the second span we can just add the text "Your Cart"
+Then in the third span we want to output the total amount of items in the cart
+Right now we don't have the logic for counting this yet so we will just hardcode it with a number
+```
+return (
+  <button>
+    <span>
+      <CartIcon />
+    </span>
+    <span>Your Cart</span>
+    <span>3</span>
+  </button>
+)
+```
+
+Now we have to apply our styles from 'HeaderCartButton.module.css'
+Import it:
+```
+import classes from './HeaderCartButton.module.css';
+```
+
+Then we will need to apply the `.button`, `.icon`, and `.badge` classes to the appropriate tags
+```
+import React from 'react'
+import classes from './HeaderCartButton.module.css';
+import CartIcon from '../Cart/CartIcon.js';
+
+const HeaderCartButton = (props) => {
+  return (
+    <button className={classes.button}>
+      <span className={classes.icon}>
+        <CartIcon />
+      </span>
+      <span>Your Cart</span>
+      <span className={classes.badge}>3</span>
+    </button>
+  )
+}
+
+export default HeaderCartButton
+
+```
+
+Now that our button is built we want to call this component instead of the default button we are currently calling in `<Header>`
+First import it:
+```
+import HeaderCartButton from './HeaderCartButton.jsx';
+```
+
+Then call it in place of the button we are currently using
+```
+import React, { Fragment } from 'react'
+import mealsImage from '../../assets/meals.jpg';
+import classes from './Header.module.css';
+import HeaderCartButton from './HeaderCartButton.jsx';
+
+const Header = (props) => {
+  return (
+    <Fragment>
+      <header className={classes.header}>
+        <h1>ReactMeals</h1>
+        <HeaderCartButton />
+      </header>
+      <div className={classes['main-image']}>
+        <img src={mealsImage} alt="A table full of delicious food!" />
+      </div>
+    </Fragment>
+  )
+}
+
+export default Header
+```
+
+Now we should have a much nicer cart button and although it isn't functoinal our header looks correct and we can move on to the next section
