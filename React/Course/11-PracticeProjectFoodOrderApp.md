@@ -53,3 +53,188 @@ This is just the structure the teacher went with but you could of course pick an
 The teacher just chose this because it is a good wya to split features as well as genearl UI and Layout components
 
 
+
+
+___
+## 133. Adding a Header Component
+Now we are going to start building some of our components out and we will start with the header
+The header will be stored in the 'Layout' folder
+Create: src/Components/Layout/Header.jsx
+
+Obviously this will also need styling
+Create: src/Components/Layout/Header.module.jsx
+
+You can copy/paste from the teachers notes the css
+```
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5rem;
+  background-color: #8a2b06;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 10;
+}
+
+.main-image {
+  width: 100%;
+  height: 25rem;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.main-image img {
+  width: 110%;
+  height: 100%;
+  object-fit: cover;
+  transform: rotateZ(-5deg) translateY(-4rem) translateX(-1rem);
+}
+```
+
+Now within our js file we are going to want the jsx structure for the header
+The header will consist of two parts
+The first part will be the block itself that makes up the header
+The second part will be the image that is shown below the header
+We could split this into two different components but that isn't necessary
+To do this we will use `<React.Fragment>` as a wrapper so don't forget to import it
+```
+import React, { Fragment } from 'react'
+
+const Header = (props) => {
+  return (
+    <Fragment>
+
+    </Fragment>
+  )
+}
+
+export default Header
+
+```
+Now we can add the two div sections within the fragment
+The first will be the built in html `<header>` tag 
+The second will be a div where we will put the image
+```
+import React, { Fragment } from 'react'
+
+const Header = (props) => {
+  return (
+    <Fragment>
+      <header></header>
+      <div></div>
+    </Fragment>
+  )
+}
+
+export default Header
+```
+
+Now within our `<header>` we can add a title inside of an `<h1>` tag (say "React Meals")
+Then we will also add a button to open the cart later
+For now it will just have text that says "Cart"
+```
+return (
+  <Fragment>
+    <header>
+      <h1>ReactMeals</h1>
+      <button>Cart</button>
+    </header>
+    <div></div>
+  </Fragment>
+)
+```
+
+Now we can add the image to our div 
+We haven't done this yet and the best practice for this is to store our images in an 'assets' folder (within 'src') and access them from there
+The image that the teacher has us download can be found on github within extra files as 'meals.jpg'
+Create: src/assets
+
+Add the picture either by copying from github repo or downloading and moving it there manually
+Alternatively if you really wanted you could use a different image, although you should use the same size
+This image is 1024x411px
+
+Now how can we add this image to the header?
+We can actually import it similar to the way we import css
+React has a special way of handling this to make sure that the image is linked whenever the code is translated to vanilla js since this is not a vanilla js feature
+All we have to do is import it first we have to include the file type since it is not js or jsx
+```
+import mealsImage from '../../assets/meals.jpg';
+```
+
+Now we can use this imported image as a source within the `<img>` tag and apply some alt text 
+```
+return (
+  <Fragment>
+    <header>
+      <h1>ReactMeals</h1>
+      <button>Cart</button>
+    </header>
+    <div>
+      <img src={mealsImage} alt="A table full of delicious food!" />
+    </div>
+  </Fragment>
+)
+```
+If this image was not stored locally and instead stored on another server we could access it differently by using:
+```
+<img src="https://www.some-url.com/to-some-image.jpg" alt="A table full of delicious food!" />
+```
+
+Now we have the general structure for our header component finished although we haven't applied any styling
+
+First we have to import our css styles
+```
+import classes from './Header.module.css';
+```
+Then we can apply them to the appropriate divs (`<header>` and `<div>` holding the `<img>` tag)
+Note that because the `'main-image'` class has a dash we cannot use the `classes.className` syntax
+Instead we need to use `classes['class-name']`
+
+```
+import React, { Fragment } from 'react'
+import mealsImage from '../../assets/meals.jpg';
+import classes from './Header.module.css';
+
+const Header = (props) => {
+  return (
+    <Fragment>
+      <header className={classes.header}>
+        <h1>ReactMeals</h1>
+        <button>Cart</button>
+      </header>
+      <div className={classes['main-image']}>
+        <img src={mealsImage} alt="A table full of delicious food!" />
+      </div>
+    </Fragment>
+  )
+}
+
+export default Header
+```
+Now our general header structure is finished and we can add it to our `<App>` component
+First import the component
+Then we will call the `<Header>` within a `<Fragment>` in app since we know we will be adding more siblings later
+```
+import { Fragment } from 'react';
+import Header from './Components/Layout/Header.jsx';
+
+function App() {
+  return (
+    <Fragment>
+      <Header />
+    </Fragment>
+  );
+}
+
+export default App;
+```
+
+Now if you save you should be able to see the header along with an image directly below it
+
+The only issue that the "Cart" button does not look nice like it should so we will handle that next
