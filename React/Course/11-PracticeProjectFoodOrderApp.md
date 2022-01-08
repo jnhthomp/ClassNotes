@@ -454,3 +454,301 @@ export default Header
 ```
 
 Now we should have a much nicer cart button and although it isn't functoinal our header looks correct and we can move on to the next section
+
+
+
+
+___
+## 135.Adding a "Meals" Component
+Next we will start working on the meals component
+To do this we will add a 'Meals.jsx' file to our 'Meals' folder
+Create: src/Components/Meals/Meals.jsx
+
+This will be the main component we use to hold our list of meals that users can add to the cart
+We will also add the little text paragraph blurb above the menu although it could be its own component
+
+We will go ahead and create files for two other components right now as well just so we can fill them in when we are ready
+Create: src/Components/Meals/MealsSummary.jsx
+Create: src/Components/Meals/AvailableMeals.jsx
+
+The `<MealsSummary>` component will be responsible for holding the paragraph of text above the meals
+While the `<AvailableMeals>` will hold the list of meals that users can choose from
+
+First we will start with `<MealsSummary>` to get started download or copy/paste the css file from github or here: https://github.com/academind/react-complete-guide-code/blob/11-practice-food-order-app/extra-files/MealsSummary.module.css
+```
+.summary {
+  text-align: center;
+  max-width: 45rem;
+  width: 90%;
+  margin: auto;
+  margin-top: -10rem;
+  position: relative;
+  background-color: #383838;
+  color: white;
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 1px 18px 10px rgba(0, 0, 0, 0.25);
+}
+
+.summary h2 {
+  font-size: 2rem;
+  margin-top: 0;
+}
+
+```
+
+Then we will create our component and import the css module
+This will be a really simple component with hardcoded text/content and doesn't need to accept any props
+We will just return a section with a child h2 tag and a few paragraph tags to hold the text
+Don't forget to apply the classes
+You can use the following text/layout and since this component is so simple you can fetch it from the github as well: https://github.com/academind/react-complete-guide-code/blob/11-practice-food-order-app/extra-files/MealsSummary.js
+```
+import classes from './MealsSummary.module.css';
+
+const MealsSummary = () => {
+  return (
+    <section className={classes.summary}>
+      <h2>Delicious Food, Delivered To You</h2>
+      <p>
+        Choose your favorite meal from our broad selection of available meals
+        and enjoy a delicious lunch or dinner at home.
+      </p>
+      <p>
+        All our meals are cooked with high-quality ingredients, just-in-time and
+        of course by experienced chefs!
+      </p>
+    </section>
+  );
+};
+
+export default MealsSummary;
+```
+
+Now we can get started on the `<AvailableMeals>` component
+This will hold our list of meals that users can use to add meals to the cart
+To start we will create our functional component without any props because we won't need to pass anything in
+Instead we will use some fake data in a seperate js file
+While this isn't praticularly realistic we will learn how to fetch data from a database in a few sections which would be realistic and still not require us to use any props so we are simulating that as best we can right now
+```
+import React from 'react'
+
+const AvailableMeals = () => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default AvailableMeals
+```
+Speaking of the fake data, that is also in the extra files go ahead and copy that data into 'AvailableMeals.jsx' outside of the component function
+https://github.com/academind/react-complete-guide-code/blob/11-practice-food-order-app/extra-files/dummy-meals.js
+```
+import React from 'react'
+
+const DUMMY_MEALS = [
+  {
+    id: 'm1',
+    name: 'Sushi',
+    description: 'Finest fish and veggies',
+    price: 22.99,
+  },
+  {
+    id: 'm2',
+    name: 'Schnitzel',
+    description: 'A german specialty!',
+    price: 16.5,
+  },
+  {
+    id: 'm3',
+    name: 'Barbecue Burger',
+    description: 'American, raw, meaty',
+    price: 12.99,
+  },
+  {
+    id: 'm4',
+    name: 'Green Bowl',
+    description: 'Healthy...and green...',
+    price: 18.99,
+  },
+];
+
+const AvailableMeals = () => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default AvailableMeals
+
+```
+
+Now that we have our data we want to render it as jsx
+To do this we will need to transfer the array of js objects to an array of jsx elements
+We can do this with `.map()` and format/translate the data however we need
+Before we map each of the items we want to list we can create the containers
+We will use a section tag to hold our unordered list tags that will hold each of the items we render with `.map()`
+```
+const AvailableMeals = () => {
+  return (
+    <section>
+      <ul>
+        
+      </ul>
+    </section>
+  )
+}
+```
+
+To keep our return statement lean we will create a helper constant (called `mealsList`) that we will use to hold our jsx array
+We will set that equal to what `.map()` will return on our `DUMMY_MEALS` data
+Then we will output `mealsList` within our jsx return
+```
+const AvailableMeals = () => {
+
+  const mealsList = DUMMY_MEALS.map((meal) => {
+    
+  })
+
+  return (
+    <section>
+      <ul>
+        {mealsList}
+      </ul>
+    </section>
+  )
+}
+```
+
+Now how do we want our data transformed?
+For now we will just create a new list item and output the current meals name
+Later we will make a new component that will accept this data as props and output this in a stylized way
+```
+const mealsList = DUMMY_MEALS.map((meal) => {
+  <li>{meal.name}</li>
+})
+```
+Now to finish this we can add the styling
+Again the css is in github: https://github.com/academind/react-complete-guide-code/blob/11-practice-food-order-app/extra-files/AvailableMeals.module.css
+```
+.meals {
+  max-width: 60rem;
+  width: 90%;
+  margin: 2rem auto;
+  animation: meals-appear 1s ease-out forwards;
+}
+
+.meals ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@keyframes meals-appear {
+  from {
+    opacity: 0;
+    transform: translateY(3rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+```
+All we have to do is import the module and apply the `.meals` class to our section
+```
+import React from 'react'
+import classes from './AvailableMeals.module.css';
+
+const DUMMY_MEALS = [
+  {
+    id: 'm1',
+    name: 'Sushi',
+    description: 'Finest fish and veggies',
+    price: 22.99,
+  },
+  {
+    id: 'm2',
+    name: 'Schnitzel',
+    description: 'A german specialty!',
+    price: 16.5,
+  },
+  {
+    id: 'm3',
+    name: 'Barbecue Burger',
+    description: 'American, raw, meaty',
+    price: 12.99,
+  },
+  {
+    id: 'm4',
+    name: 'Green Bowl',
+    description: 'Healthy...and green...',
+    price: 18.99,
+  },
+];
+
+const AvailableMeals = () => {
+
+  const mealsList = DUMMY_MEALS.map((meal) => {
+    return <li>{meal.name}</li>
+  })
+
+  return (
+    <section className={classes.meals}>
+      <ul>
+        {mealsList}
+      </ul>
+    </section>
+  )
+}
+
+export default AvailableMeals
+
+```
+
+Now we can create our component within 'Meals.jsx' and call both `<MealsSummary>` and `<AvailableMeals>` holding them both with a fragment
+```
+import React, { Fragment } from 'react'
+import MealsSummary from './MealsSummary.jsx';
+import AvailableMeals from './AvailableMeals.jsx';
+
+const Meals = () => {
+  return (
+    <Fragment>
+      <MealsSummary />
+      <AvailableMeals />
+    </Fragment>
+  )
+}
+
+export default Meals
+
+```
+
+Finally within `<App>` we can import and display the `<Meals>` component below the header but will place it inside of a `<main>` tag which is a default html tag
+```
+import { Fragment } from 'react';
+import Header from './Components/Layout/Header.jsx';
+import Meals from './Components/Meals/Meals.jsx';
+
+function App() {
+  return (
+    <Fragment>
+      <Header />
+      <main>
+        <Meals />
+      </main>
+    </Fragment>
+  );
+}
+
+export default App;
+
+```
+
+Next we will work on wrapping the `<ul>` within `<AvailableMeals>` in a card to make that look nicer and creating a component to display each individual `mealItem` with better styling and more data
