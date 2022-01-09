@@ -752,3 +752,192 @@ export default App;
 ```
 
 Next we will work on wrapping the `<ul>` within `<AvailableMeals>` in a card to make that look nicer and creating a component to display each individual `mealItem` with better styling and more data
+
+
+
+
+___
+## 136. Adding Individual Meal Items & Displaying Them
+Now instead of just calling these meal items and displaying the names we want to show them a little nicer
+
+First we will start by adding the card component around our `<ul>` tags to make that look nicer
+First we can download and the css from github
+'Card.module.css': https://github.com/academind/react-complete-guide-code/blob/11-practice-food-order-app/extra-files/Card.module.css
+```
+.card {
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+  background-color: white;
+}
+```
+
+Now we can create the component we will apply this styling to
+Create: src/Components/UI/Card.jsx
+
+This component will be very simple and just receive props
+Then it will display a div with the `.card` class and display the children inside
+(don't forget to import css classes)
+```
+import React from 'react';
+import classes from './Card.module.css';
+
+const Card = (props) => {
+  return (
+    <div className={classes.card}>
+      {props.children}
+    </div>
+  )
+}
+
+export default Card
+
+```
+
+Now we can just call this component within `<AvailableMeals>` around our `<ul>` tags
+(don't forget to import the component)
+```
+return (
+  <section className={classes.meals}>
+    <Card>
+      <ul>
+        {mealsList}
+      </ul> 
+    </Card>
+  </section>
+)
+```
+
+Now if we save the application will already look much nicer
+
+Next we can work on creating the component to hold the individual meal items
+In order to keep our components organized we will add this to a new subfolder within 'Meals' called 'MealItem'
+Create: src/Components/Meals/MealItem/MealItem.jsx
+
+Go ahead and download the appropriate css
+https://github.com/academind/react-complete-guide-code/blob/11-practice-food-order-app/extra-files/MealItem.module.css
+```
+.meal {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.meal h3 {
+  margin: 0 0 0.25rem 0;
+}
+
+.description {
+  font-style: italic;
+}
+
+.price {
+  margin-top: 0.25rem;
+  font-weight: bold;
+  color: #ad5502;
+  font-size: 1.25rem;
+}
+```
+
+Now within 'MealItem.jsx' we can add our functional component boilerplate code
+```
+import React from 'react'
+
+const MealItem = () => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default MealItem
+```
+
+Now what do we want this component to do?
+Well we know it will receive props and then display those props inside of a list item
+There will be two sections within each `<li>` tag which we will seperate with two different divs
+The first div will hold details about the meal such as the name, description, and price
+These details will be shown by accessing props
+The second div we will work on later and will hold a form to set the number of that meal to by along with a button to add that meal to the cart
+```
+import React from 'react'
+
+const MealItem = (props) => {
+  return (
+    <li>
+      <div>
+        <h3>{props.name}</h3>
+        <div>{props.description}</div>
+      </div>
+      <div></div>
+    </li>
+  )
+}
+
+export default MealItem
+
+```
+
+Now we will display the price below the description except we won't get that data from props
+Doing that would mean that we would either have to format it before hand or format it direcly inside of our div
+Instead we will create a variable to hold the formatted price and use a template literal to format it from props
+Remember tempate literals are made by using backticks as quotes and you can inject js inside '${}'
+We will use a method called `toFixed()` where we can specify the number of decimals so it is always 2 decimals
+```
+const MealItem = (props) => {
+
+  const price = `$${props.price.toFixed(2)}`;
+
+  return (
+    <li>
+      <div>
+        <h3>{props.name}</h3>
+        <div>{props.description}</div>
+        <div>{price}</div>
+      </div>
+      <div></div>
+    </li>
+  )
+}
+```
+
+Before we move on we can apply our styling by importing the css module and applying the appropriate classes
+```
+import React from 'react'
+import classes from './MealItem.module.css';
+
+const MealItem = (props) => {
+
+  const price = `$${props.price.toFixed(2)}`;
+
+  return (
+    <li className={classes.meal}>
+      <div>
+        <h3>{props.name}</h3>
+        <div className={classes.description}>{props.description}</div>
+        <div className={classes.price}>{price}</div>
+      </div>
+      <div></div>
+    </li>
+  )
+}
+
+export default MealItem
+```
+
+Although our component isn't completely done we can now add this to our `<AvailableMeals>` component to get it to show up
+Import and call it instead of a single list item (being sure to pass in props for name, description, and price)
+Don't foget to include a key prop so that react can render our components as an array correctly
+```
+const mealsList = DUMMY_MEALS.map((meal) => {
+  return (<MealItem 
+            key={meal.id}
+            name={meal.name}
+            description={meal.description}
+            price={meal.price}
+          />)
+})
+```
