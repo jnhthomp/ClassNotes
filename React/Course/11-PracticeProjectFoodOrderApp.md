@@ -1871,3 +1871,142 @@ It allows us to keep our modal reuseable by not using context
 
 Now we can open and close the cart and have implemented the cart with dummy data
 Next we want to be able to add cart items and make some refinements to the cart
+
+
+
+
+___
+## 142. Adding a Cart Context
+Now we will make sure that data and items can be added to the cart
+To do this we will use context so we can manage and access it in different places within the application
+
+In `<MealItems>` we need to update the cart and then in `<Cart>` we will need to output it
+We will also need to manage it within the cart so we can increase or remove items in the cart
+
+First we have to setup our cart context
+To do this the first step is to create a 'store' folder (name is tehcnically up to you though) within 'src' so we can add a 'cart-context.js'
+
+Create: src/store/cart-context.js
+In here we need to import react so we can call `React.createContext()`
+
+Remember we call `React.createContext()` and then provide it with a default context as an argument 
+In this case we will use an object to hold the meal data
+The values in this object will be an array of `items` (meals added to the cart), a `totalAmount` value to display the price and two methods
+The first method will be called `addItem` and accept an item as an argument and then have a function to add it
+The second will be called `removeItem` and accept an item as an argument and remove it
+
+Then we have to set the `.createContext` call equal to a constant so we can store the return and export it so we can access it elsewhere
+```
+import React from 'react';
+
+const CartContext = React.createContext({
+  items: [],
+  totalAmount: 0,
+  addItem: (item) => {},
+  removeItem: (item) => {}
+});
+
+export default CartContext
+```
+
+Now we will need to manage the context within a component with `useState` or `useReducer`
+This will be done within a provider 
+We could do this within the same file but instead we will create a new component to do this
+This will allow us to wrap the `<CartProvider>` component around components that need access to this context without having to define certain things everytime we need to access this context
+create: src/store/CartProvider.jsx
+
+Now within here we will import the context we just created and then call the provider component available within `CartContext`
+Then we can simply pass `props.children` within this provider to give any children components of `<CartProvider>` acces to the cart context
+
+We can also add methods to manage the cart context (state) within this component so other components have access to those as well
+```
+import React from 'react';
+import CartContext from './cart-context.js';
+
+const CartProvider = (props) => {
+  return (
+    <CartContext.Provider>
+      {props.children}
+    </CartContext.Provider>
+  )
+}
+
+export default CartProvider
+
+```
+
+Now we will add data to this provider so that it can manage the context
+This will match the context but will be the actual data that is used and updated over time the 'cart-context.js' file is just to initialize and set initial values for that context along with some vscode autocomplete
+This time instead of having empty functions for `addItem` and `removeItem` we can define handlers within the `<CartProvider>` component and pass those methods into `addItem` and `removeItem`
+We don't have to actually write these just yet but we can get them ready
+
+lastly we pass the `cartContext` as the `value` prop when calling `<CartContext.Provider>` (otherwise it would use the default CartContext values)
+```
+import React from 'react';
+import CartContext from './cart-context.js';
+
+const CartProvider = (props) => {
+
+  const addItemToCartHandler = (item) => {}
+  const removeItemFromCartHandler = (item) => {}
+
+  const cartContext = {
+    items: [],
+    totalAmount: 0,
+    addItem: addItemToCartHandler,
+    removeItem: removeItemFromCartHandler
+  }
+
+  return (
+    <CartContext.Provider value={cartContext}>
+      {props.children}
+    </CartContext.Provider>
+  )
+}
+
+export default CartProvider
+```
+
+We will make this dynamic soon but first we will use the use this provider component to wrap any components that need access to the context
+In our app this is all components within `<App>`
+The `<Cart>` will need access so it can render the items and edit them later
+The `<Header>` will need access to show the total number of items in the cart
+And `<Meals>` will need access so it can add and remove items from the cart
+
+So instead of wrapping all of these components in a fragment we can wrap them in our provideer component instead
+```
+import { useState } from 'react';
+import Header from './Components/Layout/Header.jsx';
+import Meals from './Components/Meals/Meals.jsx';
+import Cart from './Components/Cart/Cart.jsx';
+import CartProvider from './store/CartProvider.jsx';
+
+function App() {
+  const [cartIsShown, setCartIsShown] = useState(false);
+
+  const showCartHandler = () => {
+    setCartIsShown(true);
+  }
+
+  const hideCartHandler = () => {
+    setCartIsShown(false);
+  }
+  
+  
+
+  return (
+    <CartProvider>
+      {cartIsShown && <Cart onHideCart={hideCartHandler} />}
+      <Header onShowCart={showCartHandler} />
+      <main>
+        <Meals />
+      </main>
+    </CartProvider>
+  );
+}
+
+export default App;
+
+```
+
+We could have added the cart state within `<App>` since we are placing it pretty high anyway but this allows us to keep the `<App>` component clean 
