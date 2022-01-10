@@ -2010,3 +2010,80 @@ export default App;
 ```
 
 We could have added the cart state within `<App>` since we are placing it pretty high anyway but this allows us to keep the `<App>` component clean 
+
+
+
+
+___
+## 143. Using the Context
+Now we will use/consume the context within the header so we can update the badge count
+To do this we will use the `useContext()` react hook within the `<HeaderCartButton>`
+
+We will need to import both the react hook and the `CartContext`
+Note we are NOT importing the provider we are importing the 'cart-context.js' file
+```
+import React, { useContext } from 'react';
+import CartContext from '../../store/cart-context.js';
+import classes from './HeaderCartButton.module.css';
+import CartIcon from '../Cart/CartIcon.js';
+
+```
+
+Then we can call `useContext` and pass the `CartConext` in as an argument and store the return in `cartCtx` variable
+```
+const cartCtx = useContext(CartContext);
+```
+
+Now we can use cartCtx to access values within 'cart-context' which will be updated by `<CartProvider>` in the parent
+
+We can use this value to output the number of items
+To do this we can just create a variable to store this value and access `cartCtx.items` 
+You might think that you could get the number we need by simply using `.length` on the `cartCtx.items` since that is an array
+That might work if we just added a new item to the array every time but we don't want to organize it like that
+Instead if we add multiple instances we want it to only be listed in the array once but have an amount that is updated within the item object itself
+
+So the proper way to access this would be to access `cartCtx.items` but use the `reduce()` method
+This is a built in method that allows us to transform an array of data into a single value
+It takes two arguments
+The first is a function that is called for you
+The second is a starting value (in our case this value will be 0)
+```
+const numberOfCartItems = cartCtx.items.reduce(() => { }, 0);
+```
+
+Now the function that is the first argument has access to two arguments 
+The first is the current number or count and the second is the item that is being looked at
+Current item will be updated and remembered as the reduce function works through the array
+Since we have an initial value of 0 that will be the value of `carNumber` when processing the first item
+Within our function we simply want to increment the current number + the value of `item.amount` which is a value in the item object that tells us how much of this meal has been added to the cart
+Then we can simply output `numberOfCartItems` instead of the hardcoded number
+```
+import React, { useContext } from 'react';
+import CartContext from '../../store/cart-context.js';
+import classes from './HeaderCartButton.module.css';
+import CartIcon from '../Cart/CartIcon.js';
+
+const HeaderCartButton = (props) => {
+
+  const cartCtx = useContext(CartContext);
+
+  const numberOfCartItems = cartCtx.items.reduce((curNumber, item) => {
+    return curNumber + item.amount;
+  }, 0);
+
+  return (
+    <button className={classes.button} onClick={props.onClick}>
+      <span className={classes.icon}>
+        <CartIcon />
+      </span>
+      <span>Your Cart</span>
+      <span className={classes.badge}>{numberOfCartItems}</span>
+    </button>
+  )
+}
+
+export default HeaderCartButton
+
+```
+
+Now if we save we will see 0 on our cart button although that can be changed by chaing the initial value in our reduce function
