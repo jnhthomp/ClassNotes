@@ -1411,3 +1411,279 @@ Later we will update our component to hide the order button when `cartItems` is 
 
 Now we have the cart outline complete but it is sitting inside of a div
 We do not want this instead we want it in a modal so that is what we will do next
+
+
+
+
+___
+## 140. Adding a Modal via a React Portal
+Now we will add our modal that we will use to wrap our `<Cart>` component
+Download the css and add it to the UI folder
+https://github.com/academind/react-complete-guide-code/blob/11-practice-food-order-app/extra-files/Modal.module.css
+```
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 20;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modal {
+  position: fixed;
+  top: 20vh;
+  left: 5%;
+  width: 90%;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 30;
+  animation: slide-down 300ms ease-out forwards;
+}
+
+@media (min-width: 768px) {
+  .modal {
+    width: 40rem;
+    left: calc(50% - 20rem);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-3rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+```
+
+Then create the modal component file and import the css
+Create: src/Components/UI/Modal.jsx
+
+We will use a special markup because we want to use react portal for both the backdrop (thing behind the overlay to block interaction) as well as the modal overlay with the react portal
+This will allow us to call the modal wherever we want but render the elements in a specific place in the dom tree
+Remember portals allow us to call a component from within another component (say header) but have it rendered as a root level element within our html (or wherever we want it)
+
+First to render a portal we need to go to our 'public/index.html' file and create a div with an id that we can target with this modal later so we can render it in a specific place
+```
+...
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="overlays"></div>
+    <div id="root"></div>
+  </body>
+...
+```
+Now we will target this when portalling our modal and backdrop
+
+Back in the modal file we can get started on our outline
+```
+import React from 'react';
+import classes from './Modal.module.css';
+
+const Modal = () => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default Modal
+```
+
+We will want to create the backdrop and overlay within here and use the portal to render them
+To do this we will create two more components but since they will only be used in the modal component and are both very small we will define them within 'Modal.jsx'
+Putting them in seperate files is also ok but not necessary
+Both of these will receive props (since they will show children components)
+```
+import React from 'react';
+import classes from './Modal.module.css';
+
+const Backdrop = (props) => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export const ModalOverlay = (props) => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+const Modal = () => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default Modal
+
+```
+
+For the `<Backdrop>` component we can assign the `.backdrop` class from our css file
+```
+const Backdrop = (props) => {
+  return (
+    <div className={classes.backdrop} />
+  )
+}
+```
+
+Then for the `<ModalOverlay>` we will assign the `.modal` class
+Then we will also have a child div that has the `.content` class and outputs any children
+```
+export const ModalOverlay = (props) => {
+  return (
+    <div className={classes.modal}>
+      <div className={classes.content}>{props.children}</div>      
+    </div>
+  )
+}
+```
+
+Now within our `<Modal>` function we can return both of these components side by side
+To do this we can use `<Fragment>` (remember to import)
+Inside of our fragment we can set up our portal
+
+Remember to use portal we have to access ReactDOM (which needs imported)
+Then we can call the `ReactDOM.createPortal()` method once it is imported
+Then we pass in two arguments, the first is what we want to display
+In this case the backdrop for one portal and the overlay for the other, followed by where to display it 
+The div with id root, which we target with `document.getElementById()`
+
+Start with importing
+```
+import React, { Fragment } from 'react';
+import ReactDOM from 'react-dom'; //import ReactDOM
+import classes from './Modal.module.css';
+```
+Then we can call `ReactDOM.createPortal()` and pass in the two component calls we already have along with targetting where we want to render it
+To make things a little cleaner instead of calling `document.getElementById()` twice and targetting the element we can create a variable that we pass in instead
+```
+const portalElement = document.getElementById('overlays');
+```
+Then we can just pass `portalElement` as the second argument
+Now if we ever change where we want to render this portal we only have to make the change in one place
+```
+import React, { Fragment } from 'react';
+import ReactDOM from 'react-dom';
+import classes from './Modal.module.css';
+
+const Backdrop = (props) => {
+  return (
+    <div className={classes.backdrop} />
+  )
+}
+
+export const ModalOverlay = (props) => {
+  return (
+    <div className={classes.modal}>
+      <div className={classes.content}>{props.children}</div>      
+    </div>
+  )
+}
+
+const portalElement = document.getElementById('overlays');
+
+const Modal = (props) => {
+  return (
+    <Fragment>
+      {ReactDOM.createPortal(<Backdrop />, portalElement)}
+      {ReactDOM.createPortal(<ModalOverlay>{props.children}</ModalOverlay>, portalElement)}
+    </Fragment>
+  )
+}
+
+export default Modal
+```
+
+Now back in our `<Cart>` component we can replace our wrapping div with the Modal we created
+```
+import React from 'react';
+import classes from './Cart.module.jsx';
+import Modal from '../UI/Modal.jsx';
+
+const Cart = () => {
+
+  const cartItems =(
+    <ul className={classes['cart-items']}>
+      {
+        [{id: 'c1', name: 'Sushi', amount: 2, price: 12.99}].map((item) => {
+          return (<li>{item.name}</li>)
+        })
+      }
+    </ul>
+  );
+
+  return (
+    <Modal>
+      <div>{cartItems}</div>
+      <div className={classes.total}>
+        <span>Total Amount</span>
+        <span>$35.62</span>
+      </div>
+      <div className={classes.actions}>
+        <button className={classes['button--alt']}>Close</button>
+        <button className={classes.button}>Order</button>
+      </div>
+    </Modal>
+  )
+}
+
+export default Cart
+
+```
+
+Now we have to call the `<Cart>` component in order to see it
+We will call this within `<App>`
+Since we are using a portal it doesn't matter too much where we put it within `<App>` other than organization 
+```
+import { Fragment } from 'react';
+import Header from './Components/Layout/Header.jsx';
+import Meals from './Components/Meals/Meals.jsx';
+import Cart from './Components/Cart/Cart.jsx';
+
+function App() {
+  return (
+    <Fragment>
+      <Cart />
+      <Header />
+      <main>
+        <Meals />
+      </main>
+    </Fragment>
+  );
+}
+
+export default App;
+
+```
+One small bug you might get is that the `<li>` tags in our cart are not receive a unique `key` prop
+You can fix that by assigning `item.id` to a `key` prop within the `<li>` tag inside `<Cart>`/`cartItems`
+```
+const cartItems =(
+  <ul className={classes['cart-items']}>
+    {
+      [{id: 'c1', name: 'Sushi', amount: 2, price: 12.99}].map((item) => {
+        return (<li key={item.id}>{item.name}</li>)
+      })
+    }
+  </ul>
+);
+```
+
+Now we have our modal displaying although we cannot currently make it disappear
