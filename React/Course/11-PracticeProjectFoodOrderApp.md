@@ -1687,3 +1687,187 @@ const cartItems =(
 ```
 
 Now we have our modal displaying although we cannot currently make it disappear
+
+
+
+
+___
+## 141. Managing Cart & Modal State
+Now we need to ensure that the cart modal only shows up when the "Your Cart" button is clicked and can be removed by clicking the backdrop or "Close" button?
+
+We will need to manage a state that determines whether the modal shows and methods to toggle that state
+
+To do this we will add `useState()` to our `<App>` component 
+Then we will call `useState` to create a boolean state for if the cart is shown or not (called `cartIsShown`)
+```
+import { Fragment, useState } from 'react';
+import Header from './Components/Layout/Header.jsx';
+import Meals from './Components/Meals/Meals.jsx';
+import Cart from './Components/Cart/Cart.jsx';
+
+function App() {
+  const [cartIsShown, setCartIsShown] = useState(false);
+
+...
+```
+
+Now we will create a couple of functions that will change the state from `true` to `false` and vice versa
+These will be called to open and close the cart
+```
+function App() {
+  const [cartIsShown, setCartIsShown] = useState(false);
+
+  const showCartHandler = () => {
+    setCartIsShown(true);
+  }
+
+  const hideCartHandler = () => {
+    setCartIsShown(false);
+  }
+
+  ...
+```
+
+Now we just need to use this `cartIsShown` state to determine if we show `<Cart>` and ensure that those two functions can be called in the `<Cart>` component itself
+
+First to use the `cartIsShown` state
+We want to render the `<Cart>` based on if `cartIsShown` is true
+To do this we can use the `&& ` operator
+```
+return (
+  <Fragment>
+    {cartIsShown && <Cart />}
+    <Header />
+    <main>
+      <Meals />
+    </main>
+  </Fragment>
+);
+```
+Now `<Cart>` will be rendered if `cartIsShown` is true and not be rendered if `cartIsShown` is false
+
+If you save and reload you will see the cart hidden since `cartIsShown` is initialized to false but you can change that to see it again
+
+Now we want to make sure that the `showCartHandler` is called when the cart button is clicked
+This button is located in the header
+So we need to have access to this function within `<Header>` and will need to pass it down through props
+```
+return (
+  <Fragment>
+    {cartIsShown && <Cart />}
+    <Header onShowCart={showCartHandler} />
+    <main>
+      <Meals />
+    </main>
+  </Fragment>
+);
+```
+
+Now inside of the header we will want to execute this function when the `<HeaderCartButton>` is clicked
+This is another custom component so we will have to pass it in there as well
+```
+const Header = (props) => {
+  return (
+    <Fragment>
+      <header className={classes.header}>
+        <h1>ReactMeals</h1>
+        <HeaderCartButton onClick={props.onShowCart} />
+      </header>
+      <div className={classes['main-image']}>
+        <img src={mealsImage} alt="A table full of delicious food!" />
+      </div>
+    </Fragment>
+  )
+}
+```
+
+Now in the `<HeaderCartButton>` we will need to execute this function by calling it as the `onClick` method
+```
+const Header = (props) => {
+  return (
+    <Fragment>
+      <header className={classes.header}>
+        <h1>ReactMeals</h1>
+        <HeaderCartButton onClick={props.onShowCart} />
+      </header>
+      <div className={classes['main-image']}>
+        <img src={mealsImage} alt="A table full of delicious food!" />
+      </div>
+    </Fragment>
+  )
+}
+```
+
+This could be replaced with context to make this a little easier but we won't do that here since we are only passing this through two levels of props
+
+Now if we save we can get the modal to open by clicking the cart
+
+Next we need to be able to close the cart and will need to pass a prop to handle this action into the `<Cart>` component when we call it within `<App>`
+```
+return (
+  <Fragment>
+    {cartIsShown && <Cart onHideCart={hideCartHandler} />}
+    <Header onShowCart={showCartHandler} />
+    <main>
+      <Meals />
+    </main>
+  </Fragment>
+);
+```
+
+Now we need to attach this method to our close button within the `<Cart>` component
+We will also need to pass it down into the `<Modal>` so this method can be activated when the backdrop is clicked as well
+```
+return (
+    <Modal onHideCart={props.onHideCart}>
+      <div>{cartItems}</div>
+      <div className={classes.total}>
+        <span>Total Amount</span>
+        <span>$35.62</span>
+      </div>
+      <div className={classes.actions}>
+        <button className={classes['button--alt']} onClick={props.onHideCart}>Close</button>
+        <button className={classes.button}>Order</button>
+      </div>
+    </Modal>
+  )
+```
+
+From the modal we will have to pass it into the backdrop and then set the `onClick` action to activate
+```
+const Backdrop = (props) => {
+  return (
+    <div className={classes.backdrop} onClick={props.onClose} />
+  )
+}
+
+export const ModalOverlay = (props) => {
+  return (
+    <div className={classes.modal}>
+      <div className={classes.content}>{props.children}</div>      
+    </div>
+  )
+}
+
+const portalElement = document.getElementById('overlays');
+
+const Modal = (props) => {
+  return (
+    <Fragment>
+      {ReactDOM.createPortal(<Backdrop onClose={props.onHideCart} />, portalElement)}
+      {ReactDOM.createPortal(<ModalOverlay>{props.children}</ModalOverlay>, portalElement)}
+    </Fragment>
+  )
+}
+
+export default Modal
+```
+
+Now when we can close the cart by clicking either the backdrop or the "Close" button
+We could use context here to close the backdrop but if we were to do that then we would only be able to ever have the backdrop close the cart and could not use the backdrop for other modals
+Here we can change what method is passed into the modal in the first place to determine what content has the state toggled
+This is why using props instead of context might be a better choice here
+It allows us to keep our modal reuseable by not using context
+
+Now we can open and close the cart and have implemented the cart with dummy data
+Next we want to be able to add cart items and make some refinements to the cart
