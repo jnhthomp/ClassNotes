@@ -941,3 +941,207 @@ const mealsList = DUMMY_MEALS.map((meal) => {
           />)
 })
 ```
+
+
+
+
+___
+## 137. Adding a Form
+Now we will work on adding a form so that we can specify the number of each meal someone wants and they can have a button to add that to the cart
+
+First go ahead and get the 'MealItemForm.module.css' file from github: https://github.com/academind/react-complete-guide-code/blob/11-practice-food-order-app/extra-files/MealItemForm.module.css
+```
+.form {
+  text-align: right;
+}
+
+.form button {
+  font: inherit;
+  cursor: pointer;
+  background-color: #8a2b06;
+  border: 1px solid #8a2b06;
+  color: white;
+  padding: 0.25rem 2rem;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.form button:hover,
+.form button:active {
+  background-color: #641e03;
+  border-color: #641e03;
+}
+```
+
+Now we can create the form component
+We will do this in a new component file and simply call this new component within `<MealItem>`
+Create: src/Components/Meals/MealItem/MealItemForm.jsx
+
+Now within this file we will want to create a component function that will return a form
+We can also go ahead and import the css classes we will use and apply that to the form
+```
+import React from 'react'
+import classes from './MealItemForm.module.css';
+
+const MealItemForm = () => {
+  return (
+    <form className={classes.form}>
+      
+    </form>
+  )
+}
+
+export default MealItemForm
+```
+
+Now we can start adding to our form
+We will want this form to have an input and a button
+For the button we will add text saying '+ Add' to make it obvious what it does
+On `<input>` we will simply leave it blank for now as we will create a reusable ui component
+```
+return (
+  <form className={classes.form}>
+    <input />
+    <button>+ Add</button>
+  </form>
+)
+```
+
+Now we can go ahead and call this form within our `<MealItem>` component
+```
+import React from 'react'
+import classes from './MealItem.module.css';
+import MealItemForm from './MealItemForm.jsx';
+
+const MealItem = (props) => {
+
+  const price = `$${props.price.toFixed(2)}`;
+
+  return (
+    <li className={classes.meal}>
+      <div>
+        <h3>{props.name}</h3>
+        <div className={classes.description}>{props.description}</div>
+        <div className={classes.price}>{price}</div>
+      </div>
+      <div>
+        <MealItemForm />
+      </div>
+    </li>
+  )
+}
+
+export default MealItem
+```
+
+If we save this it isn't entirely correct but is a start
+
+To get the correct final look we need to extract the `<input>` and add it to a reusable prestyled component so we can call it if we need it elsewhere
+
+For this we will add a new input component inside of our 'UI' folder
+Create: src/Components/UI/Input.jsx
+
+Also of course import the css we will use from github
+https://github.com/academind/react-complete-guide-code/blob/11-practice-food-order-app/extra-files/Input.module.css
+```
+.input {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.input label {
+  font-weight: bold;
+  margin-right: 1rem;
+}
+
+.input input {
+  width: 3rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font: inherit;
+  padding-left: 0.5rem;
+}
+
+```
+
+Then import these classes to our new `<Input>` component
+The component itself should return a div containing both the label and actual input itself
+The `.input` class should be applied to the surrounding div
+To keep the input component configurable we will pass in the label via props and call it inside of the label tag
+Remember that labels in react use the `htmlFor` attribute
+Here we pass in the id of the input this is a label for
+To do this we will pass in an input object via props when we call this which will contain configuration data for the input
+In this case we will access this through `props.input.id`
+Then we have to add this same value as the `id` attribute on the input
+```
+return (
+  <div className={classes.input}>
+    <label htmlFor={props.input.id}>{props.label}</label>
+    <input id={props.input.id} />
+  </div>
+)
+```
+
+Now one more trick the teacher uses is object destructuring to allow us to define props later within the `input` object we said we would pass to this component
+To do that we use the spread operator and pass the object into the input
+```
+<input id={props.input.id} {...props.input} />
+```
+
+This allows us to create our `input` object with key value pairs that will be used as props
+For example when we define the `input` object we could add a key/value like:
+```
+const input = {
+  id: 123
+  type: text
+}
+```
+This allows us to make our component more configurable from outside of the input
+We could also remove the explicit `props.input.id` id prop in our input tag as long as we remember to assign one when we call `<Input>`
+
+Now we can add this new component to the `<MealItemForm>` instead of the regular default input
+```
+import React from 'react'
+import classes from './MealItemForm.module.css';
+import Input from '../../UI/Input.jsx';
+
+const MealItemForm = () => {
+  return (
+    <form className={classes.form}>
+      <Input />
+      <button>+ Add</button>
+    </form>
+  )
+}
+
+export default MealItemForm
+```
+Now we can't forget to add our props to the `<Input>` call
+The first one is easy and will be the label and just set to "Amount"
+The second one will an object called "input" it will of course hold an id (for now also amount even though this is an issue), as well as a type
+A few more props we can add are `min`, `max`, `step`, and `defaultValue`
+These are all default html attributes for an `<input>` tag
+```
+return (
+  <form className={classes.form}>
+    <Input label="Amount" input={{
+      id: 'amount',
+      type: 'number',
+      min: '1',
+      max: '5',
+      step: '1',
+      defaultValue: '1'
+    
+    }} />
+    <button>+ Add</button>
+  </form>
+)
+```
+You may notice the issue here already
+Our `<Input>` componentis being rendered within `<MealItemForm>` 
+In turn `<MealItemForm>` is being rendered within `<MealItem>` which is being called within a `.map()` function
+This means in the end there will be multiple `<Input>` components being called at once
+This wouldn't normally be an issue except we are passing the same hardcoded id into all of these `<Input>` components
+This means when there is more than one of them rendered React will not be able to tell them all apart since the have the same id
+This is an issue but we will fix it in the next lesson as the teacher didn't catch it right away
