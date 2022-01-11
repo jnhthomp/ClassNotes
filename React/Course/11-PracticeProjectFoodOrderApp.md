@@ -2273,3 +2273,265 @@ const cartReducer = (state, action) => {
 ```
 
 Now we have the basic reducer outline done, we just have to make sure that `addItemToCartHandler` gets called somewhere and that it receives a valid item object to do that with
+
+
+
+
+___
+## 145. Working with Refs & Forward Refs
+Now we need to make sure that our `addItemHandler` is being called
+So we need to go to where we want to call `addItem` from context and pass in an item
+We will want to do this in `<MealItemForm>` since the form submission is what will add items to the cart
+
+The first thing we need to do is create a `submitHandler` within here that we will pass into the forms `onSubmit` property (then we can set button type to submit)
+Don't forget that because this will be coming from the form's `onSubmit` prop it will have access to the event object
+We should also prevent the browser default of reloading the page with `event.preventDefault`
+Then we want to extract the entered amount
+We will use refs for this 
+Alternatively we could use two way binding but that would require us to manage state
+Our situation is a little different than the normal usage of `useRef` because we have a custom component we want to add the ref to
+Normally we could just import `useRef`, call it (setting the return to a variable name), apply the ref prop to the element we want to ref and set it equal to the variable we created
+However because we have a custom element it is a little different because custom elements don't have access to the ref prop
+
+We can get it started the same way though
+First import `useRef`
+```
+import React, { useRef } from 'react'
+```
+Then call it and assign the return to `amountInputRef`
+This should be o;utside of the submit handler as it's own function call within `<MealItemForm>` otherwise a ref wouldn't be assigned until the submit handler is activated and that is not what we want
+```
+const MealItemForm = (props) => {
+
+  const amountInputRef = useRef()
+
+  ...
+```
+
+Normally we would do the following but this will not work by itself because we are using a custom component
+However we still want to add it to our input
+```
+<Input 
+  ref={amountInputRef}
+  label="Amount" 
+  input={{
+    id: 'amount_' + props.id,
+    type: 'number',
+    min: '1',
+    max: '5',
+    step: '1',
+    defaultValue: '1'
+  }} 
+/>
+```
+
+Now we have to do a little bit of work to our `<Input>` component so it can accept this ref since it is a custom component
+To do this we need to import React within `<Input>` 
+Then we will wrap our entire component function inside of the `React.forwardRef()`
+```
+import React from 'react';
+import classes from './Input.module.css';
+
+
+const Input = React.forwardRef((props) => {
+  return (
+    <div className={classes.input}>
+      <label htmlFor={props.input.id}>{props.label}</label>
+      <input {...props.input} />
+    </div>
+  )
+})
+
+export default Input
+```
+Now our component is an argument of forward ref
+
+This gives us access to `ref` as an argument along side `props`
+We can then use this `ref` argument to forward the ref to our `input` element
+```
+const Input = React.forwardRef((props, ref) => {
+  return (
+    <div className={classes.input}>
+      <label htmlFor={props.input.id}>{props.label}</label>
+      <input ref={ref} {...props.input} />
+    </div>
+  )
+})
+```
+
+This will refer to the ref that is passed into our `<Input>` component in the `<MealItemForm>` component (`amountInputRef`)
+
+Now we can access the input through refs within `<MealItemForm>` 
+This allows us to read the entered value within the `submitHandler` by accessing `amountInputRef.current.value`
+Remember that getting the value this way ALWAYS returns a string
+Since we expect this to be a number we should convert it first
+We can do this by using `+amountInputRef.currentValue` and setting that equal to a variable 
+To make things more clear I will set the initial fetch of that current value string to a variable before converting
+```
+const submitHandler = (event) => {
+  event.preventDefault();
+  const enteredAmount = amountInputRef.current.value;
+  const enteredAmountNumber = +enteredAmount;
+}
+```
+
+Now we can validate the entered amount before doing anything with this data
+We want to make sure that there was something entered (and account for whitespace so someone doesn't enter just spaces)]
+We also want to make sure that the number of items entered is valid (at least one but less than 5 items)
+We can do these checks with an if statement on the `enteredAmountNumber`
+```
+  const submitHandler = (event) => {
+    event.preventDefault();
+    
+    const enteredAmount = amountInputRef.current.value;
+    const enteredAmountNumber = +enteredAmount;
+    
+    if (enteredAmountNumber.trim().length === 0 || 
+        enteredAmountNumber < 1 || 
+        enteredAmountNumber > 5) {
+      return;
+    }
+  }
+```
+This if statement will remove whitespace and check length if it is equal to 0 the method will exit
+Then it will check the value and if it is less than one or more than 5 it will return and the method will exit
+
+We also want to output an error message below our input and button
+To do this we will use state and will be a simple state
+It will simply be a ref that displays a small amount of text at the bottom of the form if the state is false
+```
+const [amountIsValid, setAmountIsValid] = useState(true)
+```
+
+Now in our if statement within `submitHandler` we will set this state to false if any of the conditions are met
+```
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    const enteredAmount = amountInputRef.current.value;
+    const enteredAmountNumber = +enteredAmount;
+    
+    if (
+      enteredAmount.trim().length === 0 || 
+      enteredAmountNumber < 1 || 
+      enteredAmountNumber > 5
+    ) {
+      setAmountIsValid(false);
+      return;
+    }
+  };
+
+```
+
+Now we can just use the `&&` operator to conditionally show text below our button if `amountIsValid` is false
+```
+  return (
+    <form className={classes.form}>
+      <Input 
+        ref={amountInputRef}
+        label="Amount" 
+        input={{
+          id: 'amount_' + props.id,
+          type: 'number',
+          min: '1',
+          max: '5',
+          step: '1',
+          defaultValue: '1'
+        }} 
+      />
+      <button>+ Add</button>
+      {!amountIsValid && <p>Please Enter a Valid Amount (1-5)</p>}
+    </form>
+  )
+```
+
+Now our form submission will only complete if we have a valid input
+In this case we want to execute the context method `addItem` 
+However we won't do this here, we will call a function we expect to get from `props` called `onAddToCart` and we will forward the `enteredAmountNumber`
+This is because the form does not have access to what the item is, only how many of an item we want
+When we forward this number to our `<MealItem>` component through props it will know the item to add and will now have the number of items as well
+We will bundle that data within `<MealItem>` to call the `addItem` function from context
+First go ahead and call that function which we expect to pass through props and pass in the `enteredAmountNumber`
+```
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    const enteredAmount = amountInputRef.current.value;
+    const enteredAmountNumber = +enteredAmount;
+    
+    if (
+      enteredAmount.trim().length === 0 || 
+      enteredAmountNumber < 1 || 
+      enteredAmountNumber > 5
+    ) {
+      setAmountIsValid(false);
+      return;
+    }
+
+    props.onAddToCart(enteredAmountNumber);
+  };
+
+```
+Now we can go to our `<MealItem>` component and prepare this function to pass via props
+This function should accept an amount since that is what we are passing within the form
+Then we can pass it via props
+```
+const MealItem = (props) => {
+
+  const price = `$${props.price.toFixed(2)}`;
+
+  const addToCartHandler = (amount) => {
+    
+  }
+
+  return (
+    <li className={classes.meal}>
+      <div>
+        <h3>{props.name}</h3>
+        <div className={classes.description}>{props.description}</div>
+        <div className={classes.price}>{price}</div>
+      </div>
+      <div>
+        <MealItemForm id={props.id} onAddToCart={addToCartHandler} />
+      </div>
+    </li>
+  )
+}
+```
+
+Now inside of this handler we want to reach out to our context
+To do this we need to import `useContext` AND the context file that we want to access
+```
+import React, { useContext } from 'react';
+import cartContext from '../../../store/cart-context.js';
+import classes from './MealItem.module.css';
+import MealItemForm from './MealItemForm.jsx';
+```
+
+Then we access this context by calling `useContext` and passing in `cartContext` as an argument and capturing the return in a variable to access the context
+```
+const MealItem = (props) => {
+
+  const cartCtx= useContext(cartContext);
+
+  ...
+```
+
+Now we can call `cartCtx.addItem` within `addToCartHandler` since we have access to context and the methods within context
+When we call this `addItem` we will be adding an item object to our `cartState`
+Remember this is where we needed to define things like the id, name, price, and amount before adding it to the state and list of items
+Note that for price we are using `props.price` because we want it as a number and not the formatted version within `<MealItem>`
+```
+const addToCartHandler = (amount) => {
+  cartCtx.addItem({
+    id: props.id,
+    name: props.name,
+    amount: amount,
+    price: props.price
+  })
+}
+```
+
+Now when we trigger the addToCartHandler whenever the submit button is pressed in `<MealItemForm>` (which is actually in `<Input>`)
+It will forward the item to be added to our context and that item will be available for us to access
+The cart isn't done yet since opening the modal doesn't show any of the items we have added but we can see that items are successfully being added to the context because the badge will increment as we add items
