@@ -2535,3 +2535,335 @@ const addToCartHandler = (amount) => {
 Now when we trigger the addToCartHandler whenever the submit button is pressed in `<MealItemForm>` (which is actually in `<Input>`)
 It will forward the item to be added to our context and that item will be available for us to access
 The cart isn't done yet since opening the modal doesn't show any of the items we have added but we can see that items are successfully being added to the context because the badge will increment as we add items
+
+
+
+
+___
+## 146. Outputting Cart Items
+Now to output cart items we will need to work within the `<Cart>` component
+Here we will need to import context (both the react hook and our context we created)
+```
+import React, { useContext } from 'react';
+import CartContext from '../../store/cart-context.js';
+```
+
+Then call `useContext` and pass in our context as an argument within our `<Cart>` component function
+```
+const cartCtx = useContext(CartContext);
+```
+
+Now instead of a dummy array of cart items we can access `cartCtx.items` which is where we are storing an array of objects which will be our cart
+```
+const cartItems =(
+  <ul className={classes['cart-items']}>
+    {cartCtx.items.map((item) => {
+        return (<li key={item.id}>{item.name}</li>)
+      })
+    }
+  </ul>
+);
+```
+Now that we are going through this each item we have access to the data for each item as well as the total amount
+First we can access the total amount fairly easily
+To do this we will create a `totalAmount` constant to retrieve this value from context and also format it to 2 decimal places with `toFixed(2)`
+We will also put this in a template literal so we can add a dollar sign so it displays the price as it should
+```
+const totalAmoung = `$${cartCtx.totalAmount.toFixed(2)}`;
+```
+
+Now we can call this amount to be output in our returned jsx for the `<Cart>` component
+```
+import React, { useContext } from 'react';
+import CartContext from '../../store/cart-context.js';
+import classes from './Cart.module.css';
+import Modal from '../UI/Modal.jsx';
+
+const Cart = (props) => {
+
+  const cartCtx = useContext(CartContext);
+
+  const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
+
+  const cartItems =(
+    <ul className={classes['cart-items']}>
+      {cartCtx.items.map((item) => {
+          return (<li key={item.id}>{item.name}</li>)
+        })
+      }
+    </ul>
+  );
+
+  return (
+    <Modal onHideCart={props.onHideCart}>
+      <div>{cartItems}</div>
+      <div className={classes.total}>
+        <span>Total Amount</span>
+        <span>{totalAmount}</span>
+      </div>
+      <div className={classes.actions}>
+        <button className={classes['button--alt']} onClick={props.onHideCart}>Close</button>
+        <button className={classes.button}>Order</button>
+      </div>
+    </Modal>
+  )
+}
+
+export default Cart
+```
+
+Now our cart should update with the real total amount as we add items
+
+Next we want to make sure the order button only shows up if we have items in the cart
+To do this we will create another variable to hold whether or not the cart has items called `hasItems`
+We will simply check if `cartCtx.items` has a length of more than 0
+In that case we want to display the order button
+This keeps us from having to manage a different state just to show the order button or not and we can just reference our context
+This works because this `cartCtx.items` is referencinga state value so when that state is reevaluated this module will be updated accordingly since it is a state value
+```
+const hasItems = cartCtx.items.length > 0;
+```
+
+This will evaluate the right side to true or false and set `hasItems` to whatever is evaluated
+
+Now we can use this in our return to determine if `hasItems` is true and only render the order button if it is
+```
+return (
+  <Modal onHideCart={props.onHideCart}>
+    <div>{cartItems}</div>
+    <div className={classes.total}>
+      <span>Total Amount</span>
+      <span>{totalAmount}</span>
+    </div>
+    <div className={classes.actions}>
+      <button className={classes['button--alt']} onClick={props.onHideCart}>Close</button>
+      {hasItems && <button className={classes.button}>Order</button>}
+    </div>
+  </Modal>
+)
+```
+
+Now if we look at the cart with no items in it there will not be an order button but as soon as we add one it is available again
+
+Next we want to work on how the individual `<li>` elements look
+To do this the teacher has provided some files we can use
+CartItem.js and CartItem.module.css are in extra file in github
+
+CartItem.js: https://github.com/academind/react-complete-guide-code/blob/11-practice-food-order-app/extra-files/CartItem.js
+```
+import classes from './CartItem.module.css';
+
+const CartItem = (props) => {
+  const price = `$${props.price.toFixed(2)}`;
+
+  return (
+    <li className={classes['cart-item']}>
+      <div>
+        <h2>{props.name}</h2>
+        <div className={classes.summary}>
+          <span className={classes.price}>{price}</span>
+          <span className={classes.amount}>x {props.amount}</span>
+        </div>
+      </div>
+      <div className={classes.actions}>
+        <button onClick={props.onRemove}>−</button>
+        <button onClick={props.onAdd}>+</button>
+      </div>
+    </li>
+  );
+};
+
+export default CartItem;
+
+```
+
+
+CartItem.module.css: https://github.com/academind/react-complete-guide-code/blob/11-practice-food-order-app/extra-files/CartItem.module.css
+```
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #8a2b06;
+  padding: 1rem 0;
+  margin: 1rem 0;
+}
+
+.cart-item h2 {
+  margin: 0 0 0.5rem 0;
+  color: #363636;
+}
+
+.summary {
+  width: 10rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price {
+  font-weight: bold;
+  color: #8a2b06;
+}
+
+.amount {
+  font-weight: bold;
+  border: 1px solid #ccc;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  color: #363636;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .actions {
+    flex-direction: row;
+  }
+}
+
+.cart-item button {
+  font: inherit;
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: #8a2b06;
+  border: 1px solid #8a2b06;
+  width: 3rem;
+  text-align: center;
+  border-radius: 6px;
+  background-color: transparent;
+  cursor: pointer;
+  margin-left: 1rem;
+  margin: 0.25rem;
+}
+
+.cart-item button:hover,
+.cart-item button:active {
+  background-color: #8a2b06;
+  color: white;
+}
+```
+
+This is simply a `<CartItem>` component that accepts the following props
+`price`, `name`, `amount`, `onRemove` action, `onAdd` action
+
+We can call this component within `<Cart>`
+Then instead of rendering the `<li>` element we will render the `<CartItem>`
+We will need to pass the appropriate props from above in as well
+```
+const cartItems =(
+  <ul className={classes['cart-items']}>
+    {cartCtx.items.map((item) => {
+        return (
+          <CartItem 
+            key={item.id}
+            price={item.price}
+            name={item.name}
+            amount={item.amount}
+            onRemove={}
+            onAdd={}
+          />
+        )
+      })
+    }
+  </ul>
+);
+```
+
+I didn't fill in `onRemove` or `onAdd` yet since we don't have those functions yet so we can go ahead and write some empty ones for now
+
+For `onRemove` we will create `cartItemRemoveHandler`
+This will need the id of the item to remove
+For `onAdd` we will create `cartItemAddHanlder`
+This will need the item object that we want to add to the cart
+```
+  const cartItemRemoveHandler = (id) => {
+    
+  }
+
+  const cartItemAddHandler = (item) => {
+    
+  }
+```
+
+Now these two functions can be what we pass into our `onRemove` and `onAdd` props
+```
+const cartItems =(
+  <ul className={classes['cart-items']}>
+    {cartCtx.items.map((item) => {
+        return (
+          <CartItem 
+            key={item.id}
+            price={item.price}
+            name={item.name}
+            amount={item.amount}
+            onRemove={cartItemRemoveHandler}
+            onAdd={cartItemAddHandler}
+          />
+        )
+      })
+    }
+  </ul>
+);
+```
+On both of these we are going to call `.bind()`
+We do this because we need to pass parameters into cartItemRemover from within `<CartItem>` directly
+If we were to do so like this (shortened for example)
+```
+<CartItem 
+  onRemove={cartItemRemoveHandler()}
+/>
+```
+We would execute the function immediately
+If we use `.bind` we can specify that there will be arguments by doing
+(we aren't using this keyword which is why first arg is null)
+```
+<CartItem 
+  onRemove={cartItemRemoveHandler.bind(null, item)}
+/>
+```
+
+Now we can pass the item to this function directly from within `<Cart>` without having to have to pass those values down to `<CartItem>` as props and accessing them in there
+Now when we call this method within `<CartItem>` it will automatically use the arguments specified in `<Cart>` everytime and BIND the specific instance of that value to that function call
+```
+<CartItem 
+  onRemove={() => cartItemRemoveHandler(item)}
+/>
+```
+Here we pass in an anonymous function so it isn't executed right away and we say that we expect arguments 
+Either should work but I will go with `.bind()` to stick with what the teacher is doing
+```
+const cartItems =(
+  <ul className={classes['cart-items']}>
+    {cartCtx.items.map((item) => {
+        return (
+          <CartItem 
+            key={item.id}
+            price={item.price}
+            name={item.name}
+            amount={item.amount}
+            onRemove={cartItemRemoveHandler.bind(null, item.id)}
+            onAdd={cartItemAddHandler.bind(null, item)}
+          />
+        )
+      })
+    }
+  </ul>
+);
+```
+
+Now our cart should look pretty solid when adding items to it but just as a quick change to make it slightly nicer within `Cart.module.css` we will add the following to `.cart-items` class (should already be added but check for `max-height` and `overflow` set to auto as scroll will leave a scroll bar even when cart is empty)
+```
+.cart-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 20rem;
+  overflow: auto;
+}
+```
+
+Now our cart looks fairly good although the add button and subtract button don't work and the same meals are added multiple times instead of aggregating and increasing `item.amount`
