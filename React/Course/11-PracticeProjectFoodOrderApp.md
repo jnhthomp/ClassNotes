@@ -2087,3 +2087,189 @@ export default HeaderCartButton
 ```
 
 Now if we save we will see 0 on our cart button although that can be changed by chaing the initial value in our reduce function
+
+
+
+
+___
+## 144. Adding a Cart Reducer
+Now we want to be able to handle adding and storing items in our `cartContext` right now that is always empty
+
+For our `addItemToCartHandler` we will receive an item object
+Then we want to check if that item is already listed in the `cartContext.items` array 
+If it is we will want to increment the amount for that item
+But if it is not then we want to add it to the array
+
+We will want to manage this as state within our `<CartProvider>` component
+This will allow this component and the context and any components affected by the context are re-evaluated when the cart data is changed
+
+We have the option of using `useState` or `useReducer` but the second is probably a better option
+This is because this state will be fairly complex and it will be easier to make changes to it with `useReducer`
+
+First we have to import it within `<CartProvider>`
+```
+import React,{ useReducer } from 'react';
+```
+Remember to use `useReducer` we pass in at least two arguments and receive two variables back
+The first argument to pass in is the reducer function which will hold functions for the actions we can take
+We will write this first
+
+OUTSIDE of the `CartProvider` component function (but still within 'CartProvider.jsx') we will create the `cartReducer` function
+This function can receive two arguments 
+The first is state which is a snapshot of the state most up to date state and provided by react
+The second is the action which will be used to determine which action within the function should be taken
+
+```
+const cartReducer = (state, action) => {
+  
+}
+```
+
+Within our reducer function we must return a new state snapshot
+For this we will create a new object outside of our component function and our reducer function called `defaultCartState` which will hold an object with no items (empty array) and a total amount of 0
+```
+const defaultCartState = {
+  items: [],
+  totalAmount: 0
+}
+```
+
+Then back in our reducer function this will be the default return
+
+```
+import React,{ useReducer } from 'react';
+import CartContext from './cart-context.js';
+
+const defaultCartState = {
+  items: [],
+  totalAmount: 0
+}
+
+const cartReducer = (state, action) => {
+  return defaultCartState;
+}
+
+const CartProvider = (props) => {
+
+  const addItemToCartHandler = (item) => {}
+  const removeItemFromCartHandler = (item) => {}
+
+  const cartContext = {
+    items: [],
+    totalAmount: 0,
+    addItem: addItemToCartHandler,
+    removeItem: removeItemFromCartHandler
+  }
+
+  return (
+    <CartContext.Provider value={cartContext}>
+      {props.children}
+    </CartContext.Provider>
+  )
+}
+
+export default CartProvider
+
+```
+
+Now in our `<CartProvider>` component function we can call `useReducer` 
+Again for the first argument we will call the function we just wrote
+Then the second argument will be the initial state which will again be the `defaultCartState` we defined above
+We don't have to use the third argument, that is an init function which can be ran on the initial state value we provide if we want to set it more programmatically
+Lastly `useReducer` returns an array with two elements which we can assign to constants with array destructuring
+The first item in the array is the state itself which we will call `cartState`
+The second is a function we can use to call our `cartReducer` by passing in an action 
+We will name this second item dispatchCartAction
+```
+const [cartState, dispatchCartAction] = useReducer(cartReducer, defaultCartState)
+```
+Now inside of our `cartContext`  we can use our state values to keep the contex up to date
+Instead of returning an empty array we can return `cartState.items` 
+and instead of a hardcoded total amount we can return `cartState.totalAmount`
+Since both of these values are defined in `defaultCartState` which is used to initialize `cartState`
+```
+const cartContext = {
+  items: cartState.items,
+  totalAmount: cartState.totalAmount,
+  addItem: addItemToCartHandler,
+  removeItem: removeItemFromCartHandler
+}
+```
+
+Now we can start dispatching actions
+The first we will do is adding items to the cart
+To do this we call `dispatchCartAction` (which is returned by `useReducer`)
+When we do this we can pass in an 'action'
+This will be an object with key `type` and a value of a text
+We can name this whatever we want 
+Then we will create an if statement in our `cartReducer` function that will match this text with the action we want to perform
+For now we will name this action 'ADD' in all caps as that is convention
+We will also need to forward the item itself that we plan on adding within this object so our `cartReducer` has access to it
+```
+const addItemToCartHandler = (item) => {
+  dispatchCartAction({type: 'ADD', item: item});
+}
+```
+
+Now within `cartReducer` we will write the logic for adding a cart item
+First we need an if check to check for the action type text that we passed in
+This will allow us to pass in different actions with different names all within a single function
+```
+const cartReducer = (state, action) => {
+  if(action.type === 'ADD'){
+    
+  }
+  return defaultCartState;
+}
+```
+
+For our logic we want to first check if the item exists within the items array and if so update that items amount
+We will also want to update the `totalAmount` to include the new price for all cart items
+
+First we will just add an item to the array
+To do this we can create a new array called `updatedItems`
+We will set this equal to our current `state.items` (which is accessed by the `state` variable as an argument available to `cartReducer`)
+Then we will call the `.concat()` function on `state.items`
+This is a default js function that adds a new item to an array but does not edit the existing array
+Instead it returns a new array 
+This is better because we don't want to update state by mutating it
+Instead we want to update state by replacing it entirely
+concat does this instead of editing an array
+We want to add `action.item` as the thing we want to concatenate to our old array
+We expect to have all the data we need on the item itself but we haven't taken care of this yet
+```
+if(action.type === 'ADD'){
+  const updatedItems = state.items.concat(action.item);
+}
+```
+We also want to increase the total amount for our updated items
+This will be the old total amount on the old state item plus the price that will be held on `action.item.price` (but doesn't exist yet) 
+We will also have to multiply the new price by the amount we are adding which will be on `action.item.amount` (which again we haven't defined)
+```
+const cartReducer = (state, action) => {
+  if(action.type === 'ADD'){
+    const updatedItems = state.items.concat(action.item);
+    const updatedTotal = state.totalAmount + (action.item.price * action.item.amount)
+  }
+  return defaultCartState;
+}
+```
+
+Now we can return our new state, we aren't checking if an item is already part of the array, we will fix that later once we have an array to work with
+For now we will just return an object with our updated items and total amount values which will update the state to this new object
+```
+const cartReducer = (state, action) => {
+  if(action.type === 'ADD'){
+    const updatedItems = state.items.concat(action.item);
+    const updatedTotal = state.totalAmount + (action.item.price * action.item.amount)
+    
+    return {
+      items: updatedItems,
+      totalAmount: updatedTotal
+    }
+  }
+  return defaultCartState;
+}
+```
+
+Now we have the basic reducer outline done, we just have to make sure that `addItemToCartHandler` gets called somewhere and that it receives a valid item object to do that with
