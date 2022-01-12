@@ -2978,3 +2978,261 @@ const cartReducer = (state, action) => {
 ```
 
 Now if we reload we can add a meal item and if we continue to add this item (or add multiple) there will still only be one listing but with an amount that is being used to calculate the cost
+
+
+
+
+___
+## 148. Making Items Removeable
+Now we want to put the final touches on our cart
+We want to make sure that we are able to add and remove items from there
+Currently we are only able to add items from the main screen
+
+We already ahve the logic for adding items so we can handle that
+Right now within `<Cart>` where we call `<CartItem>` we are passing in functions for `onAdd` and `onRemove` that are hooked to the '+' and '-' buttons on the item but the functions we have defined for them are empty
+
+So in our `cartItemAddHandler` we need to forward the item just like we do in meal item
+The only difference is we already have the item available and we want to specify that the amount for that item is 1 and isn't being held as a different value
+In `<MealItem>` we did this by accessing our `CartContext.addItem` function and passing in an item object
+We will do the exact same thing here
+```
+const cartItemAddHandler = (item) => {
+  cartCtx.addItem({...item, amount: 1})
+}
+```
+
+Now when we click the plus button is should activate our function and pass in an the appropriate item with the amount locked to 1 
+This will increment the number of that item in the cart by 1
+
+
+We already have the `cartItemRemoveHandler` again as an empty function just like `cartItemAddHandler` was but we cannot just call `cartCtx.removeItem` as we haven't written a reducer function to handle that action yet
+
+So in our `<CartProvider>` we will see where we call `removeItem` within `cartContext`
+```
+const cartContext = {
+  items: cartState.items,
+  totalAmount: cartState.totalAmount,
+  addItem: addItemToCartHandler,
+  removeItem: removeItemFromCartHandler
+}
+```
+
+We are calling `removeItemfromCartHandler` which we have already defined here in `<CartProvider>` but is again empty
+One note is that you might have this set to receive an item if you followed my notes but we actually only care about the id so we don't have to pass in the full item and sort the id out
+```
+const removeItemFromCartHandler = (id) => {}
+```
+
+Now within here we need to call our dispatch action, pass in the id that we will  use within the action so we can access it
+```
+const removeItemFromCartHandler = (id) => {
+  dispatchCartAction({type: 'REMOVE', id: id})
+}
+```
+
+Now we need to write a function in our reducer to handle this `'REMOVE'` action
+First thing to do is to add an `if` statement to check for this action
+```
+  if(action.type === 'REMOVE'){
+    
+  }
+```
+
+For our logic, we generally will want to reduce the `item.amount` value for the item with a matching id by 1 
+So if we had 2 sushi we want to decrease that to 1 sushi after clicking
+But if we had 1 sushi we would want to decrease that to 0 sushi and then remove sushi from the array
+We will have to check for the amount in our reducer to determine the appropriate action but first we will focus on finding the item in the cart
+To do this we will do something similar to what we did in the `'ADD'` action where we retrieved the index
+```
+if(action.type === 'REMOVE'){
+  const existingCartItemIndex = state.items.findIndex((item) => {
+    item.id === action.id
+  });
+  
+}
+```
+This will be slightly different that `'ADD'` because we are passing in the id and not the item so we are only checking `action.id` and not `action.item.id`
+Now that we have a way to find the index of the item we can target theitem itself within our array
+This is just like we did in `'ADD'`
+```
+if(action.type === 'REMOVE'){
+  const existingCartItemIndex = state.items.findIndex((item) => {
+    item.id === action.id
+  });
+  const existingItem = state.items[existingCartItemIndex];
+}
+```
+
+Now we can update the total appropriately by taking the total amount from state and subtracting the price of the item we just targetted
+```
+if(action.type === 'REMOVE'){
+  const existingCartItemIndex = state.items.findIndex((item) => {
+    item.id === action.id
+  });
+  const existingItem = state.items[existingCartItemIndex];
+  const updatedTotal = state.totalAmoung - existingItem.price;
+}
+```
+
+Now we can create our updated items variable and define our if statement for our two actions
+Remember if the amount of the item is 1 we want to remove it entirely otherwise we will decrease the value of the amount
+We can just check if the amount is 1 and if so set our remove and then use an else statement to decrease the amount in general
+```
+if(action.type === 'REMOVE'){
+  const existingCartItemIndex = state.items.findIndex((item) => {
+    item.id === action.id
+  });
+  const existingItem = state.items[existingCartItemIndex];
+  const updatedTotal = state.totalAmount - existingItem.price;
+
+  let updatedItems;
+  if(existingItem.amount === 1){
+    
+  } else {
+
+  }
+}
+```
+Now in this case if we do hit our if we want to remove the existing item from the array
+We can do this with `.filter()`
+Remember this is a built in method that returns a built in array that accepts a function as an argument
+This function will receive each item in the array and will keep the item if the condition on the item returns true and remove it if it returns false
+So if we want to keep all items except for the one that matches our id
+We use a not equal comparison for this since we want to return true if the id does not match  
+```
+if(action.type === 'REMOVE'){
+  const existingCartItemIndex = state.items.findIndex((item) => {
+    item.id === action.id
+  });
+  const existingItem = state.items[existingCartItemIndex];
+  const updatedTotal = state.totalAmount - existingItem.price;
+
+  let updatedItems;
+  if(existingItem.amount === 1){
+    updatedItems = state.items.filter((item) => {
+      item.id !== action.id
+    })
+  } else {
+
+  }
+}
+```
+
+Now all items will return true except for the item is to be removed
+
+Now we can work on our `else` statement for if the amount is greater than 1
+In this case we don't want to remove the item from the array we just want to updated the amount
+To do this we can create a copy of the existing item with an updated amount of -1 to the current amount'
+Then we will set `updatedItems` to be a copy of the current state items
+FFinally we can target the current item and replace it with the one we just created
+```
+if(action.type === 'REMOVE'){
+  const existingCartItemIndex = state.items.findIndex((item) => {
+    item.id === action.id
+  });
+  const existingItem = state.items[existingCartItemIndex];
+  const updatedTotal = state.totalAmount - existingItem.price;
+
+  let updatedItems;
+  if(existingItem.amount === 1){
+    updatedItems = state.items.filter((item) => {
+      item.id !== action.id
+    })
+  } else {
+    const updatedItem = {...existingItem, amount: existingItem.amount - 1};
+    updatedItems = [...state.items];
+    updatedItems[existingCartItemIndex] = updatedItem;
+  }
+}
+```
+
+Lastly we have to return the updated state which includes the `updatedItems` list
+```
+if(action.type === 'REMOVE'){
+  const existingCartItemIndex = state.items.findIndex((item) => {
+    item.id === action.id
+  });
+  const existingItem = state.items[existingCartItemIndex];
+  const updatedTotal = state.totalAmount - existingItem.price;
+
+  let updatedItems;
+  if(existingItem.amount === 1){
+    updatedItems = state.items.filter((item) => {
+      item.id !== action.id
+    })
+  } else {
+    const updatedItem = {...existingItem, amount: existingItem.amount - 1};
+    updatedItems = [...state.items];
+    updatedItems[existingCartItemIndex] = updatedItem;
+  }
+
+  return {
+    items: updatedItems,
+    totalAmount: updatedTotal
+  }
+}
+```
+
+Now the logic for removing from the cart is set we just need to connect it to our actions
+
+To do this within `<Cart>` we need to make sure we are accessing our context method `removeItem` and pass in the id of the item to remove
+```
+const cartItemRemoveHandler = (id) => {
+  cartCtx.removeItem(id);
+}
+```
+
+For reference this is what the completed reducer function should look like with both `'ADD'` and `'REMOVE'`
+```
+const cartReducer = (state, action) => {
+  if(action.type === 'ADD'){
+    const updatedTotal = state.totalAmount + (action.item.price * action.item.amount)
+    
+    const existingCartItemIndex = state.items.findIndex((item) => item.id === action.item.id);
+    const existingCartItem = state.items[existingCartItemIndex];
+
+    let updatedItems;
+    if(existingCartItem){
+      const updatedItem = {
+        ...existingCartItem,
+        amount: existingCartItem.amount + action.item.amount
+      }
+      
+      updatedItems = [...state.items]
+      updatedItems[existingCartItemIndex] = updatedItem
+    } else {
+      updatedItems = state.items.concat(action.item);
+    }
+
+    return {
+      items: updatedItems,
+      totalAmount: updatedTotal
+    }
+  }
+  
+  if(action.type === 'REMOVE'){
+    const existingCartItemIndex = state.items.findIndex((item) => item.id === action.id);
+    const existingItem = state.items[existingCartItemIndex];
+    const updatedTotal = state.totalAmount - existingItem.price;
+
+    let updatedItems;
+    if(existingItem.amount === 1){
+      updatedItems = state.items.filter((item) => item.id !== action.id)
+    } else {
+      
+      const updatedItem = {...existingItem, amount: existingItem.amount - 1};
+      updatedItems = [...state.items];
+      updatedItems[existingCartItemIndex] = updatedItem;
+    }
+
+    return {
+      items: updatedItems,
+      totalAmount: updatedTotal
+    }
+  }
+
+  return defaultCartState;
+}
+```
+
+Now we should be able to add and remove items from the cart
