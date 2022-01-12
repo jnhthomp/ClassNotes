@@ -656,7 +656,75 @@ We could actually save this with a `.html` ending and open it in our browser if 
 ## Let's Code Lab Time
 ## Homework
 Watch: https://youtu.be/ukLnPbIffxE
-Watch: https://youtu.be/Z-zNHHpXoMM
-Complete: https://www.coursera.org/learn/learning-how-to-learn
+Ali Abdaal How to Study for Exams (Evidence based revision tips)
 
+Many techniques practiced by students for studying are not the most ideal ways to study
+1. Rereading
+  - A lot of students like to do this as a study technique but it is not particularly effective and doesn't help much with retention
+
+2. Highlighting
+  - In most situations highlighting doesn't do very much to help performance and may even hurt when you need to make inferences
+3. Making Notes/Summarizing
+  - Some studies show that students that are able to summarize well can do better but it is hard to quantify what good notes are
+  - Many students would need quite a bit of training in order to summarize correctly
+  - Even if you are good at it it is not the most optimized way to study
+
+Instead the active recall technique is more efficient
+This involves retrieve facts from your brain
+Doing this strengthens connections in your brain to be able to recall it later
+We learn better by practicing retrieving this information then trying to put the information in
+
+There are ways to apply active recall to your studying
+Anything you do that requires you to retrieve the information you just learned will help
+1. Anki -  online flash cards that utilize active recall to help study
+2. Making notes with the book closed. First learn the topic then close the book and write whatever you can about it
+Then when done making notes open it back in and fill in whatever you missed
+3. Instead of taking notes from the lecture write questions about the lecture for you to answer
+
+___
+Watch: https://youtu.be/Z-zNHHpXoMM\
+Ali Abdaal How to Study for Exams Spaced Repetition
+
+Spaced repetition is exactly what it sounds like
+You space your repetition of subjects over a period of time
+This is in contrast to cramming which a lot of people practice
+Cramming can work well for very short term memory but we need to remember stuff for a long time
+This works because of the forgetting curve
+After a period of time you forget what it is you learned at an exponential rate
+If we interupt the forgetting curve it takes longer to forget it next time
+The more times you do this and the more spaced your repetition becomes the less likely you are to forget it
+The harder your brain has to work to retrieve information the more strongly that information gets encoded for later
+If you study today, then tomorrow, then three days later, then a week later, then a month later you will start to remember it better
+It works even within the same day if you MUST cram
+
+How to structure your study sessions
+```
+Before   | After
+Topic 1  | Topic 1
+Topic 2  | Topic 2 Before moving onto topic 3 ask recall questions from topic 1
+Topic 3  | Topic 3 Before moving onto topic 4 ask recall questions from topic 2
+Topic 4  | Topic 4 Before moving onto topic 5 ask recall questions from topic 3
+Topic 5  | Topic 5 Before moving onto topic  ask recall questions from topic 4
+         | Review all breifly
+```
+
+How to incorporate spaced repetition into your own study routine and life
+1. Anki flashcards use active recall and spaced repetition for you
+2. Practice a little every day (even just a few minutes) instead of a few times a week
+
+Ali's spaced repetition spreadsheet  system
+What you do is make a spreadsheet (google sheet)
+Then make a different sheet for each subject
+Within each subject use the A column to write every subject 
+Be certain to scope your subjects just doing this is super helpful to understanding
+Everytime you study a topic and actively recall things from that topic write the current date in the next column
+Then color code them based on how well you were able to recall the information in a given session
+Overtime you build up a list of your subjects, when you practiced active recall, and how well you remembered it
+One thing that works with this spreadsheet is to take a scattershot approach and cover as many topics as you can with active recall
+This is called interleaved practice
+Before you have mastery of something you switch to something else but this gives much bigger performance gains since you continually review it
+
+
+___
+Complete: https://www.coursera.org/learn/learning-how-to-learn
 DON'T PAY AND NO ESSAYS
