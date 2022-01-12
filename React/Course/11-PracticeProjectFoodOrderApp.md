@@ -3236,3 +3236,206 @@ const cartReducer = (state, action) => {
 ```
 
 Now we should be able to add and remove items from the cart
+
+
+
+
+___
+## 149. Using the useEffect Hook
+Now for the final touch in our app we will come back to the cart button in the header
+It is functional of course but we want to play an animation when an item is added or removed from the cart
+To do this the teacher provided an animation in the css file 'HeaderCartButton.module.css`
+You can see it there defined by the `.bump` class
+```
+.bump {
+  animation: bump 300ms ease-out;
+}
+
+@keyframes bump {
+  0% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(0.9);
+  }
+  30% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+```
+
+We need to apply this class to our button whenever an item is added or removed from the cart and then remove it after the animation is played
+The easiest way to do this is with `useEffect` within `<HeaderCartButton>`
+
+First we will create a variable to hold our classes inside using a template literal
+For now instead of toggling the class on and off we will simply hardcode the class in so we can see how it works
+After creating the template literal be sure to pass this in instead of just the singular `classes.button`
+```
+
+const btnClassses = `${classes.button} ${classes.bump}`
+
+return (
+  <button className={btnClassses} onClick={props.onClick}>
+    <span className={classes.icon}>
+      <CartIcon />
+    </span>
+    <span>Your Cart</span>
+    <span className={classes.badge}>{numberOfCartItems}</span>
+  </button>
+)
+```
+
+Now if you save and reload you will see the `.bump` animation when the page loads
+Instead of doing this on page load we want to apply this class whenever `cartCtx.items` changes
+We want this to play not only if the array is different but also if the value of the objects within the array are different (specifically when `cartCtx.items[x].amount` changes regardless of which item it is)
+
+Now that we have `btnClasses` which we want to make changes to we can call `useEffect` (don't forget to import)
+Remember when we call `useEffect` we will be passing in an effect function as well as an array of dependencies
+We can also add a cleanup function as the return of our first function but we don't need that right now
+```
+useEffect(() => {
+  
+}, [])
+```
+Within our function we want to change the value of `btn.classes` to include `.bump` 
+Then we want to run a timer and when the timer is complete remove the class
+In order to do this we will need to use state so that this component will re-render and be re-evaluated so `useEffect` can run
+
+This state will control whether the button should be animated and since we don't want it to be animating by default it should be set to false
+```
+const HeaderCartButton = (props) => {
+  const [btnIsHighlighted, setBtnIsHighlighted] = useState(false);
+...
+```
+
+Then within `useEffect` we will set our state to be true
+```
+useEffect(() => {
+  setBtnIsHighlighted(true);
+}, [])
+```
+Now instead of always including `classes.bump` within `btnClasses` we will only do so if `btnIsHighlighted` is true
+```
+const btnClassses = `${classes.button} ${btnIsHighlighted ? classes.bump: ''}`
+```
+Now the entire component will re-execute and `btnClasses` will update with the correct values whenever `btnIsHighlighted` changes values
+
+However we don't want to always change this state
+We only want to do it if the items change and the lenght is greater than 0
+So we can use an if statement within `useEffect` to cancel the animation if that is the case
+```
+useEffect(() => {
+  if (cartCtx.items.length === 0) {
+    return;
+  }
+  setBtnIsHighlighted(true);
+}, [])
+```
+
+Now our `useEffect` will not activate if we don't have items in the cart
+
+Next is to add our dependencies so that `useEffect` only runs when specific values change
+If we pass in `cartCtx` as a whole then our component will be re-evaluated everytime `cartCtx` as a whole is changed which is not what we want
+Instead we will use object destructuring to pull out the items from our cart and refer to that instead
+This will also let us refer to this in `numberOfCartItems` instead of `cartCtx.items` as well
+
+```
+import React, { useState, useContext, useEffect } from 'react';
+import CartContext from '../../store/cart-context.js';
+import classes from './HeaderCartButton.module.css';
+import CartIcon from '../Cart/CartIcon.js';
+
+const HeaderCartButton = (props) => {
+
+  const [btnIsHighlighted, setBtnIsHighlighted] = useState(false);
+
+  const cartCtx = useContext(CartContext);
+
+  const { items } = cartCtx;
+
+  const numberOfCartItems = items.reduce((curNumber, item) => {
+    return curNumber + item.amount;
+  }, 0);
+
+  const btnClassses = `${classes.button} ${btnIsHighlighted ? classes.bump: ''}`
+
+  useEffect(() => {
+    if (items.length === 0) {
+      return;
+    }
+    setBtnIsHighlighted(true);
+  }, [items])
+
+  return (
+    <button className={btnClassses} onClick={props.onClick}>
+      <span className={classes.icon}>
+        <CartIcon />
+      </span>
+      <span>Your Cart</span>
+      <span className={classes.badge}>{numberOfCartItems}</span>
+    </button>
+  )
+}
+
+export default HeaderCartButton
+```
+
+Now if we save and reload the cart button won't bump on reload but will bump when you add something
+But it will only do it the first time
+This is because we are never removing the bump class becasuse we never set our state to false
+If we set a timer within `useEffect` we can make it revert the value of state after a given amount of time which will cause the component to re-render and `btnClasses` will no longer have `classes.bump` applied
+Since the duration of the animation is 300ms then that will be how long we will set the timer for
+```
+useEffect(() => {
+  if (items.length === 0) {
+    return;
+  }
+  setBtnIsHighlighted(true);
+
+  setTimeout(() => {
+    setBtnIsHighlighted(false);
+  }, 300);
+
+}, [items])
+```
+
+Lastly we want to apply a cleanup function to remove the timer 
+Remember a cleanup function is defined by returning a function within the function we are passing into `useEffect`
+```
+useEffect(() => {
+  effect
+  return () => {
+    cleanup
+  }
+}, [input])
+```
+We need this cleanup function to remove the timer in case the animation is played multiple times quickly
+This will ensure that all the timers are cleared properly and `useEffect` doesn't continue playing queued animations well after 300ms are up
+
+To do this for our timeer we simply need to give it a name by setting it equal to a const variable
+Then in our return statement for that function we will pass another function which contains `clearTimeout` and pass the timer we just named into it
+```
+useEffect(() => {
+  if (items.length === 0) {
+    return;
+  }
+  setBtnIsHighlighted(true);
+
+  const timer = setTimeout(() => {
+    setBtnIsHighlighted(false);
+  }, 300);
+
+  return () => {
+    clearTimeout(timer);
+  }
+
+}, [items])
+```
+
+Now our button animation should work correctly and the application is complete
