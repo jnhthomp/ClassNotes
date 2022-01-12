@@ -2867,3 +2867,114 @@ Now our cart should look pretty solid when adding items to it but just as a quic
 ```
 
 Now our cart looks fairly good although the add button and subtract button don't work and the same meals are added multiple times instead of aggregating and increasing `item.amount`
+
+
+
+
+___
+## 147. Working on a More Complex Reducer Logic
+We want to udpate our reducer to no longer add new items to our cart items array when adding new items
+Instead we want to check if the item exists already and if so update an 'amount' property and use that to calculate/display the cart
+
+However we don't want to change how we calculate the `totalAmount`/`updatedTotal`
+So we will move that to the top of the function so it is out of the way and begin working below
+To determine if our items are in the cart already we will create variable called `existingCartItemIndex` which we will use to determine if/where the item is already in the cart (found in `state.items`)
+We will call `.findIndex()` on our `state.items` 
+This is a built in js function that accepts an anonymous function and returns whether the item we want is in the given array
+To use this we use:
+```
+const existingCartItemIndex = state.items.findIndex((item) => {item.id === action.item.id})
+```
+What this does is is goes through `state.items` and will see if the item of the current id matches the id of the item we are passing through the action in this dispatch function
+If it does that INDEX (location in the array) will be returned to `existingCartItemIndex`
+
+Now that we have the index of that item we can get the existing cart item by pulling it directly from our `state.items` and passing in the index we just received
+```
+const existingCartItem = state.items[existingCartItemIndex];
+```
+This will only work if we have that item
+Otherwise `existingCartItemIndex` would be null
+If it is in the array we now have `existingCartItem` holding the item from the state array
+Now we can initiate an `updatedItem` variable as well as `updatedItems` with `let`
+```
+let updatedItem;
+let updatedItems;
+```
+Note that this crashes with a variable name we already have but we will fix this shortly
+
+Now we will use an if statement to check if `existingCartItem` exists 
+If so that means we were successful in finding an matching item and retrieving it from the state array
+```
+if(existingCartItem){
+
+}
+```
+Inside of this if statemnent we will want to use `updatedCartItem` and copy the existing values with the spread operator
+Then we will also update the amount by increasing it by the `action.item.amount` value
+```
+let updatedItem;
+let updatedItems;
+if(existingCartItem){
+  updatedItem = {
+    ...existingCartItem,
+    amount: existingCartItem.amoung + action.item.amount
+  }
+}
+```
+Now inside of this if statement we stil have to update the array as a whole by using the `updatedItems` var we initiated
+We will use this to copy the current `state.items` array
+Then we will use the `existingCartItemIndex` we found earlier to target one of the items in the array and set it equal to our new `updatedItem`
+```
+let updatedItem;
+let updatedItems;
+if(existingCartItem){
+  updatedItem = {
+    ...existingCartItem,
+    amount: existingCartItem.amoung + action.item.amount
+  }
+  
+  updatedItems = [...state.items]
+  updatedItems[existingCartItemIndex] = updatedItem
+}
+```
+We also have to deal with what happens if there is no `existingCartItem`
+In that case we just want to add the `action.item` to the end of our `updatedItems` array just like we did before
+We can also move `updatedItem` into the if block since we didn't need to access it outside of the if statement
+```
+} else {
+  updatedItems = state.items.concat(action.item);
+}
+```
+At this point our reducer `'ADD'` action should look like this
+```
+const cartReducer = (state, action) => {
+  if(action.type === 'ADD'){
+    const updatedTotal = state.totalAmount + (action.item.price * action.item.amount)
+    
+    const existingCartItemIndex = state.items.findIndex((item) => item.id === action.item.id);
+    console.log(existingCartItemIndex);
+    const existingCartItem = state.items[existingCartItemIndex];
+
+    let updatedItems;
+    if(existingCartItem){
+      const updatedItem = {
+        ...existingCartItem,
+        amount: existingCartItem.amount + action.item.amount
+      }
+      
+      updatedItems = [...state.items]
+      updatedItems[existingCartItemIndex] = updatedItem
+    } else {
+      updatedItems = state.items.concat(action.item);
+    }
+
+    return {
+      items: updatedItems,
+      totalAmount: updatedTotal
+    }
+  }
+  return defaultCartState;
+}
+```
+
+Now if we reload we can add a meal item and if we continue to add this item (or add multiple) there will still only be one listing but with an amount that is being used to calculate the cost
