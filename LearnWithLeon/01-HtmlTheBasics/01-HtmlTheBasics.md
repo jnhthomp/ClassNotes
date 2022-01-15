@@ -642,6 +642,10 @@ Then when all done it now looks like:
 
 We could actually save this with a `.html` ending and open it in our browser if we wanted!
 
+
+___
+<h3><center>We only made it this far in class</center></h3>
+
 ## Time For Some TAGS
 ## Heading Elements (tags)
 ## Other Text Elements
