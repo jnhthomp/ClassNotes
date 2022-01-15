@@ -160,3 +160,149 @@ How does this affect the real dom?
 If we reload and look at the inspect element you can see changes to the dom flash
 When we click the button only the new `<p>` tags flash and nothing else does
 That is because React is only updating that single element and not wasting resources on the rest of the page
+
+
+
+
+___
+## 154. A Closer Look At Child Component Re-Evaluation
+We saw how the `<p>` component was the only change made to the dom whenever we had a state change
+But what about child components?
+
+We can test this by making a simple demo component
+Create: src/components/Demo/DemoOutput.jsx
+
+Tip you can create a new folder/file from wsl terminal with `$mkdir src/components/Demo && touch src/components/Demo/DemoOutput.jsx`
+The within this file just add our standard react component function
+```
+import React from 'react'
+
+const DemoOutput = () => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default DemoOutput
+```
+
+Now we will take the paragraph from our `<App>` that we were showing and set that as the return value within `<DemoOutput>` 
+Also remove the conditional expression within `<App>`
+Instead of conditionally rendering this component we will change the html structure slightly and render the text within the paragraph conditionally by passing in a boolean prop that determines if the text should be shown or not
+```
+const DemoOutput = (props) => {
+  return (
+    <p>{props.show ? 'General Kenobi, you are a bold one!' : ''}</p>
+  )
+}
+```
+Now the `<p>` will always render but the text itself will not
+
+In `<App>` import and call this component being sure to pass in the `show` prop set equal to our state `showParagraph`
+```
+return (
+  <div className="app">
+    <h1>Hello there!</h1>
+    <DemoOutput show={showParagraph} />
+    <Button onClick={toggleParagraphHandler}>Click to return greeting</Button>
+  </div>
+);
+```
+
+Now if we look at our dom we can see that the paragraph tag is always there and is still the only thing changed whenever we toggle the text just like before
+
+This is interesting because we are changing state within `<App>` but no part  of `<App>` was rerendered even though we still see the `console.log` so we know it is being re-evaluated
+It was just the content inside of `<DemoOutput>` that was rerendered because that was the only change to the virtual dom
+
+If we add a console log to `<DemoOutput>` we will obviously see that message everytime we click the button since it is being re-evaluated as well (parent had a state change causing this)
+```
+const DemoOutput = (props) => {
+  console.log('DemoOutput RUNNING');
+  
+  return (
+    <p>{props.show ? 'General Kenobi, you are a bold one!' : ''}</p>
+  )
+}
+
+```
+
+Now for something a little different
+Instead of passing in the state value as our `show` prop to `<DemoOutput>` we will hadrcode false so it never shows the `<p>` content
+```
+return (
+  <div className="app">
+    <h1>Hello there!</h1>
+    <DemoOutput show={false} />
+    <Button onClick={toggleParagraphHandler}>Click to return greeting</Button>
+  </div>
+);
+```
+
+Now when we click the button we can still see both of our components being re-evaluated with console logs since `<App>` had a state change and `<DemoOuput>` is a child of `<App>` but the `<p>` tags no longer flash because the content is not changing
+Since there were no changes to the virtual dom React didn't tell the real dom to update anything
+
+This makes sense that `<DemoOutput>` would need re-rendered when the parent state changes because when a components state changes it is re-evaluated
+This also means that components return statement is re-evaluated
+Therefore any components inside of that return also need to be recalled because a component is itself a function that is being called within the return statement
+
+If we were to check we could also see that the button is being re-evaluated 
+```
+const Button = (props) => {
+  console.log('Button RUNNING');
+  
+  return (
+    <button
+      type={props.type || 'button'}
+      className={`${classes.button} ${props.className}`}
+      onClick={props.onClick}
+      disabled={props.disabled}
+    >
+      {props.children}
+    </button>
+  );
+};
+```
+
+You can see that when state in `<App>` changes `<DemoOuput>` and `<Button>` are both re-evaluated
+
+But if these had child components they would also be re-evaluated obviously
+
+To test this we can create a paragraph component to render inside of `<DemoOutput>`
+Create: src/components/Demo/MyParagraph.jsx;
+
+This can just output any children in a `<p>` tag and a console log so we know it is running just like `<DemoOutput>`
+```
+import React from 'react'
+
+const MyParagraph = (props) => {
+  console.log('MyParagraph RUNNING');
+
+  return (
+    <p>{props.children}</p>
+  )
+}
+
+export default MyParagraph
+
+```
+
+Then within `<DemoOutput>` we call this new component instead of standard `<p>` tags
+```
+const DemoOutput = (props) => {
+  console.log('DemoOutput RUNNING');
+
+  return (
+    <MyParagraph>{props.show ? 'General Kenobi, you are a bold one!' : ''}</MyParagraph>
+  )
+}
+```
+
+Now when we click the button we can see that when state in `<App>` changes it ALL children components are re-rendered even children of `<App>`'s children components
+
+This does bring a question
+Couldn't this be bad?
+That is a lot of ongoing function executions and virtual comparisons that are unnecessary
+In a large app this trickle down could cause a lot of unnecessary computation
+There needs to be a way to say 'This component will never change' so we can skip re-evaluation any time one of it's parent change state
