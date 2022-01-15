@@ -3454,3 +3454,5 @@ Usage instructions can be found on the page that link is leading to.
 Simply pick one of the snapshots in the /code folder - the subfolder names are chosen such that they are easy to match against lecture names in this course section.
 
 You also find section slides (if available) in that Github repository.
+
+<h3><center>---Section 11 Complete---</center></h3>
