@@ -468,3 +468,87 @@ const toggleParagraphHandler = useCallback(() => {
 ```
 
 Now whenever we click the button we can see that the `<Button>` is not re-evaluated even though it is being passed a function object as a prop with `React.memo()`
+
+
+
+
+___
+## 157. useCallback() and its Dependencies
+`useCallback` allows you to save a function to be reused
+You needed to use a weird dependency array and you might be wondering why you need this since your function always has the same logic across rerender cycles
+
+Remember that functions are closures which means they close over the values that are available in the environment
+See more on closure here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures
+
+For example say you have a second button that enables the toggling feature
+For this you will need a button call and state
+```
+function App() {
+  const [showParagraph, setshowParagraph] = useState(false);
+  const [allowToggle, setAllowToggle] = useState(false)
+
+  console.log('App Running')
+
+  const toggleParagraphHandler = useCallback(() => {
+    setshowParagraph((prevState) => {
+      return !prevState;
+    });
+  }, []);
+
+  return (
+    <div className="app">
+      <h1>Hello there!</h1>
+      <DemoOutput show={false} /> 
+      <Button onClick={toggleParagraphHandler}>Allow Toggle</Button>
+      <Button onClick={toggleParagraphHandler}>Click to return greeting</Button>
+    </div>
+  );
+}
+
+export default App;
+
+```
+Then we can start our function to allow the toggle
+```
+const allowToggleHandler = () => {
+  setAllowToggle(true)
+}
+```
+
+Now we can bind this function to the new button (go ahead and re-add `showParagraph` to `show` prop in `<DemoOutput>` too)
+```
+<DemoOutput show={showParagraph} /> 
+<Button onClick={allowToggleHandler}>Allow Toggle</Button>
+<Button onClick={toggleParagraphHandler}>Click to return greeting</Button>
+```
+
+Next we weill check the value of `allowToggle` within our `toggleParagraph` handler
+```
+  const toggleParagraphHandler = useCallback(() => {
+    if(allowToggle){
+      setshowParagraph((prevState) => {
+        return !prevState;
+      });
+    }
+  }, []);
+```
+
+Now you will see if the app reloads and you click `toggleParagraph` nothing happens as expected since `allowToggle` is set to false
+However if you click the `allowToggle` button then `toggleParagraph` STILL won't work
+That is because when `useCallback` is called the first time it locks in all the variables in the function that it is surrounding
+So when it is re-evaluated it keeps all the values of those variables and doesn't know that some of those values are allowed to change
+
+If we list `allowToggle` in the dependency array then `useCallback()` will take that into consideration when re-evaluating and update that value
+This will result in a re-evaluation of that component since the function object does have different values
+
+We can add that to the array easily
+```
+const toggleParagraphHandler = useCallback(() => {
+  if(allowToggle){
+    setshowParagraph((prevState) => {
+      return !prevState;
+    });
+  }
+}, [allowToggle]);
+```
+
