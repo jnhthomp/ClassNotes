@@ -306,3 +306,109 @@ Couldn't this be bad?
 That is a lot of ongoing function executions and virtual comparisons that are unnecessary
 In a large app this trickle down could cause a lot of unnecessary computation
 There needs to be a way to say 'This component will never change' so we can skip re-evaluation any time one of it's parent change state
+
+
+
+
+___
+## 155. Preventing Unnecessary Re-Evaluations With React.memo()
+How can we avoid these unnecessary re-evaluations
+Well React is built especially to handle these kinds of things so in many apps (especially simple ones) this does not matter
+However it will matter sometimes and there is a way to handle it so we will cover it here
+We have a way of telling react that it should only re-evaluate a component given a certain circumstance
+
+Those circumstances might be that the props to `<DemoOutput>` changed or something
+To do this we have to go to the component that we want to add this restriction to
+
+When we export our component we wrap it with `React.memo()`
+```
+import React from 'react'
+import MyParagraph from './MyParagraph';
+
+const DemoOutput = (props) => {
+  console.log('DemoOutput RUNNING');
+
+  return (
+    <MyParagraph>{props.show ? 'General Kenobi, you are a bold one!' : ''}</MyParagraph>
+  )
+}
+
+export default React.memo(DemoOutput);
+```
+This is available to functional components and does not work for class based components (not yet covered but will cover in section 13)
+
+What does `React.memo()` do it will look at the props this component gets and check the new value of all those props and compare them to the previous values of all of those props
+So in short react memo will compare
+```
+if({ ...DemoOutput.prevProps } !== { ...DemoOutput.newProps }){ re-evaluate}
+```
+
+If the parent component changed but the prop values for this component did not change then the component re-evaluation will be skipped
+
+If we save this and reload our application we can see the results
+Since `DemoOutput.props.show` is hardcoded to `false` the props never change and therefore the component is not re-evaluated even when its parent `<App>` has a state change
+Now when we click the button we only see a console log for `'App RUNNING'` and `'Button RUNNING'` and only a single console log for `'DemoOutput RUNNING'` when it was initially rendered and evaluated
+
+Notice that `<MyParagraph>` was also not re-evaluated since it's parent `<DemoOutput>` was not re-evaluated
+This is where you can run into trouble if you are not careful
+Maybe you don't want a child component to be re-evaluated on a state change but you DO want one of its children to be re-evaluated
+This can cause an issue if you aren't careful
+
+Why don't we use this on almost all components then?
+This does come at a performance cost itself
+Since react does have to store the previous and current props and then perform a comparison on them that does take computing resources
+Sometimes it will actually take less resources to simply re-evaluate the component than to make this comparison
+This is why this is much more beneficial in larger apps and components
+
+You are trading the performance cost of re-evaluating the component with the performance cost of performing this comparison and in many cases it is not worth it
+The more complex and more children your component has the more likely `React.memo()` is worth it
+
+For practice we will also add `React.memo()` to the `<Button>` component
+```
+import React from 'react';
+
+import classes from './Button.module.css';
+
+// Accepted props: type, className, onClick, disabled, children
+const Button = (props) => {
+  console.log('Button RUNNING');
+
+  return (
+    <button
+      type={props.type || 'button'}
+      className={`${classes.button} ${props.className}`}
+      onClick={props.onClick}
+      disabled={props.disabled}
+    >
+      {props.children}
+    </button>
+  );
+};
+
+export default React.memo(Button);
+
+```
+
+If you do this you will notice something weird
+Even though we didn't change props in the button when we click it, it is still being re-evaluated
+This is because we are passing a function into it and since `<App>` is a function every time it is called it must re-create the function being passed
+A new `toggleParagraphHandler` function is being created and referenced every time `<App>` is ran
+It may be a function that does the same thing but to js it is as good as an entirely new function
+
+Technically the same thing is happening when we hardcode false but the difference is that our value was a boolean which is a primitive value in js
+What `React.memo()` does is does a regular comparison (like mentioned above)
+```
+props.show === props.previous.show
+```
+For primitive values this works and is fine but is not true with arrays, objects, or functions
+For example in js if we were to do:
+```
+[1, 2, 3] === [1, 2, 3]
+=> false
+```
+
+To really understand this see this extra article/info: https://academind.com/tutorials/reference-vs-primitive-values
+
+Functions are just objects in js so a new function object is created and when compared to the old function object they will never be the same just like with the array above
+
+However there is a way to accomplish the goal of react memo when components receive functions
