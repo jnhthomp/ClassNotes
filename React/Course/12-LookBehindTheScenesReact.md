@@ -568,3 +568,29 @@ This will cause only changes to the component to be rerendered and nothing else
 To avoid unnecessary re-renders of the child component when you know none of the props inside will change you can use `React.memo()`
 However this will only work on props that are primitive data types
 Any props that are referential data types like objects, arrays, or funcions (which are just js objects) need to use `useCallback()` and list any dependencies in the function that may change between evaluations in order for components receiving these functions to be able to use `React.memo()`
+
+
+
+
+___
+## 159. A Closer Look At State & Components
+State is a crucial concept in react and ultimately everything comes down to state when it comes to re-evaluating and rerendering state
+Components and their interaction with state is the core aspect of react
+Both of these are managed by react (both components and state)
+
+One way this is managed is `useState` which is the most common form of managing state
+With `useState` you create  a new piece of state and it is automatically attached to a component
+This attachment is done behind the scenes in react
+When you call `useState` react creates a new state variable which react manages for us and ties it to the component for us
+
+What is interesting is even though a component that is calling `useState` sets an initialized value and gets re-evaluated the state values it sets are not reset
+The reason for this is that `useState` is coming from react which manages the state and its  connection to the component
+Because of this management the default value you pass into `useState` is only really cosidered once when the component is rendered for the very first time
+
+On the first render react will create the state and initialize it with the appropriate value
+Every re-evaluation thereafter however react is aware that state has already been created and initialized and received this default value so it will not change it unless it is supposed to
+The only time the state would be re-initialized is if the component was totally removed from the dom and then readded
+
+
+Now if our components are being re-evaluated and we are calling `useState` where we initialize state values why aren't these state values being reset every time the component is re-evaluated?
+
