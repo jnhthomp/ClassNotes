@@ -594,3 +594,47 @@ The only time the state would be re-initialized is if the component was totally 
 
 Now if our components are being re-evaluated and we are calling `useState` where we initialize state values why aren't these state values being reset every time the component is re-evaluated?
 
+
+
+
+___
+## 160. Understanding State Scheduling & Batching
+We know how react manages state but there is something that needs emphasized and that is how react manages state updates
+
+Imagine in our code we have a component where we use state with the `useState` hook and react manages that state
+Say the initial state for this component is 'DVD'
+Then imagine we update that state with something like `setNewProduct('Book')` and we set it to 'Book'
+DVD is not instantly replaced in this case as soon as `setNewProduct()` is complete
+Instead calling this schedules a state update with the data book
+This state change is scheduled and react is aware of it and plans on processing it but that doesn't mean it has happened yet
+In reality these scheduled state changes will be processed pretty much instantly so it might feel like it is done instantly
+However react does postpone that state change if it needs to like if there are many other performance intensive tasks that react judges as higher priority
+Something like reacting to user input may have a higher priority than changing text on the screen
+In these cases react might postpone these state changes
+However it will guarantee that the order of a given state change is in the order it was scheduled
+So if we were to call `setNewProduct('Carpet')` the state would still be 'book' before 'carpet' but it may not change to 'book' or 'carpet' immediately after running `setNewProduct` if React is busy
+Because of this scheduling there may be multiple outstanding scheduled state changes that have not happened yet
+Because of this it is recommended to use the function form of `setState` to access the previous state snapshot
+This will probably not matter but is theoretically possible to hit a bug like this so this is the safe way of ensuring we don't encounter this bug
+
+This is similar to the safeguards that `useEffect` puts into place by being a function and having dependencies it is ensured to rerun on the correct data
+
+State update scheduling is a mechanism you need to keep in mind so you can write your code accordingly so you don't accidentally use outdated data
+
+There is another thing to know about state
+Imagine we have a handler that calls two state update functions one after the other
+```
+const navigateHandler = (navPath) => {
+  setCurrentNavPath(navPath);
+  setDrawerIsOpen(false);
+}
+```
+
+Remember that we just learned that just because we called `setCurrentNavPath()` was called it doesn't mean it will happen causing the component to rerun immediately 
+Instead react schedules a state change and goes to the next line were it sees it needs to schedule another state change
+But does this mean that the component will be re-executed and re-evaluated twice?
+Well no, react knows if you have two state updates that immediately follow each other within the same function react will just apply both state updates within the same component re-evaluation
+This is called a 'Batch'
+So `setCurrentNavPath` and `setDrawerIsOpen` are batched together into 1 state update
+
+State batching is an important concept to be aware of
