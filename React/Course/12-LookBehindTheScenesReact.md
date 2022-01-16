@@ -412,3 +412,59 @@ To really understand this see this extra article/info: https://academind.com/tut
 Functions are just objects in js so a new function object is created and when compared to the old function object they will never be the same just like with the array above
 
 However there is a way to accomplish the goal of react memo when components receive functions
+
+
+
+
+___
+## 156. Preventing Function Re-Creation with useCallback()
+We can make react memo work for props that are objects (like functions and arrays) as well
+We do have to tweak how we create and store those objects
+We have to use a new hook called `useCallback`
+Import it like any other hook first
+```
+import React, { useCallback } from 'react';
+```
+`useContext()` allows us to store a function across component executions
+This allows react to save a function or object and prevent it from being recreated every execution of a component
+Then only 1 version of that function is stored in memory and `React.memo()` comparison will work
+Think of it like this
+Before with react memo we were doing a comparison between the function (which in js is an object) before and after it was recreated just like this: (empty for simplicity but same concept)
+```
+let obj1={}
+let obj2={}
+obj1 === obj2 //=>false
+```
+But if you use `useCallback` it will create the new function my referencing the old one each re-evaluation like this:
+```
+let obj1 = {}
+let obj2 = obj1
+obj1 === obj2 //=> true
+```
+Since they are referencing the same pointer in memory at the same function now we will be able to use `React.memo()` once we implement this
+
+Now how do we use `useCallback()`?
+We just have to wrap the function we want to save with it
+Since we are passing `toggleParagraphHandler` into our button which is breaking `React.memo()` we can wrap that function in `useCallback()` 
+The function that we want to persist across evaluations will be the first argument in `useCallback`
+```
+const toggleParagraphHandler = useCallback(() => {
+  setshowParagraph((prevState) => {
+    return !prevState;
+  });
+});
+```
+
+`useCallback` does still want a second argument just like `useEffect` does
+Also just like `useEffect` the second argument will be an array of dependencies
+Anything you use in the function coming from the surrounding component should be specified
+Because we are only using `setShowParagraph` and react guarantees that won't change we can use an empty array
+```
+const toggleParagraphHandler = useCallback(() => {
+  setshowParagraph((prevState) => {
+    return !prevState;
+  });
+}, []);
+```
+
+Now whenever we click the button we can see that the `<Button>` is not re-evaluated even though it is being passed a function object as a prop with `React.memo()`
