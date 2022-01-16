@@ -552,3 +552,19 @@ const toggleParagraphHandler = useCallback(() => {
 }, [allowToggle]);
 ```
 
+
+
+
+___
+## 158. A First Summary
+Just to make sure everything is clear before we move on
+In React apps you work with components (typically functional components)
+Their job is to return jsx code which tells react what the output of the component should be
+Within our react component we can work with state, props, or context to make changes to a component or its data
+Whenever you change state in a component that component is re-evaluated along with its children and children's children etc
+All of the code in the component is run again and a new output is given this output may be the same or different as before
+React will compare the output from before and after on something called a virtual dom and submit any differences between the old virtual dom and the new virtual dom to the real dom in the browser
+This will cause only changes to the component to be rerendered and nothing else
+To avoid unnecessary re-renders of the child component when you know none of the props inside will change you can use `React.memo()`
+However this will only work on props that are primitive data types
+Any props that are referential data types like objects, arrays, or funcions (which are just js objects) need to use `useCallback()` and list any dependencies in the function that may change between evaluations in order for components receiving these functions to be able to use `React.memo()`
