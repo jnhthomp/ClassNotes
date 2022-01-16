@@ -638,3 +638,191 @@ This is called a 'Batch'
 So `setCurrentNavPath` and `setDrawerIsOpen` are batched together into 1 state update
 
 State batching is an important concept to be aware of
+
+
+
+
+___
+## 161. Optimizing with useMemo()
+The teacher provides an alternate version of our mini app
+The app component looks like:
+```
+import React, { useState, useCallback } from 'react';
+
+import './App.css';
+import DemoList from './components/Demo/DemoList';
+import Button from './components/UI/Button/Button';
+
+function App() {
+  const [listTitle, setListTitle] = useState('My List');
+
+  const changeTitleHandler = useCallback(() => {
+    setListTitle('New Title');
+  }, []);
+
+  return (
+    <div className="app">
+      <DemoList title={listTitle} items={[5, 3, 1, 10, 9]} />
+      <Button onClick={changeTitleHandler}>Change List Title</Button>
+    </div>
+  );
+}
+
+export default App;
+```
+Then there is a new `<DemoList>` component see path in `<App>` import
+```
+import React from 'react';
+
+import classes from './DemoList.module.css';
+
+const DemoList = (props) => {
+
+  const sortedList = props.items.sort((a, b) => a - b);
+
+  return (
+    <div className={classes.list}>
+      <h2>{props.title}</h2>
+      <ul>
+        {sortedList.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default DemoList;
+
+```
+Along with `DemoList.module.css`
+```
+.list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.list li {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
+  border-radius: 15px;
+}
+
+```
+You can copy these from here: https://github.com/academind/react-complete-guide-code/tree/12-a-look-behind-the-scenes/code/07-finished/src/components/Demo
+
+We will dive into another hook that will help us with another optimization
+
+Within `<App>` in our `changeTitleHandler` we are using `useCallback` so that we can store this function and pass it to the button via props
+Since the button uses `React.memo` and we are storing the function via `useCallback` the button will never re-render because the props never change
+
+With our updated `<App>` and new `<DemoList>` we are rendering a list and the list is sorted
+
+However what is interesting is that the data that we are inputing is not sorted
+It is in a random order
+```
+<DemoList title={listTitle} items={[5, 3, 1, 10, 9]} />
+```
+
+So `<DemoList>` must be sorting this
+If we look in `<DemoList>` we can see this happening
+```
+const sortedList = props.items.sort((a, b) => a - b);
+```
+
+Sometimes in our code we might have logic like this sort code that is more performance intensive
+Maybe if the list was longer or we had a more intense task this could take quite some time
+It does need to execute but we don't wan tot run this sort everytime the component is re-evaluated like say the state in `<App>` changes because of a title change
+
+We just learned we should be able to use `React.memo` within this component by wrapping our export of `<DemoList>` 
+```
+export default React.memo(DemoList);
+```
+
+Now we can see when this component is run by adding a console.log
+```
+const DemoList = (props) => {
+  
+  const sortedList = props.items.sort((a, b) => a - b);
+  console.log('DemoList RUNNING');
+
+  return(
+  ...
+```
+If we click our button we can see that `<DemoList>` is re-evaluated and re-rendered and it does need to be because the title is changed which it receives from props
+
+In this case `React.memo` worked exactly as it is intended the props changed so it allowed the component to re-render
+Except even if the title didn't change it would still re-render because the `props.items` being passed in is an array
+As we learned reference values are never the same
+
+The point is that the component re-run was good, expected, and intended because the title was changed and that is the behavior we want
+However what don't need is for the sort function to be re-executed to create the sorted list because the array didn't change
+If this sort was more performance intensive this would be quite a bit extra unecessary work
+
+Luckily we can handle this
+We already know we have `useCallback` to store function objects so that they are only re-evaluated if a variable within them change
+We have something similar for other kinds of data called `useMemo`
+We can import this just like other hooks within our `<DemoList>` component
+```
+import React, { useMemo } from 'react';
+```
+
+This hook allows you to store any kind of data you want to store
+We can 'memo-ize' the result of our sorting by calling `useMemo`
+`useMemo` accepts a function  an argument and this anonymous function simply returns what we want to store
+In this case we want to return the sorted array
+```
+const sortedList = useMemo(() => {
+  return props.items.sort((a, b) => a - b);
+});
+```
+
+Just like `useCallback` `useMemo` also wants an array of dependencies so that whatever value is being stored can be updated when any value inside changes
+Whenever `props.items` change we will want to resort them so `props.items` will be the dependency
+To clean it up a little bit we can use destructuring to pull the items array out of props before this:
+```
+const { items } = props.items;
+
+const sortedList = useMemo(() => {
+  return items.sort((a, b) => a - b);
+}, [items]);
+```
+Now we can see when the items are sorted by adding a console log inside of our anonymous function before the return
+```
+const sortedList = useMemo(() => {
+  console.log('Items sorted');
+  return items.sort((a, b) => a - b);
+}, [items]);
+```
+
+However if we click the button it still also runs but `useMemo` should keep it from running again if `props.items` didn't change
+Except `props.items` did change 
+Remember `<DemoList>` was passed an array and everytime it is passed an array `props.items` will think it is different even if it holds the same values because it is pointing at a different instance
+
+We need to fix this within `<App>` by adding our `items` array to a `useMemo` as well before passing it in
+To do this we have to import `useMemo` within `<App>`
+```
+import React, { useState, useCallback, useMemo } from 'react';
+```
+
+Then we can call it where we assign props and execute an anonymous function that returns the current items array
+```
+<DemoList title={listTitle} items={useMemo(() => [5, 3, 1, 10, 9], [])} />
+```
+
+This can actually be cleaner by pulling it out and storing this in a variable
+```
+const listItems = useMemo(() => [5, 3, 1, 10, 9], []);
+
+return (
+  <div className="app">
+    <DemoList title={listTitle} items={listItems} />
+    <Button onClick={changeTitleHandler}>Change List Title</Button>
+  </div>
+);
+```
+
+Now when we click our button we can see that our items don't get resorted again
+We will `useMemo` will be used less likely than `useCallback` because memorizing functions needs to be done far more often
