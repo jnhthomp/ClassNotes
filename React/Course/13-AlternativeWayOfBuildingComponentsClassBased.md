@@ -211,3 +211,444 @@ It is more ideal to use one or the other (function or class based)
 However sometimes in older projects you will update class based components to become functional over time and slowly migrate to functional
 
 If you are starting a new project it is better to use one or the other, whichever you prefer
+
+
+
+
+___
+## 166. Working with State & Events
+Now we will convert the `<Users>` component to a class-based component
+We know the first thing to do is to import 'Component' then create our 'Users' class that extends 'Component'
+```
+import {Componet, useState} from 'react';
+...
+class Users extends Component {
+
+}
+```
+
+Then we can add our `render()`method which returns the jsx from the original functional component
+```
+class Users extends Component {
+  render(){
+    return (
+      <div className={classes.users}>
+        <button onClick={toggleUsersHandler}>
+          {showUsers ? 'Hide' : 'Show'} Users
+        </button>
+        {showUsers && usersList}
+      </div>
+    );
+  }
+}
+```
+
+We aren't using any props here, but we do rely on state and a function that should be executed when the button is clicked
+In class based components we don't add functions inside the render method
+Instead we group functionality by grouping it in the class
+We simply add a new method to the class
+```
+class Users extends Component {
+  toggleUsersHandler(){
+    
+  }
+
+  render(){
+    return (
+      <div className={classes.users}>
+        <button onClick={toggleUsersHandler}>
+          {showUsers ? 'Hide' : 'Show'} Users
+        </button>
+        {showUsers && usersList}
+      </div>
+    );
+  }
+}
+```
+
+Now we have the method but don't have the state
+This is much different with classes than in functional components
+In order to manage state we need to do two things
+1. Initialize and define state
+2. Update it when needed
+
+To define state in a class based component we use a `constructor()` this is a special function that is automatically called whenever the `<Users>` component is instantiated
+Inside of this constructor we initialize state by accessing `this.state` and setting it equal to an object
+Notice that we are setting it to an object even though it is just a boolean value
+WITH CLASS BASED COMPONENTS STATE IS ALWAYS AN OBJECT
+```
+constructor(){
+  this.state={
+    showUsers: true
+  }
+}
+```
+We have access to `this.state` for the same reason we have access to `this.props` because it is provided by the `Constructor` that our Users class extends
+Because of this our state MUST be named state although you can name the content inside of the object how you wish
+This also means we have to group ALL state values that will be used into this object
+This is different from a functional component where we could call `useState` however many times we wanted and have different state objects for each one
+Note that we can nest objects in here or arrays or whatever we want for the values but `this.state` must be set equal to an object
+
+We can drop this constructor in our `<Users>` component
+```
+class Users extends Component {
+
+  constructor(){
+    this.state={
+      showUsers: true
+    }
+  }
+
+  toggleUsersHandler(){
+    
+  }
+
+  render(){
+    return (
+      <div className={classes.users}>
+        <button onClick={toggleUsersHandler}>
+          {showUsers ? 'Hide' : 'Show'} Users
+        </button>
+        {showUsers && usersList}
+      </div>
+    );
+  }
+}
+``` 
+
+Now that we have a state object how can we edit it as our `toggleUsersHandler` does in the functional version?
+We can do this by accessing `this.setState()` which is also provided by the `Component` class
+`this.setState` always accepts an object and this object is used to update the old state object
+This is different than updating a state object in a functional component because before it would overwrite the entire object
+However with class based components and `this.state`/`this.setState` react will MERGE the changes into the object so you don't have recreate the entire object every time you update it
+So we can simply apply a change by setting the new value of only the state propery we want to change
+For example if we had the following state object
+```
+constructor(){
+  this.state={
+    showUsers: true,
+    more: 'test'
+  }
+}
+```
+If we were to update state
+```
+toggleUsersHandler(){
+  this.setState({showUsers: false});
+}
+```
+Then `this.state.more` would still be `'test'`
+
+However we don't want `showUsers` to always be false
+We want to toggle it from the previous value of `this.state.showUsers`
+If we rely on a previous state value we will use the functional form of `setState` just like we did with functional components
+We still have to return state updates as an object however and can't just return a single value
+```
+toggleUsersHandler(){
+  this.setState((curState) => {
+    return {showUsers: !curState.showUsers};
+  });
+}
+``` 
+Whatever we return in this setState call will be merged to the old state
+Now we need to call this in our render method to check the state value to determine whether the button should say 'Hide Users' or 'Show Users' as well as to render the `usersList` if `showUsers === true`
+```
+class Users extends Component {
+
+  constructor(){
+    this.state={
+      showUsers: true
+    }
+  }
+
+  toggleUsersHandler(){
+    this.setState((curState) => {
+      return {showUsers: !curState.showUsers};
+    });
+  }
+
+  render(){
+    return (
+      <div className={classes.users}>
+        <button onClick={toggleUsersHandler}>
+          {this.state.showUsers ? 'Hide' : 'Show'} Users
+        </button>
+        {this.state.showUsers && usersList}
+      </div>
+    );
+  }
+}
+```
+
+Now we need to get the usersList function 
+This is easy as we just need to drop in the same `usersList` constant we were using before into our `render()` method
+```
+render(){
+  
+  const usersList = (
+    <ul>
+      {DUMMY_USERS.map((user) => (
+        <User key={user.id} name={user.name} />
+      ))}
+    </ul>
+  );
+
+  return (
+    <div className={classes.users}>
+      <button onClick={toggleUsersHandler}>
+        {this.state.showUsers ? 'Hide' : 'Show'} Users
+      </button>
+      {this.state.showUsers && usersList}
+    </div>
+  );
+}
+```
+One last thing is still missing and that is that we are calling `toggleUsersHandler` which is not inside of our render method
+Since it is a method of the class we access it with the `this` keyword
+```
+class Users extends Component {
+
+  constructor(){
+    this.state={
+      showUsers: true
+    }
+  }
+
+  toggleUsersHandler(){
+    this.setState((curState) => {
+      return {showUsers: !curState.showUsers};
+    });
+  }
+
+  render(){
+
+    const usersList = (
+      <ul>
+        {DUMMY_USERS.map((user) => (
+          <User key={user.id} name={user.name} />
+        ))}
+      </ul>
+    );
+
+    return (
+      <div className={classes.users}>
+        <button onClick={this.toggleUsersHandler}>
+          {this.state.showUsers ? 'Hide' : 'Show'} Users
+        </button>
+        {this.state.showUsers && usersList}
+      </div>
+    );
+  }
+}
+```
+
+However this still doesn't work because of how the `this` keyword works
+`this` can be quite confusing so if you need to know more see the following
+More on the 'this' keyword: https://academind.com/tutorials/this-keyword-function-references
+
+If you understand the above then you know that the `this` keyword refers to the function that calls it
+So whenever `toggleUsersHandler()` is called BY THE BUTTON the `this` keyword refers to the button itself
+However we can tie the fact that before we call the button `this` does in fact refer to the component using `.bind()`
+Remember from the previous component that we can use `.bind()` on the end of a function so that way the values it is passed are fixed to the instance in which it was passed
+If we pass the `this` keyword into `toggleUsersHandler` then when we use `this` inside of the function it will refer to the context that it held with `.bind()` was called
+Since when `this` was passed into `toggleUsersHandler` it refered to the `Users` class it will continue to do so even though it would normally refer to the button
+
+`this` is really important and knowing how it works and what it references is complicated but important
+```
+class Users extends Component {
+
+  constructor(){
+    this.state={
+      showUsers: true
+    }
+  }
+
+  toggleUsersHandler(){
+    this.setState((curState) => {
+      return {showUsers: !curState.showUsers};
+    });
+  }
+
+  render(){
+
+    const usersList = (
+      <ul>
+        {DUMMY_USERS.map((user) => (
+          <User key={user.id} name={user.name} />
+        ))}
+      </ul>
+    );
+
+    return (
+      <div className={classes.users}>
+        <button onClick={this.toggleUsersHandler.bind(this)}>
+          {this.state.showUsers ? 'Hide' : 'Show'} Users
+        </button>
+        {this.state.showUsers && usersList}
+      </div>
+    );
+  }
+}
+```
+
+Now we can comment out our functional component, save, and take a look
+```
+import { Component, useState } from 'react';
+import User from './User';
+
+import classes from './Users.module.css';
+
+const DUMMY_USERS = [
+  { id: 'u1', name: 'Max' },
+  { id: 'u2', name: 'Manuel' },
+  { id: 'u3', name: 'Julie' },
+];
+
+class Users extends Component {
+
+  constructor(){
+    this.state={
+      showUsers: true
+    }
+  }
+
+  toggleUsersHandler(){
+    this.setState((curState) => {
+      return {showUsers: !curState.showUsers};
+    });
+  }
+
+  render(){
+
+    const usersList = (
+      <ul>
+        {DUMMY_USERS.map((user) => (
+          <User key={user.id} name={user.name} />
+        ))}
+      </ul>
+    );
+
+    return (
+      <div className={classes.users}>
+        <button onClick={this.toggleUsersHandler.bind(this)}>
+          {this.state.showUsers ? 'Hide' : 'Show'} Users
+        </button>
+        {this.state.showUsers && usersList}
+      </div>
+    );
+  }
+}
+
+// const Users = () => {
+//   const [showUsers, setShowUsers] = useState(true);
+
+//   const toggleUsersHandler = () => {
+//     setShowUsers((curState) => !curState);
+//   };
+
+//   const usersList = (
+//     <ul>
+//       {DUMMY_USERS.map((user) => (
+//         <User key={user.id} name={user.name} />
+//       ))}
+//     </ul>
+//   );
+
+//   return (
+//     <div className={classes.users}>
+//       <button onClick={toggleUsersHandler}>
+//         {showUsers ? 'Hide' : 'Show'} Users
+//       </button>
+//       {showUsers && usersList}
+//     </div>
+//   );
+// };
+
+export default Users;
+
+```
+You will see we get an error:
+```
+Uncaught ReferenceError: Must call super constructor in derived class before accessing 'this' or returning from derived constructor
+```
+This is because in js when a class extends another class (like `Users` does `Component`)
+We MUST call `super()` within the constructor if it uses one
+This makes sure the constructor for `Component` is also run and passed into this constructor so the class can be extended properly
+
+As a final touch you can remove `useState` import since class based components cannot use `useState`
+```
+import { Component } from 'react';
+import User from './User';
+
+import classes from './Users.module.css';
+
+const DUMMY_USERS = [
+  { id: 'u1', name: 'Max' },
+  { id: 'u2', name: 'Manuel' },
+  { id: 'u3', name: 'Julie' },
+];
+
+class Users extends Component {
+
+  constructor(){
+    super();
+    this.state={
+      showUsers: true
+    }
+  }
+
+  toggleUsersHandler(){
+    this.setState((curState) => {
+      return {showUsers: !curState.showUsers};
+    });
+  }
+
+  render(){
+
+    const usersList = (
+      <ul>
+        {DUMMY_USERS.map((user) => (
+          <User key={user.id} name={user.name} />
+        ))}
+      </ul>
+    );
+
+    return (
+      <div className={classes.users}>
+        <button onClick={this.toggleUsersHandler.bind(this)}>
+          {this.state.showUsers ? 'Hide' : 'Show'} Users
+        </button>
+        {this.state.showUsers && usersList}
+      </div>
+    );
+  }
+}
+
+// const Users = () => {
+//   const [showUsers, setShowUsers] = useState(true);
+
+//   const toggleUsersHandler = () => {
+//     setShowUsers((curState) => !curState);
+//   };
+
+//   const usersList = (
+//     <ul>
+//       {DUMMY_USERS.map((user) => (
+//         <User key={user.id} name={user.name} />
+//       ))}
+//     </ul>
+//   );
+
+//   return (
+//     <div className={classes.users}>
+//       <button onClick={toggleUsersHandler}>
+//         {showUsers ? 'Hide' : 'Show'} Users
+//       </button>
+//       {showUsers && usersList}
+//     </div>
+//   );
+// };
+
+export default Users;
+
+```
