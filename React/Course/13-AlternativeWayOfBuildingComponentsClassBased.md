@@ -16,3 +16,51 @@ This section will cover:
 - Error boundaries (require class based components but we will not build a lot of these)
 
 This section holds a lot of information about reacts past, how to build class, based components, why they exist, and how they work
+
+
+
+
+___
+## 164. What & Why
+Class based components are an alternative to functional components
+So far our components have looked like this:
+```
+function Product(props) {
+  return <h2>Hello there!</h2>
+}
+```
+Or if you used arrow function components:
+```
+const Product = (props) => {
+  return <h2>Hello there!</h2>
+}
+```
+These are equivalent and are both functional components because they are both ways of expressing a function
+
+Just as functional components are regular js functions that return jsx
+Class based components are regular js CLASSES that return jsx
+These are defined like this:
+```
+class Product extends Component {
+  render() {
+    return <h2>Hello there!</h2>
+  }
+}
+```
+
+Here we are defining a component by creating a class
+Classes are not a react feature they are a feature of js
+They provide a render method that provides the jsx we want to return
+
+Remember functional components are the default and modern way of building components but it is important to know about class based components
+There is really no reason to use class based components other than personal preference and error boundaries which are not common
+
+You can build anything that can be built with functional components with class based components, you just may need a slightly different approach
+
+But why do they exist?
+Class based components exist because they used to be required and used to be the only way to manage state and side effects
+In React 16.8 "React Hooks" were introduced which allowed state to be managed by functional components
+This brought features to functional componets that before could only be used in class based components
+
+An important notes is that class based components cannot use these hooks that were introduced to help functional components
+This is really important and why we generally have to take a different approach when using class based components
