@@ -1,0 +1,61 @@
+body{
+  background-color: skyblue;
+  padding: 10px;
+  height: 100%;
+}
+
+.borderDiv{
+  border: solid 7px lightgreen;
+  height: 95vh;
+  padding: 20px;
+}
+
+header{
+  color: white;
+  text-align: center;
+  margin-top: 5%;
+}
+
+.container ul {
+  list-style: none;
+  text-align: center;
+}
+
+ul li{
+  display: inline;
+}
+
+.non-active{
+  color: lightgreen;
+}
+
+.border-left{
+  border-left: 1px solid purple;
+  padding: 3px;
+}
+
+.active {
+  color: white;
+  text-decoration: none;
+}
+
+
+section>h2{
+  color: white;
+}
+
+section>p {
+  color: white;
+  text-align: justify;
+
+}
+section>img{
+  float: right;
+  height: auto;
+  max-width: 15%;
+
+}
+
+footer a{
+  text-decoration: none;
+}
