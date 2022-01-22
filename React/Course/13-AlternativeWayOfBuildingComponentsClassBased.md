@@ -652,3 +652,89 @@ class Users extends Component {
 export default Users;
 
 ```
+
+
+
+
+___
+## 167. The Component Lifecycle (Class-based Componets Only!)
+Now we know how to build class-based components and manage state but what about side effects?
+Remember we can't use react hooks in class-based components so we can't use `useEffect`
+
+Class-based components instead have a concept called the Component lifecycle
+There are methods we can use to tie events to different points in this lifecycle
+
+The first most important lifecycle you can add is the `componentDidMount()` method
+This is a built in method that react will call for you when the component is mounted (as the name suggests)
+Other lifecycle methods are `componentDidUpdate()` and `componentWillUnmount()`
+
+There are others but they are less important
+
+These three lifecycle methods are the most important and common
+- `componentDidMount()`: Called when a component is mounted 
+  This happens when it is evaluated and rendered to the dom
+  It is like using `useEffect` with an emtpy dependency array like this
+  `useEffect(...function, [])`
+  In this case every effect function is executed when the component is mounted
+- `componentDidUpdate`: Called when a component is updated
+  If there is a state change that causes the component to be re-evaluated and re-rendered then this method will activate
+  It is like using `useEffect` with dependencies
+  `useEffect(...function, [someValue])`
+- `componentWillUnmount`: Called right before the component is removed from the dom
+  This is like the cleanup function in `useEffect` which is called right before the component is called again and when it is to be removed from the dom
+  `useEffect(()=>{return()=>{...likethis}, []}) `
+
+Lets take a look at this in action
+To do this the project has been altered slightly
+Add the `<UserFinder>` component and `UserFinder.module.css` to the 'Components' folder in your project (available on github)
+- `<UserFinder>` component: https://github.com/academind/react-complete-guide-code/blob/13-class-based-cmp/extra-files/UserFinder.js
+- `UserFinder.module.css` style: https://github.com/academind/react-complete-guide-code/blob/13-class-based-cmp/extra-files/UserFinder.module.css
+
+Once you have added these go to the `<Users>` component and remove the `DUMMY_USERS` array
+Then where we refer to `DUMMY_USERS` instead refer to `this.props.users`
+Next in `<UserFinder>` where we call the `<Users>` component pass in `filteredUsers` (should be done already)
+Lastly within `<App>` instead of rendering `<Users>` we will render `<UserFinder>`
+
+There may be an error within `<UserFinder>` in that it does not have a `DUMMY_USERS` array as it should, copy/paste it from Users.js
+Also be sure to import the css module to `<UserFinder>` and wrap the input with a div and assign `className={classes.finder}`
+```
+import { Fragment, useState, useEffect } from 'react';
+import classes from './UserFinder.module.css';
+
+import Users from './Users';
+
+const DUMMY_USERS = [
+  { id: 'u1', name: 'Max' },
+  { id: 'u2', name: 'Manuel' },
+  { id: 'u3', name: 'Julie' },
+];
+
+
+const UserFinder = () => {
+  const [filteredUsers, setFilteredUsers] = useState(DUMMY_USERS);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    setFilteredUsers(
+      DUMMY_USERS.filter((user) => user.name.includes(searchTerm))
+    );
+  }, [searchTerm]);
+
+  const searchChangeHandler = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  return (
+    <Fragment>
+      <div class={classes.finder}><input type='search' onChange={searchChangeHandler} /></div>
+      <Users users={filteredUsers} />
+    </Fragment>
+  );
+};
+
+export default UserFinder;
+```
+
+Now there should be an input box above the list of users and if you type it should filter out users in the list that match that user
+
+In the next lesson we will convert this `<UserFinder>` functional component to a class-based component to explore how they manage side effects
