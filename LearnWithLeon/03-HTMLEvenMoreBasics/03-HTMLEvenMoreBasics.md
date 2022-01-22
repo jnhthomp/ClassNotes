@@ -854,3 +854,5 @@ For last weeks BBC homework we are only outlining the html and not worrying abou
 
 Read: https://learn.shayhowe.com
 Read: https://learnlayout.com
+Do: Techcrunch (HTML)
+Do: Khan-academy (HTML)
