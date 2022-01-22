@@ -64,3 +64,150 @@ This brought features to functional componets that before could only be used in 
 
 An important notes is that class based components cannot use these hooks that were introduced to help functional components
 This is really important and why we generally have to take a different approach when using class based components
+
+
+
+
+___
+## 165. Adding a First Class-based Component
+To help understand class based components there is a starting project here: https://github.com/academind/react-complete-guide-code/tree/13-class-based-cmp/code/01-starting-project
+Copy, npm install, and git init this to your project folder
+
+Then use `$npm start` to see the app
+This is simply an app that has a list of users that shows/hides the list when a button is clicked
+
+This only uses three components a `<Users>`, `<User>`, and `<App>` components
+
+`<Users>` has some dummy data and a state to determine whether the users list should show
+If it should show it takes the dummy data and maps each user to a `<User>` component
+
+See `<Users>`
+```
+import { useState } from 'react';
+import User from './User';
+
+import classes from './Users.module.css';
+
+const DUMMY_USERS = [
+  { id: 'u1', name: 'Max' },
+  { id: 'u2', name: 'Manuel' },
+  { id: 'u3', name: 'Julie' },
+];
+
+const Users = () => {
+  const [showUsers, setShowUsers] = useState(true);
+
+  const toggleUsersHandler = () => {
+    setShowUsers((curState) => !curState);
+  };
+
+  const usersList = (
+    <ul>
+      {DUMMY_USERS.map((user) => (
+        <User key={user.id} name={user.name} />
+      ))}
+    </ul>
+  );
+
+  return (
+    <div className={classes.users}>
+      <button onClick={toggleUsersHandler}>
+        {showUsers ? 'Hide' : 'Show'} Users
+      </button>
+      {showUsers && usersList}
+    </div>
+  );
+};
+
+export default Users;
+
+```
+
+The `<User>` component simply outputs the data passed in when mapping each user via props
+
+Nothing fancy going on here
+
+To get started learning about classes lets convert the `<User>` component to a class based component since it is simply and simply receives props and doesn't manage any state
+
+To do this we start with the class keyword and use the template from the previous lesson
+Remember this is just like you would use a class in js because this is a js feature, not a react feature
+
+So start with the 'class' keyword, then the name of your class followed by curly braces
+```
+class User {
+
+}
+```
+
+Now we can start adding methods to this class
+We can theoretically add as many methods as we want and we can name them how we want
+The first we will want to add though is a very specific method called `render()` which will be used to output the content of this component
+
+`render()` is expected by react and will call it from the component to determine what should be rendered to the screen
+`render()` is basically equivalent to the `return` statement used in functional components
+Within  `render()` we will want to return the result we are looking for
+```
+class User{ 
+  render(){
+    return <li className={classes.user}>{props.name}</li>;
+  }
+}
+```
+There is something missing though and that is props
+For functional components we receive these automatically we just have to let the component know we are expecting them by passing them in as an argument to the function
+It is a little different for class based componets
+
+Instead we need to do something else, not just for props but to make the component work in general
+We need to import 'Component' from react (just like we did with hooks)
+```
+import { Component } from 'react';
+```
+
+Then we need to EXTEND our user class to this components class
+This is a built in js concept to allow classes to inherit from other classes
+```
+class User extends Component{ 
+  render(){
+    return <li className={classes.user}>{props.name}</li>;
+  }
+}
+```
+
+This `Component` class we imported provides functionality to make our class work as a component and gives us access to a few important properties
+One of these is the 'props' property
+We can access this with `this.props`
+This only works because we extended the component class
+This adds the prop property which can only be accessed via the `this` keyword
+```
+return <li className={classes.user}>{this.props.name}</li>;
+```
+
+Now we have a class based equivelant to the functional component which can be removed or commented out
+```
+import { Component } from 'react';
+import classes from './User.module.css';
+
+class User extends Component{ 
+  render(){
+    return <li className={classes.user}>{this.props.name}</li>;
+  }
+}
+
+// const User = (props) => {
+//   return <li className={classes.user}>{props.name}</li>;
+// };
+
+export default User;
+```
+
+Looking at these you can see that the functional component is a little leaner which is one reason they are more popular
+We still have to export 'User'
+If we save it will act just like before
+
+Notice that `<Users>` is still a functional component calling a class based component 
+This is completely ok in react as class based and functional components can work together and for the most part interchangebly
+
+It is more ideal to use one or the other (function or class based)
+However sometimes in older projects you will update class based components to become functional over time and slowly migrate to functional
+
+If you are starting a new project it is better to use one or the other, whichever you prefer
