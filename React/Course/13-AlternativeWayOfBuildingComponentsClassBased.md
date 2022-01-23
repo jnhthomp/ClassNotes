@@ -738,3 +738,244 @@ export default UserFinder;
 Now there should be an input box above the list of users and if you type it should filter out users in the list that match that user
 
 In the next lesson we will convert this `<UserFinder>` functional component to a class-based component to explore how they manage side effects
+
+
+
+
+___
+## 168. Lifecycle Methods In Action
+Now our project should be ready to start working with the previously mentioned lifecycle methods
+
+We will start converting the `<UserFinder>` functional component to a class based component
+Remember we need to import `Component` and create our `UserFinder` class
+```
+import { Fragment, useState, useEffect, Component } from 'react';
+import classes from './UserFinder.module.css';
+
+import Users from './Users';
+
+const DUMMY_USERS = [
+  { id: 'u1', name: 'Max' },
+  { id: 'u2', name: 'Manuel' },
+  { id: 'u3', name: 'Julie' },
+];
+
+class UserFinder extends Component {
+  
+}
+...
+```
+Then we will add the DUMMY users array to state like in the functional component
+Remember we need to do this within the `constructor()` function and we need to call `super()` inside that function
+Then we can create a state object to hold the `filteredUsers` and `searchTerm` values
+```
+class UserFinder extends Component {
+  constructor(){
+    super();
+    this.state = {
+      filteredUsers: DUMMY_USERS,
+      searchTerm: ''
+    }
+  }
+}
+```
+
+Now we have the `searchChangedHandler` to move over
+This will be a method that receives the event object and use it to read the value from the user and add it to the `searchTerm` state
+```
+searchChangeHandler(event){
+  this.setState({searchTerm: event.current.value});
+};
+```
+
+Then we can add our render method to handle the return statement
+Don't forget that in the `onChange` prop for the input we need to pass in `this.searchChangeHandler` and ALSO bind the `this` keyword to it
+Also `filteredUsers` should now reference `this.state.filteredUsers`
+```
+render(){
+  return (
+    <Fragment>
+      <div class={classes.finder}><input type='search' onChange={this.searchChangeHandler.bind(this)} /></div>
+      <Users users={this.state.filteredUsers} />
+    </Fragment>
+  );
+}
+```
+
+Now our component has almost been switched over but there is one part missing
+```
+import { Fragment, useState, useEffect, Component } from 'react';
+import classes from './UserFinder.module.css';
+
+import Users from './Users';
+
+const DUMMY_USERS = [
+  { id: 'u1', name: 'Max' },
+  { id: 'u2', name: 'Manuel' },
+  { id: 'u3', name: 'Julie' },
+];
+
+class UserFinder extends Component {
+  constructor(){
+    super();
+    this.state = {
+      filteredUsers: DUMMY_USERS,
+      searchTerm: ''
+    }
+  }
+
+  searchChangeHandler(event){
+    this.setState({searchTerm: event.current.value});
+  };
+
+  render(){
+    return (
+      <Fragment>
+        <div class={classes.finder}><input type='search' onChange={this.searchChangeHandler.bind(this)} /></div>
+        <Users users={this.state.filteredUsers} />
+      </Fragment>
+    );
+  }
+
+}
+```
+
+We still have to transfer the `useEffect` method that is used to updated the state value for `filteredUsers` whenever the state `searchTerm` is changed
+
+We can't use `useEffect` in a class based component
+We will use a lifecycle method to do this
+The one of interest to use is `componentDidUpdate()`
+This is perfect because `componentDidUpdate()` will run whever the component updates because of something like a state change
+This is perfect because everytime a user types a character the state is updated 
+We will use this to run a method whenever there is a change to `state.searchTerm`
+```
+componentDidUpdate(){
+
+}
+``` 
+
+Then inside of here we can update the state and pass in the same logic that was used to update state in the functional version
+Make sure to update the old functional state `searchTerm` in this logic to look at `this.state.searchTerm` instead
+```
+componentDidUpdate(){
+  this.setState({
+    filteredUsers: DUMMY_USERS.filter((user) => user.name.includes(searchTerm))
+  })
+}
+```
+
+Except this will cause an infinite loop
+This is because when the state is changed `componentDidUpdate` is called and inside of there we are changing the state
+This means `componentDidUpdate` will execute again and update the state etc.
+
+To fix this we can check whether only `state.searchTerm` was updated
+To do this `componentDidUpdate` is able to receive to arguments to help
+`prevProps` and `prevState`
+This is much like the how some of our hooks are able to access these values
+We can use an if statement to see if the value of `prevState.searchTerm` changed and if so we can continue with updating the state
+```
+componentDidUpdate(prevProps, prevState){
+  if (prevState.searchTerm !== this.state.searchTerm ){
+    this.setState({
+      filteredUsers: DUMMY_USERS.filter((user) => user.name.includes(this.state.searchTerm))
+    })
+  }
+}
+```
+
+At this point our class based component can handle the side effect of comparing the new state values and only do this when a certain value changes just like `useEffect` would do
+```
+import { Fragment, useState, useEffect, Component } from 'react';
+import classes from './UserFinder.module.css';
+
+import Users from './Users';
+
+const DUMMY_USERS = [
+  { id: 'u1', name: 'Max' },
+  { id: 'u2', name: 'Manuel' },
+  { id: 'u3', name: 'Julie' },
+];
+
+class UserFinder extends Component {
+  constructor(){
+    super();
+    this.state = {
+      filteredUsers: DUMMY_USERS,
+      searchTerm: ''
+    }
+  }
+
+  searchChangeHandler(event){
+    this.setState({searchTerm: event.current.value});
+  };
+
+  componentDidUpdate(prevProps, prevState){
+    if (prevState.searchTerm !== this.state.searchTerm ){
+      this.setState({
+        filteredUsers: DUMMY_USERS.filter((user) => user.name.includes(this.state.searchTerm))
+      })
+    }
+  }
+
+  render(){
+    return (
+      <Fragment>
+        <div class={classes.finder}><input type='search' onChange={this.searchChangeHandler.bind(this)} /></div>
+        <Users users={this.state.filteredUsers} />
+      </Fragment>
+    );
+  }
+
+}
+```
+
+Now we will explore a couple other lifecycle methods like `componentDidMount` and `componentWillUnmount`
+
+Let's say our dummy users were actually loaded from a server
+In that case `state.filteredUsers` would start as an empty array and then be filled once we received that data from the server
+We can't use `componentDidUpdate` because we wouldn't want to fetch the users over and over again
+Instead we want to fetch this list when the component is loaded for the first time
+We also wouldn't want to do this in the constructor because it could cause a delay in loading our component
+If the server holding the data was unreachable our component may never render properly which would be really bad
+
+If we use `componentDidMount` it will run once (when the component is mounted for the first time)
+Inside there we would be able to send an http request, receive the data, and add that data to our state
+```
+componentDidMount(){
+
+}
+```
+
+Be sure to set the initial state value for `state.filteredUsers` to an empty array
+```
+constructor(){
+  super();
+  this.state = {
+    filteredUsers: [],
+    searchTerm: ''
+  }
+}
+```
+
+Then within `componentDidMount` we can 'send an http request' (just a comment) and assign `DUMMY_USERS` to state to simulate receiving that data from a server
+```
+componentDidMount(){
+  // Send http request...
+  this.setState({filtredUsers: DUMMY_USERS});
+}
+```
+Remember `componentDidMount` will only run the very first time this component is mounted and will not run when it is updated like `componentDidUpdate`
+This is equivelant to `useEffect` with no dependencies
+
+Last is `componentWillUnmount` we can practice this one in our `<User>` component
+It actually is unmounted whenever the button is clicked to hide the users list so this is perfect
+
+So within `<User>` we can add `componentWillUnmount` and add a console log message
+```
+componentWillUnmount() {
+  console.log('<User> unmounted...')
+}
+```
+
+If you run this you will notice that there are 3 console log messages added everytime the hide button is clicked
+That is because we are actually calling the `<User>` component 3 seperate times within `<Users>` so each one of them is outputting a message when they unmount
