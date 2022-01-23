@@ -1085,3 +1085,148 @@ However you should use class based components if:
 - You personally prefer them
 - You are working on an existing project or in a team where they are being used
 - If you are building an "Error Boundary" (next lecture)
+
+
+
+
+___
+## 171. Introducing Error Boundaries
+Sometimes something may go wrong in your application other than bugs you introduce as a developer
+Sometimes there are errors that you cannot prevent or are being used to transport information that something went wrong from one part of the app to the other
+For example if you make an http request to a server that is down and it cannot complete there will probably be an error in your application
+There is nothing you can do about this as a dev but we can handle these errors
+
+As an example within `<Users>` the teacher added a new `componentDidUpdate` method
+This has an if statement that will check if the list of users it has received through props is empty or not
+If it is empty it will throw an error
+```
+componentDidUpdate(){
+  if (this.props.users.length === 0) {
+    throw new Error('No users provided');
+  }
+}
+
+toggleUsersHandler(){
+  ...
+```
+
+This `throw new Error('No users provided');` is a new js (to us) thing we can use to generate an error
+Doing this will bubble the error up through the callstack through the components
+
+We can test this in our application by adding the above method to `<Users>`
+Then if we start searching for a user that exists everything should work correctly
+However if we search for an invalid user we will get an error
+
+However this will crash our entire application which we don't want
+In regular js we can use `try/catch`
+This works by trying some code which might fail and then catching any errors
+```
+try {
+  someCodeWhichMightFail()
+} catch (err){
+  // handle error
+}
+```
+
+If an error is generated inside of a component and we cannot handle it within that component we cannot use `try/catch` (say we need to handle it in the parent component)
+We cannot use this because it only works if you want to handle that error here in the component it is called
+
+If we throw an error and want to handle it in the parent component we need to use an error boundary
+We will build this by adding a new component and naming it `ErrorBoundary`
+Inside of here we will create a regular class based component
+```
+import { Component } from 'react';
+
+class ErrorBoundary extends Component {
+  
+}
+
+export default ErrorBoundary
+```
+
+Now inside of this new component we can implement a new lifecycle method called `componentDidCatch()`
+This method can be added to any class based component and when you add it that component becomes an error boundary
+You cannot add it to functional components and there is currently no equivalent
+
+What is so special about this method?
+It will trigger when a child component throws an error
+When an error happens it bubbles up through parent components looking for something to handle it before it reaches the top of our stack (`<App>`)
+If we wrap a component that has an error with this error boundary component our `componentDidCatch` method will activate and perform the actions inside
+
+We also need to add a render method to this component which simply outputs children of this component
+```
+import { Component } from 'react';
+
+class ErrorBoundary extends Component {
+  componentDidCatch(){
+
+  }
+
+  render(){
+    return this.props.children;
+  }
+}
+
+export default ErrorBoundary;
+```
+This is special because we will wrap our component around components which should be protected by this error boundary
+For example within `<UserFinder>` we can wrap the `<ErrorBoundary>` around the `<Users>` component
+(dont forget to import)
+```
+render(){
+  return (
+    <Fragment>
+      <div className={classes.finder}><input type='search' onChange={this.searchChangeHandler.bind(this)} /></div>
+      <ErrorBoundary>
+        <Users users={this.state.filteredUsers} />
+      </ErrorBoundary>
+    </Fragment>
+  );
+}
+```
+
+We could wrap this around more than one component but we don't need to
+
+Now we want to do something when this error occurs
+`componentDidCatch` gets access to the `error` argument which is what is passed up through components that hit an error
+```
+componentDidCatch(error){
+  
+}
+```
+
+This allows us to perform different logic for different errors although you could create more error boudnaries to handle seperate errors
+
+To start handling our error we will create a state to determine whether an error has been hit
+We need to create a constructor to initiate state and of course use the `super()` method inside since we are extending another class
+```
+class ErrorBoundary extends Component {
+  constructor(){
+    super();
+    this.state = {hasError: false};
+  }
+  
+  ...
+```
+
+Now within `componentDidCatch()` we can change our state to now show that there is an error
+```
+componentDidCatch(error){
+  this.setState({hasError: true});
+}
+```
+
+Now within our render method we can see check our state value and if it is true we can render something other than the children like a short paragraph just saying something went wrong
+```
+render(){
+  if(this.state.hasError){
+    return <p>Something went wrong</p>
+  }
+  return this.props.children;
+}
+```
+Now our error boundary will simply normally output children but when an error is caught it will then output our message
+
+It looks ugly but we could add style if we wanted 
+You may see an error overlay but this is only for the development environment and can be dismissed
+It should not show in production
