@@ -784,7 +784,7 @@ Now we have the `searchChangedHandler` to move over
 This will be a method that receives the event object and use it to read the value from the user and add it to the `searchTerm` state
 ```
 searchChangeHandler(event){
-  this.setState({searchTerm: event.current.value});
+  this.setState({searchTerm: event.target.value});
 };
 ```
 
@@ -825,7 +825,7 @@ class UserFinder extends Component {
   }
 
   searchChangeHandler(event){
-    this.setState({searchTerm: event.current.value});
+    this.setState({searchTerm: event.target.value});
   };
 
   render(){
@@ -906,7 +906,7 @@ class UserFinder extends Component {
   }
 
   searchChangeHandler(event){
-    this.setState({searchTerm: event.current.value});
+    this.setState({searchTerm: event.target.value});
   };
 
   componentDidUpdate(prevProps, prevState){
@@ -979,3 +979,78 @@ componentWillUnmount() {
 
 If you run this you will notice that there are 3 console log messages added everytime the hide button is clicked
 That is because we are actually calling the `<User>` component 3 seperate times within `<Users>` so each one of them is outputting a message when they unmount
+
+
+
+
+___
+## 169. Class-based Components & Context
+Context can still be created and provided we can pass values to that context
+To follow along get the updated `<App>` component and `users-context` provided on github
+`<App>`: https://github.com/academind/react-complete-guide-code/blob/13-class-based-cmp/extra-files/App.js
+`users-context`: https://github.com/academind/react-complete-guide-code/blob/13-class-based-cmp/extra-files/users-context.js
+
+Create a store folder to hold the `users-context` file and replace `<App>`
+
+We still use the provider as we learned it
+The only thing that changes is how we use it within the component that needs it
+
+We need to go into the `<UserFinder>` component in there we no longer want to receive `DUMMY_USERS` from within, instead we want to get that from context
+In a functional component we have to call `useContext` but class based components don't have access to hooks
+
+One approach is called the `context.consumer` which we briefly covered already
+We can import UsersContext from the context file we created
+```
+import UsersContext from '../store/users-context.js';
+```
+Then in our `render()` method we can acess the `<UsersContext.Consumer>` tag
+```
+render(){
+  return (
+    <Fragment>
+      <UsersContext.Consumer></UsersContext.Consumer>
+      <div className={classes.finder}><input type='search' onChange={this.searchChangeHandler.bind(this)} /></div>
+      <Users users={this.state.filteredUsers} />
+    </Fragment>
+  );
+}
+```
+
+This is used in jsx only which allows us to use it in class based or functional components but we want access it outside of our jsx
+Remove the consumer and we will prepare our context for use OUTSIDE of our jsx
+
+There is no perfect replacement because in a functional component you can call `useContext` multiple times and access different contexts with different constants
+
+This is not possible in class based components
+In class based components you can only connect to a single context
+To do this we must use the `static` keyword with the property `contextType` and assign it the value of `UsersContext` which we imported
+```
+class UserFinder extends Component {
+
+  static contextType = UsersContext;
+  ...
+```
+However the static keyword can only be used once to add a `contextType`
+One workaround includes adding the other context inside of another component that we call within `UserFinder`
+
+However, now that we have access to the context we need we can access it within `componentDidMount` to set our state value
+```
+componentDidMount(){
+  // Send http request...
+  this.setState({filteredUsers: this.context.users});
+}
+```
+We also need to use this context instead of the `DUMMY_USERS` in `componentDidUpdate`
+```
+  componentDidUpdate(prevProps, prevState){
+    if (prevState.searchTerm !== this.state.searchTerm ){
+      this.setState({
+        filteredUsers: this.context.users.filter((user) => user.name.includes(this.state.searchTerm))
+      })
+    }
+  }
+```
+
+Note that we accessed these values with `this.context.users` this is because within `users-context.js` we have our data saved under the `users` key within our context object
+
+Now our application should work as it did before except it is now using context instead of having the `DUMMY_VALUES` directly inside of the component
