@@ -1054,3 +1054,34 @@ We also need to use this context instead of the `DUMMY_USERS` in `componentDidUp
 Note that we accessed these values with `this.context.users` this is because within `users-context.js` we have our data saved under the `users` key within our context object
 
 Now our application should work as it did before except it is now using context instead of having the `DUMMY_VALUES` directly inside of the component
+
+
+
+
+___
+## 170. Class-based Vs Function Components: A Summary
+Now we know how class-based components work compared to functional components
+We covered:
+- How they work
+- How to write your own class based components
+- How to work with props
+- The render method
+- How to work with state
+- How to work with lifecycle methods
+- How to use context
+
+You can build your entire application with class based components, it is completely valid and in the past was the only way to do it in many cases
+However in modern react apps you stick to functional components because they are leaner and more flexible
+That is why we now start the course with functional components since react has transitioned to focusing on them more
+Going forward after this section functional components will be the focus and we will only occasionally use class based components
+
+It is important to emphasis you don't HAVE to use functional components and it is fine to use class based components
+It is ok to generally ignore class based components except for error boundaries which will be covered next lesson
+
+If you are unsure whether to use a class-based or functional component
+
+As a general rule you should probably prefer functional components
+However you should use class based components if:
+- You personally prefer them
+- You are working on an existing project or in a team where they are being used
+- If you are building an "Error Boundary" (next lecture)
