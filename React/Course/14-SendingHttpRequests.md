@@ -46,3 +46,36 @@ In the next lecture, you will be introduced to our demo backend that will be use
 I will use this page: https://swapi.dev/
 
 Loading this page (and hence accessing this backend) might fail - if that is the case for you, you can use this alternative: https://swapi.py4e.com/
+
+
+
+
+___
+## 176. Our Starting App & Backend
+Max has prepared a dummy starter app for us to use that is fairly straightforward
+Currently it uses dummy data but we will prepare it to use real data with a real api
+You can find the starting code here: https://github.com/academind/react-complete-guide-code/tree/14-sending-http-requests/code/01-starting-project
+
+Currently this application doesn't do anything
+`<App>` simply has a non-functional button that says 'fetch movies' (no `onClick` handler attached)
+Then it outputs a `<MoviesList>` component which accepts an array of objects that each contain data about a movie
+`<MovieList>` accepts this array and maps each object to a call for a `<Movie>` component to output details about the movie
+
+Right now `<App>` is passing dummy data to `<MoviesList>`
+We want to change this and fetch data for movies
+We can get our feet wet with this by using swapi.dev as mentioned in the previous lecture
+
+It is important to know that this is an api, it is a backend but it itself is not a database
+API stands for Application Programming Interface
+It has clearly defined rules on how to achieve certain results and tasks
+There are two different standards for API's Rest, and GraphQL
+These are two different standards for how a backend should expose its data
+
+Swapi is a rest api which means there are urls that we can send a request to and receive data back in return
+Different urls will give us different data
+
+To learn more about API's see this article/video: https://academind.com/tutorials/rest-vs-graphql
+
+With swappi we can send a request like this: `swapi.dev/api/films`
+This will give us a list of films
+To understand what you can do with an API that you have not made yourself you need to read the documentation for it
