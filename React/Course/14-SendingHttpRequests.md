@@ -1345,3 +1345,18 @@ We learned that react can talk to a backend but not direclty to a database for s
 You can send requests to backend apis and use `fetch()` (or a third party library like axios) to perform requests and get responses
 We can analyze these responses and throw an error if needed or work with the data
 We learned about both GET and POST requests and how to handle different states involving these requests such as loading, don't have data, and now have data
+
+
+
+
+___
+## 185. Module Resources
+You may want to compare your code to mine (e.g. to find + fix errors).
+
+For that, you find multiple code snapshots for this module here in this Github repository: https://github.com/academind/react-complete-guide-code/tree/14-sending-http-requests
+
+Usage instructions can be found on the page that link is leading to.
+
+Simply pick one of the snapshots in the /code folder - the subfolder names are chosen such that they are easy to match against lecture names in this course section.
+
+You also find section slides (if available) in that Github repository.
