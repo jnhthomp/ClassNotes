@@ -1140,3 +1140,56 @@ export default App;
 ```
 
 Now our component will load the list when the page loads and we can reload it manually
+
+
+
+
+___
+## 182. Preparing the Project For The Next Steps
+In our application we are only getting data
+However usually in applications we will also want to send data
+
+To do this the teacher has provided an updated version of the project
+This comes with a new component that is a form that takes in the same data fields as we are receiving and outputting from the star wars api
+Along with a few new functions within `<App>` 
+
+Update your application to match this by using this snapshot:
+https://github.com/academind/react-complete-guide-code/tree/14-sending-http-requests/code/06-preparing-the-project-for-the-next-steps
+
+The star wars api we have been using is just  dummy api for getting data
+It will not accept data coming in because it does not want people submitting data to it
+
+https://firebase.google.com/pricing
+In order to set up an api to use that we can post to we will use a service called firebase
+This is a service provided by google that is a backend we can use
+It gives us a full backend app with an api that we can use to post to
+There is a free plan we can select which will give us the features that we need
+
+Now we can create a new project (I will name mine 'react-http' but it is up to you)
+You can also disable google analytics for this project as we won't need them
+
+We are not building a complicated app here we are just using this as a free to use no code backend
+
+Now in the console for our project we will use the 'Realtime Database' (found for me under 'Build' menu but may change)
+This has a rest api like what we have been using
+
+Inside of this menu we can click 'Create Database' and select 'Start in Test Mode' otherwise we won't be able to send requests
+
+This sets up a simple data base with a url we can use to talk to the database but this is deceiving since we said we cannot talk to a database from our front end
+This is a link to an api which will talk to the database for us
+
+We can use this to create new movies but we won't be able to fetch movies from there
+If we replace the swapi api link with this link and add '/movies.json' to the end it will create a new node on the database
+```
+ const response = await fetch('https://react-http-rest-of-url.firebaseio.com/movies.json');
+```
+
+This is a dynamic rest api which we can configure by using different segments by creating different nodes in our database
+This means we can create the database just by adding stuff to it and it will manage the content for us as long as we add it correctly
+'.json' is required and firebase specific because it needs the '.json' or our requests will fail
+We can get our data from here but if we use the url we won't get any data and will try to map empty results
+
+We are not getting an error response code from firebase because this is not an error on their end, there is just no data to output
+
+We will update our application to allow us to send movies to this url with post requests so they are saved to the database
+Then when we fetch from that same database the movies will display
