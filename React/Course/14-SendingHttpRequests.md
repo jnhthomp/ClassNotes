@@ -612,3 +612,348 @@ return (
 
 Now our page will initially say 'No movies found'
 Then when we click the button it will briefly say loading before displaying the list of movies
+
+
+
+
+___
+## 180. Handling Http Errors
+Sometimes http errors can go wrong for many different reasons
+Somtimes it is a network connection or getting an error code back from a server etc
+
+Here is a list of responses you can get back from a server/api
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+
+200 codes tend to mean you were able to contact the server successfully and you should be getting your data
+
+Somtimes you will get 400/500 codes which are errors telling you there is some kind of issue and different numbers mean different issues
+If you get these you were able to contact the server and they were able to respond but there was something preventing that request from being processed  
+This can be an authentication issue or some other where data cannot be returned
+
+We can simulate this in our application by adding a typo to our url
+Instead of using this:
+```
+const fetchMoviesHandler = async () => {
+
+  setIsLoading(true);
+
+  const response = await fetch('https://swapi.dev/api/films/')
+  ...
+```
+We will use this:
+```
+const fetchMoviesHandler = async () => {
+
+  setIsLoading(true);
+
+  const response = await fetch('https://swapi.dev/api/film/')
+  ...
+```
+This removes the s from the end of our url and swapi won't be able to recognize this request and should return an error
+
+If we do this we will be stuck in a loading state and we can see that within the console we received a '404' error 
+
+We should handle this or our app will always be in the loading state
+To do this we will create a third state to handle errors (simply called `error`)
+This will initially be null since we won't have an error at first since we haven't made any requests
+```
+const [error, setError] = useState(null);
+```
+
+Then within our `fetchMoviesHandler` after we set the loading state that is a good place to reset our error state to null 
+This way we ensure it is always set to null when making a new request and we don't forget to clean out old errors
+```
+const fetchMoviesHandler = async () => {
+
+  setIsLoading(true);
+  setError(null);
+  ...
+```
+Now we need a way to capture these errors and recognize them from our expected response
+
+If we were using the `.then` method that we had in one of the other lessons we would use something called `.catch()`
+However when working with `async`/`await` we use something called `try`/`catch`
+
+Will try some code and catch any potential errors in it
+We want to try everything from fetch to resetting loading state
+So we use the `try` keyword and put everything we want to try within
+```
+const fetchMoviesHandler = async () => {
+
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const response = await fetch('https://swapi.dev/api/film/')
+
+    const data = await response.json()
+
+    const transformedMovies = data.results.map((movieData) => {
+      return {
+        id: movieData.episode_id,
+        title: movieData.title,
+        releaseDate: movieData.release_date,
+        openingText: movieData.opening_crawl
+      }
+    })
+
+    setMovies(transformedMovies);
+    setIsLoading(false);
+  } 
+};
+```
+immediately after the try block we use the `catch` keyword which has access to the `error` argument
+This will be any errors returned by the code inside of our `try` block
+```
+const fetchMoviesHandler = async () => {
+
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const response = await fetch('https://swapi.dev/api/film/')
+
+    const data = await response.json()
+
+    const transformedMovies = data.results.map((movieData) => {
+      return {
+        id: movieData.episode_id,
+        title: movieData.title,
+        releaseDate: movieData.release_date,
+        openingText: movieData.opening_crawl
+      }
+    })
+
+    setMovies(transformedMovies);
+    setIsLoading(false);
+  } catch(error){
+    
+  }
+};
+```
+This is kind of similar to an `if`/`else` statement
+One issue is that the fetch api doesn't recognize status codes as error codes so this will not result in an error
+We would still get an error trying to perform .map on data that does not exist but that is not how we should be looking for errors
+Instead we want to look for these status codes as responses and trigger an error from that
+The fetch api does not do that by default but axios would but unfortunately we are not using axios so we have to do this on our own
+Remember that the response we get from the server is an object that has more than just the data we requested it also has a field called `status` and `ok`
+
+`status` will hold whatever status code is returned by the server (we don't want anything) other than 200
+`ok` is a boolean that will be true if there are no errors and false if there is an error
+
+Within our try block we can see if the response contains either a `status` that is not equal to 200 or an `ok` of false
+If this is the case we can throw a new error
+```
+const fetchMoviesHandler = async () => {
+
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const response = await fetch('https://swapi.dev/api/film/')
+    
+    if (response.status !== 200) {
+      throw new Error(`Something went wrong: Error ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    const transformedMovies = data.results.map((movieData) => {
+      return {
+        id: movieData.episode_id,
+        title: movieData.title,
+        releaseDate: movieData.release_date,
+        openingText: movieData.opening_crawl
+      }
+    })
+
+    setMovies(transformedMovies);
+    setIsLoading(false);
+  } catch(error){
+
+  }
+};
+```
+Now that we have generated an error if this error is created we will hit our `catch` block and it will receive this error
+In that case we want update our state with this error message
+This is attached to the error object itself
+We will also want to set our `isLoading` state to false since even though we received an error we are no longer loadig any content
+```
+const fetchMoviesHandler = async () => {
+
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const response = await fetch('https://swapi.dev/api/film/')
+
+    if (response.status !== 200) {
+      throw new Error(`Something went wrong: Error ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    const transformedMovies = data.results.map((movieData) => {
+      return {
+        id: movieData.episode_id,
+        title: movieData.title,
+        releaseDate: movieData.release_date,
+        openingText: movieData.opening_crawl
+      }
+    })
+
+    setMovies(transformedMovies);
+    setIsLoading(false);
+  } catch(error){
+    setError(error.message);
+    setIsLoading(false);
+  }
+};
+```
+Since we will be done loading regardless of an error or not we can actually set that state outside both of `try` AND `catch` so loading will be reset regardless of whether the fetch was successful or not
+```
+const fetchMoviesHandler = async () => {
+
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const response = await fetch('https://swapi.dev/api/film/')
+
+    if (response.status !== 200) {
+      throw new Error(`Something went wrong: Error ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    const transformedMovies = data.results.map((movieData) => {
+      return {
+        id: movieData.episode_id,
+        title: movieData.title,
+        releaseDate: movieData.release_date,
+        openingText: movieData.opening_crawl
+      }
+    })
+
+    setMovies(transformedMovies);
+  } catch(error){
+    setError(error.message);
+  }
+  setIsLoading(false);
+};
+```
+
+Now lets output this error message if we have an error
+We can use a conditional statement just like we have for our loading and movies list output
+We will check to make sure we are not loading and that there is an error
+If both these are true output a paragraph with the error message that is saved in state
+```
+return (
+  <React.Fragment>
+    <section>
+      <button onClick={fetchMoviesHandler}>Fetch Movies</button>
+    </section>
+    <section>
+      {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
+      {!isLoading && movies.length === 0 && <p>No movies found</p>}
+      {isLoading && <p>Loading...</p>}
+      {!isLoading && error && <p>{error}</p>}
+    </section>
+  </React.Fragment>
+);
+```
+
+How you handle errors exactly will depend on the api you are using
+Some apis will send json data even when unsuccessful but swapi does not
+
+As is this will also show 'No movies found' if we hit an error and we only want to display the error 
+To fix this we will need to make sure that state error is falsey (null) before outputting 'No movies found'
+```
+return (
+  <React.Fragment>
+    <section>
+      <button onClick={fetchMoviesHandler}>Fetch Movies</button>
+    </section>
+    <section>
+      {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
+      {!isLoading && movies.length === 0 && !error &&<p>No movies found</p>}
+      {isLoading && <p>Loading...</p>}
+      {!isLoading && error && <p>{error}</p>}
+    </section>
+  </React.Fragment>
+);
+```
+
+Now that we are able to handle errors we can fix our typo, save our project, and be sure that errors will be handled if they happen
+
+Let's clean up this section of conditionally outputting content by pulling these conditionals out of our jsx 
+Instead we will simply output a `content` variable that changes based on our state values
+Initially it will be 'No movies found' but then we will use if statements to evaluate whether it should be changed before displaying it in our jsx
+```
+import React, { useState } from 'react';
+
+import MoviesList from './components/MoviesList';
+import './App.css';
+
+function App() {
+
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchMoviesHandler = async () => {
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('https://swapi.dev/api/films/')
+
+      if (response.status !== 200) {
+        throw new Error(`Something went wrong: Error ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      const transformedMovies = data.results.map((movieData) => {
+        return {
+          id: movieData.episode_id,
+          title: movieData.title,
+          releaseDate: movieData.release_date,
+          openingText: movieData.opening_crawl
+        }
+      })
+
+      setMovies(transformedMovies);
+    } catch(error){
+      setError(error.message);
+    }
+    setIsLoading(false);
+  };
+
+  let content = <p>No movies found</p>
+  if(isLoading){
+    content = <p>Loading...</p>
+  } else if (!isLoading && movies.length > 0){
+    content = <MoviesList movies={movies} />
+  } else if (!isLoading && movies.length === 0 && !error){
+    content = <p>No movies found</p>
+  } else if (!isLoading && error) {
+    content = <p>{error}</p>
+  }
+  
+
+  return (
+    <React.Fragment>
+      <section>
+        <button onClick={fetchMoviesHandler}>Fetch Movies</button>
+      </section>
+      <section>
+        {content}
+      </section>
+    </React.Fragment>
+  );
+}
+
+export default App;
+```
