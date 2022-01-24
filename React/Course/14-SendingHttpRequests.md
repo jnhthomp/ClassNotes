@@ -34,3 +34,15 @@ So how do we communicate with a database?
 We supply a backend application that runs on a server (not the users browser like the react application)
 This backend application is something like NodeJS or PHP
 This backend will do the talking to the database and store the credentials since users of our website are not able to access this backend code
+
+
+
+
+___
+## 175. Using the Star Wars API
+MUST READ:
+In the next lecture, you will be introduced to our demo backend that will be used in this course section: The Star Wars API.
+
+I will use this page: https://swapi.dev/
+
+Loading this page (and hence accessing this backend) might fail - if that is the case for you, you can use this alternative: https://swapi.py4e.com/
