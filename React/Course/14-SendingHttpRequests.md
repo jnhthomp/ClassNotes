@@ -390,3 +390,106 @@ const fetchMoviesHandler = () => {
 ```
 
 Now just hook up the handler to the button, make sure you have state setup correctly, and pass the state value into `<MoveisList>` and everything should work
+
+
+
+
+___
+## 178. Using async/await
+We are now sending a get request whenever the button is clicked
+We mentioned that we are working with promises here and using this `.then` chain like we did above is fine but there is another syntax
+This is called async await
+
+To do this you put the `async` keyword in front of our function name and the the `await` keyword in front of the functions that need to be waited on before moving on
+
+So we first need to mark the overall function as `async`
+```
+const fetchMoviesHandler = async() => {
+
+  fetch('https://swapi.dev/api/films/')
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      const transformedMovies = data.results.map((movieData) => {
+        return {
+          id: movieData.episode_id,
+          title: movieData.title,
+          releaseDate: movieData.release_date,
+          openingText: movieData.opening_crawl
+        }
+      })
+
+      setMovies(transformedMovies);
+      
+    });
+};
+```
+Then we use `await` on the `fetch` method and save the promise that is returned as `const response
+```
+const fetchMoviesHandler = async() => {
+
+  const response = awaitfetch('https://swapi.dev/api/films/')
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      const transformedMovies = data.results.map((movieData) => {
+        return {
+          id: movieData.episode_id,
+          title: movieData.title,
+          releaseDate: movieData.release_date,
+          openingText: movieData.opening_crawl
+        }
+      })
+
+      setMovies(transformedMovies);
+      
+    });
+};
+```
+Next we can use the `.json()` method on the response which we will also have to wait on a result from so we can again use `await` on this function and save the result to a `const data`
+This allows us to get rid of our first `.then` statement since that was previously handing the `await` functionality
+```
+const fetchMoviesHandler = async() => {
+
+  const response = await fetch('https://swapi.dev/api/films/')
+  const data = await response.json()
+
+    .then((data) => {
+      const transformedMovies = data.results.map((movieData) => {
+        return {
+          id: movieData.episode_id,
+          title: movieData.title,
+          releaseDate: movieData.release_date,
+          openingText: movieData.opening_crawl
+        }
+      })
+
+      setMovies(transformedMovies);
+      
+    });
+};
+```
+Now we are able to get rid of the next `.then` since we are already handling the result of our promise by storing it within data and js knows that it will take a second for data to have value
+So we can now transform that data with `.map` and save the result to `transformedMovies` just as before
+```
+const fetchMoviesHandler = async () => {
+
+  const response = await fetch('https://swapi.dev/api/films/')
+
+  const data = await response.json()
+
+  const transformedMovies = data.results.map((movieData) => {
+    return {
+      id: movieData.episode_id,
+      title: movieData.title,
+      releaseDate: movieData.release_date,
+      openingText: movieData.opening_crawl
+    }
+  })
+
+  setMovies(transformedMovies);
+};
+```
+This has the same functionality as the `.then` chain and comes down to preference
