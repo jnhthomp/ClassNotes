@@ -957,3 +957,186 @@ function App() {
 
 export default App;
 ```
+
+
+
+
+___
+## 181. Using useEffect() For Requests
+One thing that is a little unrealistic about our application is that we are waiting to fetch this data when a button is pressed
+However usually you want to get the data for the user when the page or component is loaded
+
+To immediately fetch data we can use `useEffect` since we can make this run when the component is first mounted AND fetching data is a side effect that does change the components state
+
+We learned that this is exactly what `useEffect` is for
+It is fine to have the fetch this way when attached to a button but if this function was called in the body it would lead to an infinite loop
+
+That is because the body would call this fetch function which would change the state which would make the body re-run, which would call the fetch method etc...
+
+So if we want to run this function automatically within the body so a user doesn't have to interact with it we need to use `useEffect`
+
+Be sure to import `useEffect` and then call it after we have initialized state
+```
+function App() {
+
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    first;
+  
+//  return () => {
+//    second;
+//  }
+  }, [third]);
+  
+  ...
+```
+
+Now we need to fill in this `useEffect` function
+First we can fill out what should happen which is to perform the `fetchMoviesHandler` since we already have it defined we don't need to copy/paste, we can just call the existing function
+```
+  useEffect(() => {
+    fetchMoviesHandler();
+  
+//  return () => {
+//    second;
+//  }
+  }, [third]);
+```
+
+Now we don't want this method to be called everytime the component is re-evaluated
+We only want it to run whenever the component is first evaluated
+To do this we use an empty dependency array
+Now if we were to reload our application it will in fact run on page load but this isn't the best practice because we haven't listed our dependencies within the dependency array
+we should add `fetchMoviesHandler` as a pointer in case for some reason it were to change
+It won't change in our example but in other projects it might
+```
+useEffect(() => {
+  fetchMoviesHandler();
+
+  // return () => {
+  //   second;
+  // };
+}, [fetchMoviesHandler]);
+```
+
+However remember that functions are js objects and that they are recreated every time a component is rerendered so if `<App>` component were to be re-rendered the function would actually be changed 
+To prevent this we have previously used `useCallback` on the function which we do not want to be recreated with component re-renders
+
+To do this we simply wrap our anonymous function within a `useCallback` function and then provide a list of dependencies to monitor like with `useEffect`
+```
+const fetchMoviesHandler = useCallback(async () => {
+
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const response = await fetch('https://swapi.dev/api/films/')
+
+    if (response.status !== 200) {
+      throw new Error(`Something went wrong: Error ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    const transformedMovies = data.results.map((movieData) => {
+      return {
+        id: movieData.episode_id,
+        title: movieData.title,
+        releaseDate: movieData.release_date,
+        openingText: movieData.opening_crawl
+      }
+    })
+
+    setMovies(transformedMovies);
+  } catch(error){
+    setError(error.message);
+  }
+  setIsLoading(false);
+}),[];
+```
+We don't have any external dependencies within this function so we don not have to list any
+All of the variables are created inside of this function and all of the functions referenced are default js/react functions that will not change
+
+We do need to make sure that `fetchMovieHandler` is listed before `useEffect` since it is a const and exist/must be loaded into memory for `useEffect` to be able to call it
+```
+import React, { useState, useEffect, useCallback } from 'react';
+
+import MoviesList from './components/MoviesList';
+import './App.css';
+
+function App() {
+
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchMoviesHandler = useCallback(async () => {
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('https://swapi.dev/api/films/')
+
+      if (response.status !== 200) {
+        throw new Error(`Something went wrong: Error ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      const transformedMovies = data.results.map((movieData) => {
+        return {
+          id: movieData.episode_id,
+          title: movieData.title,
+          releaseDate: movieData.release_date,
+          openingText: movieData.opening_crawl
+        }
+      })
+
+      setMovies(transformedMovies);
+    } catch(error){
+      setError(error.message);
+    }
+    setIsLoading(false);
+  },[]);
+
+  useEffect(() => {
+    fetchMoviesHandler();
+
+    // return () => {
+    //   second;
+    // };
+  }, [fetchMoviesHandler]);
+
+  let content = <p>No movies found</p>
+  if(isLoading){
+    content = <p>Loading...</p>
+  } else if (!isLoading && movies.length > 0){
+    content = <MoviesList movies={movies} />
+  } else if (!isLoading && movies.length === 0 && !error){
+    content = <p>No movies found</p>
+  } else if (!isLoading && error) {
+    content = <p>{error}</p>
+  }
+  
+
+  return (
+    <React.Fragment>
+      <section>
+        <button onClick={fetchMoviesHandler}>Fetch Movies</button>
+      </section>
+      <section>
+        {content}
+      </section>
+    </React.Fragment>
+  );
+}
+
+export default App;
+
+```
+
+Now our component will load the list when the page loads and we can reload it manually
