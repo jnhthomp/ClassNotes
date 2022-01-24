@@ -1334,3 +1334,14 @@ So we can get rid of `transformedMovies` and save `loadedMovies` to state instea
 Now if we save and reload we should be able to get our movies from our database as well as add new movies to it
 
 There are a few other improvements we could make such as error handling to the `POST` method, make new movies fetch automatically when a movie is submitted etc.
+
+
+
+
+___
+## 184. Wrap Up
+This module is complete
+We learned that react can talk to a backend but not direclty to a database for security and performance reasons
+You can send requests to backend apis and use `fetch()` (or a third party library like axios) to perform requests and get responses
+We can analyze these responses and throw an error if needed or work with the data
+We learned about both GET and POST requests and how to handle different states involving these requests such as loading, don't have data, and now have data
