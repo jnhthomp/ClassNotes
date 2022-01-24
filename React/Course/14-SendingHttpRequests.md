@@ -493,3 +493,122 @@ const fetchMoviesHandler = async () => {
 };
 ```
 This has the same functionality as the `.then` chain and comes down to preference
+
+
+
+
+___
+## 179. Handing Loading & Data States
+Currently when we load from scratch and then click 'Fetch Movies' there is an expected delay before the movies actually populate while we await the get request to complete as well as the data to be transformed from json
+
+This is fine but feels a little strange as there is no indicator to tell the user that there is a loading period
+Ours is fairly quick but could be much slower if the server took a while to respond
+
+So how do we do this in react?
+It comes down to managing state
+We already have a state to hold our movies but we can manage a second piece of state to determine whether we are currently waiting for an action to complete or not
+We aren't loading data when it initially loads to the screen so it should be initialized to false
+```
+const [isLoading, setIsLoading] = useState(false);
+```
+Whenever we call `fetchMoviesHandler` we can change that state to true before we start fetching the data and processing it
+```
+const fetchMoviesHandler = async () => {
+
+  setIsLoading(true);
+
+  const response = await fetch('https://swapi.dev/api/films/')
+
+  const data = await response.json()
+
+  const transformedMovies = data.results.map((movieData) => {
+    return {
+      id: movieData.episode_id,
+      title: movieData.title,
+      releaseDate: movieData.release_date,
+      openingText: movieData.opening_crawl
+    }
+  })
+
+  setMovies(transformedMovies);
+};
+```
+Then when we are done processing this data and saving it to our state we want to call `setIsLoading ` back to false
+```
+const fetchMoviesHandler = async () => {
+
+  setIsLoading(true);
+
+  const response = await fetch('https://swapi.dev/api/films/')
+
+  const data = await response.json()
+
+  const transformedMovies = data.results.map((movieData) => {
+    return {
+      id: movieData.episode_id,
+      title: movieData.title,
+      releaseDate: movieData.release_date,
+      openingText: movieData.opening_crawl
+    }
+  })
+
+  setMovies(transformedMovies);
+  setIsLoading(false);
+};
+```
+
+Now we can use this state to render something like a loading spinner or text 
+
+We can accomplish this by conditionally showing the `<MoviesList>` component if we are not loading (`isLoading: false`) and if we are loading then we will show some text
+Then if we are loading we will simply output a paragraph that says "loading" for simplicity
+```
+return (
+  <React.Fragment>
+    <section>
+      <button onClick={fetchMoviesHandler}>Fetch Movies</button>
+    </section>
+    <section>
+      {!isLoading && <MoviesList movies={movies} />}
+      {isLoading && <p>Loading...</p>}
+    </section>
+  </React.Fragment>
+);
+```
+
+What if we want to show different content when we are not loading but have no movies yet 
+This might look better than a blank area with no movies listed
+So we can also check the length before outputting the `<MoviesList>` component
+
+```
+return (
+  <React.Fragment>
+    <section>
+      <button onClick={fetchMoviesHandler}>Fetch Movies</button>
+    </section>
+    <section>
+      {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
+      {isLoading && <p>Loading...</p>}
+    </section>
+  </React.Fragment>
+);
+```
+
+Then we can display some content such as a short paragraph whenever we are not loading and there are no movies
+```
+return (
+  <React.Fragment>
+    <section>
+      <button onClick={fetchMoviesHandler}>Fetch Movies</button>
+    </section>
+    <section>
+      {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
+      {!isLoading && movies.length === 0 && <p>No movies found</p>}
+      {isLoading && <p>Loading...</p>}
+    </section>
+  </React.Fragment>
+);
+}
+```
+
+Now our page will initially say 'No movies found'
+Then when we click the button it will briefly say loading before displaying the list of movies
