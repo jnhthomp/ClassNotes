@@ -79,3 +79,314 @@ To learn more about API's see this article/video: https://academind.com/tutorial
 With swappi we can send a request like this: `swapi.dev/api/films`
 This will give us a list of films
 To understand what you can do with an API that you have not made yourself you need to read the documentation for it
+
+
+
+
+___
+## 177. Sending a GET Request
+Remember that a react app in the end is just a bunch of javascript
+This means that anyway to send an http request in javascript that would be valid is valid here too
+For example we can use a popular library like axios which is available on github
+It makes sending http requests and dealing with responses easy
+
+There is another way that is built in to javascript called the fetch api
+This is something built into browsers and allows us to fetch (and send) data
+We can use this to send http requests and handle their responses 
+
+We will use this to get our movies
+We can start simple and make sure that when we press the button we fetch and then display the movies
+
+To do this we will get rid of `dummyMovies` and instead create a `fetchMoviesHandler`
+```
+const fetchMoviesHanlder = () => {
+
+};
+```
+
+Inside here we can call a special method called `fetch()` which is made available to us by the browser
+Inside of the function we need pass in the url that we want to request as a string
+In this case we want to use the swapi api to get a list of films
+The url to fetch this is: https://swapi.dev/api/films/
+```
+const fetchMoviesHanlder = () => {
+  fetch('https://swapi.dev/api/films/');
+};
+```
+
+We can also provide a second argument which allows us to pass in a js object 
+This can allow us to pass in different options such as headers, or body, or change the http method
+We won't need that here though since the default method is 'GET' which is all we need right now
+
+But how do we handle the response
+fetch returns a promise which allows us to react to the response or any errors we may get
+A promise is a type of object which initially may not have a value but will eventually be populated with some kind of data
+Promises are used to handle asyncronous tasks
+With async tasks we cannot just immediately move onto the next line because we may not have yet received back the data we need for the request
+
+To use this we add `.then()` to handle the response
+This is a special js method used to handle async tasks
+`.then()` will receive an anonymous arrow function as an argument and this function has access to a response value, which is whatever is returned by our `fetch()` method
+This response value is an object which has several differnt values we can access
+We can get the status code, a utility ok field which will be true if everything worked correctly and false if we got an error, and a body that contains the data returned from the request
+We are interested in this `response.body` value which will contain json with the data we need
+If you aren't familiar with json it stand for "JavaScript Object Notation"
+This is simply a js object that is returned to us that contains data
+We can then look at this object and manipulate it to get the data we are interested in
+Here is an example of a js object (and should be the one we get back from this request when we make it)
+```
+ {
+	"count": 6,
+	"next": null,
+	"previous": null,
+	"results": [
+		{
+			"title": "A New Hope",
+			"episode_id": 4,
+			"opening_crawl": "It is a period of civil war.\r\nRebel spaceships, striking\r\nfrom a hidden base, have won\r\ntheir first victory against\r\nthe evil Galactic Empire.\r\n\r\nDuring the battle, Rebel\r\nspies managed to steal secret\r\nplans to the Empire's\r\nultimate weapon, the DEATH\r\nSTAR, an armored space\r\nstation with enough power\r\nto destroy an entire planet.\r\n\r\nPursued by the Empire's\r\nsinister agents, Princess\r\nLeia races home aboard her\r\nstarship, custodian of the\r\nstolen plans that can save her\r\npeople and restore\r\nfreedom to the galaxy....",
+			"director": "George Lucas",
+			"producer": "Gary Kurtz, Rick McCallum",
+			"release_date": "1977-05-25",
+			"characters": [
+				"https://swapi.dev/api/people/1/",
+				"https://swapi.dev/api/people/2/",
+				"https://swapi.dev/api/people/3/",
+				"https://swapi.dev/api/people/4/",
+				"https://swapi.dev/api/people/5/",
+				"https://swapi.dev/api/people/6/",
+				"https://swapi.dev/api/people/7/",
+				"https://swapi.dev/api/people/8/",
+				"https://swapi.dev/api/people/9/",
+				"https://swapi.dev/api/people/10/",
+				"https://swapi.dev/api/people/12/",
+				"https://swapi.dev/api/people/13/",
+				"https://swapi.dev/api/people/14/",
+				"https://swapi.dev/api/people/15/",
+				"https://swapi.dev/api/people/16/",
+				"https://swapi.dev/api/people/18/",
+				"https://swapi.dev/api/people/19/",
+				"https://swapi.dev/api/people/81/"
+			],
+			"planets": [
+				"https://swapi.dev/api/planets/1/",
+				"https://swapi.dev/api/planets/2/",
+				"https://swapi.dev/api/planets/3/"
+			],
+			"starships": [
+				"https://swapi.dev/api/starships/2/",
+				"https://swapi.dev/api/starships/3/",
+				"https://swapi.dev/api/starships/5/",
+				"https://swapi.dev/api/starships/9/",
+				"https://swapi.dev/api/starships/10/",
+				"https://swapi.dev/api/starships/11/",
+				"https://swapi.dev/api/starships/12/",
+				"https://swapi.dev/api/starships/13/"
+			],
+			"vehicles": [
+				"https://swapi.dev/api/vehicles/4/",
+				"https://swapi.dev/api/vehicles/6/",
+				"https://swapi.dev/api/vehicles/7/",
+				"https://swapi.dev/api/vehicles/8/"
+			],
+			"species": [
+				"https://swapi.dev/api/species/1/",
+				"https://swapi.dev/api/species/2/",
+				"https://swapi.dev/api/species/3/",
+				"https://swapi.dev/api/species/4/",
+				"https://swapi.dev/api/species/5/"
+			],
+			"created": "2014-12-10T14:23:31.880000Z",
+			"edited": "2014-12-20T19:49:45.256000Z",
+			"url": "https://swapi.dev/api/films/1/"
+		},
+		...
+	]
+}
+```
+
+As you can see it is slightly different from a regular js object but is very similar
+The advantage of this is that it is very easy to translate it to a js object
+Thankfully the response object that we receive has a built in method that will translate this for us
+This is called `.json()` which will convert it for us
+This does take time and will return another response
+
+So we need our anonymous arrow function to return this response
+```
+const fetchMoviesHanlder = () => {
+  fetch('https://swapi.dev/api/films/').then((response) => {
+    return response.json();
+  });
+};
+```
+
+Since this is another promise we will need to attach another `.then()` method which will of course receive an anonymous arrow function
+This anonymous arrow function will have access to a response object from the promise which should now be a javascript object
+To keep things clear we will call this promise response 'data' instead
+This should be an object that looks like the giant json object above
+Looking at it we can see we will be interested in the array holding all of the movie objects which is stored under 'results' 
+So we should be able to access this array with `data.results`
+
+```  
+const fetchMoviesHanlder = () => {
+  fetch('https://swapi.dev/api/films/').then((response) => {
+    return response.json();
+  }).then((data) => {
+    const movieList = data.results;
+  }
+  );
+};
+```
+
+Now that we are able to access this list of movies we don't want to actually just save it as a variable
+Instead we want to create a state and save this list of movies within that state like they were with `dummyData`
+So we will need to import `useState`
+Then initialize it and then update it with this `movieList` after these promises are finished completing
+
+initialize state:
+```
+const [movies, setMovies] = useState([]);
+```
+
+Update our `fetchMoviesHandler` to save the result to this state:
+```
+const fetchMoviesHanlder = () => {
+  fetch('https://swapi.dev/api/films/').then((response) => {
+    return response.json();
+  }).then((data) => {
+    setMovies(data.results);
+  }
+  );
+};
+```
+
+Now we just have to forward our movies from state to the `<MoviesList>` component instead of `dummyMovies`
+```
+<MoviesList movies={movies} />
+```
+
+Lastly we need to attach the handler to the button
+```
+<button onClick={fetchMoviesHandler}>Fetch Movies</button>
+```
+
+One final thing is that there is a slight difference in the naming of the data we are receiving and how we expect to receive that data in props
+When we make the API request two of the fields are named `opening_crawl` and `release_date` but we expect to receive `openingText` and `releaseDate`
+
+We have two options, we can either change our program to match the text we are receiving or we can change the text we are receiving to match the text
+We will do the second by creating a `transformedMovies` constant and using `.map()` on our results
+This `.map()` will create new objects from each object in the array
+It will pull the information from that data and return only the information we are interested in with the naming we expect
+We can see inside of `<MoviesList>` we need the following
+- `id` (we will use 'episode_id' from the json object)
+- `title` also 'title' in json
+- `releaseDate` named 'release_date' in json
+- `openingText` named 'opening_crawl' in json
+```
+const transformedMovies = data.results.map((movieData) => {
+  return {
+    id: movieData.episode_id,
+    title: movieData.title,
+    releaseDate: movieData.release_date,
+    openingText: movieData.opening_crawl
+  }
+```
+
+Then we can pass this into `setMovies` instead of the full results
+```
+const fetchMoviesHandler = () => {
+  fetch('https://swapi.dev/api/films/').then((response) => {
+    return response.json();
+  }).then((data) => {
+    const transformedMovies = data.results.map((movieData) => {
+      return {
+        id: movieData.episode_id,
+        title: movieData.title,
+        releaseDate: movieData.release_date,
+        openingText: movieData.opening_crawl
+      }
+    }
+    )
+    setMovies(transformedMovies);
+  }
+  );
+};
+```
+
+If you have passed the state value in and connected this handler to the button it should work but I am going to go through step by step one more time since it is a rather big function
+
+First we are making a fetch request to the url that was provided by the swappi api in order to get a list of movies
+```
+fetch('https://swapi.dev/api/films/');
+```
+This will return a promise which is like an object that executes whenever it is fulfilled we use `.then()` to handle it
+the method we pass into `.then` has access to the promise object that was returned called `response`
+We transform this response into json using a built in function
+```
+fetch('https://swapi.dev/api/films/')
+  .then((response) => {
+    return response.json();
+  });
+```
+This built in function also returns a promise so we have to use `.then` again to handle it
+The result of this promise will be the js object which was converted from json so that is what we will be able to access within our `.then` method as `data`
+```
+fetch('https://swapi.dev/api/films/')
+  .then((response) => {
+    return response.json();
+  })
+  .then((data) => {
+    return data
+  });
+```
+This would return the whole js object but if we look at the json we expect we are only interested in `data.results` because that holds the array of movies
+```
+fetch('https://swapi.dev/api/films/')
+  .then((response) => {
+    return response.json();
+  })
+  .then((data) => {
+    return data.results
+  });
+```
+Now we have the array but the naming within each object is different from what we expect within `<MoviesList>` and we only really need certain data we will pull that data out by calling `.map` and creating a new object based on the data in each of these objects
+```
+fetch('https://swapi.dev/api/films/')
+  .then((response) => {
+    return response.json();
+  })
+  .then((data) => {
+    const transformedMovies = data.results.map((movieData) => {
+      return {
+        id: movieData.episode_id,
+        title: movieData.title,
+        releaseDate: movieData.release_date,
+        openingText: movieData.opening_crawl
+      }
+    })
+});
+```
+Now that we have an object with the data we expect we save it to state
+```
+const fetchMoviesHandler = () => {
+
+  fetch('https://swapi.dev/api/films/')
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      const transformedMovies = data.results.map((movieData) => {
+        return {
+          id: movieData.episode_id,
+          title: movieData.title,
+          releaseDate: movieData.release_date,
+          openingText: movieData.opening_crawl
+        }
+      })
+
+      setMovies(transformedMovies);
+      
+    });
+};
+```
+
+Now just hook up the handler to the button, make sure you have state setup correctly, and pass the state value into `<MoveisList>` and everything should work
