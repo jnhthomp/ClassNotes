@@ -1193,3 +1193,144 @@ We are not getting an error response code from firebase because this is not an e
 
 We will update our application to allow us to send movies to this url with post requests so they are saved to the database
 Then when we fetch from that same database the movies will display
+
+
+
+
+___
+## 183. Sending a Post Request
+Now we want to send a post request when we click 'Add Movie'
+
+We already have an `addMovieHandler` that is triggered when the button is clicked
+This button will collect the data from the form and output it in the console as a single object
+Note that the id is missing, this will be added by firebase automatically
+
+In the `addMovieHandler` we want to create our method to send this object off to firebase
+
+To do this we use the `fetch` method again
+Remember this method doesn't only perform GET requests, it can also performed POST requests by providing a js object with our options specified
+Normally it may be a good idea to have the GET and POST functionality outside of the `<App>` component so it can be reused and keep `<App>` clean but for the demo we will leave it here
+
+We will send a fetch request to the same url that we get the data from and provide the js object to specify that we want to use a POST method intsead of a GET method
+```
+function addMovieHandler(movie) {
+  fetch('https://react-http-82bca-default-rtdb.firebaseio.com/movies.json', {
+    method: 'POST'
+  });
+}
+```
+Whenever we send a post request to firebase it will create the resource for us in the database
+What happens when you send a post request is dependent on the api/url you are using
+Creating a resource is a feature of firebase and other apis will need to be configured to do so to allow this creation
+
+With post methods we are expected to provide a body, that is the content that we want to post to the database
+However firebase does not want a js object (like `movie` which is the object containing the values entered by the user)
+Instead firebase will expect json
+So we have to convert our movie js object to json
+
+In order to do this we can use a utility method from javascript
+This allows us to convert a js object to valid json by using `JSON.stringify()` and passing in the object you want to convert
+```
+function addMovieHandler(movie) {
+  fetch('https://react-http-82bca-default-rtdb.firebaseio.com/movies.json', {
+    method: 'POST',
+    body: JSON.stringify(movie)
+  });
+}
+```
+
+Last we need to add a header
+This will tell firebase what kind of content is coming and is technically not required by firebase but many rest apis require this header
+```
+function addMovieHandler(movie) {
+  fetch('https://react-http-82bca-default-rtdb.firebaseio.com/movies.json', {
+    method: 'POST',
+    body: JSON.stringify(movie),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+}
+```
+
+Now the outline of our function is ready
+There are a few other touches 
+Remember that `fetch` is an async task so we need to mark the function as such with async/await or using `.then()`
+When we send this fetch we will still get a response from firebase so we can save that response to a variable
+That response will be json so we will need to convert it and store it (again await)
+Then we can output that data in the console
+```
+async function addMovieHandler(movie) {
+  const response = await fetch('https://react-http-82bca-default-rtdb.firebaseio.com/movies.json', {
+    method: 'POST',
+    body: JSON.stringify(movie),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  
+  const data = await response.json();
+  console.log(data)
+}
+```
+Now when we add data and press the button we can see in the console that we get a weird reply
+But we can also see in firebase that there is now a movies section with a subsection matching the weird name we got in console
+If you expand this then you can see the movie data that was entered
+The weird name that we received is the automatically generated id of the object we created and added to our backend database
+
+If we click 'Fetch Movies' now we will still get an error
+This is expected and makes sense because the format of the movie data that we were expecting is different
+We are calling `.map` on `data.results` which may not exist because we are using a different api which will structure results differently
+We can see how we are supposed to structure this logging the data object after we convert results from json
+```
+const fetchMoviesHandler = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('https://react-http-82bca-default-rtdb.firebaseio.com/movies.json');
+      if (!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+
+      const data = await response.json();
+      console.log(data);
+  ...
+```
+In this case we receive an object where the id is a key holding another object 
+This means our data is not being stored in an array as we expected it to be
+We can transform it so it is in an array though
+First we will initialize an empty array
+Then create a for loop to loop through all the keys in data
+Then for each of these keys we will pull the data out and assign it to a new object that matches the data we expect
+Then we will push this object into the array we initialized
+```
+const fetchMoviesHandler = useCallback(async () => {
+  setIsLoading(true);
+  setError(null);
+  try {
+    const response = await fetch('https://react-http-82bca-default-rtdb.firebaseio.com/movies.json');
+    if (!response.ok) {
+      throw new Error('Something went wrong!');
+    }
+
+    const data = await response.json();
+    
+    const loadedMovies = [];
+
+    for (const key in data){
+    loadedMovies.push({
+      id: key,
+      title: data[key].title,
+      openingText: data[key].openingText,
+      releaseDate: data[key].releaseDate
+    })
+  }
+  ...
+```
+
+Now we have `loadedMovies` which is an array of objects like `transformedMovies` used to be
+So we can get rid of `transformedMovies` and save `loadedMovies` to state instead
+
+Now if we save and reload we should be able to get our movies from our database as well as add new movies to it
+
+There are a few other improvements we could make such as error handling to the `POST` method, make new movies fetch automatically when a movie is submitted etc.
