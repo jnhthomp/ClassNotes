@@ -1,4 +1,3 @@
-Read:
-Do:
-1. Practice Typing - https://www.keybr.com/
-2. https://www.typingtest.com/ (Five Minute Test)
+## 05
+To Complete The Three Layouts
+Read: https://learn.shayhowe.com/advanced-html-css/responsive-web-design/
