@@ -1,0 +1,36 @@
+* {
+  box-sizing: border-box;
+}
+
+header, footer, section {
+  border: 3px solid red;
+}
+
+header, footer {
+  background-color: coral;
+  height: 100px;
+}
+
+footer {
+  clear: left;
+}
+
+section {
+  background-color: cornflowerblue;
+  height: 100px;
+}
+
+.one-one {
+  width: 100%;
+  /* clear: right; */ /*Feel like this should be needed but isn't?*/
+}
+
+.one-third {
+  width: 33.333%;
+  float: left;
+}
+
+.two-third {
+  width: 66.666%; /*😈*/
+  float: left;
+}

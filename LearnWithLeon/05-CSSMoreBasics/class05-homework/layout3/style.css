@@ -1,0 +1,31 @@
+* {
+  box-sizing: border-box;
+}
+
+header, footer, section {
+  border: 3px solid red;
+}
+
+header, footer {
+  background-color: coral;
+  height: 100px;
+}
+
+footer {
+  clear: left;
+}
+
+section {
+  background-color: cornflowerblue;
+  height: 500px;
+}
+
+.one-fifth {
+  width: 20%;
+  float: left;
+}
+
+.two-fifth {
+  width: 40%;
+  float: left;
+}
