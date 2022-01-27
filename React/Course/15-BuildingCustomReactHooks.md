@@ -15,3 +15,18 @@ This section will cover
 - What & why?
 - Building a custom hook
 - Custom hook rules and practices
+
+
+
+
+___
+## 187. What Are Custom Hooks?
+First we need to clarify what these are before we discuss why we use them
+They are just functions but they are functions that contain 'stateful' logic
+You can build custom hooks outsource stateful logic into reuseable functions
+
+Unlike regular functions custom hooks can use other react hooks and react state
+With custom hooks you can outsource logic you might use in different components to a custom hook
+Then this custom hook can be used within different components
+Think of it as a mechanism to reuse logic
+It is like a regular function except we are allowed to use react hooks inside
