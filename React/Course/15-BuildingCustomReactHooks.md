@@ -99,3 +99,82 @@ export default useCounter;
 ```
 
 Now we have our logic in a custom hook function but still want to use it in the forward counter
+
+
+
+
+___
+## 189. Using Custom Hooks
+Now that we have created our custom hook we need to use it
+It turns out that we can use custom hooks the same way we use built in hooks
+We just have to call it like a function
+
+First we have to import it
+```js
+import { useState, useEffect } from 'react';
+import useCounter from '../hooks/use-counter.js';
+...
+```
+
+Then within the `<ForwardCounter>` we can call `useCounter`
+If we are to call a hook that sets state within another component (like we will here with `useCounter` and `<ForwardCounter>`) then that state will be registered to that component as if it was called within that component
+The state created within `useCounter` it will be tied to `<ForwardCounter>`
+If we call `useCounter` again in another component (like `<BackwardCounter>`) that component will have it's OWN state to manage as well
+Using a custom hook to set a state is the same as using a regular hook to set a state, that state is tied to the component it is called in
+Only the logic is shared not the state values
+
+Within the `<ForwardCounter>` we can call our hook
+```js
+import { useState, useEffect } from 'react';
+import useCounter from '../hooks/use-counter.js';
+
+import Card from './Card';
+
+const ForwardCounter = () => {
+  useCounter();
+  ...
+```
+Now we have added the hook but we don't have access to any of the values because it isn't assigned to any variable
+We can make this happen the same way we do for `useState` 
+`useState` returns an array that we destructure
+Therefore we can have our custom hook return our counter value in a return and capture it in a variable when we call `useCounter`
+
+First return our state value
+```js
+import { useState, useEffect } from 'react';
+
+const useCounter = () => {
+  const [counter, setCounter] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCounter((prevCounter) => prevCounter + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return counter;
+};
+
+export default useCounter;
+```
+
+Then capture this value when we call `useCounter`
+This also allows us to remove all the old `useState` and `useEffect` logic including removing the imports
+```js
+import useCounter from '../hooks/use-counter.js';
+
+import Card from './Card';
+
+const ForwardCounter = () => {
+  const counter = useCounter();
+
+  return <Card>{counter}</Card>;
+};
+
+export default ForwardCounter;
+
+```
+
+Now if we save and reload the counter should work just as before but now with a custom hook
