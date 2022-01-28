@@ -12,22 +12,35 @@ Learn - Responsive Basics
 Homework - Simple Responsive Site
 ## Questions
 About last class or life
+(nothing applicable)
 ## Checking In
-
 Like and Retweet the Tweet
 !checkin
-## Friends?
+https://twitter.com/leonnoel/status/1486829337026260994
 
+## Friends?
 Study Community Survey:
 https://forms.gle/5qvnYVw3tA3Xaoye8
+
+For smaller groups use the link above to be added to a study group
+
 ## Alumni Twitter Space
 Tomorrow Friday Jan. 28th 6:00pm ET
+
 ## Submitting Work
 
 Simple Site Lab and Layouts in codepen.io
 Submit URLs here: https://forms.gle/rvPhDrbp56DQKgPaA
+
 ## Sleep?
+Make sure to prioritize getting good sleep
+Memory consolidation happens when you are sleeping
+Make sure you are not studying so much that you cannot learn enough
+Try https://sleepyti.me and try their suggested sleep times to not interrupt your rem cycle when you wake
+
 ## YOU OWE YOU
+You owe it to yourself to make yourself better and put in the time. Do it.
+
 ## What is the internet? (Review)
 To be clear this is a 'jobs' program 
 This will cover more than just coding
@@ -219,6 +232,19 @@ Before this we pretty much only used divs
 `<Footer>` Group content at the end of a document
 ## Let's Mark Up
 BBC Solution
+Lets try marking up the bbc site that was homework a while ago
+Use the image in 'class06-materials' for reference
+We will do this in only html right now
+
+Looking at the header we can see there is a nav inside
+Inside of that nav there are images and list of links
+
+Then the next area is probably going to be a section and inside of it there could be considered two more sections containing image, h1, span, and h2 tags as needed
+For some of these we might even set these as background images in html instead of using an image tag
+
+Then below that follows a very similar pattern having a section with subsections to hold the images and titles
+One could consider these small subsections at the bottom an article but don't have to be
+
 ## CSS (Review)
 Where does CSS go?
 There are three places that CSS CAN go but only 1 place that it SHOULD go
@@ -404,6 +430,62 @@ https://lmgtfy.com/?q=italicize+text+css+mdn&s=d
 Use https://learn.shayhowe.com/html-css/
 ## Let's Code
 Some Basic CSS
+We will start with 'basic-css-two'
+Try to perform the comments in css within 4 minutes
+Hint: You may need to google for the last one as there is a new property that we don't know
+
+The html is irrelevant since we are targetting tags directly
+
+For the first css we should know all of these:
+```css
+/* Please make the anchor tags gold, 20px, and have a purple background */
+a {
+  color: gold;
+  font-size: 20px;
+  background-color: purple;
+}
+```
+
+Second is similar except you may need to look up a value to get a lighter shade of orange
+```css
+/* Please make the section have a height of 200px,
+a 10px thick blue border, and a light orange background */
+section {
+  height: 200px;
+  border: 10px solid blue;
+  background-color: rgb(255, 218, 148);
+}
+```
+
+The third one is straightforward:
+```css
+/* Please make the aside have a height of 300px, a thin red border, and a teal background  */
+aside {
+  height: 300px;
+  border: 1px solid red;
+  background-color: teal;
+}
+```
+
+Finally the last one is slightly tricky because we don't know how to add color to text decoration:
+```css
+/* Please make the aside paragraph have white text, 18px, and a red underline */
+aside > p {
+  color: white;
+  font-size: 18px;
+  text-decoration: underline;
+  text-decoration-color: red;
+}
+```
+
+That shouldn't have been too bad, we have covered everything at this point except for `text-decoration-color` which may have taken some googling and maybe finding a color for orange
+You can also make it one line with:
+```css
+aside > p{
+  text-decoration: underline red;
+}
+```
+Or you could have used `border-bottom: 1px solid red;` but would have taken some tweaking to fix the length
 
 ## Selecting By Relationship (Review)
 Sometimes  we need to select specific html tags in order to apply styling and be more specific about which one we are targetting
@@ -481,6 +563,92 @@ span + p {
 ```
 ## Let's Code
 Some Relationships
+Now try the 'relationship-css-two' in 4 minutes
+
+For this the html is relevant since we need to utilize relationships:
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Blank Template</title>
+		<!-- external CSS link -->
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<header>
+			<nav>
+				<ul>
+					<li><a href="#">sunshine</a></li>
+					<li><a href="#">rainbows</a></li>
+				</ul>
+				<ul>
+					<li><a href="#">bob</a></li>
+					<li><a href="#">pizza</a></li>
+				</ul>
+			</nav>
+		</header>
+		<section>
+			<h1>Look behind you!</h1>
+			<h2>Just kidding!</h2>
+			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqui.
+			</p>
+		</section>
+		<article>
+			<h1>Breaking News: It is hot!</h1>
+			<h2>Really hot</h2>
+			<h2>Like WILD hot</h2>
+			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud. Read more <a href="#">here</a>
+			</p>
+		</article>
+		<aside>
+			<p>This is an ad. Follow me on <a href="https://leonnoel.com/twitter">twitter</a> and here on twitch!</p>
+		</aside>
+	</body>
+</html>
+
+```
+
+Now we can try targetting the relationships with css
+Since this is the only section with an h2 this is easy
+```css
+/* NO classes or IDs */
+/* Please make only "Just kidding!" yellow */
+section > h2 {
+  color: yellow;
+}
+```
+
+Next: we could be less specific and just say `aside a {...}` also
+```css
+/* Please make only "twitter" red and 20px */
+aside > p > a {
+  color: red;
+  font-size: 20px;
+}
+```
+
+Since both 'really hot' and 'like wild hot' are h2 tags within an aside we can use the cascade to our advantage or add more specificity
+```css
+article > h2 {
+  color: purple;
+  font-size: 12px;
+}
+
+article > h2 + h2 {
+  color: blue;
+  font-size: 20px;
+}
+```
+
+Lastly we have:
+```css
+/* Please make only bob and pizza green */
+nav>ul + ul>li > a {
+  color: green;
+}
+```
+For this one we had to be careful and use the next sibling to avoid changing the color of 'sunshine' and 'rainbows' as well
+
 ## IDs & Classes (Review)
 These are identifiers that allow you to target elements and give the highest specificity score to elements that are targetted by it
 ## IDs (Review)
@@ -630,8 +798,72 @@ section > article > h2 {
 }
 ```
 Now the red color will be applied even though it had a lower score than the rule below because `!important` adds so much to the specificity score
-## Let's Code (Review)
+## Let's Code 
 Specificity Practice
+For this excercise use the 'specificity-practice' folder
+Here is the html:
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Blank Template</title>
+		<!-- external CSS link -->
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<header class="top">
+			<h1 id="bringThePain" class="painIsFrenchBread titans">Welcome To The Thunderdome</h1>
+		</header>
+		<section id="rugratsWildThornberrysBestCrossOverAllTime">
+			<h2>Hello, world!</h2>
+			<aside class="extraExtraReadAllAboutIt">
+				<h3>This is an ad. You are beautiful.</h3>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+			</aside>
+		</section>
+		<section id="chunkyMilk">
+			<h2>I like turtles.</h2>
+			<p class="passTheRemote turtles" >Let's get down to business to learn some web development.</p>
+		</section>
+	</body>
+</html>
+
+```
+Now follow the instructions in the css file
+The first one is pretty straightforward
+```css
+/* Please make "This is an ad..." blue, but make sure it is specific enough 
+that you could add other h3's somewhere eles in the document. */
+aside.extraExtraReadAllAboutIt > h3 {
+  color: blue;
+}
+```
+We could have assigned an id to h3 to ensure but this is specific enough for the point of this exercise
+
+This one is another straightforward one but we don't have as specific of contsraints
+```css
+/* Please make "I like turtles." red */
+section#chunkyMilk > h2 {
+  color: red;
+}
+```
+
+Now we need to use as much specificity as possible 
+It helps to work backwards and add specificity as you go
+```css
+/* Please select "Hello, world!" with the highest level of specificity possible*/
+html > head + body > header.top + section#rugratsWildThornberrysBestCrossOverAllTime > h2{
+  color: coral !important;
+}
+```
+
+```css
+/* Please select "Let's get down to business..." with the highest level of specificity possible */
+html > head + body > header.top + section#rugratsWildThornberrysBestCrossOverAllTime + section#chunkyMilk>h2 + p.passTheRemote.turtles{
+  color: coral !important;
+}
+```
+
 ## The Box Model (Review)
 The box model is used to determine where elements are and where items inside of them are
 Say you have a `<section>` and it has a height of 100px and a width of 100px
@@ -697,11 +929,141 @@ The Box Model
 
 ## Let's Code
 The Box Model
+For this exercise use the 'box-model-practice' folder in 'class06-materials'
+Here is the html:
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Blank Template</title>
+		<!-- external CSS link -->
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<h1>This is an h1</h1>
+		<h2>This is an h2</h2>
+		<p>This is a paragraph with some <span>spans</spans> inside of <span>the</span> paragraph</p>
+		<section>
+			<h2>This is an h2 <span>inside</span> of a section</h2>
+		</section>
+
+		<ol>
+			<li>Please make the h1 30px, with a little padding on the left, and thin red border</li>
+			<li>Please make the h2 25px, with padding on top/bottom, a thick gold border, and margin on the top/bottom</li>
+			<li>Please make the spans have a thin black border, a little padding, and blue</li>
+			<li>Please make the section 25% width, 200px tall, centered, and with a thin purple border</li>
+		</ol>
+
+	</body>
+</html>
+
+```
+
+Now follow the instructions in the css
+```css
+/* Please make the h1 30px, 
+with a little padding on the left, and thin red border */
+h1 {
+  font-size: 30px;
+  padding-left: 10px;
+  border: 2px solid red;
+}
+```
+instead of using `padding-left` you could also use the shorthand version of `padding`
+```css
+h1 {
+  padding: 0 0 0 10px; /*padding: top right bottom left;*/
+}
+```
+
+We can use another shorthand for padding in this one
+```css
+/* Please make the h2 25px, 
+with padding on top/bottom, a thick gold border, 
+and margin on the top/bottom */
+h2 {
+  padding: 20px 0; /*padding: top/bottom left/right;*/
+  border: 10px solid gold;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+```
+
+Ths one is straightforward
+```css
+/* Please make the spans have a thin black border, 
+a little padding, and blue */
+span {
+  border: 2px solid black;
+  padding: 5px;
+  color: blue;
+}
+```
+
+This one has centering which can be tough
+```css
+/* Please make the section 25% width, 
+200px tall, centered, and with a thin purple border */
+section {
+  width: 25%;
+  height: 200px;
+  margin: 0 auto; /*0 top/bottom margin auto left and right*/
+  border: 2px solid purple;
+}
+```
 
 ## Let's Look
 Starter Template
-## Time For Some
-Layouts
+Leon provided a template that we can use for our projects
+
+The html sets the language to english:
+```html
+<html lang="en">
+```
+
+This lets the doc know what kind of characters we will use 
+utf-8 has all characters
+```html
+<meta charset="utf-8">
+```
+
+This is used to set a description and keywords so that google can tell what your website is about
+This isn't used as much anymore
+```html
+    	<meta name="description" content="Your description goes here">
+    	<meta name="keywords" content="one, two, three">
+```
+
+This is what shows up in the browser tab
+```html
+<title>Blank Template</title>
+```
+
+Then `normalize.css` is linked for us already which sets more standard css styles
+There is also another style.css that we can use for our regular css
+```html
+<!-- external CSS link -->
+<link rel="stylesheet" href="css/normalize.css">
+<link rel="stylesheet" href="css/style.css">
+```
+
+We will add viewport later but not yet
+
+
+The 'normalise.css' is the important lesson to take away tonight
+This template has both 'normalise.css' and a 'reset.css'
+
+What 'reset.css' will do is scorch the earth and get rid of every single default style that comes in the browser
+This will cause `<h1>`'s to look like `<span>`'s and everything as similar as possible
+
+Alternatively there is 'normalise.css' which will keep some basic default styling but keep it consistent between browsers
+
+There is also the box model hack as well as clear fix included so we can add those classes as needed
+
+Keep track of this (maybe keep a copy of it in your notes root) as we will update it over time
+
+
+## Time For Some Layouts
 ## 🚨 Let's Talk About Floats 🚨 (Review)
 Flexbox and grid are far superior and floats aren't as common to use when developing new applications
 However it is important to know about floats because floats is how it was always done before
@@ -721,6 +1083,7 @@ If stuff tries to get into a corner they will sit next to each other
 
 ## Let's Code (Review)
 Simple Layouts
+Use the templates to complete the layouts from the homework if you haven't completed them already
 ## Layout 1 (Review)
 ```
 _____________________________
@@ -733,6 +1096,79 @@ _____________________________
 |                           |
 |___________________________|
 ```
+
+How could we do this?
+We can guess that there is a header, a footer, and 5 sections in between
+```html
+<body>
+  <header></header>
+  <section></section>
+  <section></section>
+  <section></section>
+  <section></section>
+  <section></section>
+  <footer></footer>
+</body>
+```
+
+We know that all the sections are pretty much the same size except for the bottom sections
+We can give them a different class to differentiate them
+```html
+<body>
+  <header></header>
+  <section></section>
+  <section></section>
+  <section></section>
+  <section class="bigBottom"></section>
+  <section class="bigBottom"></section>
+  <footer></footer>
+</body>
+```
+
+Now we just need to add css to add borders, position, and size
+We can do our header and footer in one go since they are the same
+```css
+header, footer {
+  height: 100px;
+  border: 2px solid black;
+}
+```
+
+Now we can do the sections we will define the smaller ones and then the larger ones will overwrite these styles for only the larger sections
+Be sure to use `box-sizing: border-box` if you aren't using the template
+```css
+section {
+  width: 33.333%;
+  border: 2px solid black;
+}
+```
+
+Now we want them all sitting next to each other so we need to float them
+```css
+section {
+  width: 33.333%;
+  border: 2px solid black;
+  float: left;
+}
+```
+This causes and issue because our footer isn't positioned correctly
+We need the clearfix hack for this
+```css
+header, footer {
+  height: 100px;
+  border: 2px solid black;
+  clear: both;
+}
+```
+
+Then we can apply the sizing for the `bigBottom` sections
+```css
+.bigBottom {
+  width: 50%;
+}
+```
+
+The other two layouts will be done in office hours
 ## Layout 2 (Review)
 ```
 _____________________________
@@ -756,12 +1192,23 @@ _____________________________
 |___________________________|
 ```
 ## Responsive Websites
+Just hinting at this
+To be responsive means a website looks good on all screens
+This means it looks good when you look at it on a desktop/phone/tablet/smartfridge etc
+
+A responsive website will add/remove/resize/rearrange content as the screen gets bigger or smaller
+
 ## Fixed Vs. Responsive
 
+This is a example of how responsive design has changed
+UPS from back in the day was not responsive at all 
 UPS.com Wayback Machine
 
+
 Boston.com
+Has to be responsive because most people consume the news on their phones
 ## Media Queries 
+Media queries are what we use to make our site responsive
 ```css
 @media screen and (max-width: 600px) {
     h1 {
@@ -769,6 +1216,14 @@ Boston.com
     }
 }
 ```
+
+This gives us the ability to display certain rules at certain screen sizes
+The above rule would only exist between 0px and 600px wide screens
+If the screen was larger the rule wouldn't apply until you resized the browser window to fit within that margin
+
+___
+<center>Class ended here</center>
+
 ## Let's Code
 A Media Query
 ## Homework
