@@ -178,3 +178,77 @@ export default ForwardCounter;
 ```
 
 Now if we save and reload the counter should work just as before but now with a custom hook
+
+
+
+
+___
+## 190. Configuring Custom Hooks
+Now in the `<BackwardCouter>` component we are using the same logic that we were using in the `<ForwardCounter>`
+The only difference is subtracting 1 each `setInterval` instead of adding one
+
+We can still use our custom hook this in our component
+We just need to make it more re-usable by allowing it accept arguments just like other hooks can
+
+We could expect any calls to `useCounter` to pass in a counter updating function like this:
+```js
+const useCounter = (counterUpdateFn) => {
+  const [counter, setCounter] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCounter(counterUpdateFn()); // counterUpdatFn = (prevCounter) => prevCounter + 1
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return counter;
+};
+```
+
+That is pretty flexible but takes more work each time we call it
+We could make it less flexible by just expecting a boolean flag (called forwards)
+If it is true the counter will count positive
+If it is false the counter will count negative
+Don't for
+Like this:
+```js
+const useCounter = (forward = true) => { // forward = true sets a default value, overwritten if a value is passed in
+  const [counter, setCounter] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // If forward was ommited or set to true when passed
+      if(forward){
+        setCounter((prevCounter) => prevCounter + 1);
+      } else{ // false (or anything other than 'true' was passed) uses backward counter
+        setCounter((prevCounter) => prevCounter - 1);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [forward]);// Must add forward as dependency as it is not defined within useEffect and passed from outside
+
+  return counter;
+};
+```
+
+Now that we have a way to differentiate between counting forwards and backwards within our state when we call our hook we can use it in the `<BackwardCounter>`
+
+We can import and call it just like we did before and make sure we are saving the returned value then output it in jsx
+```js
+import useCounter from '../hooks/use-counter';
+
+import Card from './Card';
+
+const BackwardCounter = () => {
+  const counter = useCounter(false);
+
+  return <Card>{counter}</Card>;
+};
+
+export default BackwardCounter;
+```
+
+We don't need to specify `true` in the `<ForwardCounter>` because we set that as the default value within `useCounter` although you could pass true in for clarity if you wanted
