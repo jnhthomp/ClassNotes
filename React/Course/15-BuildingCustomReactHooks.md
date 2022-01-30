@@ -252,3 +252,38 @@ export default BackwardCounter;
 ```
 
 We don't need to specify `true` in the `<ForwardCounter>` because we set that as the default value within `useCounter` although you could pass true in for clarity if you wanted
+
+
+
+
+___
+## 191. Onwards To A More Realistic Example
+Now to use what we have learned in a more realistic scenario
+Use the starter project in the following github repo:
+github: https://github.com/academind/react-complete-guide-code/tree/15-building-custom-react-hooks/code/04-onwards-to-a-more-realistic-example
+
+<center>🚨🚨🚨Important Make sure you replace the firebase link in App AND NewTask components<br>
+Point to your own firebase that was set up in section 14<br>
+Be sure to keep the '/tasks.json' ending🚨🚨🚨</center>
+
+This app is just a simple task app that will use http requests to add and fetch new tasks like we learned in the last section
+
+Adding tasks should add tasks to your firebase realtime database
+Make sure that works before moving on and if it doesn't double check that you updated the link properly in the fetch request in both `<App>` and `<NewTask>`
+
+This works with sending http requests with the fetch api, handling errors and loading, transforming the data all of which we learned last section
+
+Importantly in `<App>` we are fetching tasks with `fetchTask`
+This is done on component load because of `useEffect` or because inside of `<Tasks>` a button was clicked if there was an error that willt ry again
+Then in `<NewTask>` there is a post requests which we are using to add new task data to firebase
+This function is triggered when the task form is submitted
+
+Explore the code if you don't understand so you can follow what is happening
+This gives us another chance of adding a custom hook
+
+We have two very similar operations
+One is the `<NewTask>` component when we send a request to store data and in `<App>` when we send the request to get data
+We can use a hook to put both of these in a single hook and call whichever function we need as we need it
+In both components we are managing a loading and error state in the same way and also have the same error handling logic
+Because of this we should pull it out and put it in a custom hook
+It cannot be a regular function because both of these require state management
