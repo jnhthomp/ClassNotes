@@ -1141,3 +1141,22 @@ This is a clever way to include more variables as needed without altering the re
 Now our app is complete and we are using the same custom hook to make both GET and POST requests
 We should be able to see the task list as well as make new tasks
 We shouldn't see any errors in the console and in network there shouldn't be an infinite loop of requests being made
+
+
+
+
+___
+## 196. Module Resources
+You may want to compare your code to mine (e.g. to find + fix errors).
+
+For that, you find multiple code snapshots for this module here in this Github repository: https://github.com/academind/react-complete-guide-code/tree/15-building-custom-react-hooks
+
+Usage instructions can be found on the page that link is leading to.
+
+Simply pick one of the snapshots in the /code folder - the subfolder names are chosen such that they are easy to match against lecture names in this course section.
+
+You also find section slides (if available) in that Github repository.
+
+
+
+<h3><center>---Section 15 Complete---</center></h3>
