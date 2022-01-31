@@ -393,7 +393,7 @@ If we were to pass in two different objects we could get two different requests
 const requestConfig = {
   url: 'https://link-to-firebase-url-rtdb.firebaseio.com/tasks.json',
   method: 'GET',
-  headers: null,
+  headers: {},
   body: null
 }
 
@@ -409,6 +409,7 @@ const requestConfig = {
 ```
 
 Now in our code we are making a configurable request, and the response will get saved to an object
+Since we are passing in the new value to be added via this `requestConfig.body` key we can remove the `taskText` variable in `sendRequest`
 We check the `.ok` value of that object which is expected to be returned by the server to tell us if our request was successful or not
 If not we create an error object which will throw us into the `catch` block
 If there is no error we save the data from the response and convert it from a json object to a javascript object
@@ -417,7 +418,7 @@ const useHttp = (requestConfig) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const sendRequest = async (taskText) => {
+  const sendRequest = async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -446,11 +447,11 @@ However for a post request it may just be an object saying the post was successf
 ```js
 import { useState } from 'react';
 
-const useHttp = (requestConfig) => {
+const useHttp = (requestConfig, applyData) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const sendRequest = async (taskText, applyData) => {
+  const sendRequest = async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -483,11 +484,11 @@ We still need to make these states available to the component that calls it as w
 So at the end of our custom hook we need to return something that allows us to access these
 We can return an object that has these values/functions available
 ```js
-const useHttp = (requestConfig) => {
+const useHttp = (requestConfig, applyData) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const sendRequest = async (taskText, applyData) => {
+  const sendRequest = async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -528,3 +529,153 @@ return {
 }
 ```
 This does the same thing as the previous return statement just with a different/shorter syntax
+
+
+
+
+___
+## 193. Using the Custom Http Hook
+Now we need to use our custom hook in our `<App>` component
+First we need to import it
+```js
+...
+import NewTask from './components/NewTask/NewTask';
+import useHttp from './hooks/use-http.js';
+...
+```
+
+Then we can get rid of the `isLoading` and `error` states since these are taken care of in `useHttp`
+Instead we can just call `useHttp`
+Just to be safe we will call it after initializing `tasks` state since we will want to use the return of `useHttp` to manipulate `tasks` state
+```js
+
+function App() {
+  const [tasks, setTasks] = useState([]);
+  useHttp();
+  ...
+```
+
+Now remember `useHttp` is expecting some arguments
+The first is an object containing the `requestConfig` options to set
+The second is a function we will apply to any data we receive back
+So within `<App>` we will need pass in this object
+However there are some values that we don't need to pass from `<App>` since it is only doing a GET request such as `headers` and `body` 
+We don't want to force people to include that data when it will not be used so we will tweak the `useHttp` so that it sets default values for these if none are provided
+We can do this by checking if a value was passed and if not set a default value ourselves
+```js
+const response = await fetch(
+  requestConfig.url, {
+    // Check if .method exists, if so use value if not use 'GET'
+    method: requestConfig.method ? requestConfig.method: 'GET',
+    // Check if .headers exist if so use value if not use empty object
+    headers: requestConfig.headers ? requestConfig.headers: {},
+    // Check if .body exists if so use value if not set null
+    body: requestConfig.body ? JSON.stringify(requestConfig.body) : null
+  } 
+```
+
+Doing this will prevent us from having to pass in unnecessary information when doing get requests since they require very little input other than a url
+
+Now our hook should be flexible enough that if we are just making a GET request we can just pass the url we want to visit in
+
+We do still need to provide a method to handle the receiving of the data from the request though
+Remember we expect to receive that function and then later call it passing in data as an argument
+If we define a function within `<App>` we should have access to whatever object data receives (which should be a list of tasks)
+Within that function we are going to want to transform the data in the way that we were previously doing in the `<App>` component
+
+Before we set an empty array to a variable then used a for loop to go through the data that was received
+Then we add each object from the received data (which is a js object since it was transform from json within `useHttp`) to the empty array with `.push`
+Once the for loop is over the array has been built and we submit that as the new `tasks` state value
+```js
+function App() {
+  const [tasks, setTasks] = useState([]);
+
+  const transformTasks = (tasksObj) => {
+    const loadedTasks = [];
+
+    for (const taskKey in tasksObj) {
+      loadedTasks.push({ id: taskKey, text: tasksObj[taskKey].text });
+    }
+
+    setTasks(loadedTasks);
+  };
+  
+```
+
+Now we have transformed the tasks from regular objects sturctured how firebase wanted them to now be useable by our application and saved the object to our state
+We just need to provide this function to `useHttp` so it can call it whenever it needs
+```js
+useHttp({ url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json'}, transformTasks);
+```
+
+Now we have the main logic in the custom hooks but data specific logic in the place where we need the data
+
+Remember `useHttp` is also returning a value which is an object holding the state values we need to access to determine how our page should look during errors and loading as well as the function we need to perform the http request in general
+
+We can save an access this object by using object destructuring just like we did with array destructuring with built in react hooks
+We can use the normal names for `isLoading` and `error` but for the sake of clarity will change the name of `sendRequest` to `fetchData` to be more descriptive of what it actually does
+```js
+const { isLoading, error, sendRequest: fetchTasks } = useHttp(
+  { url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json'},
+    transformTasks
+);
+```
+
+Now we no longer need the old `fetchTasks` that was in `<App>`
+Be careful not to remove the `useEffect` hook that calls `fetchTasks` though since we will need it to call the function returned by our custom hook
+We SHOULD add `fetchTasks` as a dependency to `useEffect` since react doesn't know about it and doesn't know that it will never change (it might actually)
+However we cannot right now because it would trigger an infinite loop, we will fix this later
+
+Now our `<App>` component is restructured so that it still has access to the `isLoading` and `error` states and `fetchTasks` but the logic for all of that is built into our custom hook
+If we save and reload we should be able to see our tasks and add new tasks still
+```js
+import React, { useEffect, useState } from 'react';
+
+import Tasks from './components/Tasks/Tasks';
+import NewTask from './components/NewTask/NewTask';
+import useHttp from './hooks/use-http.js';
+
+function App() {
+  const [tasks, setTasks] = useState([]);
+
+  const transformTasks = (tasksObj) => {
+    const loadedTasks = [];
+
+    for (const taskKey in tasksObj) {
+      loadedTasks.push({ id: taskKey, text: tasksObj[taskKey].text });
+    }
+
+    setTasks(loadedTasks);
+  };
+  
+  const { isLoading, error, sendRequest: fetchTasks } = useHttp(
+    { url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json'},
+      transformTasks
+  );
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  const taskAddHandler = (task) => {
+    setTasks((prevTasks) => prevTasks.concat(task));
+  };
+
+  return (
+    <React.Fragment>
+      <NewTask onAddTask={taskAddHandler} />
+      <Tasks
+        items={tasks}
+        loading={isLoading}
+        error={error}
+        onFetch={fetchTasks}
+      />
+    </React.Fragment>
+  );
+}
+
+export default App;
+
+```
+
+It isn't finished yet as we are not using `useEffect` in a best practice way since we haven't added `fetchTasks` as a dependency
