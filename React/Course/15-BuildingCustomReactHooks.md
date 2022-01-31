@@ -679,3 +679,294 @@ export default App;
 ```
 
 It isn't finished yet as we are not using `useEffect` in a best practice way since we haven't added `fetchTasks` as a dependency
+
+
+
+
+___
+## 194. Adjusting the Custom Hook Logic
+We should add `fetchTasks` as a dependency to `useEffect` but if we do we will cause an infinite loop
+This is because if we do this the fetchTasks will be re-initialized each time because when the component loads `useHttp` is called to set the value for fetchTasks which re-initializes a function
+Remember like arrays and objects it isn't the VALUE but rather the object itself in memory that is changed every time which react counts as a change
+
+To counter this we need to do this as a callback function 
+That way react can track that it is the same function being recreated and not register as a change every time it is re-initialized 
+
+We do this by going to `useHttp` and wrapping our `sendRequest` function in `useCallback` because this is the function that is getting assigned to `fetchTasks`
+```js
+const sendRequest = useCallback(async () => {
+  setIsLoading(true);
+  setError(null);
+  try {
+    const response = await fetch(
+      requestConfig.url, {
+        method: requestConfig.method ? requestConfig.method: 'GET',
+        headers: requestConfig.headers ? requestConfig.headers: {},
+        body: requestConfig.body ? JSON.stringify(requestConfig.body) : null
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Request failed!');
+    }
+
+    const data = await response.json();
+    applyData(data);
+  } catch (err) {
+    setError(err.message || 'Something went wrong!');
+  }
+  setIsLoading(false);
+});
+```
+
+Then remember the other argument for `useCallback` (besides the function we want to apply it to) is a dependency array
+This dependency array needs to list everything that is being used in `sendRequest` that isn't created inside `sendRequest`
+So we looking at `sendRequest` we can look for any data that originated outside of `sendRequest`
+- `setIsLoading` is a `setState` method which react guarantees to be the same so we don't need to list this
+- `setError` same as `setIsLoading`
+- `fetch` default js function so not needed
+- `requestConfig` Yes this is needed
+- `applyData` Also needed
+```js
+const sendRequest = useCallback(async () => {
+  setIsLoading(true);
+  setError(null);
+  try {
+    const response = await fetch(
+      requestConfig.url, {
+        method: requestConfig.method ? requestConfig.method: 'GET',
+        headers: requestConfig.headers ? requestConfig.headers: {},
+        body: requestConfig.body ? JSON.stringify(requestConfig.body) : null
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Request failed!');
+    }
+
+    const data = await response.json();
+    applyData(data);
+  } catch (err) {
+    setError(err.message || 'Something went wrong!');
+  }
+  setIsLoading(false);
+},[requestConfig, applyData]);
+```
+
+The issue with this is that `requestConfig` is a js object and `applyData` is a js function
+This means if we were to list them as dependencies it would cause another infinite loop
+So we need to go back to `<App>` where these two values are created and passed in and call `useCallback` on them as well before we add them as dependencies
+
+In `<App>` the function that is eventually `applyData` is called `transformTasks` which we want to wrap in `useCallback` 
+We can use an empty dependency array because there is nothing changing within our function
+Although the value of `tasksObj` changes the fact that it exists and how it is used does not change which is what is important
+```js
+const transformTasks = useCallback((tasksObj) => {
+  const loadedTasks = [];
+
+  for (const taskKey in tasksObj) {
+    loadedTasks.push({ id: taskKey, text: tasksObj[taskKey].text });
+  }
+
+  setTasks(loadedTasks);
+}, []);
+```
+
+Now we have guaranteed that `transFormedTasks` (and therefore `applyData`) is not recreated all the time but how about `requestConfig`?
+To do this we could just change our custom hook
+Currently we are expecting to receive `requestConnfig` in the hook itself but we really only use it in `sendRequest`
+We could instead expect to receive it whenever `sendRequest` is called
+```js
+import { useState, useCallback } from 'react';
+
+const useHttp = (applyData) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const sendRequest = useCallback(async (requestConfig) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        requestConfig.url, {
+          method: requestConfig.method ? requestConfig.method: 'GET',
+          headers: requestConfig.headers ? requestConfig.headers: {},
+          body: requestConfig.body ? JSON.stringify(requestConfig.body) : null
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Request failed!');
+      }
+
+      const data = await response.json();
+      applyData(data);
+    } catch (err) {
+      setError(err.message || 'Something went wrong!');
+    }
+    setIsLoading(false);
+  },[applyData]);
+
+  return {
+    isLoading: isLoading,
+    error: error,
+    sendRequest: sendRequest
+  }
+}; 
+
+export default useHttp;
+```
+Notice now we don't need to list `requestConfig` as a dependency since it is an argument (just like with `transformTasks` not needing `tasksObj` listed)
+
+Now in `<App>` all we have to do is remove the object with the url from the arguments in `useHttp` and add it as an argument to `fetchTasks`
+```js
+import React, { useEffect, useState, useCallback } from 'react';
+
+import Tasks from './components/Tasks/Tasks';
+import NewTask from './components/NewTask/NewTask';
+import useHttp from './hooks/use-http.js';
+
+function App() {
+  const [tasks, setTasks] = useState([]);
+
+  const transformTasks = useCallback((tasksObj) => {
+    const loadedTasks = [];
+
+    for (const taskKey in tasksObj) {
+      loadedTasks.push({ id: taskKey, text: tasksObj[taskKey].text });
+    }
+
+    setTasks(loadedTasks);
+  }, []);
+  
+  const { isLoading, error, sendRequest: fetchTasks } = useHttp(transformTasks);
+
+  useEffect(() => {
+    fetchTasks({ url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json' });
+  }, []);
+
+  const taskAddHandler = (task) => {
+    setTasks((prevTasks) => prevTasks.concat(task));
+  };
+
+  return (
+    <React.Fragment>
+      <NewTask onAddTask={taskAddHandler} />
+      <Tasks
+        items={tasks}
+        loading={isLoading}
+        error={error}
+        onFetch={fetchTasks}
+      />
+    </React.Fragment>
+  );
+}
+
+export default App;
+
+```
+We could even take this a step further
+We aren't using `applyData` outside of `sendRequest` within `useHttp`
+So that means we could expect it as an argument to `fetchTasks` which means we wouldn't need to list it as a dependency in `sendRequest` just like we did with `requestConfig`
+Then we wouldn't need `useCallback` on `transformTasks`
+We would just need to create `transformTasks` inside of `useEffect` so that way it wouldn't need to be a dependency there and we can avoid needing `useCallback`
+
+First in `<App>` remove `useCallback` from `transformTasks`
+Then move the `transformTasks` declaration into `useEffect` 
+Remember to remove the `transformTasks` argument from `useHttp`
+```js
+import React, { useEffect, useState } from 'react';
+
+import Tasks from './components/Tasks/Tasks';
+import NewTask from './components/NewTask/NewTask';
+import useHttp from './hooks/use-http.js';
+
+function App() {
+  const [tasks, setTasks] = useState([]);
+  
+  const { isLoading, error, sendRequest: fetchTasks } = useHttp();
+
+  useEffect(() => {
+
+    const transformTasks = (tasksObj) => {
+      const loadedTasks = [];
+
+      for (const taskKey in tasksObj) {
+        loadedTasks.push({ id: taskKey, text: tasksObj[taskKey].text });
+      }
+
+      setTasks(loadedTasks);
+    };
+
+    fetchTasks({ url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json' }, transformTasks);
+  }, [fetchTasks]);
+
+  const taskAddHandler = (task) => {
+    setTasks((prevTasks) => prevTasks.concat(task));
+  };
+
+  return (
+    <React.Fragment>
+      <NewTask onAddTask={taskAddHandler} />
+      <Tasks
+        items={tasks}
+        loading={isLoading}
+        error={error}
+        onFetch={fetchTasks}
+      />
+    </React.Fragment>
+  );
+}
+
+export default App;
+
+```
+Notice that `fetchTasks` is now listed as a dependency to `useEffect` without issue because we have used `useCallback` in `useHttp` and `fetchTasks` originates outside of `useEffect`
+
+Now we can go to `useHttp` and move the argument from being applied to the hook itself but rather to the `sendRequest` function
+```js
+import { useState, useCallback } from 'react';
+
+const useHttp = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const sendRequest = useCallback(async (requestConfig, applyData) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        requestConfig.url, {
+          method: requestConfig.method ? requestConfig.method: 'GET',
+          headers: requestConfig.headers ? requestConfig.headers: {},
+          body: requestConfig.body ? JSON.stringify(requestConfig.body) : null
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Request failed!');
+      }
+
+      const data = await response.json();
+      applyData(data);
+    } catch (err) {
+      setError(err.message || 'Something went wrong!');
+    }
+    setIsLoading(false);
+  },[]);
+
+  return {
+    isLoading: isLoading,
+    error: error,
+    sendRequest: sendRequest
+  }
+}; 
+
+export default useHttp;
+```
+Notice now the `useCallback` function around `sendRequest` no longer needs any dependencies since `requestConfig` and `applyData` are now arguments and not considered originating outside of the funtion
+
+Now we should have a custom hook that fetches the data without any issues
+
+Notice that there were a few ways we could have gone about this, the other solution with having `transformData` wrapped in `useCallback` and expecting those arguments in `useHttp` would have been fine
+This way was just another way of doing it that reduced the need for depenedencies and `useCallback` functions
