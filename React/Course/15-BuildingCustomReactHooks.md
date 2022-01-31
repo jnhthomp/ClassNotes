@@ -287,3 +287,244 @@ We can use a hook to put both of these in a single hook and call whichever funct
 In both components we are managing a loading and error state in the same way and also have the same error handling logic
 Because of this we should pull it out and put it in a custom hook
 It cannot be a regular function because both of these require state management
+
+
+
+
+___
+## 192. Building A Custom Http Hook
+Now to build out our custom hook
+Remember first we need to build a new folder/file
+create: src/hooks/use-http.js
+
+Then inside we can start writing our hook function
+```js
+const useHttp = () => {
+  
+};
+
+export default useHttp;
+```
+
+Now we can think about what kind of logic we want to outsource
+1. The loading and error state
+2. Post/fetch functionality
+3. Error handling 
+
+We can go to the component and grab the `fetchTasks` function and state functions we use and copy them into our new hook
+We don't need  the `tasks` state though so we can delete that
+We will keep the loading and error state though
+Remember we also need to import our hooks
+We will also change the name of our function from `fetchTasks` to `sendRequest` as we will make it more generic so that it doesn't only have to be used for fetching tasks
+In theory we might be able to use it for a different fetch/push request entirely if we make it reusable enough
+```js
+import { useState } from 'react';
+
+const useHttp = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const sendRequest = async (taskText) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json'
+      );
+
+      if (!response.ok) {
+        throw new Error('Request failed!');
+      }
+
+      const data = await response.json();
+
+      const loadedTasks = [];
+
+      for (const taskKey in data) {
+        loadedTasks.push({ id: taskKey, text: data[taskKey].text });
+      }
+
+      setTasks(loadedTasks);
+    } catch (err) {
+      setError(err.message || 'Something went wrong!');
+    }
+    setIsLoading(false);
+  };
+}; 
+
+export default useHttp;
+```
+
+So what can we make configurable in here?
+We could make the url configurable so we could send requests to different firebase urls if we wished
+The method, body, and headers should also be configurable
+To do this we will expect an object that has all of these config options specified
+```js
+const useHttp = (requestConfig) => {
+  ...
+```
+
+Then we can replace the url we specified with the `requestConfig.url` that we are expecting to get
+```js
+try {
+  const response = await fetch(
+    requestConfig.url
+  );
+```
+Since we will want to use this hook for both GET and POST requests we should include another argument to fetch where we pass in an object describing our request in more detail
+Remember by default fetch will use GET as the method
+Since we want to do post requests also whenever we call this hook the object we pass in (`requestConfig`) will have all of these options specified
+```js
+    try {
+      const response = await fetch(
+        requestConfig.url, {
+          method: requestConfig.method,
+          headers: requestConfig.headers,
+          body: JSON.stringify(requestConfig.body)
+        }
+      );
+```
+By using `JSON.stringify` the body itself is passed in as regular js object but is converted to json before we submit it
+
+Now our request and how it is sent is more configurable
+If we were to pass in two different objects we could get two different requests
+```js
+// GET object ex:
+const requestConfig = {
+  url: 'https://link-to-firebase-url-rtdb.firebaseio.com/tasks.json',
+  method: 'GET',
+  headers: null,
+  body: null
+}
+
+// POST object ex
+const requestConfig = {
+  url: 'https://link-to-firebase-url-rtdb.firebaseio.com/tasks.json',
+  method: 'POST',
+  headers: {
+            'Content-Type': 'application/json',
+          },
+  body: {text: taskText}
+}
+```
+
+Now in our code we are making a configurable request, and the response will get saved to an object
+We check the `.ok` value of that object which is expected to be returned by the server to tell us if our request was successful or not
+If not we create an error object which will throw us into the `catch` block
+If there is no error we save the data from the response and convert it from a json object to a javascript object
+```js
+const useHttp = (requestConfig) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const sendRequest = async (taskText) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        requestConfig.url, {
+          method: requestConfig.method,
+          headers: requestConfig.headers,
+          body: JSON.stringify(requestConfig.body)
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Request failed!');
+      }
+
+      const data = await response.json();
+```
+
+Below that we within the try block is actually not important to our hook as we don't need to save any of the tasks since this hook will not be managing those tasks
+So we can remove the array, for loop, and `setTasks` call
+
+To keep this configurable we will expect a function to format the data we have saved
+That way when we call this hook we can manipulate the data object in a way that makes sense for the type of request calling it
+For example on a get request the data object will be the list of tasks which we will need to process to output
+However for a post request it may just be an object saying the post was successful
+```js
+import { useState } from 'react';
+
+const useHttp = (requestConfig) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const sendRequest = async (taskText, applyData) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        requestConfig.url, {
+          method: requestConfig.method,
+          headers: requestConfig.headers,
+          body: JSON.stringify(requestConfig.body)
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Request failed!');
+      }
+
+      const data = await response.json();
+      applyData(data);
+    } catch (err) {
+      setError(err.message || 'Something went wrong!');
+    }
+    setIsLoading(false);
+  };
+}; 
+
+export default useHttp;
+```
+Now we have the two states that are being managed and the `sendRequest` function listed
+We still need to make these states available to the component that calls it as well as the `sendRequest` function
+
+So at the end of our custom hook we need to return something that allows us to access these
+We can return an object that has these values/functions available
+```js
+const useHttp = (requestConfig) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const sendRequest = async (taskText, applyData) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        requestConfig.url, {
+          method: requestConfig.method,
+          headers: requestConfig.headers,
+          body: JSON.stringify(requestConfig.body)
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Request failed!');
+      }
+
+      const data = await response.json();
+      applyData(data);
+    } catch (err) {
+      setError(err.message || 'Something went wrong!');
+    }
+    setIsLoading(false);
+  };
+
+  return {
+    isLoading: isLoading,
+    error: error,
+    sendRequest: sendRequest
+  }
+}; 
+```
+
+Since we are using matching names we can use a javascript shortcut
+```js
+return {
+  isLoading,
+  error,
+  sendRequest
+}
+```
+This does the same thing as the previous return statement just with a different/shorter syntax
