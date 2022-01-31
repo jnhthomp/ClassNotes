@@ -56,3 +56,199 @@ The error message wouldn't show up in this case since it is being triggered on l
 
 If you validate on every keystroke you provide quick direct feedback on every single keystroke but you are showing errors before the user has a chance to enter valid values
 However if you only validate on keystroke for inputs that were previously marked invalid that quick direct feedback may be good
+
+
+
+
+___
+## 200. Dealing With Form Submission & Getting User Input Values
+Now for our input component we want to get user input and then validate it
+We want to be sure to show an error message to the user if necessary and explore some of the methods of validating discussed in the previous lecture
+
+First we need to fetch the value the user input
+There are two main ways to do this
+1. listen on every keystroke and store the value in a state variable
+2. We use a ref to fetch the input when a user is done typing
+
+We will show both for demonstration purposes (in reality we would only use one)
+So for this in `<SimpleInput>` we will need to import `useState` and `useRef`
+```js
+import { useState, useRef } from 'react';
+```
+
+Then we will create a new state to hold the name value and create an updating function
+We will call this updating function every time the value in `input` changes (`onChange` handler function)
+```js
+import { useState, useRef } from 'react';
+
+const SimpleInput = (props) => {
+
+  const [enteredName, setEnteredName] = useState('');
+
+  const nameInputChangeHandler = (event) => {
+    setEnteredName(event.target.value);
+  };
+  
+
+  return (
+    <form>
+      <div className='form-control'>
+        <label htmlFor='name'>Your Name</label>
+        <input type='text' id='name' onChange={nameInputChangeHandler} />
+      </div>
+      <div className="form-actions">
+        <button>Submit</button>
+      </div>
+    </form>
+  );
+};
+
+export default SimpleInput;
+
+```
+
+Then we can create another function called `formSubmissionHandler` which will handle the submit button
+Remember that we need to use `event.preventDefault()` because the default action of the browser when a form is submitted is to send an http request to the server serving the website
+We don't want this since we don't have a server to handle this request so we need `event.preventDefault()`
+If that http request were to be sent it would reload the page which we don't want
+
+Now we just want to console log the name that was entered
+Don't forget to link up this function as the `onSubmit` action in the form
+```js
+import { useState, useRef } from 'react';
+
+const SimpleInput = (props) => {
+
+  const [enteredName, setEnteredName] = useState('');
+
+  const nameInputChangeHandler = (event) => {
+    setEnteredName(event.target.value);
+  };
+
+  const formSubmissionHandler = (event) => {
+    event.preventDefault();
+
+    console.log(enteredName);
+  };
+  
+  return (
+    <form onSubmit={formSubmissionHandler}>
+      <div className='form-control'>
+        <label htmlFor='name'>Your Name</label>
+        <input type='text' id='name' onChange={nameInputChangeHandler} />
+      </div>
+      <div className="form-actions">
+        <button>Submit</button>
+      </div>
+    </form>
+  );
+};
+
+export default SimpleInput;
+
+```
+
+Now if you run the app and type in a name you should be able to see it in the console when you submit (either enter key or button click)
+
+The alternative approach is to set a ref on the input and read the value from the input as we need it
+We can implement this by calling `useRef()` and setting the return equal to a variable name
+Then we just use this variable name in our input
+Now we are able to access the values in `<input>` whenever we want by accessing `nameInputRef.current.value` wherever we need the value
+For example in `formSubmissionHandler` we can save that value and output it in the console
+```js
+import { useState, useRef } from 'react';
+
+const SimpleInput = (props) => {
+
+  const nameInputRef = useRef();
+  const [enteredName, setEnteredName] = useState('');
+
+  const nameInputChangeHandler = (event) => {
+    setEnteredName(event.target.value);
+  };
+
+  const formSubmissionHandler = (event) => {
+    event.preventDefault();
+    
+    console.log(enteredName);
+    
+    const enteredValue = nameInputRef.current.value;
+    console.log(enteredValue);
+  };
+  
+  return (
+    <form onSubmit={formSubmissionHandler}>
+      <div className='form-control'>
+        <label htmlFor='name'>Your Name</label>
+        <input ref={nameInputRef} type='text' id='name' onChange={nameInputChangeHandler} />
+      </div>
+      <div className="form-actions">
+        <button>Submit</button>
+      </div>
+    </form>
+  );
+};
+
+export default SimpleInput;
+
+```
+Doing this we should see two console logs on form submission, one for each approach we used
+
+In reality we wouldn't need both of these but how do you decide which one to use?
+It depends on what you want to do with the entered value
+If you are only interested in it when the form is submitted then `useRef` might be better since you don't care about every keystroke
+If you want to use the value after every keystroke for instant validation then state is better
+Using state might be better if you wanted to reset the input as well
+If you wanted you could set `enteredName` to an empty string and then use two way binding with the `value` prop to input
+Like this:
+```js
+import { useState, useRef } from 'react';
+
+const SimpleInput = (props) => {
+
+  const nameInputRef = useRef();
+  const [enteredName, setEnteredName] = useState('');
+
+  const nameInputChangeHandler = (event) => {
+    setEnteredName(event.target.value);
+  };
+
+  const formSubmissionHandler = (event) => {
+    event.preventDefault();
+    
+    console.log(enteredName);
+    
+    const enteredValue = nameInputRef.current.value;
+    console.log(enteredValue);
+
+    setEnteredName('');
+  };
+  
+  return (
+    <form onSubmit={formSubmissionHandler}>
+      <div className='form-control'>
+        <label htmlFor='name'>Your Name</label>
+        <input 
+          ref={nameInputRef} 
+          type='text' 
+          id='name' 
+          onChange={nameInputChangeHandler} 
+          value={enteredName}
+        />
+      </div>
+      <div className="form-actions">
+        <button>Submit</button>
+      </div>
+    </form>
+  );
+};
+
+export default SimpleInput;
+
+```
+You could technically call use ref like this to achieve something similar as `setEnteredName('')` is doing here:
+```js
+nameInputRef.current.value = '';
+```
+But if you remember this is not a best practice because we are directly manipulating the dom which we should not do
+We should leave dom manipulation to react only
