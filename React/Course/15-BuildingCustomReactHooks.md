@@ -329,7 +329,7 @@ const useHttp = () => {
     setError(null);
     try {
       const response = await fetch(
-        'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json'
+        'https://link-to-firebase-url-rtdb.firebaseio.com/tasks.json'
       );
 
       if (!response.ok) {
@@ -605,7 +605,7 @@ function App() {
 Now we have transformed the tasks from regular objects sturctured how firebase wanted them to now be useable by our application and saved the object to our state
 We just need to provide this function to `useHttp` so it can call it whenever it needs
 ```js
-useHttp({ url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json'}, transformTasks);
+useHttp({ url: 'https://link-to-firebase-url-rtdb.firebaseio.com/tasks.json'}, transformTasks);
 ```
 
 Now we have the main logic in the custom hooks but data specific logic in the place where we need the data
@@ -616,7 +616,7 @@ We can save an access this object by using object destructuring just like we did
 We can use the normal names for `isLoading` and `error` but for the sake of clarity will change the name of `sendRequest` to `fetchData` to be more descriptive of what it actually does
 ```js
 const { isLoading, error, sendRequest: fetchTasks } = useHttp(
-  { url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json'},
+  { url: 'https://link-to-firebase-url-rtdb.firebaseio.com/tasks.json'},
     transformTasks
 );
 ```
@@ -649,7 +649,7 @@ function App() {
   };
   
   const { isLoading, error, sendRequest: fetchTasks } = useHttp(
-    { url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json'},
+    { url: 'https://link-to-firebase-url-rtdb.firebaseio.com/tasks.json'},
       transformTasks
   );
 
@@ -842,7 +842,7 @@ function App() {
   const { isLoading, error, sendRequest: fetchTasks } = useHttp(transformTasks);
 
   useEffect(() => {
-    fetchTasks({ url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json' });
+    fetchTasks({ url: 'https://link-to-firebase-url-rtdb.firebaseio.com/tasks.json' });
   }, []);
 
   const taskAddHandler = (task) => {
@@ -898,7 +898,7 @@ function App() {
       setTasks(loadedTasks);
     };
 
-    fetchTasks({ url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json' }, transformTasks);
+    fetchTasks({ url: 'https://link-to-firebase-url-rtdb.firebaseio.com/tasks.json' }, transformTasks);
   }, [fetchTasks]);
 
   const taskAddHandler = (task) => {
@@ -970,3 +970,174 @@ Now we should have a custom hook that fetches the data without any issues
 
 Notice that there were a few ways we could have gone about this, the other solution with having `transformData` wrapped in `useCallback` and expecting those arguments in `useHttp` would have been fine
 This way was just another way of doing it that reduced the need for depenedencies and `useCallback` functions
+
+
+
+
+___
+## 195. Using The Custom Hook In More Components
+Now we want to use the custom hook we made in the `<NewTask>` component
+
+First we need to import it
+```js
+import { useState } from 'react';
+import useHttp from '../../hooks/use-http.js';
+
+import Section from '../UI/Section';
+import TaskForm from './TaskForm';
+```
+
+Then we can call it and know that we will receive an object back that we can use destructuring to capture
+This time we will name `sendRequest` to be `sendTask` 
+Remember we don't need to pass any arguments into `useHttp` 
+Instead we will pass arguments into `sendTask`
+```js
+const NewTask = (props) => {
+
+  const { isLoading, error, sendRequest: sendTask } = useHttp();
+  ...
+```
+
+Now we can get rid of the two states and the `useState` import
+
+We want this POST request to trigger when the `enterTaskHandler` is triggered 
+Inside of there is where we will call `sendTask`
+```js
+const NewTask = (props) => {
+
+  const { isLoading, error, sendRequest: sendTask } = useHttp();
+
+
+  const enterTaskHandler = async (taskText) => {
+
+    sendTask();
+    ...
+```
+Now remember `sendTask` is expecting two arguments
+The first one is an object that contains config settings for the request
+This includes the url, method, headers, and body
+The second one is to forward a method that will process whatever response we get from the api upon submitting this POST request
+
+First we will start with the config object 
+It will need the same url we use down below in the code we are about to remove and can use the entire object used as the second argument in the `fetch` method as an outline for the object to pass into `sendTask`
+The only major difference is that we won't need to convert the body to json since that is being done in the custom hook 
+We can just pass in a plain js object for the body
+```js
+sendTask({ 
+  url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json',
+  method: 'POST',
+  body: { text: taskText },
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+```
+
+Now we need to create a function  that does something with the response data
+In our old code we are:
+1. Receiving the data (already done in custom hook and will passed into function we are writing)
+2. Extracting the id
+3. Generating an object (`createdTask`)
+4. Passing this object into a props method (up to `taskAddHandler` in `<App>` which will cause the task to be displayed in the UI)
+
+We will create this function above `sendTask` for legibility so we don't need to use an anonymous function
+We can just copy the old functionality
+```js
+const NewTask = (props) => {
+
+  const { isLoading, error, sendRequest: sendTask } = useHttp();
+
+
+  const enterTaskHandler = async (taskText) => {
+
+    const createTask = (taskData) => {
+      
+      const generatedId = taskData.name; // firebase-specific => "name" contains generated id
+      const createdTask = { id: generatedId, text: taskText };
+      
+      props.onAddTask(createdTask);
+    };
+    
+
+    sendTask({ 
+      url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json',
+      method: 'POST',
+      body: { text: taskText },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+```
+
+If you did not want `createTask` inside of `enterTaskHandler` (in order to avoid nesting functions) you could place it above `enterTaskHandler` however then `taskText` is not an available variable
+We could just say that `createTask` will expect that as another argument but within our custom hook we are only passing one value into this function when we call it
+(You can also remove the now unneeded old code in `enterTaskHandler`)
+```js
+import useHttp from '../../hooks/use-http.js';
+
+import Section from '../UI/Section';
+import TaskForm from './TaskForm';
+
+const NewTask = (props) => {
+
+  const { isLoading, error, sendRequest: sendTask } = useHttp();
+  
+  const createTask = (taskText, taskData) => {
+    const generatedId = taskData.name; // firebase-specific => "name" contains generated id
+    const createdTask = { id: generatedId, text: taskText };
+    props.onAddTask(createdTask);
+  };
+
+  const enterTaskHandler = async (taskText) => {
+    sendTask(
+      { 
+        url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json',
+        method: 'POST',
+        body: { text: taskText },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }, 
+      createTask
+    );
+  };
+
+  return (
+    <Section>
+      <TaskForm onEnterTask={enterTaskHandler} loading={isLoading} />
+      {error && <p>{error}</p>}
+    </Section>
+  );
+};
+
+export default NewTask;
+
+```
+
+So how do we pass in this other parameter when our hook only passes in one?
+We can use `.bind` when we call `createTask`
+Doing this allows us to set the `.this` keyword but we don't care about that so we can use `null` for the first argument
+However the second argument we pass into bind will be bound as the first argument whenever this function is invoked
+So we can pass `taskText` in via bind and then when `createTask` is actually called in `useHttp` (as `applyData`) 
+It will receive this bound value `taskText` as the first argument and the second argument will be the data that is passed via `applyData(data)`
+```js
+const enterTaskHandler = async (taskText) => {
+  sendTask(
+    { 
+      url: 'https://react-http-82bca-default-rtdb.firebaseio.com/tasks.json',
+      method: 'POST',
+      body: { text: taskText },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }, 
+    createTask.bind(null, taskText)
+  );
+};
+```
+
+This is a clever way to include more variables as needed without altering the reusability of our custom hook
+
+Now our app is complete and we are using the same custom hook to make both GET and POST requests
+We should be able to see the task list as well as make new tasks
+We shouldn't see any errors in the console and in network there shouldn't be an infinite loop of requests being made
