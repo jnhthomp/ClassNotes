@@ -252,3 +252,40 @@ nameInputRef.current.value = '';
 ```
 But if you remember this is not a best practice because we are directly manipulating the dom which we should not do
 We should leave dom manipulation to react only
+
+
+
+
+___
+## 201. Adding Basic Validation
+Now we want to add some validation to our input so we cannot submit the form when it is empty
+
+An important note
+In a real application you will want to do more than client side validation in the browser
+You will also want to add validation to your server
+Browser side validation is great from a user experience perspective but it can all be edited by the user
+If someone were motivated enough they could dive into the source code and edit it to skip the validation or allow normally invalid inputs
+This could allow them to submit invalid or even harmful inputs
+To avoid this server side validation must also be setup
+Remember browser validation is not a security feature, it is a convenience/ui feature
+Here is some more information on the topic: https://academind.com/tutorials/hide-javascript-code
+
+For now we want to log an error in the console if the user submits an empty input
+We can do this with a simple if check by checking the state value in the submit handler
+It may be good to call `.trim()` on this to remove whitespace in case a user enters just spaces or tabs they will be removed before checking
+Now if we do hit this if statement we want to make sure that we do not continue in our `formSubmissionHanlder` so the form is not submitted so we will just return within the if block
+```js
+const formSubmissionHandler = (event) => {
+  event.preventDefault();
+
+  // Validate input not empty
+  if (enteredName.trim() === '' ) {
+    return;
+  }
+```
+
+Now if you save and have an empty input there should not be a console log
+But if you enter a valid name it should show up
+
+But we aren't giving the user any feedback to let them know why their input isn't showing up or if it is showing up unless they know to open the console
+To handle this we will introduce error feedback
