@@ -1,4 +1,4 @@
-# CSS - ResponsiveBasics
+# CSS - Responsive Basics
 Slides: https://slides.com/leonnoel/100devs2-review-and-responsive
 ___
 ## Agenda
