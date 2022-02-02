@@ -29,3 +29,18 @@ section {
   width: 40%;
   float: left;
 }
+
+@media screen and (max-width: 600px) {
+  section {
+    background-color: green;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+  section {
+    background-color: blue;
+  }
+  .two-fifth {
+    display: none;
+  }
+}
