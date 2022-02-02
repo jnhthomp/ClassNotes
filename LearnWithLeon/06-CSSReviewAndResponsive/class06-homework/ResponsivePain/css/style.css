@@ -21,21 +21,44 @@
 /* BASE STYLES
 /*******************************************/
 
-/* body {
-
-} */
+header, footer, section {
+  border: 2px solid black;
+  background: grey;
+}
 
 
 /******************************************
 /* LAYOUT
 /*******************************************/
-/* header {
-
+header, footer {
+  height: 200px;
 }
 
-footer {
+section {
+  height: 400px;
+  float: left;
+}
 
-} */
+@media (max-width: 600px) {
+  section {
+    width: 100%;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1366px) {
+  section {
+    width: 100%;
+  }
+  section + section {
+    width: 50%;
+  }
+}
+
+@media (min-width: 1367px){
+  section {
+    width: 33.333%;
+  }
+}
 
 /******************************************
 /* ADDITIONAL STYLES
