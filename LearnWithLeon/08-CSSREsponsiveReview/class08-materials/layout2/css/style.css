@@ -21,20 +21,28 @@
 /* BASE STYLES
 /*******************************************/
 
-body {
-
-}
-
 
 /******************************************
 /* LAYOUT
 /*******************************************/
-header {
-
+header nav > * {
+  float: left;
+  width: 10%;
+  margin: 0 5%;
+  list-style: none;
 }
 
-footer {
+nav li {
+  float: left;
+  width: 33%;
+}
 
+img {
+  width: 50%;
+  float: left;
+}
+main > section h1, main > section img{
+  margin-top: 200px;
 }
 
 /******************************************

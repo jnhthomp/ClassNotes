@@ -9,20 +9,23 @@ Review - CSS Layout
 Learn - Responsive Basics
 Build - Responsive Website
 Homework - Layouts
+
 ## Questions
 About last class or life
+
 ## Checking In
 https://twitter.com/leonnoel/status/1489365690217754628
 Like and Retweet the Tweet
 !checkin
 
 ## Friends?
-
 Study Community Join Form:
 https://forms.gle/fX4fNt7wmutvxjEQ6
+
 ## Submitting Work
 15 minutes of pain responsive in codepen.io
 Submit URLs here: https://forms.gle/AaoHzDEXm3Hjc7JL8
+
 ## Networking (Review)
 3 Individuals Already In Tech
 2 Coffee Chats
@@ -52,6 +55,7 @@ The techniques for networking discussed today aren't a silver bullet but are mor
 If you struggle with anxiety/social disorders this advice may not be what works for you and you may need to speak with a therapist to come up with a plan
 
 Most people probably think that they can't network but you can, you just probably won't like it
+
 ## Stranger > Acquaintance > Friend > Referral > Coworker (Review)
 What do you mean by networking?
 The goal of networking is to turn a stranger into a coworker
@@ -71,6 +75,7 @@ Instead you should take the opportunity to actually form a friendship with them 
 LinkedIn is similar in that you can add thousands of people on LinkedIn but none of them know you and so none of them would refer you
 
 If you are not making friends you are networking wrong
+
 ## Normal Follow Up (Review)
 This is a guidline for the process you should follow for meeting people
 ```
@@ -91,22 +96,22 @@ By spacing it out like this we are doing spaced repetition to them
 It will help them remember who you are!
 
 Next time they see you they will have a much better idea who you are and at least be an acquaintance
-## Normal Follow Up Example 
-Hi Leon,
 
- 
+## Normal Follow Up Example 
+1. Tell how you met
+2. Provide value
+3. Thank them for their time
+____
+Hi Leon,
 
 It was a pleasure meeting you last night! The event was so well done and it was exciting meeting such an amazing group of people - I hope you are enjoying a well deserved break after pulling it all together!
 
- 
-
 Also, I don't know if you saw this yet, but someone just bought a $375k first edition pokemon booster box and it wound up being fake! The Gaurdian covered it and I remember you mentioned being a big fan. Hope you have a great rest of the week!
-
- 
 
 Cheers,
 
 Bob
+
 ## Want A Coffee Chat? (Review)
 Coffee chats used to be in person but are not necessarily right now
 When we say coffee chat we just mean talk 1 on 1
@@ -125,23 +130,20 @@ Pro tip: If you are going to meet in person and go to an actual coffee shop, go 
 Then when they show up you are already sat with your drink and there is no awkward situation where someone thinks they need to buy coffee for the other
 
 ## Coffee Chat Example
+The basic pattern to follow is thank them, ask for a coffee chat, provide value (thank, ask value: TAV)
+
 Hi Leon,
 
 It was a pleasure meeting you last night! The event was so well done and it was exciting meeting such an amazing group of people - I hope you are enjoying a well deserved break after pulling it all together!
 
- 
-
 As I mentioned last night, I'm just starting my engineering career and would love to learn from successful people such as yourself. Please let me know if there might be a time you are free to grab a virtual coffee over the next week or two. Before 9am or after 5pm tends to work best for me, but happy to accommodate what works for you. Thanks!
 
- 
-
 Also, I don't know if you saw this yet, but someone just bought a $375k first edition pokemon booster box and it wound up being fake! The Gaurdian covered it and I remember you mentioned being a big fan. Have a great rest of the week!
-
- 
 
 Cheers,
 
 Bob
+
 ## USE THE SHEET! (Review)
 Networking Google Sheet
 https://docs.google.com/spreadsheets/d/1Be-6gYvrfi8l-M0RnObzdysRIG7N7Yyu6rIF0OHw0Q4/edit#gid=1771441293
@@ -150,7 +152,9 @@ Using a spreadsheet when you network is helpful
 This sheet has a place to keep networking information in one place
 
 The spark is one of the most important things to write, the thing you remember about that person the most
+
 ## Questions ?
+
 ## Just because...
 ## The Golden Rule SEPERATION OF CONCERNS (Review)
 SEPERATION OF CONCERNS
@@ -165,8 +169,8 @@ If you wanted something to move when you clicked it you would use js
 
 This is important so that it organizes all of the work so it is easier to work on or change something
 You know exactly where to go when you want to make a change
-## Progressive Enhancement (Review)
 
+## Progressive Enhancement (Review)
 According to the United States Department of Commerce, about 22 million Americans--roughly 35% of the nation's rural residents--lack access to broadband.
 
 (2017)
@@ -180,6 +184,7 @@ This is because not everyone has access to super fast internet or high quality d
 This can cause a bad experience for users
 
 See motherfuckingwebsite.com
+
 ## CSS (Review)
 Where does CSS go?
 There are three places that CSS CAN go but only 1 place that it SHOULD go
@@ -203,6 +208,7 @@ To link a stylesheet in the head:
 <link rel="stylesheet" href="css/style.css">
 ```
 This will tell your html to go to the 'css' folder and look for a file called 'style.css' and use it as a stylesheet
+
 ## CSS BREAK DOWN (Review)
 When thinking of each part of css think of the whole declaration block as a rule that your html must follow
 The whole thing is called a rule.
@@ -266,6 +272,7 @@ We never overwrote the font weight, we only rewrote the color
 
 Why might we want to link to a separate CSS file?
 Seperation of concerns, organization, re-usability etc.
+
 ## Selecting By Relationship (Review)
 Sometimes  we need to select specific html tags in order to apply styling and be more specific about which one we are targetting
 To select an element that is the direct descendent of another element use
@@ -340,6 +347,7 @@ span + p {
   color: red;
 }
 ```
+
 ## IDs & Classes (Review)
 These are identifiers that allow you to target elements and give the highest specificity score to elements that are targetted by it
 
@@ -552,9 +560,85 @@ Now we would only be able to hold 2 of them
 
 Margin is kind of related to the box model but isn't actually part of the element
 It keeps elements from coming within a certain distance of other elements but isn't necessarily part of the element itself
-## Let's Code
+## Let's Code (Review)
 The Box Model
+Do the instructions in the html/css of 'class08-materials/box-model-practice' 
+Here is the html:
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Blank Template</title>
+		<!-- external CSS link -->
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<h1>This is an h1</h1>
+		<h2>This is an h2</h2>
+		<p>This is a paragraph with some <span>spans</span> inside of <span>the</span> paragraph</p>
+		<section>
+			<h2>This is an h2 <span>inside</span> of a section</h2>
+		</section>
+
+		<ol>
+			<li>Please give the h1 some padding on three sides, margin on just one side, and a light purple background with light blue lettering</li>
+			<li>Please give the h2 significant padding on the top and bottom, a dark green border on the top and bottom, and an orange background</li>
+			<li>Please give the section a thick blue border, height of 300px, and more the 400px of margin on the top</li>
+			<li>Please make the spans have thin yellow borders and equal padding / margin on all sides</li>
+		</ol>
+
+	</body>
+</html>
+
+```
+
+Now to follow the instructions
+```css
+/* Please give the h1 some padding on three sides, 
+margin on just one side, and a light purple background with light blue lettering */
+h1 {
+  padding: 0 10px 10px 10px;
+  margin-left: 20px;
+  background-color: rgb(139, 90, 139);
+  color: rgb(86, 110, 248);
+}
+```
+
+```css
+/* Please give the h2 significant padding on the top and bottom, 
+a dark green border on the top and bottom, and an orange background */
+h2 {
+  padding: 50px 0;
+  border-top: 5px solid green;
+  border-bottom: 5px solid green;
+  background-color: orange;
+}
+```
+```css
+/* Please give the section a thick blue border, height of 300px, 
+and more the 400px of margin on the top */
+section {
+  border: 10px solid blue;
+  height: 300px;
+  margin-top: 401px;
+}
+```
+```css
+/* Please make the spans have thin yellow borders 
+and equal padding / margin on all sides */
+span {
+  border: 2px solid yellow;
+  padding: 10px;
+  margin: 10px;
+}
+```
+
+This should all be review so hopefully this is catching on by now
+
 ## Time For Some Layouts
+We have yet to do a full layout with everything we learned (will do today)
+For our layouts this week we will be using floats
+
 ## 🚨 Let's Talk About Floats 🚨 (Review)
 Flexbox and grid are far superior and floats aren't as common to use when developing new applications
 However it is important to know about floats because floats is how it was always done before
@@ -572,20 +656,447 @@ If you float something right it will try as hard as it can to go up as far as it
 When you use floats you are using a side effect
 If stuff tries to get into a corner they will sit next to each other
 ## 🚨 WARNING 🚨
+We are about to write some bad code
+Why?
+Because the biggest barrier a lot of students face is the idea of things needing to be perfect or best practice
+That is not what we are after right now
+At this point in class we just want to make stuff that works
+We will learn to perfect things and make them nice later
+We don't need to spend 3 hours on a header to make it pixel perfect or best practice
+Just get it done first
+
 ## Let's Write BADD CODE
 Real Layouts
 ## Layout 1
 TechCrunch Website
+We are going to just focus on three things from the techcrunch website
+
+1. The sidebar (nav)
+2. The main section (large primary article)
+3. The aside (list of other articles)
+
+Use the 'layout1' folder from 'class08-materials'
+Start by throwing the `<nav>` `<main>` and `<aside>` tags up
+```html
+<body>
+  <nav></nav>
+  <main></main>
+  <aside></aside>
+  <script type="text/javascript" src="js/main.js"></script>
+</body>
+```
+Inside the nave we can see that there is a techcrunch logo, a login link, and some nav list items
+This is pretty straightforward:
+```html
+<nav>
+  <img src="#" alt="techcrunch logo">
+  <a href="#">Login</a>
+  <ul>
+    <li><a href="#">Search</a></li>
+    <li><a href="#">Startups</a></li>
+    <li><a href="#">Videos</a></li>
+    <li><a href="#">Search</a></li>
+    <li><a href="#">Startups</a></li>
+    <li><a href="#">Videos</a></li>
+    <li><a href="#">Search</a></li>
+    <li><a href="#">Startups</a></li>
+    <li><a href="#">Videos</a></li>
+  </ul>
+</nav>
+```
+
+Now we can focus on the `<main>` section
+This looks like a header, paragraph, a span for the author name, and an image
+```html
+    <main>
+      <h1>What China's Fintech Market can teach teh world</h1>
+      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+      <span>Somebody's name</span>
+      <img src="#" alt="main image">
+    </main>
+```
+Now for the aside we have a list with heading (h2) and a span for each list item
+```html
+    <aside>
+      <ul>
+        <li>
+          <h2>Lorem ipsum dolor sit</h2>
+          <span>Somebody's name</span>
+        </li>
+        <li>
+          <h2>Lorem ipsum dolor sit</h2>
+          <span>Somebody's name</span>
+        </li>
+        <li>
+          <h2>Lorem ipsum dolor sit</h2>
+          <span>Somebody's name</span>
+        </li>
+        <li>
+          <h2>Lorem ipsum dolor sit</h2>
+          <span>Somebody's name</span>
+        </li>
+      </ul>
+    </aside>
+```
+If we look at this as is it doesn't quite look like the site
+We can now start working on the layout
+This is done in css
+The nav is about 10% width, the main is about 50% width and the aside is about 40% width
+We can set these in css and float them left
+```css
+nav, main, aside {
+  float: left;
+  width: 10%;
+}
+
+main {
+  width: 50%;
+}
+
+aside {
+  width: 40%;
+}
+```
+This only took a couple of minutes and gave us the core of a decent layout
+The styling isn't all there and it isn't perfect but we have the skeleton there
+There are a lot of changes to make but the important part is the core is here
+
+Final html: (added to base template html)
+```html
+<body>
+  <nav>
+    <img src="#" alt="techcrunch logo">
+    <a href="#">Login</a>
+    <ul>
+      <li><a href="#">Search</a></li>
+      <li><a href="#">Startups</a></li>
+      <li><a href="#">Videos</a></li>
+      <li><a href="#">Search</a></li>
+      <li><a href="#">Startups</a></li>
+      <li><a href="#">Videos</a></li>
+      <li><a href="#">Search</a></li>
+      <li><a href="#">Startups</a></li>
+      <li><a href="#">Videos</a></li>
+    </ul>
+  </nav>
+  <main>
+    <h1>What China's Fintech Market can teach teh world</h1>
+    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+    <span>Somebody's name</span>
+    <img src="#" alt="main image">
+  </main>
+  <aside>
+    <ul>
+      <li>
+        <h2>Lorem ipsum dolor sit</h2>
+        <span>Somebody's name</span>
+      </li>
+      <li>
+        <h2>Lorem ipsum dolor sit</h2>
+        <span>Somebody's name</span>
+      </li>
+      <li>
+        <h2>Lorem ipsum dolor sit</h2>
+        <span>Somebody's name</span>
+      </li>
+      <li>
+        <h2>Lorem ipsum dolor sit</h2>
+        <span>Somebody's name</span>
+      </li>
+    </ul>
+  </aside>
+  <script type="text/javascript" src="js/main.js"></script>
+</body>
+```
+
+Final CSS: (added to base template styles)
+```css
+nav, main, aside {
+  float: left;
+  width: 10%;
+}
+
+main {
+  width: 50%;
+}
+
+aside {
+  width: 40%;
+}
+```
+
 ## Layout 2
-Khan Academy
+Now we will do the same for Khan Academy
+It has a header and a nav inside to hold an anchor tag, a form (search), an h2 for the logo/name then some ul/li/a tags for the navigation
+Below that looks like a main section with two sub sections, one holds a picture and the other holds the h1, a paragraph and some buttons (actually links)
+
+First for the header, we need to create a nav inside with an anchor tag, serach, h2, and ul>li>a tags for navigation
+```html
+<header>
+  <nav>
+    <a href="#">Courses</a>
+    <form action="#">
+      <input type="text">
+    </form>
+    <h2>Khan Academy</h2>
+    <ul>
+      <li><a href="#">Donate</a></li>
+      <li><a href="#">Login</a></li>
+      <li><a href="#">Sign up</a></li>
+    </ul>
+  </nav>
+</header>
+```
+Now we will make the css to make everything in the header be side by side
+We can do this by floating everything easily
+```css
+header nav * {
+  float: left;
+}
+```
+Now all we have to do is give everything a width/margin so they aren't so close
+```css
+header nav > * {
+  float: left;
+  width: 10%;
+  margin: 0 5%;
+}
+```
+This fixed an issue with the input being tiny but we want the list to also be side by side
+We can do this by floating our li
+We aren't currently because we are only floating children of nav elements
+```css
+nav li {
+  float: left;
+  width: 33%;
+}
+```
+Let's also get rid of the bullets by using `text-decoration: none;`
+Note this needs to be applied to the `ul` element
+```css
+header nav > * {
+  float: left;
+  width: 10%;
+  margin: 0 5%;
+  list-style: none;
+}
+```
+Now we need to add the main to the html
+It will have two sections inside
+The first will just have an image
+The second will have a title, paragraph and links (buttons)
+```html
+<main>
+  <section>
+    <img src="./assets/students.PNG" alt="kids on computer">
+  </section>
+  <section>
+    <h1>For every student, every classroom. Real results.</h1>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem totam velit nisi delectus excepturi?</p>
+    <a href="#">Learners</a>
+    <a href="#">Teachers</a>
+    <a href="#">Districts</a>
+    <a href="#">Parents</a>
+  </section>
+</main>
+```
+Now we have all the content we can style and arrange it with css
+```css
+img {
+  width: 50%;
+  float: left;
+}
+main > section h1, main > section img{
+  margin-top: 200px;
+}
+```
+
 ## Layout 3
 BBC Website
+Now to tackle the bbc site
+This one can be broken down into a header/navbar, a main section (w/ two subsections where one has 4 subsubsections), and then another section (with 3 subsections)
+
+We will start with the header
+Which has an image (logo), anchor (login), and a ul>li's, and a search form
+```html
+<header>
+  <nav>
+    <img src="#" alt="BBC Logo">
+    <a href="#">Sign In</a>
+    <ul>
+      <li><a href="#">News</a></li>
+      <li><a href="#">News</a></li>
+      <li><a href="#">News</a></li>
+      <li><a href="#">News</a></li>
+      <li><a href="#">News</a></li>
+      <li><a href="#">News</a></li>
+      <li><a href="#">News</a></li>
+      <li><a href="#">News</a></li>
+      <li><a href="#">News</a></li>
+    </ul>
+    <form action="#">
+      <input type="text" placeholder="Search">
+    </form>
+  </nav>
+</header>
+```
+Now let's try to style this with css
+First the basic size and colors for the header:
+```css
+header {
+  height: 100px;
+  background: black;
+  color: white;
+}
+
+```
+
+Then we can start with arranging the navigation bar (set white just incase) 
+```css
+nav * {
+  float: left;
+  width: 10%;
+  color: white;
+  display: block;
+}
+```
+This kind of gives us the same issue we had before where the items inside aren't given enough width
+Right now the ul is being assigned a size of 10% which is way too small because of `nav *{...}`
+We can override this and get way better
+```css
+nav ul {
+  width: 50%;
+}
+```
+Then we can do the same kind of fix for the form
+```css
+nav form input {
+  width: 100%;
+}
+```
+As a last touch to the nav let's adjust the size of the header
+```css
+header {
+  height: 55px;
+  background: black;
+  color: white;
+}
+```
+
+Next we can start working on the two sections 
+Let's do the bottom one first since it looks easier
+It just has 3 repeating img, h3, paragraph, and a span
+```html
+<section>
+  <section>
+    <img src="#" alt="Joe Biden">
+    <h3>Lorem ipsum dolor sit</h3>
+    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
+      Quam sequi praesentium asperiores rem porro ducimus in ab cupiditate 
+      exercitationem velit.</p>
+      <span>US ELECTION 2002</span>
+  </section>
+  <section>
+    <img src="#" alt="Joe Biden">
+    <h3>Lorem ipsum dolor sit</h3>
+    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+      Quam sequi praesentium asperiores rem porro ducimus in ab cupiditate
+      exercitationem velit.</p>
+    <span>US ELECTION 2002</span>
+  </section>
+  <section>
+    <img src="#" alt="Joe Biden">
+    <h3>Lorem ipsum dolor sit</h3>
+    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+      Quam sequi praesentium asperiores rem porro ducimus in ab cupiditate
+      exercitationem velit.</p>
+    <span>US ELECTION 2002</span>
+  </section>
+</section>
+```
+We just want these sections next to each other so we can float them and set their widths to 33%
+We can target this section by using `main + section` since the third section will come after the main portion
+```css
+main + section > section  {
+  width: 33.333%;
+  float: left;
+}
+```
+
+This looks pretty good and we can start on the main section
+First there is a h2 saying welcome to bbc.com
+This is broken into two sections one of the sections is a large image/text
+The other section is 4 subsections of image/text
+
+The header and first section are pretty straightforward
+```html
+<main>
+  <h2>Welcome to BBC.com</h2>
+  <section>
+    <img src="#" alt="two people">
+    <h1>Historic Peace Deal</h1>
+    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laborum at dolorum similique ex repellat, dolor porro voluptas quis ullam</p>
+    <span>Middle East</span>
+  </section>
+    <section></section>
+</main>
+```
+Now for the second section it is broken up into 4 sections  also with images/text/span
+```html
+<main>
+  <h2>Welcome to BBC.com</h2>
+  <section>
+    <img src="#" alt="two people">
+    <h1>Historic Peace Deal</h1>
+    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laborum at dolorum similique ex repellat, dolor porro voluptas quis ullam</p>
+    <span>Middle East</span>
+  </section>
+  <section>
+    <section>
+      <img src="#" alt="flags">
+      <h3>Americans go home...</h3>
+      <span>CANADA</span>
+    </section>
+    <section>
+      <img src="#" alt="flags">
+      <h3>Americans go home...</h3>
+      <span>CANADA</span>
+    </section>
+    <section>
+      <img src="#" alt="flags">
+      <h3>Americans go home...</h3>
+      <span>CANADA</span>
+    </section>
+  </section>
+</main>
+```
+Now we can arrange them in css
+We want the first section to be floated to the left and take up half the space
+```css
+main > section {
+  width: 50%;
+  height: 500px;
+  float: left;
+}
+```
+Then we just have to arrange the section with 4 subsections (second section in main)
+We want these children sections to have half the width and height of the entire second section
+We can just float it left and add a border to make it obvious where things are
+```css
+main section + section section {
+  width: 50%;
+  height: 250px;
+  border: 1px solid black;
+  float: left;
+}
+```
 ## Responsive Websites (Review)
 Just hinting at this
 To be responsive means a website looks good on all screens
 This means it looks good when you look at it on a desktop/phone/tablet/smartfridge etc
 
 A responsive website will add/remove/resize/rearrange content as the screen gets bigger or smaller
+
 ## Fixed Vs. Responsive (Review)
 This is a example of how responsive design has changed
 UPS from back in the day was not responsive at all 
@@ -594,10 +1105,12 @@ UPS.com Wayback Machine
 
 Boston.com
 Has to be responsive because most people consume the news on their phones
+
 ## Fluid (Review)
 Everything as a percentage
 When things are set as a percentage they respond fluidly and takes up the same proportional amount of space
 Fluidity scales down until the content changes are made and looks nice
+
 ## Elastic (Review)
 Elasticity is setting fonts and texts to use a responsive unit of measure
 em's and rem's are the responsive form of text sizes
@@ -656,6 +1169,7 @@ p{
 
 "Font size of the parent, in the case of typographical properties like font-size, and font size of the element itself, in the case of other properties like width."
 - mdn
+
 ## Content Decisions (Review)
 To have a responsive website you have to make decisions about what content you show
 On a mobile device you don't have as much room and can only show important items 
@@ -689,6 +1203,7 @@ Try both ways
 
 ## Let's Code
 A Media Query
+(skipped)
 
 ## Important Addition To The Template (Review)
 For media queries to work we need to add the following to our template
@@ -714,31 +1229,11 @@ _____________________________
 |___________________________|
 ```
 Minimum Of 3 Media Queries
+
+Should have been turned in today see solution in office hours
 ## Let's Code
 Make It Responsive
 ## Homework
-Do: Code Homework Layout Photos - HTML & CSS (3 layouts)
+Do: Code Homework Layout Photos folder- HTML & CSS (3 layouts)
+Do: Code class layout photos folder (again)- html & CSS
 Read Go Deep On Things That Don't Make Sense
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
