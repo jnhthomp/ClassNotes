@@ -1,0 +1,176 @@
+/* Box Model Hack */
+* {
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+/* Clear fix hack */
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+
+.clear {
+	clear: both;
+}
+
+/******************************************
+/* BASE STYLES
+/*******************************************/
+
+/* Top Section (Blue header) */
+header > *, li {
+  float: left;
+  width: 33.333%;
+  margin: auto;
+  padding-top: 2%;
+  text-align: center;
+  color: white;
+}
+
+header > ul {
+  list-style: none;
+}
+header > ul > li > a {
+  color: white;
+  text-decoration: none;
+}
+
+.top {
+  height: 500px;
+  background: rgb(102, 118, 138);
+}
+
+h1 {
+  margin-top: 0;
+  padding-top: 125px;
+  font-size: 3em;
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.top > p {
+  width: 100%;
+  padding: 1% 10%;
+  font-size: 1.5em;
+  text-align: center;
+  color: white;
+}
+
+.top > div {
+  width: 100%;
+  text-align: center;
+  color: white;
+  margin: auto;
+}
+
+/* Second Section (Why heading and paragraph)*/
+section + section > h2 {
+  text-align: center;
+  width: 100%;
+  padding-top: 5%;
+  font-size: 3em;
+}
+
+body > section + section > p {
+  font-size: 1.5em;
+  width: 60%;
+  text-align: center;
+  margin: auto;
+  padding-bottom: 10%;
+}
+
+/* Third Section (split window) */
+body > section + section + section {
+  background: rgb(219, 223, 226);
+  height: 500px;
+}
+
+section + section + section > section {
+  width: 50%;
+  padding: 5% 5%;
+  float: left;
+  margin: auto;
+  text-align: center;
+}
+
+section + section + section > section > .preview {
+  background: rgb(102, 118, 138);
+  height: 150px;
+  width: 80%;
+  margin: auto;
+}
+
+section + section + section > section > h3, section + section + section > section > p {
+  text-align: center;
+  color: black;
+  width: 100%;
+}
+
+section + section + section > section > div, section + section + section + section > div {
+  text-align: center;
+  padding-top: 4%;
+}
+
+section + section + section > section > div > a, section + section + section + section > div > a {
+  color: black;
+  text-decoration: none;
+  border: 1px solid rgb(192, 195, 197);
+  padding: 2% 5%;
+}
+
+/* Fourth Section (Volunteer statement) */
+/* Most styles already applied by why section */
+body > section + section + section + section {
+  background-color: rgb(255, 255, 255);
+}
+
+/* Footer */
+footer, footer a {
+  background-color: rgb(22, 31, 42);
+  color: white;
+  text-decoration: none;
+}
+
+footer > section {
+  float: left;
+  width: 50%;
+}
+
+footer address {
+  float: right;
+  width: 50%;
+}
+
+footer > div {
+  height: 2px;
+  width: 95%;
+  background: rgb(88, 94, 101);
+  margin: auto;
+}
+
+footer > p {
+  float: left;
+}
+footer > img {
+  float: right;
+}
+/******************************************
+/* LAYOUT
+/*******************************************/
+/* header {
+
+}
+
+footer {
+
+} */
+
+/******************************************
+/* ADDITIONAL STYLES
+/*******************************************/
