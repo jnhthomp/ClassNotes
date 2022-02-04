@@ -21,21 +21,150 @@
 /* BASE STYLES
 /*******************************************/
 
-/* body {
-
-} */
-
-
 /******************************************
 /* LAYOUT
 /*******************************************/
-/* header {
 
+
+/* Header/nav section */
+nav {
+  height: 60px;
+  background: rgb(245, 249, 252);
 }
 
-footer {
+nav > img {
+  display: none;
+}
 
-} */
+header > nav > * {
+  float: left;
+  width: 10%;
+  text-decoration: none;
+}
+
+header > nav > ul {
+  width: 80%;
+  list-style-type: none;
+  padding: 0 15%;
+  text-decoration: none;
+}
+
+header > nav > ul > li {
+  float: left;
+  text-align: center;
+  width: 25%;
+}
+
+/* Hero section (large text/image split screen) */
+main > section {
+  float: right;
+  width: 50%;
+  background: rgb(245, 249, 252);
+  height: 550px;
+  color: rgb(66, 86, 103);
+}
+
+main > section + section img {
+  height: auto;
+  width: auto;
+  float: right;
+  max-height: 100%;
+  max-width: auto;
+  
+}
+
+main > section {
+  padding: 8%;
+  float: left;
+}
+
+main > section + section {
+  padding: 5% 0;
+  overflow:auto;
+}
+
+main > section h1 {
+  font-size: 3em;
+  color: rgb(66, 86, 103);
+}
+main > section form {
+  width: 100%;
+}
+main > section input {
+  background-color: rgb(225, 233, 240);
+  margin-right: 0;
+  border: none;
+  height: 2em;
+  width: 80%;
+}
+
+main > section form a {
+  background-color: rgb(48, 70, 89);
+  color: white;
+  height: 32px;
+  padding: 6px 15px;
+  margin-left: 0;
+  border: none;
+  width: 20%;
+  text-decoration: none;
+}
+
+/* Bottom Section */
+body > main + section > section {
+  float: left;
+  width: 25%;
+  background: rgb(245, 249, 252);
+}
+
+@media (max-width: 700px){
+  nav ul, nav > ul + a{
+    display: none;
+  }
+
+  nav > a {
+    width: 100%;
+    text-align: center;
+  }
+
+  nav > img {
+    display: block;
+  }
+
+  main >section + section {
+    width: 100%;
+    float: left;
+  }
+  main > section{
+    width: 100%;
+    height: auto;
+    float: right;
+  }
+
+  main > section input {
+    width: 100%;
+    float: left;
+  }
+  main > section form a {
+    width: 100%;
+    line-height: 40%;
+    padding: 4% 0;
+    text-align: center;
+    float: right;
+    margin-top: 2%;
+  }
+
+  main > section > p {
+    padding-top: 20%;
+    width: 100%;
+  }
+
+  body > main + section > section {
+    width: 100%;
+    text-align: center;
+    border: 2px solid rgb(133, 146, 158);
+    padding: 5%;
+  }
+}
 
 /******************************************
 /* ADDITIONAL STYLES
