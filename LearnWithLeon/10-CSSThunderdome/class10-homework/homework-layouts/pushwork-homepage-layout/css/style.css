@@ -1,0 +1,477 @@
+/* Box Model Hack */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: rgb(248, 248, 250);
+}
+
+/* Clear fix hack */
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+
+.clear {
+	clear: both;
+}
+
+.group:before,
+.group:after {
+  content: "";
+  display: table;
+}
+.group:after {
+  clear: both;
+}
+.group {
+  clear: both;
+  *zoom: 1;
+}
+
+/******************************************
+/* BASE STYLES
+/*******************************************/
+
+/* body {
+
+} */
+
+
+/******************************************
+/* LAYOUT
+/*******************************************/
+header {
+  height: 200px;
+  background: rgb(26, 33, 48);
+  color: rgb(103, 108, 119);
+  font-size: 1.2em;
+  padding-top: 1%;
+}
+
+header svg {
+  margin: 1%;
+}
+
+header ul {
+  float: right;
+  width: 60%;
+  list-style: none;
+  padding: 0 40px;
+}
+
+header ul li {
+  float: left;
+  width: 14.28%;
+  text-align: center;
+  margin-top: 2%;
+  padding: 2%;
+  border-radius: 10%;
+}
+
+header ul li:first-child, header ul li:last-child {
+  color: rgb(175, 179, 189);
+}
+
+header ul li:last-child {
+  background-color: rgb(55, 61, 76);
+
+}
+
+main {
+  background: rgb(26, 33, 48);
+  background: linear-gradient(-5deg, rgb(248, 248, 250) 40%, rgb(26, 33, 48) 40%);
+  height: 350px;
+  color: rgb(248, 248, 250);
+  margin-bottom: 0;
+}
+
+main > section {
+  width: 50%;
+  float: left;
+  padding-left: 7%;
+}
+
+main > section > h1 {
+  width: 70%;
+}
+
+main > section > p {
+  width: 80%;
+  color: rgb(132, 136, 143);
+}
+
+main > section > p + div > {
+  width: 80%;
+}
+
+main > section > p + div > a {
+  background: white;
+  color: rgb(81, 86, 99);
+  text-decoration: none;
+  display: block;
+  width: 35%;
+  float: left;
+  padding: 2% 10%;
+  border-radius: 5px;
+}
+
+main > section > p + div > a + a {
+  background: none;
+  color: white;
+  text-decoration: none;
+  display: block;
+  width: 40%;
+  float: right;
+  border-radius: 5px;
+}
+
+main > section:nth-child(2) > div {
+  background: white;
+  width: 50%;
+  height: 250px;
+  border-radius: 5%;
+  padding: 1%;
+  float: right;
+  margin-right: 5%;
+  box-shadow: 0 10px 15px rgb(26, 33, 48);
+}
+
+main > section > div > div {
+  background: rgb(222, 224, 233);
+  height: 98%;
+  width: 85%;
+  margin: auto;
+  padding: 1%;
+  text-align: center;
+  vertical-align: middle;
+}
+
+main > section + section > div > div > div{
+  width: 100%;
+  padding: 2%;
+  margin: 16% 0;
+}
+main > section + section > div > div > div > img{
+  width: 40%;
+  height: auto;
+}
+
+main + section {
+  width: 100%;
+  background-color: rgb(248, 248, 250);
+  margin-top: 0;
+  
+}
+
+main + section > ul {
+  width: 70%;
+  margin: 0;
+  list-style: none;
+  float: right;
+}
+main + section > ul > li {
+  float: right;
+  padding: 1%;
+}
+
+main + section + section > section {
+  width: 50%;
+  float: left;
+  padding-left: 5%;
+}
+
+main + section + section > section > h4, 
+main + section + section + section > section + section > h4, 
+main + section + section + section + section + section + section > h4, 
+main + section + section + section + section + section + section + section + section + section > h4  {
+  color: rgb(131, 143, 157);
+}
+
+main + section + section > section > h2 {
+  color: rgb(48, 59, 71);
+  font-size: 2.4em;
+  width: 80%;
+}
+
+main + section + section > section > p {
+  color: rgb(150, 159, 171);
+  font-size: 1.5em;
+  width: 85%;
+}
+
+main + section + section > section > a {
+  background-color: rgb(27, 33, 48);
+  display: block;
+  color: rgb(176, 179, 189);
+  text-decoration: none;
+  padding: 2% 7%;
+  border-radius: 5px;
+  margin-top: 7%;
+  width: 25%;
+  float: left;
+  text-align: center;
+}
+
+main + section + section > section + section {
+  float: right;
+  width: 45%;
+  padding-left: 0;
+}
+
+main + section + section > section + section > section {
+  background-color: rgb(255, 255, 255);
+  width: 40%;
+  box-shadow: 0 10px 15px rgb(26, 33, 48);
+  padding-bottom: 2%;
+  text-align: center;
+  float: right;
+  margin: 3%;
+
+}
+
+main + section + section > section + section > section > img{
+  background-color: rgb(255, 255, 255);
+  width: 100%;
+  height: auto;
+}
+
+main + section + section + section > section {
+  background: rgb(222, 224, 233);
+  width: 40%;
+  height: 500px;
+  float: left;
+  margin: 10% 4%;
+}
+
+main + section + section + section > section > img {
+  margin: 30%; 
+  width: 40%;
+  height: auto;
+}
+
+main + section + section + section > section + section {
+  background: none;
+  float: right;
+  width: 40%;
+}
+
+main + section + section + section > section + section > a {
+  background-color: rgb(27, 33, 48);
+  display: block;
+  color: rgb(176, 179, 189);
+  text-decoration: none;
+  padding: 2% 7%;
+  border-radius: 5px;
+  margin-top: 7%;
+  width: 25%;
+  float: left;
+  text-align: center;
+}
+
+main + section + section + section + section > h2 {
+  width: 100%;
+  text-align: center;
+  font-size: 2.25em;
+}
+
+main + section + section + section + section > p {
+  font-size: 1.25em;
+  margin-left: 25%;
+  width: 50%;
+  text-align: center;
+  color: rgb(188, 194, 202);
+}
+
+main + section + section + section + section + section > section {
+    background: rgb(222, 224, 233);
+  width: 40%;
+  height: 500px;
+  float: left;
+  margin: 10% 4%;
+
+}
+
+main + section + section + section + section + section > section > img {
+  margin: 30%; 
+  width: 40%;
+  height: auto;
+  border: 10px solid rgb(221, 224, 233);
+}
+
+main + section + section + section + section + section > section + section {
+  background: none;
+  float: right;
+  width: 40%;
+}
+
+main + section + section + section + section + section > section + section > a {
+  background-color: rgb(27, 33, 48);
+  display: block;
+  color: rgb(176, 179, 189);
+  text-decoration: none;
+  padding: 2% 7%;
+  border-radius: 5px;
+  margin-top: 7%;
+  width: 25%;
+  float: left;
+  text-align: center;
+}
+
+main + section + section + section + section + section + section {
+  padding-left: 5%;
+  width: 100%;
+  background: linear-gradient(175deg, rgb(248, 248, 250) 60%, rgb(26, 33, 48) 40%);
+}
+main + section + section + section + section + section + section > h2 {
+  font-size: 2.0em;
+  width: 20%;
+  margin: 0%;
+}
+
+main + section + section + section + section + section + section + section {
+  background: rgb(16, 20, 33);
+  overflow: hidden;
+  padding-left: 5%;
+}
+
+main + section + section + section + section + section + section + section > section{
+  background-color: rgb(255, 255, 255);
+  width: 25%;
+  float: left;
+  margin: 2% 0 2% 2%;
+  border-radius: 5px;
+  height: 150px;
+}
+main + section + section + section + section + section + section + section > section > h2 {
+  margin: 0%;
+}
+
+/*  */
+main + section + section + section + section + section + section + section + section> section {
+  background: rgb(222, 224, 233);
+  width: 40%;
+  height: 500px;
+  float: left;
+  margin: 10% 4%;
+}
+
+main + section + section + section + section + section + section + section + section > section > img {
+  margin: 30%; 
+  width: 40%;
+  height: auto;
+}
+
+main + section + section + section + section + section + section + section + section > section + section {
+  background: none;
+  float: right;
+  width: 40%;
+}
+
+main + section + section + section + section + section + section + section + section> section + section > a {
+  background-color: rgb(27, 33, 48);
+  display: block;
+  color: rgb(176, 179, 189);
+  text-decoration: none;
+  padding: 2% 7%;
+  border-radius: 5px;
+  margin-top: 7%;
+  width: 25%;
+  float: left;
+  text-align: center;
+}
+/*  */
+main + section + section + section + section + section + section + section + section + section {
+  width: 100%;
+  text-align: center;
+  background: white;
+  height: 600px;
+  padding-top: 10%;
+}
+
+main + section + section + section + section + section + section + section + section + section > span {
+  width: 15%;
+  float: left;
+}
+main + section + section + section + section + section + section + section + section + section > h2 {
+  width: 70%;
+  float: left;
+}
+
+main + section + section + section + section + section + section + section + section + section > section > div {
+  background: rgb(221, 224, 233);
+  border-radius: 100%;
+  width: 80px;
+  height: 80px;
+  margin-left: 35%;
+  float: left;
+}
+
+main + section + section + section + section + section + section + section + section + section > section > span {
+  text-align: left;
+  float: left;
+  width: 50%;
+}
+
+main + section + section + section + section + section + section + section + section + section + section {
+  background-color: rgb(37, 46, 62);
+  height: 200px;
+  padding-left: 10%;
+  padding-top: 5%;
+}
+main + section + section + section + section + section + section + section + section + section + section h2{
+  width: 50%;
+  float: left;
+}
+main + section + section + section + section + section + section + section + section + section + section h4{
+  margin: 0;
+  color: rgb(105, 111, 122);
+}
+
+main + section + section + section + section + section + section + section + section + section + section h2{
+  color: rgb(195, 198, 205);
+}
+main + section + section + section + section + section + section + section + section + section + section > section + section{
+  width: 40%;
+  float: right;
+}
+main + section + section + section + section + section + section + section + section + section + section > section > a{
+  background-color: rgb(47, 51, 64);
+  padding: 1% 3%;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-right: 1%;
+}
+main + section + section + section + section + section + section + section + section + section + section > section > a + a{
+  background-color: rgb(237, 239, 244);
+  color: rgb(52, 56, 67);
+}
+
+footer > section {
+  width: 16%;
+  float: left;
+  padding-left: 4%;
+}
+
+footer > section ul {
+  list-style: none;
+}
+
+footer > section:nth-child(3){
+  padding-top: 2.5%;
+}
+
+/* 
+footer {
+
+} */
+
+/******************************************
+/* ADDITIONAL STYLES
+/*******************************************/
