@@ -13,7 +13,315 @@
 		<link rel="stylesheet" href="css/style.css">
 	</head>
 	<body>
-
+    <!-- 
+    -- Apply background image over <header> and <main>
+    -- https://stackoverflow.com/questions/31100688/one-background-image-for-multiple-divs 
+    -->
+    <header class="heroImage">
+      <nav>
+        <div class="mobileMenu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" width="44" height="44"
+            viewBox="0 0 24 24" stroke-width="1.5" stroke="rgb(99, 100, 125)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <line x1="4" y1="6" x2="20" y2="6" />
+            <line x1="4" y1="12" x2="20" y2="12" />
+            <line x1="4" y1="18" x2="20" y2="18" />
+          </svg>
+        </div>
+        <ul>
+          <li class="vAlign"><a href="#">Home</a></li>
+          <li class="vAlign"><a href="#">About Us</a></li>
+          <li class="vAlign"><a href="#">Menu</a></li>
+          <li class="vAlign"><a href="#">Order Now</a></li>
+          <li class="vAlign"><a href="#">Blog</a></li>
+          <li class="vAlign"><a href="#">Location</a></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shopping-cart" width="44" height="44"
+              viewBox="0 0 24 24" stroke-width="1.5" stroke="rgb(99, 100, 125)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <circle cx="6" cy="19" r="2" />
+              <circle cx="17" cy="19" r="2" />
+              <path d="M17 17h-11v-14h-2" />
+              <path d="M6 5l14 1l-1 7h-13" />
+            </svg>
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="44" height="44"
+              viewBox="0 0 24 24" stroke-width="1.5" stroke="rgb(99, 100, 125)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <circle cx="10" cy="10" r="7" />
+              <line x1="21" y1="21" x2="15" y2="15" />
+            </svg>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main class="clear heroImage">
+      <section>
+        <h1>Welcome To Our Cuisine Restaurant</h1>
+        <form action="#" class="clearfix">
+          <input type="text" placeholder="Search Here">
+          <div class="buttonStyle">
+            <a href="#">
+              Location 
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                  class="icon icon-tabler icon-tabler-caret-down" 
+                  width="25" height="25"
+                  viewBox="0 0 24 24" stroke-width="1.5" stroke="white" 
+                  fill="white" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M18 15l-6 -6l-6 6h12" transform="rotate(180 10 15)" />
+              </svg> 
+            </a>
+          </div>
+        </form>
+        <ul>
+          <li>
+            <!-- Facebook svg -->
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                class="icon icon-tabler icon-tabler-brand-facebook fb" 
+                width="44" height="44"
+                viewBox="0 0 24 24" stroke-width="1.5" stroke="orange" 
+                fill="orange" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3" />
+            </svg>
+            <span>252k</span>
+          </li>
+          <li>
+            <!-- Twitter svg -->
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                class="icon icon-tabler icon-tabler-brand-twitter tw" 
+                width="44" height="44"
+                viewBox="0 0 24 24" stroke-width="1.5" stroke="orange" 
+                fill="orange" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path
+                d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+            </svg>
+            <span>62k</span>
+          </li>
+          <li>
+            <!-- Instagram svg -->
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                class="icon icon-tabler icon-tabler-brand-instagram insta" width="44" height="44"
+                viewBox="0 0 24 24" stroke-width="1.5" stroke="orange" 
+                fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <rect x="4" y="4" width="16" height="16" rx="4" />
+              <circle cx="12" cy="12" r="3" />
+              <line x1="16.5" y1="7.5" x2="16.5" y2="7.501" />
+            </svg>
+            <span>55k</span>
+          </li>
+        </ul>
+      </section>
+    </main>
+    <section class="clear aboutUs">
+      <div class="backgroundLeft"></div>
+      <div class="backgroundRight"></div>
+      <section>
+        <span>About us</span>
+        <h2>Discover Our Restaurant Story</h2>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla quibusdam perspiciatis magnam similique aperiam officia minima placeat voluptates, alias error odit earum ratione iure nihil optio repellat natus corporis aliquam!</p>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Debitis, natus. Illum nihil, ea autem voluptates accusamus amet suscipit neque praesentium explicabo pariatur harum, omnis quibusdam vero nam saepe quae incidunt?</p>
+        <div class="buttonStyle"><a href="#">Discover Menu</a></div>
+        <div class="buttonStyle">
+          <a href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-narrow-right" width="50" height="50"
+              viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <line x1="15" y1="16" x2="19" y2="12" />
+              <line x1="15" y1="8" x2="19" y2="12" />
+            </svg>
+          </a>
+        </div>
+      </section>
+    </section>
+    <section class="specialty">
+      <span>Order Online Now</span>
+      <h2>Our Specialty Cuisine</h2>
+      <ul class="clearfix">
+        <li class="highlight">Breakfast</li>
+        <li>Lunch</li>
+        <li>Dinner</li>
+        <li>Dessert</li>
+        <li>Shake</li>
+      </ul>
+      <section>
+        <img src="./assets/specials/1-melissa-walker-horn-WbA_PCv3_Co-unsplash.jpg" alt="Food pic">
+        <img src="./assets/specials/2-svitlana-NJTN-oYIIY4-unsplash.jpg" alt="Food pic">
+        <img src="./assets/specials/3-joshua-ryder-y4K7Ydp2z3Y-unsplash.jpg" alt="Food pic">
+        <img src="./assets/specials/4-ben-kolde-FFqNATH27EM-unsplash.jpg" alt="Food pic">
+        <img src="./assets/specials/5-dani-rendina-SH6vc3VOOwE-unsplash.jpg" alt="Food pic">
+        <img src="./assets/specials/6-randy-fath-SQ20tWzxXO0-unsplash.jpg" alt="Food pic">
+        <img src="./assets/specials/7-calum-lewis-8Nc_oQsc2qQ-unsplash.jpg" alt="Food pic">
+        <img src="./assets/specials/8-food-photographer-jennifer-pallian-FT7fjyEyqv0-unsplash.jpg" alt="Food pic">
+      </section>
+      <section class="pageMarker">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle" width="44" height="44"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#fedcb4" fill="#fedcb4" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            class="icon icon-tabler icon-tabler-circle" width="44" height="44"
+            viewBox="0 0 24 24" stroke-width="1.5" stroke="#fedcb4" 
+            fill="#fedcb4" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            class="icon icon-tabler icon-tabler-circle active" width="44" height="44"
+            viewBox="0 0 24 24" stroke-width="1.5" stroke="#fedcb4" 
+            fill="#fedcb4" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            class="icon icon-tabler icon-tabler-circle" width="44" height="44"
+            viewBox="0 0 24 24" stroke-width="1.5" stroke="#fedcb4" 
+            fill="#fedcb4" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            class="icon icon-tabler icon-tabler-circle" width="44" height="44"
+            viewBox="0 0 24 24" stroke-width="1.5" stroke="#fedcb4" 
+            fill="#fedcb4" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            class="icon icon-tabler icon-tabler-circle" width="44" height="44"
+            viewBox="0 0 24 24" stroke-width="1.5" stroke="#fedcb4" 
+            fill="#fedcb4" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+      </section>
+    </section>
+    <section class="hours">
+      <span>Book Table</span>
+      <h2>Opening Hours</h2>
+      <div class="svgHold">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-phone phone" width="50" height="50"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff9300" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
+        </svg>
+      </div>
+      <div><span class="altSpan">Call Now</span> </div>
+      <span class="clear">+1(234)555-6789</span>
+      <section class="listHours">
+        <section>
+          <div><span>Monday to Thursday</span></div>
+          <div><span>09:00am - 10:00pm</span></div>
+        </section>
+        <section>
+          <div><span>Friday to Sunday</span></div>
+          <div><span>11:00am - 8:00pm</span></div>
+        </section>
+      </section>
+      <section class="clearfix videoHold">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="44" height="44"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffbf00" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <polyline points="15 6 9 12 15 18" />
+        </svg>
+        <img src="./assets/nick-karvounis-Ciqxn7FE4vE-unsplash.jpg" alt="video of food">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="44" height="44"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffbf00" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <polyline points="9 6 15 12 9 18" />
+        </svg>
+      </section>
+      <section class="mobileArrows">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="44" height="44"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffbf00" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <polyline points="15 6 9 12 15 18" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="44" height="44"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffbf00" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <polyline points="9 6 15 12 9 18" />
+        </svg>
+      </section>
+    </section>
+    <section class="review">
+      <span>Testimonials</span>
+      <h2>Customers Say</h2>
+      <div class="userImage"><img src="./assets/avatar-1ee40e400b711fec4ecf690b16307491.jpg" alt="Picture of person"></div>
+      <div class="userName">
+        <span>Mr John Smith</span>
+      </div>
+      <div class="userOccupation">
+        <span>Art Director</span>
+      </div>
+      <section class="stars">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-star" width="35" height="35"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff9300" fill="#ff9300" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-star" width="35" height="35"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff9300" fill="#ff9300" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-star" width="35" height="35"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff9300" fill="#ff9300" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-star" width="35" height="35"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff9300" fill="#ff9300" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-star" width="35" height="35"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff9300" fill="#ff9300" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+        </svg>
+      </section>
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.  At odit, error qui perferendis atque voluptates. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur sed nostrum voluptate cupiditate nobis id, sequi
+      facilis doloremque quos iste mollitia enim fuga. At odit, error qui perferendis atque voluptates.</p>
+      <section class="pageMarker">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle" width="44" height="44"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#fedcb4" fill="#fedcb4" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle" width="44" height="44"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#fedcb4" fill="#fedcb4" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle active" width="44" height="44"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#fedcb4" fill="#fedcb4" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle" width="44" height="44"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#fedcb4" fill="#fedcb4" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle" width="44" height="44"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#fedcb4" fill="#fedcb4" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+      </section>
+    </section>
 		<script type="text/javascript" src="js/main.js"></script>
 	</body>
 </html>

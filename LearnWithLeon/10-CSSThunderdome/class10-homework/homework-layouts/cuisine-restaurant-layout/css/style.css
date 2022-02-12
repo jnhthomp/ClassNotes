@@ -20,23 +20,691 @@
 /******************************************
 /* BASE STYLES
 /*******************************************/
+/* General Span style (overwrite where needed) */
+span {
+  color: orange;
+  font-size: 2.2rem;
+  font-weight: 600;
+}
 
-/* body {
+/* Style big orange buttons for reuse */
+.buttonStyle {
+  background-color: orange;
+  height: 50px;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 50px;
+}
 
-} */
+/* Fix text inside button */
+.buttonStyle > a {
+  color: white;
+  text-decoration: none;
+  color: white;
+  text-align: center;
+  font-size: 1.5rem;
+}
 
+/* h2 styles */
+h2 {
+  width: 75%;
+  font-size: 5rem;
+  margin-top: 0;
+}
+
+/* remove bullets from all lists */
+ul {
+  list-style: none;
+}
 
 /******************************************
-/* LAYOUT
+/* Header/Nav
 /*******************************************/
-/* header {
+/* Add same background image to both <header> and <main>*/
+.heroImage {
+  width: 100%;
+  height: 50%;
+  margin: 0;
+  /* Select background image and set static */
+  background: no-repeat url("../assets/brooke-lark-08bOYnH_r_E-unsplash.jpg") fixed;
+  /* adjust scale of background image */
+  background-size: 100%;
+}
+
+/* Push background image together */
+.heroImage * {
+  margin: 0;
+}
+
+/* Set height of header to show picture and adjust inner content */
+header.heroImage {
+  height: 100px;
+  padding-top: 1%;
+}
+
+main.heroImage {
+  height: 1080px;
+}
+
+header.heroImage .mobileMenu {
+  display: none;
+}
+/* Arrange list vertically across screen */
+header.heroImage ul {
+  float: right;
+  width: 65%;
+  
+}
+header.heroImage li {
+  text-align: center;
+  float: left;
+  width: 10.5%;
+  margin: 0 1%;
+}
+
+/* Align list items with svgs */
+header.heroImage li.vAlign{
+  padding-top: .47%;
+}
+
+/* Style list content */
+header.heroImage li a {
+  color: rgb(99, 100, 125);
+  text-decoration: none;
+  font-size: 1.3rem;
+  
+}
+
+@media (max-width: 1465px) {
+  header.heroImage ul {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1000px) {
+  header.heroImage ul li a {
+    font-size: .95rem;
+    font-weight: 500;
+  }
+}
+
+@media (max-width: 700px) {
+  header.heroImage {
+    background: rgb(237, 245, 248);
+  }
+  header.heroImage ul {
+    display: none;
+  }
+  header.heroImage .mobileMenu {
+    display: block;
+  }
+}
+
+/******************************************
+/* Main
+/*******************************************/
+/* arrange section/content */
+main > section {
+  width: 50%;
+  float: left;
+  padding-left: 5%;
+  padding-top: 5%;
+}
+
+/* Style heading */
+main > section > h1 {
+  font-size: 9rem;
+}
+
+/* Style input field */
+main form > input {
+  width: 65%;
+  height: 50px;
+  font-size: 1.5rem;
+  /* set background search glass */
+  background: url(../assets/search.svg) no-repeat scroll;
+  /* indent text start to not cover magnifying glass  */
+  padding-left: 40px;
+  border: 1px solid rgba(99, 100, 125, .25);
+  border-radius: 5px 0 0 5px;
+  float: left;
+}
+
+
+
+/* Create location "button" */
+main form div.buttonStyle {
+  float: left;
+  width: 15%;
+  /* override borderradius when bumped against another element */
+  border-radius: 0 5px 5px 0;
+}
+
+main ul {
+  float: left;
+  width: 100%;
+  padding-left: 0;
+  padding-top: 20px;
+}
+
+main li {
+  float: left;
+  width: 20%;
+  line-height: 50px;
+}
+
+/* Adjust size and position of logo svgs */
+main li svg.fb {
+  transform: scale(.6) translate(33%,44%); 
+}
+
+main li svg.tw {
+  transform: scale(.6) translate(19%, 44%); 
+}
+
+main li svg.insta {
+  transform: scale(.7) translate(4%, 41%); 
+}
+
+main li span {
+  font-size: 1.75rem;
+  line-height: 50px;
+  color: black;
+  font-weight: 500;
+}
+
+@media (max-width: 1465px) {
+  main.heroImage {
+    height: 725px;
+  }
+
+  main.heroImage > section {
+    width: 60%;
+  }
+  main > section > h1 {
+    font-size: 7em;
+  }
+}
+
+@media (max-width: 1025px) {
+  main.heroImage {
+    height: 475px;
+  }
+
+  main > section > h1 {
+    font-size: 4em;
+  }
+
+  main.heroImage form input {
+    width: 70%;
+    border-radius: 5px 5px 0 0;
+  }
+
+  main.heroImage form div.buttonStyle {
+    width: 70%;
+    border-radius: 0 0 5px 5px;
+  }
+  main li {
+    width: 30%;
+  }
+}
+
+@media (max-width: 700px) {
+  main.heroImage {
+    height: 400px;
+    background: rgb(237, 245, 248);
+  }
+
+  main.heroImage h1{
+    font-size: 3.5em;
+  }
+  main.heroImage ul li > span {
+    display: none;
+  }
+
+  main.heroImage > section{
+    padding-top: 0;
+    width: 100%;
+    text-align: center;
+    padding-left: 0;
+  }
+  main.heroImage > section form{
+    width: 140%;
+    text-align: center;
+    padding-left: 1%;
+  }
+  main.heroImage ul li {
+    width: 33.333%;
+  }
 
 }
 
-footer {
+/******************************************
+/* About Us
+/*******************************************/
+.aboutUs {
+  position: relative;
+  height: 1000px;
+}
 
-} */
+.backgroundLeft {
+  background: 
+    linear-gradient( to right, transparent 0, transparent 200px, white 60%),
+    linear-gradient( to top, transparent 0, transparent 200px, white 90%), 
+    url("../assets/brooke-lark-of0pMsWApZE-unsplash.jpg") scroll;
+  background-repeat: no-repeat;
+  background-position: center left;
+  background-size: cover;
+  width: 50%;
+  min-height: 100%;
+  min-width:50%;
+  height: 100%;
+  position: absolute;
+  left: -2%;
+  z-index: -1; 
+  float: left;
+  overflow: hidden;
+}
+
+.backgroundRight{
+  background: 
+    linear-gradient( to left, transparent 0, transparent 200px, white 95%), 
+    linear-gradient( to top, transparent 0, transparent 200px, white 90%),
+    url("../assets/olga-kudriavtseva-s8J1DlRroo0-unsplash.jpg") scroll;
+  background-repeat: no-repeat;
+  background-position: center right;
+  background-size: cover;
+  width: 30%;
+  min-height: 100%;
+  min-width: 30%;
+  height: 100%;
+  position: absolute;
+  right: -0%;
+  z-index: -1; 
+  float: right;
+}
+
+
+section.aboutUs > section {
+  width: 70%;
+  float: right;
+  padding-right: 30%;
+  padding-top: 5%;
+  font-size: 2rem;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+
+section.aboutUs .buttonStyle {
+  width: 25%;
+  border-radius: 5px 0 0 5px;
+  float: left;
+}
+
+section.aboutUs .buttonStyle + .buttonStyle {
+  background-color: rgb(252, 188, 70);
+  width: 6%;
+  border-radius: 0 5px 5px 0;
+  float: left;
+}
+
+@media (max-width: 1570px) {
+  section.aboutUs .backgroundLeft, section.aboutUs .backgroundRight {
+    background: white;
+  }
+
+  section.aboutUs {
+    height: 800px;
+  }
+
+  section.aboutUs > section {
+    width: 90%;
+    padding-right: 10%;
+  }  
+}
+
+@media (max-width: 1000px){
+  section.aboutUs {
+    height: 975px;
+  }
+
+  section.aboutUs h2 {
+    font-size: 4rem;
+  }
+
+  section.aboutUs .buttonStyle {
+    width: 30%;
+    border-radius: 5px;
+  }
+
+  section.aboutUs .buttonStyle + .buttonStyle {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  section.aboutUs h2 {
+    font-size: 3.5rem;
+  }
+}
+/******************************************
+/* Menu
+/*******************************************/
+section.specialty {
+  text-align: center;
+  width: 100%;
+  background-color: rgb(242, 246, 247);
+  height: 1200px;
+  padding-top: 5%;
+}
+
+section.specialty h2 {
+  width: 100%;
+}
+
+section.specialty > ul {
+  width: 100%;
+  text-align: center;
+  padding-left: 34%;
+}
+
+section.specialty > ul li {
+  float: left;
+  width: 10%;
+  font-size: 1.7em;
+  border-bottom: 2px solid rgb(224, 227, 228);
+  padding-bottom: 1%;
+}
+
+section.specialty > ul li.highlight {
+  color: orange;
+  border-bottom: 2px solid orange;
+}
+
+
+section.specialty > section {
+  width: 50%;
+  text-align: center;
+  margin-left: 25%;
+  float: left;
+}
+
+section.specialty > section > img {
+  height: 300px;
+  width: 20%;
+  padding: 1%;
+  margin: 0 2%;
+  object-fit: cover;
+}
+
+/* Set colors for page markers */
+section.pageMarker > svg {
+  fill: #fedcb4;
+  stroke: #fedcb4;
+  transform: scale(.5);
+
+}
+
+section.pageMarker > svg.active {
+  fill: orange;
+  stroke: orange;
+  transform: scale(.7);
+}
+
+@media (max-width: 1450px) {
+  section.specialty {
+    height: 1000px;
+  }
+
+  section.specialty ul li {
+    width: 15%;
+  }
+  section.specialty ul {
+    padding-left: 22%;
+  }
+
+  section.specialty > section {
+    width: 70%;
+    margin-left: 16%
+  }
+}
+
+@media (max-width: 1000px) {
+  section.specialty {
+    height: 1700px;
+  }
+  section.specialty > section > img {
+    width: 30%;
+  }
+}
+
+@media (max-width: 700px) {
+
+  section.specialty {
+    height: 1000px;
+  }
+
+  section.specialty h2 {
+    font-size: 4rem;
+  }
+  section.specialty ul {
+    padding-left: 0;
+    text-align: center;
+  }
+
+  section.specialty ul li {
+    display: none;
+  }
+
+  section.specialty ul li:first-child {
+    display: block;
+    width: 15%;
+    margin-left: 42.5%;
+  }
+
+  section.specialty > section > img {
+    width: 60%;
+  }
+
+  section.specialty > section > img:nth-child(n+5) {
+    display: none;
+  }
+}
 
 /******************************************
-/* ADDITIONAL STYLES
+/* Hours/Contact
 /*******************************************/
+/* align section */
+section.hours {
+  text-align: center;
+  width: 100%;
+  height: 1300px;
+  padding-top: 3%;
+  background: no-repeat
+    linear-gradient( to bottom, transparent 0, transparent 1px, white 96%),
+    url("../assets/brooke-lark-fANEvguCIXE-unsplash.jpg") scroll;
+  background-size: 100%;
+}
+
+/* Adjust heading */
+section.hours h2 {
+  width: 100%;
+  margin-bottom: 1.5%;
+}
+
+/* Set container for phone icon to center */
+section.hours > div {
+  width: 100%;
+}
+/* Style phone icon */
+section.hours > div > svg.phone {
+  border: 1px solid orange;
+  border-radius: 100%;
+  padding: .25%;
+  fill: orange;
+}
+
+/* Alternate styling for span since it is styled differently 
+- maintain styles for other spans */
+section.hours span.altSpan {
+  color: black;
+  font-weight: 500;
+}
+
+/* Set container for both hour sections */
+section.hours > section.listHours {
+  width: 100%;
+}
+
+/* Size each of the two sections containing store hours */
+section.hours > section.listHours > section{
+  width: 50%;
+  float: left;
+}
+
+/* container used since spans are inline and need adjusted */
+section.hours > section.listHours > section > div {
+  width: 100%;
+}
+
+/* Alternate span coloring without changing font weight like .altSpan */
+section.hours > section.listHours > section > div > span {
+  color: black;
+}
+
+/* Change both size and weight of Day of the week listing */
+section.hours > section.listHours > section > div:first-child span {
+  font-size: 1.5em;
+  font-weight: 500;
+}
+
+section.hours section.videoHold {
+  width: 100%;
+  line-height: 100%;
+  position: relative;
+  padding-top: 5%;
+}
+
+section.hours section.videoHold svg {
+  position: absolute;
+  top: 50%;
+  border: 2px solid orange;
+  border-radius: 100%;
+}
+section.hours section.videoHold svg:first-child {
+  left: 25%;
+}
+
+section.hours section.videoHold svg:last-child {
+  right: 25%;
+}
+
+section.hours section.videoHold img {
+  width: 40%;
+}
+
+section.hours > section.mobileArrows svg{
+  border: 2px solid orange;
+  border-radius: 100%;
+  margin: 1% 5%;
+}
+
+section.hours > section.mobileArrows {
+  display: none;
+}
+
+@media (max-width: 1440px) {
+
+  section.hours {
+    height: 1245px;
+    background: no-repeat
+    linear-gradient( to bottom, transparent 0, transparent 1px, white 59%) scroll;
+  }
+
+  section.hours section.listHours > section {
+    width: 100%;
+    padding: 1% 0;
+  }
+
+  section.hours section.videoHold img{
+    width: 60%;
+  }
+
+  section.hours section.videoHold svg {
+    display: none;
+  }
+
+  section.hours section.mobileArrows {
+    display:block;
+    padding: 1% 5%;
+  }
+}
+
+@media (max-width: 1100px) {
+  section.hours {
+    height: 1100px;
+  }
+}
+
+@media (max-width: 700px) {
+  section.hours {
+    height: 1400px;
+  }
+}
+
+/******************************************
+/* Reviews
+/*******************************************/
+section.review {
+  text-align: center;
+  margin-bottom: 3%;
+}
+
+section.review h2 {
+  width: 100%;
+}
+
+section.review div.userImage {
+  width: 100%;
+}
+section.review img {
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+}
+
+section.review div.userName > span {
+  width: 100%;
+  color: black;
+}
+
+section.review div.userOccupation > span {
+  color:rgb(169, 169, 178);
+  font-weight: 400;
+  font-size: 1.5em;
+}
+
+section.review section.stars svg {
+  margin-top: 1%;
+  fill: gold;
+  stroke: gold;
+}
+
+section.review p {
+  padding-left: 25%;
+  width: 75%;
+  font-size: 1.5em;
+  line-height: 2;
+  color: rgb(99, 100, 125);
+}
+
+@media (max-width: 700px) {
+  section.review h2{
+    font-size: 4rem;
+  }
+}
+
+/*********************
+* Media Queries
+**********************/
