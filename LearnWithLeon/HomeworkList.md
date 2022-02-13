@@ -11,8 +11,6 @@ Due 2/17:
     - Level Ground
   - Layout 5
     - Source (https://dribbble.com/shots/8718928-Source-Wireframes)
-  - Layout 6 
-    - Cuisine Restaurant (https://dribbble.com/shots/12927498-Cuisine-Restaurant-Website)
   - Layout 7
     - Hair Salon (https://dribbble.com/shots/6872630-Ayesha-Hair-Salon-Template-Home-03)
   - Layout Push

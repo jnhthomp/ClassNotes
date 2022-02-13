@@ -1,6 +1,8 @@
 /* Box Model Hack */
 * {
     box-sizing: border-box;
+    /* default font */
+    font-family: 'Cormorant Garamond', serif;
 }
 
 /* Clear fix hack */
@@ -20,22 +22,402 @@
 /******************************************
 /* BASE STYLES
 /*******************************************/
+.logo {
+  /* only 700 weight imported */
+  font-family: 'Dancing Script', cursive;
+}
 
-/* body {
+/* remove a tag default styling */
+a {
+  text-decoration: none;
+  color: black;
+}
 
-} */
+/* Remove ul default list style
+    Set list items side by side */
+ul {
+  list-style: none;
+  margin: 0;
+}
+/* Set list elements inline with each other */
+li {
+  float: left;
+}
+
+/* Remove margin from h1 */
+h1 {
+  margin: 0;
+}
+
+h2 {
+  font-size: 3rem;
+  margin: 0;
+}
+
+/* Uppercase content */
+h1, h2, h3, h4, a header * main *, .bigCoupon * {
+  text-transform: uppercase;
+}
 
 
 /******************************************
 /* LAYOUT
 /*******************************************/
-/* header {
-
+/******************************************
+/* + Header/Nav
+/*******************************************/
+/* Arrange navbar */
+header > nav {
+  width: 100%;
+  text-align: center;
+}
+header > nav > * {
+  padding: 1%;
+  float: left;
+  font-size: 1.2rem;
+}
+/* Logo styles */
+header > nav > span.logo {
+  font-size: 1.5rem;
+  padding-left: 2%;
+  width: 10%;
 }
 
-footer {
+/* nav list arrangement */
+header > nav > ul {
+  width: 80%;
+  margin: 0;
+}
+header > nav > ul > li{
+  width:10%;
+  margin: 0 1%;
+}
 
+/* Book button */
+header > nav > ul + span {
+  width: 10%;
+  padding-right: 2%;
+  text-align: left;
+  padding-left: 0;
+}
+
+/******************************************
+/* + Main
+/*******************************************/
+/* main {
+  background: no-repeat url("../assets/george-bohunicky-qJKT2rMU0VU-unsplash.jpg") scroll;
+  background-size: 100%;
+  width: 100%;
+  height: 1080px;
+  background-position: right 0% top 0%;
+  border-radius: 0 0 28% 50%;
 } */
+
+main {
+  background: no-repeat url("../assets/real/hero.jpg") scroll;
+  background-size: 100%;
+  width: 100%;
+  height: 1068px;
+  background-position: right 0% top 0%;
+  border-radius: 0 0 28% 50%;
+  border-bottom: 7px solid rgb(158, 143, 143);
+}
+
+main > section.primary {
+  width:55%;
+  padding-top: 6%;
+  padding-left: 6%;
+  float: left;
+}
+
+/* Keep h1 and hours legible on background */
+main > section.primary h1, main > section.primary p, main > section.hours {
+  text-shadow: 2px 2px 4px #000000;
+}
+
+main > section.primary h1, main > section.primary p {
+  color: white;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 9rem;
+  width: 90%;
+}
+
+main > section.primary p {
+  font-size: 2.3rem;
+  margin: 0 0 4% 0;
+}
+
+/* services button */
+main > section.primary > a {
+  color: white;
+  background-color: black;
+  padding: 15px 25px;
+  font-size: 1.3rem;
+}
+
+main > section.hours {
+  float: right;
+  color: white;
+  font-size: 3.5em;
+  width: 45%;
+  transform: rotate(90deg);
+  height: auto;
+  margin-right: -18%; 
+  margin-left: 19%;
+}
+
+main > section.hours > p {
+  margin: 0;
+  width: 100%;
+}
+
+main > section.coupon {
+  float: left;
+  background-color: black;
+  color: white;
+  height: 400px;
+  width: 20%;
+  margin-left: 6%;
+  margin-top: 3%;
+}
+
+main > section.coupon > p:first-child{
+  font-size: 1.5rem;
+  border-left: 5px solid white;
+  line-height: 60px;
+  height: 60px;
+  padding-left: 6%;
+}
+
+main > section.coupon > p + p {
+  text-align: center;
+  font-size: 2.5rem;
+}
+
+main > section.coupon > a {
+  background:  white;
+  font-weight: 600;
+  font-size: 1.5rem;
+  padding: 5px;
+  margin-left: 25%;
+  border-radius: 2px;
+}
+
+main > div.arrows {
+  float: left;
+  width: 60%;
+  margin-top: 18%;
+  padding-left: 50%;
+}
+
+main > div.arrows > svg {
+  background-color: white;
+  border-radius: 100%;
+  margin: 0 1%;
+}
+
+/******************************************
+/* + Services
+/*******************************************/
+section.services {
+  width: 100%;
+  margin: 5% 20%;
+}
+
+section.services > section {
+  float: left;
+  width: 20%;
+  padding: 0 5%;
+  text-align: center;
+}
+
+section.services > section > svg {
+  height: 5rem;
+  width: 5rem;
+}
+
+/******************************************
+/* + About Us
+/*******************************************/
+section.aboutUs {
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  background: rgb(243, 244, 246);
+  padding: 7% 0 7% 0;
+  
+}
+
+section.aboutUs > section.aboutDesc {
+  width: 30%;
+  float: left;
+  margin: 0 6.6665% 0 13.333%;
+}
+
+section.aboutUs > section.aboutDesc > p {
+  font-size: 1.5rem;
+}
+
+section.aboutUs > section.aboutDesc > a {
+  padding: 2%;
+  background-color: black;
+  color: white;
+  font-size: 1.5rem;
+}
+
+section.aboutUs > img {
+  width: 30%;
+  height: 30%;
+  margin-top: 28%;
+  margin-bottom: 28%;
+  float: left;
+  margin: 0 13.333% 0 6.6665%;
+}
+
+/******************************************
+/* + Employees
+/*******************************************/
+section.employees {
+  width: 100%;
+  height: 100%;
+  padding: 7% 0 7% 0;
+}
+
+section.employees > section {
+  text-align: center;
+  width: 30%;
+  float: left;
+  margin: 0 1%
+}
+
+section.employees > section > img {
+  border: 4px solid black;
+  margin: 0;
+  padding: 0 0 1% 0;
+  width: 60%;
+  height: 100%;
+  z-index: 1;
+}
+
+section.employees  h3 {
+  margin-top: -15px;
+}
+
+section.employees > section > div.employeeDetails {
+  background: black;
+  color: white;
+  width: 60%;
+  margin-left: 20%;
+  z-index: 99;
+}
+
+/******************************************
+/* + Big Coupon
+/*******************************************/
+section.bigCoupon {
+  background: no-repeat url("../assets/real/coupon-crop.jpg") scroll;
+  background-size: cover;
+  width:60%;
+  height: 100%;
+  margin-left: 20%;
+  padding: 3%
+}
+
+section.bigCoupon h4 {
+  font-size: 1.25rem;
+}
+
+section.bigCoupon p {
+  width: 50%;
+  font-size: 2.5rem;
+}
+
+section.bigCoupon a {
+  background-color: black;
+  color: white;
+  padding: 2% 3%;
+}
+
+/******************************************
+/* + Lookbook
+/*******************************************/
+section.lookbook {
+  width: 100%;
+  height: 100%;
+  padding-top: 5%;
+  text-align: center;
+}
+
+section.lookbook > h2{
+  padding-bottom: 1%;
+  margin-bottom: 1%;
+  border-bottom: 3px solid;
+  border-image: linear-gradient(to right, transparent 49%, black 49%, black 51%, transparent 51%)1;
+}
+
+section.lookbook > section.lookbookImages {
+  width: 50%;
+  height: 1000px;
+  margin-left: 25%;
+  padding: 1%;
+}
+
+section.lookbook > section.lookbookImages > div.lookbookImg {
+  width: 30%;
+  background-size: cover;
+  float: left;
+  padding: 0;
+  border: 15px solid white;
+}
+
+.lbshort {
+  height: 300px;
+}
+
+.lbtall{
+  height: 600px;
+}
+
+#lookbook1{
+  background: no-repeat url("../assets/lookbook/salonng-design-72.png") scroll;
+  background-size: cover;
+}
+#lookbook2{
+  background: no-repeat url("../assets/lookbook/wesley-tingey-zar90MHyWYc-unsplash.jpg") scroll;
+  background-size: cover;
+}
+#lookbook3{
+  background: no-repeat url("../assets/lookbook/george-bohunicky-qJKT2rMU0VU-unsplash.jpg") scroll;
+  background-size: cover;
+}
+#lookbook4{
+  background: no-repeat url("../assets/lookbook/kareya-saleh-tLKOj6cNwe0-unsplash.jpg") scroll;
+  background-size: cover;
+  margin-top: -33%;
+}
+#lookbook5{
+  background: no-repeat url("../assets/lookbook/nikolay-hristov-zhb10tnP6A4-unsplash.jpg") scroll;
+  background-size: cover;
+}
+#lookbook6{
+  background: no-repeat url("../assets/lookbook/jessie-dee-dabrowski-www-jessiedee-net-W6cwaL7PMSw-unsplash.jpg") scroll;
+  background-size: cover;
+  margin-top: -33%;
+}
+
+
+
+/* section.lookbook > section.lookbookImages > img{
+  width: 30%;
+  height: auto;
+}
+
+section.lookbook > section.lookbookImages > img:nth-child(3){
+  height: 50%;
+  width: 30%;
+} */
+
 
 /******************************************
 /* ADDITIONAL STYLES
