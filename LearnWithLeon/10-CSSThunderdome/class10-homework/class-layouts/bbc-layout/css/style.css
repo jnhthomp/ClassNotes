@@ -1,3 +1,7 @@
+
+html {
+  font-family: sans-serif;
+}
 /* Box Model Hack */
 * {
     box-sizing: border-box;
@@ -18,7 +22,7 @@
 }
 
 /******************************************
-/* BASE STYLES
+/* ! BASE STYLES
 /*******************************************/
 
 /* body {
@@ -31,102 +35,299 @@ a {
 }
 
 /******************************************
-/* LAYOUT
+/* ! LAYOUT
 /*******************************************/
+/******************************************
+/* + Header/Nav
+/*******************************************/
+/* Set header height color and default font sizes */
 header {
   height: 60px;
   background: black;
   width: 100%;
+  font-size: 1.0rem;
+  font-weight: 600;
 }
 
+/* Float list items so they are not stacked */
 header > nav > section, header > nav > section ul li {
   float: left;  
 }
 
+/* General settins for each section of the navbar */
 header > nav> section {
-  padding-top: 1%;
-  height: 60px;
-  border-right: 1px solid gray;
-  padding-left: 1%;
-}
-
-header > nav> section:first-child{
-  width: 10%;
-  color: white;
-  padding-left: 1%;
-  
-}
-
-header > nav > section:nth-child(2){
-  width: 10%;
-}
-
-header > nav > section:nth-child(3) {
   padding-top: 0;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+}
+
+/* BBC Logo */
+/* General size for logo container */
+header > nav> section.logo{
+  width: 10%;
+  border-right: 1px solid gray;
+}
+
+/* Max height set to match height for header 
+will be as wide as possible without going over that height 
+or overflowing into next section*/
+header > nav > section.logo > img {
+  max-height: 60px;
+  height: auto;
+  width: 100%;
+}
+
+/* Sign in section of navbar */
+header > nav > section.signIn{
+  width: 10%;
+  text-align: left;
+  padding-left: 1%;
+}
+
+/* Svg user image in signin section */
+header > nav > section.signIn svg {
+  float: left;
+  /* Used to center vertically */
+  margin-top: 7%;
+  /* Override height/width provided in index.html */
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+/* Menu list in navbar */
+header > nav > section.navList {
   width: 65%;
+  /* Other sections have border right
+  li elements will add a border so this does not need one */
   border-right: none;
 }
 
-header > nav > section:nth-child(3) > ul {
+/* Remove default margins/list styling 
+set list to take full length of section provided*/
+header > nav > section.navList > ul {
   margin: 0;
   list-style: none;
   width: 100%;
 }
 
-header > nav > section:nth-child(3) > ul > li {
-  padding-top: 1%;
-  margin: 0 1%;
-  width: 9%;
+/* Only the first li needs a border left
+Must be applied to li instead of ul because otherwise it will look off center*/
+header > nav > section.navList > ul > li:first-child{
+  border-left: 1px solid gray;;
+}
+
+header > nav > section.navList > ul > li {
+  /* Default width of li elements to take of the entire section */
+  width: 10%;
   height: 60px;
   border-right: 1px solid gray;
 }
 
-header > nav > section:nth-child(4){
+/* "More" section should be larger than other list items */
+header > nav > section.navList > ul > li:last-child {
+  width: 15%;
+}
+
+/* Arrange text/svg in more section 
+Float the text left and the caret to the right */
+header > nav > section.navList > ul > li:last-child a {
+  float: left;
+  padding-left: 15%;
+}
+/* Float caret to the right and adjust size/spacing */
+header > nav > section.navList > ul > li svg.down-caret {
+  font-size: inherit;
+  float: right;
+  margin-top: 13%;
+  margin-right: 14%;
+  height: 1rem;
+  width: 1rem;
+}
+
+
+header > nav > section.search{
   float: left;
   border-right: none;
+  width: 15%;
 }
 
-header + section > h2 {
+header > nav > section.search > form {
+  width: 80%;
+  padding-top: 4%;
+}
+
+header > nav > section.search input {
+  width: 80%;
+  height: 33px;
+  float: left;
+  border: 1px solid white;
+  border-radius: 5px 0 0 5px;
+  margin-top: 1px;
+}
+
+header > nav > section.search svg {
+  width: 34px;
+  height: 34px;
+  border: 1px solid white;
+  border-radius: 0 5px 5px 0;
+  background-color: white;
+  float: left;
+  margin-left: -1px;
+  margin-top: 1px;
+}
+
+header > nav > section.search input::placeholder{
+  color: rgb(75, 75, 75);
+  font-weight: 600;
+}
+
+/******************************************
+/* + Welcome/Date
+/*******************************************/
+
+header + section.welcomeDate > h2 {
   float: left;
   width: 50%;
+  margin-bottom: 0;
+  color: rgb(85, 85, 85);
+  padding-left: 12px;
 }
 
-header + section > h3 {
+header + section.welcomeDate > h3 {
   float: right;
   width: 50%;
   text-align: right;
   padding-right: 5%;
+  margin-bottom: 0;
+  color: rgb(176, 176, 176);
+  font-size: 1.4rem;
+  font-weight: 500;
 }
 
+/******************************************
+/* + Main articles
+/*******************************************/
+
 main {
-  border: 1px solid black;
-  height: 400px;
-  padding: 2%;
+  height: 532px;
 }
 
 main > section {
-  border: 1px solid black;
   height: 100%;
-  width: 49%;
+  width: 50%;
   float: left;
-  margin-right: 1%;
+}
+
+/* Israel article */
+main > section#israel {
+  background: url("../assets/1-israel.jpg") no-repeat scroll;
+  background-size: cover;
+  color: rgba(255, 255, 255, .98);
+  text-shadow: 1px 1px black;
+  padding-top: 17%;
+  padding-left: 1%;
+  border: 12px solid white;
+}
+
+main > section#israel > h1 {
+  width: 100%;
+}
+
+main > section#israel > p {
+  color:rgba(255, 255, 255, .98);
+}
+
+main > section span {
+  border-left: 4px solid red;
+  padding-left: 1%;
+  text-transform: uppercase;
+  font-size: 1rem;
 }
 
 main > section > section {
-  border: 1px solid black;
+  color: rgba(255, 255, 255, .98);
+  text-shadow: 1px 1px black;
+  padding-top: 12%;
+  padding-left: 1%;
+  border: 12px solid white;
   width: 50%;
   height: 50%;
   float: left;
 }
 
-main + section > h3 {
-  width: 100%;
+main > section > section > h2 {
+  margin-bottom: 1%;
+}
+
+/* Canadian border article */
+main > section > section#flag {
+  background: url("../assets/2-flag.jpg") no-repeat scroll;
+  background-size: cover;
+}
+
+main > section > section#flag span {
+  border-color: rgb(34, 162, 213);
+}
+
+/* Vaccine article */
+/* No need to set border color since default is red */
+main > section > section#vaccine {
+  background: url("../assets/3-vaccine.jpg") no-repeat scroll;
+  background-size: cover;
+}
+
+/* Online productivity article */
+main > section > section#headphones {
+  background: url("../assets/4-headphones.jpg") no-repeat scroll;
+  background-size: cover;
+}
+
+main > section > section#headphones span {
+  border-color: rgb(34, 162, 213);
+}
+
+/* Folk singer article */
+main > section > section#artist {
+  background: url("../assets/5-artist.jpg") no-repeat scroll;
+  background-size: cover;
+}
+
+main > section > section#artist span {
+  border-color: rgb(54, 48, 100);
+}
+
+
+/******************************************
+/* + Lower Articles
+/*******************************************/
+
+main + section.lowerArticles > h3 {
+  width: 90%;
+  border-left: 4px solid red;
+  padding-left: 1%;
+  margin-left: 12px;
 }
 
 main + section > section {
-  width: 30.333%;
+  width: 33.333%;
   float: left;
-  margin: 1%;
+  border: 12px solid white;
+}
+
+section.lowerArticles > section > img {
+  width: 100%;
+  height: auto;
+}
+
+section.lowerArticles > section > p {
+  font-size: 1.2rem;
+}
+
+section.lowerArticles > section > span {
+  border-left: 4px solid red;
+  padding-left: 1%;
+  text-transform: uppercase;
 }
 
 /******************************************

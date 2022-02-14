@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#9e9e9e" fill="none" stroke-linecap="round" stroke-linejoin="round" style="background-color: white">
+  <path stroke="none" d="M0 0h5v5H0z" fill="none"/>
+  <circle cx="8" cy="9" r="5" />
+  <line x1="13" y1="14" x2="18" y2="20" />
+</svg>
