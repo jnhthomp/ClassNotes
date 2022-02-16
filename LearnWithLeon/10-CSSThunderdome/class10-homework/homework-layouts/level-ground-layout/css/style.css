@@ -38,6 +38,28 @@ header > ul {
 header > ul > li > a {
   color: white;
   text-decoration: none;
+  font-size: 1.3em;
+}
+
+header > div.logo > svg:first-child{
+  margin-right: -5%;
+  padding-bottom: 1%;
+  stroke: white;
+}
+
+header > div.logo > svg:last-child{
+  padding-top: 1.3%;
+  margin-left: -1.5%;
+  stroke: white;
+}
+
+header > div > a {
+  text-decoration: none;
+  font-size: 1.3em;
+  color: rgb(102, 118, 138);
+  background-color: white;
+  padding: 1% 3%;
+  border-radius: 5px;
 }
 
 .top {
@@ -69,7 +91,21 @@ h1 {
   margin: auto;
 }
 
-/* Second Section (Why heading and paragraph)*/
+.top > div > svg {
+  height: 1.6em;
+  width:auto;
+  margin-top: -.1%;
+  float: left;
+  padding-left: 45%;
+}
+
+.top > div > span {
+  float: left;
+  padding-left: 1%;
+  font-size: 1.3em;
+}
+
+/* Second Section ("Why" heading and paragraph)*/
 section + section > h2 {
   text-align: center;
   width: 100%;
@@ -82,13 +118,13 @@ body > section + section > p {
   width: 60%;
   text-align: center;
   margin: auto;
-  padding-bottom: 10%;
+  padding: 0 5% 2% 5%;
 }
 
 /* Third Section (split window) */
 body > section + section + section {
   background: rgb(219, 223, 226);
-  height: 500px;
+  height: 50vh;
 }
 
 section + section + section > section {
@@ -101,7 +137,7 @@ section + section + section > section {
 
 section + section + section > section > .preview {
   background: rgb(102, 118, 138);
-  height: 150px;
+  height: 24vh;
   width: 80%;
   margin: auto;
 }
@@ -119,9 +155,11 @@ section + section + section > section > div, section + section + section + secti
 
 section + section + section > section > div > a, section + section + section + section > div > a {
   color: black;
+  font-size: 1.3em;
+  font-weight: 600;
   text-decoration: none;
   border: 1px solid rgb(192, 195, 197);
-  padding: 2% 5%;
+  padding: 1.8% 4.7%;
 }
 
 /* Fourth Section (Volunteer statement) */
@@ -131,35 +169,98 @@ body > section + section + section + section {
 }
 
 /* Footer */
+footer {
+  padding: 1%;
+}
+
+footer > section {
+  padding-bottom: 1%;
+  border-bottom: 4px solid rgb(88, 94, 101);
+}
 footer, footer a {
   background-color: rgb(22, 31, 42);
   color: white;
   text-decoration: none;
 }
 
-footer > section {
+footer > section > section {
   float: left;
   width: 50%;
 }
+
+footer > section > section > section > svg {
+  height: 2.5 em;
+  width: auto;
+}
+
+footer > section > section > section > h5 {
+  color: rgb(97, 113, 132);
+  font-size: 1.1em;
+  margin: 1% 0;
+}
+
+footer > section > section > section > a {
+  margin-right: 2%;
+  font-weight: 600;
+}
+
 
 footer address {
   float: right;
   width: 50%;
+  padding-left: 20%;
+  color:rgb(193, 196, 198);
+  font-size: 1.1em;
+  line-height: 137%;
 }
 
-footer > div {
+footer address h3 {
+  color: white;
+  font-size: 1.4em;
+  margin: 1% 0 4% 0;
+}
+
+/* footer > div {
   height: 2px;
   width: 95%;
   background: rgb(88, 94, 101);
   margin: auto;
-}
+} */
 
 footer > p {
   float: left;
+  width: 95%;
 }
-footer > img {
-  float: right;
+
+footer > div.logo {
+  float: left;
 }
+
+footer > div.logo > svg:first-child{
+  stroke: white;
+  margin-left: 0%;
+  padding-bottom: 10%;
+}
+
+footer > div.logo > svg:last-child{
+  padding-top: 7.3%;
+  margin-left: -42.5%;
+  stroke: white;
+}
+
+
+
+/* header > div.logo > svg:first-child{
+  margin-right: -5%;
+  padding-bottom: 1%;
+  stroke: white;
+}
+
+header > div.logo > svg:last-child{
+  padding-top: 1.3%;
+  margin-left: -1.5%;
+  stroke: white;
+} */
 /******************************************
 /* LAYOUT
 /*******************************************/
