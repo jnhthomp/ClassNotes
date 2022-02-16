@@ -101,6 +101,32 @@ header > nav > ul + span {
   padding-left: 0;
 }
 
+header > nav > div.mobileMenu {
+  display: none;
+}
+@media all and (max-width: 800px) {
+  header > nav > ul {
+    display: none;
+  }
+
+  header > nav > div.mobileMenu {
+    display: block;
+    width: 33%;
+    float: left;
+  }
+
+  header > nav > span.logo {
+    display: block;
+    width: 33%;
+  }
+
+  header > nav > ul + span {
+    float: left;
+    width: 33%;
+    padding-left: 20%;
+  } 
+}
+
 /******************************************
 /* + Main
 /*******************************************/
@@ -120,7 +146,7 @@ main {
   height: 1068px;
   background-position: right 0% top 0%;
   border-radius: 0 0 28% 50%;
-  border-bottom: 7px solid rgb(158, 143, 143);
+  /* border-bottom: 7px solid rgb(158, 143, 143); */
 }
 
 main > section.primary {
@@ -141,6 +167,20 @@ main > section.primary h1, main > section.primary p {
   font-weight: 300;
   font-size: 9rem;
   width: 90%;
+}
+
+@media all and (max-width: 1780px) {
+  main > section.primary h1 {
+    font-size: 7rem;
+  }
+}
+@media all and (max-width: 16190px) {
+  main {
+    height: 830px;
+  }
+  main > section.primary h1 {
+    font-size: 5rem;
+  }
 }
 
 main > section.primary p {
@@ -182,6 +222,8 @@ main > section.coupon {
   margin-top: 3%;
 }
 
+
+
 main > section.coupon > p:first-child{
   font-size: 1.5rem;
   border-left: 5px solid white;
@@ -204,6 +246,8 @@ main > section.coupon > a {
   border-radius: 2px;
 }
 
+
+
 main > div.arrows {
   float: left;
   width: 60%;
@@ -215,6 +259,88 @@ main > div.arrows > svg {
   background-color: white;
   border-radius: 100%;
   margin: 0 1%;
+}
+
+@media all and (max-width: 1475px) {
+  main {
+    height: 782px;
+  }
+  main > section.coupon {
+    height: 200px;
+    width: 40%;
+  }
+  main > section.coupon > p:first-child {
+    margin: 1% 0 1% 0;
+  }
+  main > section.coupon > p + p {
+    margin: 0 0 2% 0;
+    font-size: 2rem;
+  }
+  main > section.coupon > a {
+    margin-left: 40%;
+  }
+  main > section.hours  {
+    width: 30%;
+    margin: 14% -10% 0% 0%;
+  }
+  main > div.arrows {
+    width: 40%;
+    float: right;
+    margin-top: 13%;
+    padding-left: 28%;
+  }
+}
+
+@media all and (max-width: 1312px) {
+  main {
+    height: 680px;
+  }
+
+  main > section.hours {
+    display: none;
+  }
+}
+
+@media all and (max-width: 1108px) {
+  main {
+    background: rgb(175, 164, 166);
+    border-radius: 0 0 0 0;
+    height: 585px;
+  }
+  main > section.primary > h1 {
+    font-size: 4rem;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  main > div.arrows {
+    display: none;
+  }
+
+  main > section.primary {
+    width: 100%;
+    text-align: center;
+    padding-left: 0;
+  }
+
+  main > section.primary > p {
+    width: 100%;
+    margin-right: 0;
+    text-align: center;
+  }
+
+  main > section.coupon {
+    margin-left: 29%;
+  }
+  main > section.coupon > p:first-child {
+    text-align: center;
+  }
+
+  main > section.coupon > a {
+    margin-left: 33%;
+  }
+
 }
 
 /******************************************
@@ -237,6 +363,24 @@ section.services > section > svg {
   width: 5rem;
 }
 
+@media all and (max-width: 1108px) {
+  section.services {
+    margin-left: 5%;
+  }
+  section.services > section {
+    width: 30%;
+  }
+}
+
+@media all and (max-width: 800px) {
+  section.services {
+    margin: 3% 0;
+  }
+  section.services > section {
+    width: 75%;
+    margin-left: 10%;
+  }
+}
 /******************************************
 /* + About Us
 /*******************************************/
@@ -274,6 +418,17 @@ section.aboutUs > img {
   float: left;
   margin: 0 13.333% 0 6.6665%;
 }
+@media all and (max-width: 1108px) {
+  section.aboutUs > section.aboutDesc {
+    width: 100%;
+    text-align: center;
+    margin-left: 0;
+  }
+
+  section.aboutUs > img {
+    margin: 7% 13.333% 0 34.6665%;
+  }
+}
 
 /******************************************
 /* + Employees
@@ -310,6 +465,16 @@ section.employees > section > div.employeeDetails {
   width: 60%;
   margin-left: 20%;
   z-index: 99;
+}
+
+@media all and (max-width: 1108px) {
+  section.employees {
+    padding-left: 27%;
+  }
+  section.employees > section {
+    width: 60%;
+    margin-bottom: 1%;
+  }
 }
 
 /******************************************
@@ -406,7 +571,16 @@ section.lookbook > section.lookbookImages > div.lookbookImg {
   margin-top: -33%;
 }
 
+@media all and (max-width: 1475px) {
+  section.lookbook > section.lookbookImages {
+    width: 97%;
+    margin-left: 1.5%;
+  }
 
+  section.lookbook > section.lookbookImages > div.lookbookImg {
+    width: 33%
+  }
+}
 
 /* section.lookbook > section.lookbookImages > img{
   width: 30%;
