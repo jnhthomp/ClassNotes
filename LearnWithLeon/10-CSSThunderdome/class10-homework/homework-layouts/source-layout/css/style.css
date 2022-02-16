@@ -1,6 +1,8 @@
 /* Box Model Hack */
 * {
     box-sizing: border-box;
+    font-family: sans-serif;
+    color: rgb(47, 69, 88);
 }
 
 /* Clear fix hack */
@@ -30,23 +32,33 @@
 nav {
   height: 60px;
   background: rgb(245, 249, 252);
+  padding: .5% .5% 0 .5%;
 }
 
-nav > img {
+/* Hide mobile menu by default (toggled on by @media)*/
+nav > svg {
   display: none;
 }
 
-header > nav > * {
+nav > svg + a.logo {
+  font-weight: 600;
+}
+
+header > nav > a.logo, header > nav > a.button {
   float: left;
   width: 10%;
   text-decoration: none;
+  padding-top: .5%;
 }
 
-header > nav > ul {
+header > nav > ul#navList {
+  margin: 0;
   width: 80%;
   list-style-type: none;
-  padding: 0 15%;
+  padding: .5% 15%;
   text-decoration: none;
+  height:100%;
+  float: left;
 }
 
 header > nav > ul > li {
@@ -55,13 +67,33 @@ header > nav > ul > li {
   width: 25%;
 }
 
+header > nav > ul > li > a {
+  text-decoration: none;
+  font-size: .9rem;
+}
+
+/* Create button on right of nav */
+header > nav > ul + a {
+  text-align: center;
+  color: rgb(245, 249, 252);
+  background-color: rgb(48, 70, 89);
+  padding: .5%;
+}
+
+
 /* Hero section (large text/image split screen) */
 main > section {
-  float: right;
+  float: left;
   width: 50%;
   background: rgb(245, 249, 252);
   height: 550px;
   color: rgb(66, 86, 103);
+  padding: 8% 8% 0 8%;
+
+}
+
+main > section > span {
+  color: rgb(141, 159, 176);
 }
 
 main > section + section img {
@@ -73,11 +105,6 @@ main > section + section img {
   
 }
 
-main > section {
-  padding: 8%;
-  float: left;
-}
-
 main > section + section {
   padding: 5% 0;
   overflow:auto;
@@ -86,7 +113,10 @@ main > section + section {
 main > section h1 {
   font-size: 3em;
   color: rgb(66, 86, 103);
+  margin-top: 0;
+  padding-top: 3%;
 }
+
 main > section form {
   width: 100%;
 }
@@ -102,8 +132,8 @@ main > section form a {
   background-color: rgb(48, 70, 89);
   color: white;
   height: 32px;
-  padding: 6px 15px;
-  margin-left: 0;
+  padding: 7px 15px;
+  margin-left: -8px;
   border: none;
   width: 20%;
   text-decoration: none;
@@ -114,20 +144,49 @@ body > main + section > section {
   float: left;
   width: 25%;
   background: rgb(245, 249, 252);
+  padding: 2%;
 }
 
-@media (max-width: 700px){
+body > main + section.features > section > a {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+body > main + section.features > section > svg {
+  width: 12.15px;
+  height: 11.15px;
+  transform: scale(1.8);
+}
+
+@media all and (max-width: 1600px){
+  main section input {
+    width: 60%;
+  }
+}
+
+@media all and (max-width: 887px) {
+  main > section h1 {
+    font-size: 2.5em;
+  }
+}
+
+@media (max-width: 800px){
   nav ul, nav > ul + a{
     display: none;
   }
 
-  nav > a {
-    width: 100%;
+  header > nav > a.logo {
+    width: 85%;
     text-align: center;
+    float: right;
+    padding-right: 15%;
   }
 
-  nav > img {
+  nav > svg {
     display: block;
+    height: 50px;
+    width: auto;
+    float: left;
   }
 
   main >section + section {
