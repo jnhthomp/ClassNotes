@@ -15,41 +15,56 @@
 	<body>
     <header>
       <nav>
-        <svg height="70" width="70">
+        <svg class="logo" height="70" width="70">
           <circle cx="35" cy="35" r="10" stroke="rgb(248, 248, 250)" stroke-width="3" fill="none" />
           Sorry, your browser does not support inline SVG.
         </svg>
-        <ul>
-          <li><a href="#"></a>Home</li>
+        <ul class="navList">
+          <li id="firstNav"><a href="#"></a>Home</li>
           <li><a href="#"></a>Services</li>
           <li><a href="#"></a>About</li>
           <li><a href="#"></a>Team</li>
           <li><a href="#"></a>Blog</li>
           <li><a href="#"></a>Login</li>
-          <li><a href="#"></a>Sign Up</li>
+          <li id="lastNav"><a href="#"></a>Sign Up</li>
         </ul>
+        <svg xmlns="http://www.w3.org/2000/svg" class="mobileMenu icon icon-tabler icon-tabler-menu-2" width="44" height="44"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <line x1="4" y1="6" x2="20" y2="6" />
+          <line x1="4" y1="12" x2="20" y2="12" />
+          <line x1="4" y1="18" x2="20" y2="18" />
+        </svg>
       </nav>
     </header>
 
     <main>
-      <section>
+      <section class="mainLeft">
         <h1>Inject Your Brand and Values into a Physical Space</h1>
         <p>Place an order now, and our creative wordsmiths are on it like dots on I's with all the necessary. Reduces your total loT cost of operations.</p>
-        <div>
-          <a href="#">Order Content</a>
-          <a href="#">> Create An Account</a>
+        <div class="links">
+          <a href="#" class="orderButton">Order Content</a>
+          
+          <div class="createAccount clearfix">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="44" height="44"
+              viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <polyline points="9 6 15 12 9 18" />
+            </svg>
+            <a href="#">Create An Account</a>
+          </div>
         </div>
       </section>
-      <section>
-        <div>
-          <div>
-            <div><img src="./assets/ImageHere.PNG" alt="Image Here"></div>
+      <section class="mainRight">
+        <div class="whiteBorder">
+          <div class="screen">
+            <div class="imgContainer"><img src="./assets/ImageHere.PNG" alt="Image Here"></div>
           </div>
         </div>
       </section>
     </main>
     <section class="group">
-      <ul>
+      <ul class="sponsorList">
         <li><img src="./assets/huge.PNG" alt="HUGE"></li>
         <li><img src="./assets/dropbox.PNG" alt="Dropbox"></li>
         <li><img src="./assets/netflix.PNG" alt="Netflix"></li>
@@ -59,15 +74,15 @@
         <li><img src="./assets/airbnb.PNG" alt="airbnb"></li>
       </ul>
     </section>
-    <section class="group">
-      <section>
+    <section class="group" id="howToHelp">
+      <section class="textContent">
         <h4>How we can help your business</h4>
         <h2>We Are a Full-Service Marketing and Design Firm</h2>
         <p>We are no born masters of good taste, but self-education can help improve that. At Zajno, we played with leaf design and typography relying on explanations of its effective usage in "Form of the Book" by Jan Tschichold</p>
         <p>Share your expertise with us. Were we successful in combining fonts and choosing an appropriate typesetting method? We welcome your feeback. Not only fitness classes should be fun, but also their internal management. With busy class schedules and wide variety of instructors, administartion is always a big deal.</p>
         <a href="#">Order Content</a>
       </section>
-      <section>
+      <section class="imageContain">
         <section>
           <img src="./assets/ImageHere.PNG" alt="Image Here">
           <section>
@@ -98,7 +113,7 @@
         </section>
       </section>
     </section>
-    <section class="clear">
+    <section class="clear" id="solutionsBasedUpper">
       <section>
         <img src="./assets/ImageHere.PNG" alt="ImageHere">
       </section>
@@ -110,11 +125,11 @@
         <a href="#">Order Content</a>
       </section>
     </section>
-    <section class="clear">
+    <section class="clear" id="howItWorks">
       <h2>How Does It Work?</h2>
       <p>not only fitness classes should be fun, but also their internal management. With busy class schedules and wide variety of instructors adminstration is always.</p>
     </section>
-    <section class="clear">
+    <section class="clear" id="createAccount">
       <section>
         <img src="./assets/ImageHere.PNG" alt="ImageHere">
       </section>
@@ -126,15 +141,14 @@
         <p>Not only fitness classes should be fun, but also their management</p>
         <h3>Quick Turnaround</h3>
         <p>Not only fitness classes shoul dbe fu, but also their internal management. With busy class schedules and wide variety of instructors administration</p>
-        <span> < > </span>
         <a href="#">Order Content</a>
       </section>
     </section>
-    <section class="clear">
+    <section class="clear" id="createAccountBumper">
       <h4>Create an Account For Free</h4>
       <h2>Core Features and Technologies List</h2>
     </section>
-    <section>
+    <section id="serviceCards">
       <section>
         <h2>Allow Us To Be Your Guide</h2>
         <p>Not only fitness classes should be fun, but also their internal management</p>
@@ -160,7 +174,7 @@
         <p>Not only fitness classes should be fun, but also their internal management</p>
       </section>
     </section>
-    <section class="clear">
+    <section class="clear" id="solutionsBasedLower">
       <section>
         <img src="./assets/ImageHere.PNG" alt="ImageHere">
       </section>
@@ -172,7 +186,7 @@
         <a href="#">Order Content</a>
       </section>
     </section>
-    <section class="clear">
+    <section class="clear" id="ceoPromise">
       <h4>Love By Some of the Best People on Earth</h4>
       <span><</span>
       <h2>Need high quality original content that is SEO optimized and verified for originality? Place an order now, and our creative wordsmiths are on it like dots on I's with all the necessary resources</h2>
@@ -183,7 +197,7 @@
         <span>CEO & Founder Uber</span>
       </section>
     </section>
-    <section class="clear">
+    <section class="clear" id="bottom">
       <section>
         <h4>Place an order now, and our all guys</h4>
         <h2>Take your team anywhere to go</h2>
@@ -194,7 +208,7 @@
       </section>
     </section>
     <footer>
-      <section>
+      <section class="companyInfo">
         <h2>CircleCircleLTd</h2>
         <p>On our way to office, we start preparing for the day in our minds</p>
         <ul>
@@ -203,9 +217,9 @@
           <li>hello@circlecircle.com</li>
         </ul>
       </section>
-      <section>
+      <section class="productsList">
         <h2>Products</h2>
-        <ul>
+        <ul class="productsFirst">
           <li>Messaging API</li>
           <li>Content Pricing</li>
           <li>Integrations</li>
@@ -214,7 +228,7 @@
           <li>API Reference</li>
         </ul>
       </section>
-      <section>
+      <section class="productsSecond">
         <ul>
           <li>API Libraries</li>
           <li>Changelog</li>
@@ -224,7 +238,7 @@
           <li>Contact Sales</li>
         </ul>
       </section>
-      <section>
+      <section class="usersList">
         <h2>For Users</h2>
         <ul>
           <li>Help Center</li>
@@ -234,7 +248,7 @@
           <li>Sketch Business</li>
         </ul>
       </section>
-      <section>
+      <section class="infoList">
         <h2>Information</h2>
         <ul>
           <li>Pricing</li>
@@ -245,7 +259,7 @@
           <li>Testimonials</li>
         </ul>
       </section>
-      <section>
+      <section class="resourcesList">
         <h2>Resources</h2>
         <ul>
           <li>Help Docs</li>
