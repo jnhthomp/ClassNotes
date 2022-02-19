@@ -289,3 +289,107 @@ But if you enter a valid name it should show up
 
 But we aren't giving the user any feedback to let them know why their input isn't showing up or if it is showing up unless they know to open the console
 To handle this we will introduce error feedback
+
+
+
+
+___
+## 202. Providing Validation Feedback
+Now we can add some validation feedback
+The best way to do this is to add another bit of state
+This state will track whether the name is valid or not and will be a boolean
+We want to initialize this to false because it will be blank before a user starts typing which is invalid
+If the entered name within the input BECOMES valid we will update this state to true
+```js
+const [enteredNameIsValid, setEnteredNameIsValid] = useState(false);
+```
+
+So in the `formSubmissionHandler` we can make sure that this state is being set to false if we hit the empty input check
+But if we make it past that check we can set the value to true since it is not empty and is therefore valid
+```js
+const formSubmissionHandler = (event) => {
+  event.preventDefault();
+
+  // Validate input not empty
+  if (enteredName.trim() === '' ) {
+    setEnteredNameIsValid(false);
+    return;
+  }
+  
+  setEnteredNameIsValid(true);
+
+  console.log(enteredName);
+  
+  const enteredValue = nameInputRef.current.value;
+  console.log(enteredValue);
+
+  // nameInputRef.current.value = '' => AVOID THIS NOT GOOD TO MANIPULATE THE DOM
+  setEnteredName('');
+};
+```
+
+Now that we are able to track this state we can conditionally output a message if this state is false within our form
+We will check for the false value of `enteredNameIsValid` and if it is false show some text
+```js
+return (
+  <form onSubmit={formSubmissionHandler}>
+    <div className='form-control'>
+      <label htmlFor='name'>Your Name</label>
+      <input 
+        ref={nameInputRef} 
+        type='text' 
+        id='name' 
+        onChange={nameInputChangeHandler} 
+        value={enteredName}
+      />
+    </div>
+    {!enteredNameIsValid && <p>Name must not be empty</p>}
+    <div className="form-actions">
+      <button>Submit</button>
+    </div>
+  </form>
+);
+```
+
+Now we get an error but it shows up before we start typing as soon as the page loads since we are initializing `enteredNameIsValid` to false
+So we can actually initialize that to true and then the input will be validated when a the form is submitted
+```js
+const [enteredNameIsValid, setEnteredNameIsValid] = useState(true);
+```
+
+Now we don't see the error message on load but if we click submit it shows up
+
+There is more validation we can add via css classes such as `.invalid`
+We want to add this class
+We can hold our classes in a variable (conditionally assigned to the variable) and pass that variable in as our classes
+In the case that the input is valid we want to pass in just `'form-control'` but if it is invalid we want to pass in `'form-control invalid'`
+We can do this with a ternary check
+```js
+const nameInputClasses = enteredNameIsValid ? 'form-control' : 'form-control invalid';
+```
+Then just pass this variable in instead of hard coding the class in our form
+```js
+return (
+  <form onSubmit={formSubmissionHandler}>
+    <div className={nameInputClasses}>
+      <label htmlFor='name'>Your Name</label>
+      <input 
+        ref={nameInputRef} 
+        type='text' 
+        id='name' 
+        onChange={nameInputChangeHandler} 
+        value={enteredName}
+      />
+    </div>
+    {!enteredNameIsValid && <p className='error-text'>Name must not be empty</p>}
+    <div className="form-actions">
+      <button>Submit</button>
+    </div>
+  </form>
+);
+```
+
+Now when our page loads there is no error message but if you put an invalid name in you will see a paragraph that is styled AND the input will receive new styling
+Then if you enter a valid name and submit it that errored styling goes away
+
+This is some decent validation but there are some downsides
