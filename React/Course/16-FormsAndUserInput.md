@@ -485,3 +485,122 @@ const nameInputBlur = (event) => {
 Note that there is some code duplication going on here, we will clean that up shortly
 
 Now if we click in the input and then click out this handler method will be activated, it will say the input has been touched, then it will validate the input and if invalid show a message/apply styles
+
+
+
+
+___
+## 205. Refactoring & Deriving States
+Now we have validation that runs when a user loses focus on the input
+However one last bit of validation we could use to make this even more responsive is to help clean up the error messages and styling
+Whenever the error is showing, if a user selects the input and begins typing their input now becomes valid since the length is greater than 0 and we have a very basic validation
+That means we can check their keystroke and use that to validate that the input is NOW valid and we can remove the error
+
+The easiest way to do this would be to just add the validation if statement to our `nameInputChangeHandler` which runs to update the current value of `setEnteredName` as the user types
+
+But instead of checking for if the input IS an empty string we want to check that it IS NOT an empty string and if so we want to set `enteredNameIsValid` to true
+The only difference is we want to use `event.target.value` to check 
+This is because `setEnteredName` is an async function and we may end up checking an old version of state
+This would mean the user would have to type multiple characters before the validation works
+```js
+const nameInputChangeHandler = (event) => {
+  setEnteredName(event.target.value);
+
+  // Validate input not empty
+  if (event.target.value.trim() !== '') {
+    setEnteredNameIsValid(true);
+  }
+};
+```
+
+Now we are setting this to true and the error will disappear as soon as the user enters a valid input
+
+This is probably the best user experience we can provide because it gives the user a chance to enter data before showing an error, will show an error if a user has an invalid input and blurs or tries to submit and then will clear the error as soon as it is fixed
+
+Our code is pretty ugly though since we have duplicated the validation multiple times and are dealing with multiple state instances
+We have quite a bit of code for a single input and we don't want to multiply this if we had more fields to collect data from
+
+The first thing we can get rid of is the input ref that we were using to demonstrate another way to collect input from the user but never really used
+```js
+// remove import 
+import { useState, useRef } from 'react';
+// remove assignment
+const nameInputRef = useRef();
+// remove fetching value
+const enteredValue = nameInputRef.current.value;
+console.log(enteredValue);
+// remove from input
+<input 
+  ref={nameInputRef} //just this line
+  type='text' 
+  id='name' 
+  onChange={nameInputChangeHandler} 
+  onBlur={nameInputBlurHandler}
+  value={enteredName}
+/>
+```
+
+That wasn't the main thing though
+The main thing we can clean up is the validation logic 
+We have it all over the place and duplicate our code
+
+All we need to check is: 
+1. If the input is valid 
+2. If the input was touched
+
+If it was touched and is invalid we want to show an error, in all other instances we don't want to show an error
+
+We actually don't need an `enteredNameIsValid` state
+That is because it is always derived from checking the two other state values
+We can just check the two other state values and set it manually each time the component reloads
+This constant will always have the latest value because if one of those two values change it will trigger a rerender and therefore trigger this check/assignment again
+So now `enteredNameIsValid` will be true if `enteredName` trimmed is not an empty string
+```js
+const enteredNameIsValid = (enteredName.trim() !== '')
+```
+
+Now we can get rid of any if statements that performed this same check and set `enteredNameIsValid`
+Instead we will rely on this new value in combination with `nameInputIsInvalid` to determine whether to show the error or not
+```js
+const enteredNameIsValid = (enteredName.trim() !== '')
+const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
+```
+The above will use the current state value of `enteredName` to determine if the input is valid
+If it is not valid then `nameInputIsValid` will perform a check to see if `enteredNameTouched` is true
+If so then `nameInputIsInvalid` will also be true in which case we will want to show an error
+But whenever `enteredName` is given a value `enteredNameIsValid` becomes true which would make `nameInputIsInvalid` false which we want to trigger hiding the error
+
+We still are able to check the same values and data and validity except now we have one less piece of state to manage
+
+In the `formSubmissionHandler` we still want to check if the input is invalid but now that we have a variable we don't need to add the validation logic in the if statement, we can just check the `enteredNameIsValid` variable for false and if so execute a return to cancel the form submission
+```js
+const formSubmissionHandler = (event) => {
+  event.preventDefault();
+  setEnteredNameTouched(true);
+  console.log(enteredName);
+
+  if(!enteredNameIsValid){
+    return;
+  }
+  // nameInputRef.current.value = '' => AVOID THIS NOT GOOD TO MANIPULATE THE DOM
+  setEnteredName('');
+};
+```
+
+Now our application will mostly work but if we submit a valid name we will get an error after the field is cleared
+This actually makes since because in our submission we call `setEnteredName('')` which is specifically used to trigger `enteredNameIsValid` to show an error
+We can fix this by also resetting `enteredNameTouched` when we submit
+```js
+const formSubmissionHandler = (event) => {
+  event.preventDefault();
+  setEnteredNameTouched(true);
+  console.log(enteredName);
+
+  if(!enteredNameIsValid){
+    return;
+  }
+  // nameInputRef.current.value = '' => AVOID THIS NOT GOOD TO MANIPULATE THE DOM
+  setEnteredNameTouched(false);
+  setEnteredName('');
+};
+```
