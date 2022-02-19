@@ -437,3 +437,51 @@ const formSubmissionHandler = (event) => {
   ...
 ```
 Now our code works as expected and is readable
+
+
+
+
+___
+## 204. React To Lost Focus
+So far we have only validated when the form is submitted (or the user attempts to submit it)
+This isn't bad and may even be what you want sometimes
+
+But sometimes it is better to get more reactive for handling so users don't have to attempt a submission before finding out that what they entered was invalid
+
+Currently we have three different states associated with the input that are used to validate or trigger error messages
+1. `enteredName` to hold the value
+2. `enteredNameIsValid` to say whether `enteredName` is a valid input
+3. `enteredNameTouched` to say whether the input field had been submitted or not
+
+Currently we have to submit the form as a whole in order for `enteredNameTouched` to trigger and switch states
+So if we were to click inside the input, type something, delete it, and then click out we wouldn't see an error until after attempting to submit
+
+We can fix this by changing the value of `enteredNameTouched` when the input box loses focus
+Luckily there is an action we can use as a trigger called `onBlur`
+We will assign a function to `onBlur` that will change the value of `enteredNameTouched` to true when triggered since that would mean a user had selected the input and then clicked away
+Then the validation will run since `enteredNameTouched` will have been switched to true
+```jsx
+<input 
+  ref={nameInputRef} 
+  type='text' 
+  id='name' 
+  onChange={nameInputChangeHandler} 
+  onBlur={nameInputBlurHandler} 
+  value={enteredName}
+/>
+```
+
+Then we can write the method to change the state value and trigger the validation that will be used to check the value/change styles if needed
+```js
+const nameInputBlur = (event) => { 
+  setEnteredNameTouched(true);
+  // Validate input not empty
+  if (enteredName.trim() === '') {
+    setEnteredNameIsValid(false);
+    return;
+  }
+}
+```
+Note that there is some code duplication going on here, we will clean that up shortly
+
+Now if we click in the input and then click out this handler method will be activated, it will say the input has been touched, then it will validate the input and if invalid show a message/apply styles
