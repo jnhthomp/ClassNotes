@@ -393,3 +393,47 @@ Now when our page loads there is no error message but if you put an invalid name
 Then if you enter a valid name and submit it that errored styling goes away
 
 This is some decent validation but there are some downsides
+
+
+
+
+___
+## 203. Handling the "was touched" State
+One issue with our current code is that when we load the page we are setting `enteredNameIsValid` to true but it isn't really
+We are only setting it to true so that the styling isn't changed on page load which is misleading and not a great practice
+This could cause issues if someone added a feature that depended on that being true only when the input is true since that is what it implies
+
+There is a better way to do this
+We can initialize it to false since the initial value is false
+Then we can create a new state called `enterdNameTouched`
+This will be a boolean that will check if someone has selected the input field
+Then we will only mark the field as invalid and show the message if the input is invalid AND the input field was touched 
+This will allow us to set the validity state of our input in a way that is accurate and makes sense without showing an error before the user has had a chance to enter data
+```js
+const [enteredNameTouched, setEnteredNameTouched] = useState(false);
+```
+
+Now we will create a boolean called `nameInputIsInvalid` that is only true in the case that both `enteredNameIsValid` is fale AND `enteredNameTouched` is true
+```js
+const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
+```
+Instead of checking for `enteredNameIsValid` to show the paragraph and assign classes we can check for this value instead
+```js
+const nameInputClasses = !nameInputIsInvalid ? 'form-control' : 'form-control invalid';
+```
+```js
+{nameInputIsInvalid && <p className='error-text'>Name must not be empty</p>}
+``` 
+
+Now we need to change the `enteredNameTouched` state
+We can say that if the form is submitted that inputs are treated as touched (even if the user didn't select them) because the user is confirming that input
+
+Before checking the validity we should set `enteredNameTouched` to true
+```js
+const formSubmissionHandler = (event) => {
+  event.preventDefault();
+
+  setEnteredNameTouched(true);
+  ...
+```
+Now our code works as expected and is readable
