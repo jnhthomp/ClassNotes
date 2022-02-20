@@ -665,3 +665,234 @@ if(enteredNameIsValid){
   formIsValid = true;
 }
 ```
+
+
+
+
+___
+## Assignment 5: Time to Practice: Forms
+Now we will apply what we learned about forms
+Add a second input to the form where we fetch the email address of the user
+Get the entered value from the user and validate it
+It is up to you how you validate it
+If you want just check for the '@' symbol since validation is not the point of the excercise
+Make sure it also has the styling changes and text pop up like the name input
+Also make sure the form validity is true only when both inputs are valid
+
+
+My Solution:
+To do this I first copied over all of my input jsx and changed it to work with email variables instead of name variables
+```js
+return (
+  <form onSubmit={formSubmissionHandler} autocomplete="off">
+    {/* Name input */}
+    <div className={nameInputClasses}>
+      <label htmlFor='name'>Your Name</label>
+      <input 
+        type='text' 
+        id='name' 
+        onChange={nameInputChangeHandler} 
+        onBlur={nameInputBlurHandler}
+        value={enteredName}
+      />
+    </div>
+    {nameInputIsInvalid && <p className='error-text'>Name must not be empty</p>}
+    {/* Email input */}
+    <div className={emailInputClasses}>
+      <label htmlFor='email'>Your Email</label>
+      <input
+        type='text'
+        id='email'
+        onChange={emailInputChangeHandler}
+        onBlur={emailInputBlurHandler}
+        value={enteredEmail}
+      />
+    </div>
+    {emailInputIsInvalid && <p className='error-text'>Email must be valid</p>}
+    <div className="form-actions">
+      <button disabled={!formIsValid}>Submit</button>
+    </div>
+  </form>
+);
+```
+
+Next I initialized state for `enteredEmail` and `enteredEmailTouched` since I know I will need both for validation and error handling
+```js
+// Email input state
+const [enteredEmail, setEnteredEmail] = useState('');
+const [enteredEmailTouched, setenteredEmailTouched] = useState(false);
+```
+
+Then I added a method to update this state value whenever the user types in the email field
+```js
+const emailInputChangeHandler = (event) => { 
+  // Update staet when user types in email field
+  setEnteredEmail(event.target.value);
+}
+```
+
+Now I can validate this input and see if it contains an '@' symbol
+```js
+const enteredEmailIsValid = (enteredEmail.indexOf('@') > -1);
+```
+
+Next I want to see if the email field has been selected and then moved away from with a blur handler
+```js
+const emailInputBlurHandler = (event) => {
+  setenteredEmailTouched(true);
+}
+```
+
+This lets me use `enteredEmailIsValid` with `enteredEmailTouched` to set whether the input should be marked as invalid or not
+Only if `enteredEmailIsValid` is false AND `enteredEmailTouched` is true should this be marekd invalid
+```js
+const emailInputIsInvalid = !enteredEmailIsValid && enteredEmailTouched;
+```
+
+Now I can set up the classes variable since we are able to check the validity properly and ensure the user has had a chance to enter a value
+```js
+const emailInputClasses = !emailInputIsInvalid ? 'form-control' : 'form-control invalid';
+```
+
+Thgen we have to add our validation check to the if statement checking the overall form validity
+```js
+let formIsValid = false;
+if(enteredNameIsValid && enteredEmailIsValid){
+  formIsValid = true;
+}
+```
+
+Lastly clear the input and reset the touched state when the form is submitted
+I also change the form submission handler to check the validity of the form before returning and added the email to the console message
+```js
+const formSubmissionHandler = (event) => {
+  event.preventDefault();
+  setEnteredNameTouched(true);
+  setEnteredEmailTouched(true);
+  console.log(`name ${enteredName}`);
+  console.log(`email: ${enteredEmail}`);
+
+  if(!formIsValid){
+    return;
+  }
+  // nameInputRef.current.value = '' => AVOID THIS NOT GOOD TO MANIPULATE THE DOM
+  setEnteredNameTouched(false);
+  setEnteredName('');
+
+  setEnteredEmailTouched(false);
+  setEnteredEmail('');
+};
+```
+
+Now the email field should be able to collect input, validate, and display error messages when appropriate
+
+```js
+import { useState } from 'react';
+
+const SimpleInput = (props) => {
+  // Name input state
+  const [enteredName, setEnteredName] = useState('');
+  const [enteredNameTouched, setEnteredNameTouched] = useState(false);
+  // Email input state
+  const [enteredEmail, setEnteredEmail] = useState('');
+  const [enteredEmailTouched, setEnteredEmailTouched] = useState(false);
+
+  // + Validation
+  // Name validation
+  const enteredNameIsValid = (enteredName.trim() !== '');
+  // Email validation
+  const enteredEmailIsValid = (enteredEmail.indexOf('@') > -1);
+
+  // Bool to show error messages (only if invalid and touched)
+  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
+  const emailInputIsInvalid = !enteredEmailIsValid && enteredEmailTouched;
+
+
+  // Check form validity
+  let formIsValid = false;
+  if(enteredNameIsValid && enteredEmailIsValid){
+    formIsValid = true;
+  }
+
+  // + Input handlers (onChange updates state values)
+  const nameInputChangeHandler = (event) => {
+    // Update state when user types in name field
+    setEnteredName(event.target.value);
+  };
+
+  const emailInputChangeHandler = (event) => { 
+    // Update staet when user types in email field
+    setEnteredEmail(event.target.value);
+  }
+
+  const formSubmissionHandler = (event) => {
+    event.preventDefault();
+    setEnteredNameTouched(true);
+    setEnteredEmailTouched(true);
+    console.log(`name ${enteredName}`);
+    console.log(`email: ${enteredEmail}`);
+
+    if(!formIsValid){
+      return;
+    }
+    // nameInputRef.current.value = '' => AVOID THIS NOT GOOD TO MANIPULATE THE DOM
+    setEnteredNameTouched(false);
+    setEnteredName('');
+
+    setEnteredEmailTouched(false);
+    setEnteredEmail('');
+  };
+
+  // + Blur handlers (toggle touched state to true)
+  const nameInputBlurHandler = (event) => { 
+    setEnteredNameTouched(true);
+  }
+
+  const emailInputBlurHandler = (event) => {
+    setEnteredEmailTouched(true);
+  }
+
+  const nameInputClasses = !nameInputIsInvalid ? 'form-control' : 'form-control invalid';
+  const emailInputClasses = !emailInputIsInvalid ? 'form-control' : 'form-control invalid';
+  
+  return (
+    <form onSubmit={formSubmissionHandler} autoComplete="off">
+      {/* Name input */}
+      <div className={nameInputClasses}>
+        <label htmlFor='name'>Your Name</label>
+        <input 
+          type='text' 
+          id='name' 
+          onChange={nameInputChangeHandler} 
+          onBlur={nameInputBlurHandler}
+          value={enteredName}
+        />
+      </div>
+      {nameInputIsInvalid && <p className='error-text'>Name must not be empty</p>}
+      {/* Email input */}
+      <div className={emailInputClasses}>
+        <label htmlFor='email'>Your Email</label>
+        <input
+          type='text'
+          id='email'
+          onChange={emailInputChangeHandler}
+          onBlur={emailInputBlurHandler}
+          value={enteredEmail}
+        />
+      </div>
+      {emailInputIsInvalid && <p className='error-text'>Email must be valid</p>}
+      <div className="form-actions">
+        <button disabled={!formIsValid}>Submit</button>
+      </div>
+    </form>
+  );
+};
+
+export default SimpleInput;
+
+```
+
+
+
+Teacher solution:
+The teacher did the same solution as me except in a slightly different order but ended up with about the same exact code
