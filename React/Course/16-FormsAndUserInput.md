@@ -604,3 +604,64 @@ const formSubmissionHandler = (event) => {
   setEnteredName('');
 };
 ```
+
+
+
+
+___
+## 206. Managing the Overall Form Validity
+Now we have some good validation and reactive error messages
+But we only have one input and many times we would have more than one input
+In that case we would need to check if the overall form is also valid
+If the form had multiple inputs that may not be the case
+If there are 4 inputs and 3 are valid and 1 is not then the entire form is invalid
+We should take this into account in our logic
+
+One way to do this is to add a new state to hold the form validity
+```js
+const [formIsValid, setFormIsValid] = useState(false);
+```
+
+We will want to update this validity whenever one of the form inputs changes
+To do this we can use `useEffect` 
+It will hold the form input validity checks (such as `enteredNameIsValid`) and whenever one of them changes the `useEffect` function will run
+Inside our `useEffect` function we will check our inputs (all listed as dependencies) and if they are all valid then `formIsValid` is true
+Since we only have one input there is only one validity check to check but if there were moreinputs we would have multiple different checks and more dependencies
+```js
+useEffect(() => {
+  if(enteredNameIsValid){
+    setFormIsValid(true);
+  } else {
+    setFormIsValid(false);
+  }
+}, [enteredNameIsValid]);
+```
+
+Now we can use this form validity to disable the button in our form if `formIsValid === false`
+```js
+<div className="form-actions">
+  <button disabled={!formIsValid}>Submit</button>
+</div>
+```
+
+Now the button should be disabled but it might be hard to tell
+We can add a little css to make it more obvious
+```css
+button:disabled,
+button:disabled:active,
+button:disabled:hover {
+  background: #ccc;
+  color: #292929;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+```
+
+However we don't even really need to use `useEffect` for this since there are no sideeffects to handle (if there were sideeffects due to form validity then we would need it)
+So we can actually remove `useEffect` and instead of using state for `formIsValid` we can just use a regular variable and if statement
+```js
+let formIsValid = false;
+if(enteredNameIsValid){
+  formIsValid = true;
+}
+```
