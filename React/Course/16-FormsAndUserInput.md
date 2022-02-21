@@ -1574,3 +1574,148 @@ This is pretty similar to our approach except we wrote the hook for it
 
 For the course we will continue to use this approach
 Now we understand what is happening behind the scenes and are prepared to handle them in future projects
+
+
+
+
+___
+## 212. Bonus: Using useReducer()
+As a last bonus to this form/input module we can practice using `useReducer`
+Remember that it is good to consider `useReducer` if we have multiple different related state data and is helpful for handling more complex state updates
+
+We do have multiple states that belong together but they don't really depend on each other
+This may not be where `useReducer` would shine but it is fine to use it and we will for more practice
+
+First import it:
+```js
+import { useReducer } from 'react'
+```
+
+First we need a reducer function
+This function takes two arguments 
+1. Previous state snapshot
+2. Action which is dispatched by you
+
+You also must return a new state snapshot
+This is were we can set a default value of an empty string and false for our `value` and `isTouched` state respectively
+```js
+import { useReducer } from 'react'
+
+const initialInputState = { value: '', isTouched: false};
+
+const inputStateReducer = (state, action) => { 
+  return initialInputState
+}
+
+const useInputAlt = (validateValue) => {
+  ...
+```
+
+Now we can call `useReducer` in our hook function
+Remember we have to pass in the method we created above as well as an initial state value
+We also have to use array destructuring to retrieve the state that is managed by the reducer as well as the dispatch function which we can use to acces our `inputStateReducer` function and the actions we will define within
+```js
+const useInputAlt = (validateValue) => {
+
+  const [inputState, dispatch] = useReducer(inputStateReducer, initialInputState)
+  ...
+```
+
+Now we are able to get rid of the `value` and `isTouched` state calls we had before
+Instead of we will alter everything to use `inputState.value` and dispatch functions
+First when we set `isValid` and run `validateValue` we will need to pass in `inputState.value` instead
+```js
+const isValid = validateValue(inputState.value);
+```
+
+We can do the same with `isTouched` for `hasError`
+```js
+const hasError = !isValid && inputState.isTouched;
+```
+
+Now when we are updating our value instead of using a `setState` function we will need to dispatch an action
+To do that we call `dispatch` and pass in an object which will be accessed by the action parameter in our reducer function
+This object should contain the value we want to update to as well as the name of the action we want to take within our reducer function
+```js
+// Update value state (onChange)
+const updateValue = (event) => { 
+  dispatch({type: 'UPDATE_VALUE', value: event.target.value})
+}
+```
+
+We will want to do a similar thing for our function handling blur/touch
+Notice that we don't need to pass in a value because it will always be true when called from here
+So we can just assign true in the reducer function action
+```js
+const updateTouched = () => { 
+  dispatch({type: 'UPDATE_TOUCHED'})
+}
+```
+
+Then when we reset we can dispatch an action for resetting
+```js
+const reset = () => { 
+  dispatch({type: 'RESET'});
+}
+```
+Before writing these actions we will fix our return statement to return the correct values that are now in `inputState`
+```js
+return {
+  inputState.value,
+  isValid,
+  hasError,
+  updateValue,
+  updateTouched,
+  reset,
+}
+```
+
+Now we have to write our dispatch actions for these three functions
+1. `'UPDATE_VALUE'`- receive and set a new value to `inputState.value`
+2. `'UPDATE_TOUCHED'`- set `inputState.isTouched` to true
+3. `'RESET'` - set `initialInputState` as current `inputState`
+
+We can prepare each of these actions like so
+```js
+const inputStateReducer = (state, action) => { 
+  if(action.type === 'UPDATE_VALUE'){
+    // update value with value from input field
+  }
+
+  if (action.type === 'UPDATE_TOUCHED') {
+    // Mark touched as true (user has selected input and left)
+  }
+
+  if (action.type === 'RESET') {
+    // reset state values
+  }
+
+  return initialInputState;
+};
+
+```
+
+Now we can work on returning the correct objects in each
+```js
+const inputStateReducer = (state, action) => { 
+  if(action.type === 'UPDATE_VALUE'){
+    // update value with value from input field
+    return {value: action.value, isTouched: state.isTouched}
+  }
+
+  if (action.type === 'UPDATE_TOUCHED') {
+    // Mark isTouched as true (user has selected input and left)
+    return {isTouched: true, value: state.value}
+  }
+
+  if (action.type === 'RESET') {
+    // reset state values
+    return initialInputState
+  }
+
+  return initialInputState;
+};
+```
+Remember that we have to return the `state.` version in the updated object since that will be the most up to date value of that particular value and we want to ensure it is unchanged
+
+Now we have a custom hook that is utilizing `useReducer` to handle our forms
