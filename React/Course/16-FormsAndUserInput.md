@@ -1195,3 +1195,202 @@ Lastly in the input itself make sure you are pointing at the correct functions f
 
 Now the hook is being used for both the name and email
 We have the same features with less code duplication and we can call this hook whenever we need
+
+
+
+
+___
+## 209. A Challenge For You
+Again let's practice what we learned 
+We have a basic form component
+In `<App>` swap out `<SimpleInput>` for `<BasicForm>`
+```js
+// import SimpleInput from './components/SimpleInput';
+import BasicForm from './components/BasicForm.js';
+
+function App() {
+  return (
+    <div className="app">
+      {/* <SimpleInput /> */}
+      <BasicForm />
+    </div>
+  );
+}
+
+export default App;
+```
+
+This form has no validation or anyting but the form template
+Use the custom hook we made (or try building another one from scratch)
+And give this component the same functionality as the `<SimpleInput>` component
+
+My Solution:
+New Hook: 'use-input-alt.js'
+```js
+import { useState } from 'react'
+
+const useInputAlt = (validateValue) => {
+  // State to hold value and whether user has attempted an input
+  const [value, setValue] = useState('');
+  const [isTouched, setIsTouched] = useState(false);
+
+  // Is the input valid
+  const isValid = validateValue(value);
+  // Is the input invalid AND the user has touched the input box
+  const hasError = !isValid && isTouched;
+
+  // Update value state (onChange)
+  const updateValue = (event) => { 
+    setValue(event.target.value);
+  }
+
+  // Mark touched after input is selected (onBlur)
+  const updateTouched = () => { 
+    setIsTouched(true);
+  }
+
+  const reset = () => { 
+    setValue('');
+    setIsTouched(false);
+  }
+
+  return {
+    value,
+    isValid,
+    hasError,
+    updateValue,
+    updateTouched,
+    reset,
+  }
+
+
+}
+
+export default useInputAlt
+```
+New form: 'BasicForm.js'
+```js
+import useInputAlt from "../hooks/use-input-alt.js";
+
+const BasicForm = (props) => {
+
+  // + Input state management and Validation
+  // * Pass validation as anonFn that returns bool
+  const { // FirstNameInput management and validation
+    value: firstNameValue,
+    isValid: firstNameIsValid,
+    hasError: firstNameHasError,
+    updateValue: updateFirstNameHandler,
+    updateTouched: touchFirstNameHandler,
+    reset: resetFirstName
+  } = useInputAlt(value => value.length > 0);
+
+  const {// LastNameInput management and validation
+    value: lastNameValue,
+    isValid: lastNameIsValid,
+    hasError: lastNameHasError,
+    updateValue: updateLastNameHandler,
+    updateTouched: touchLastNameHandler,
+    reset: resetLastName
+  } = useInputAlt(value => value.length > 0);
+  
+
+  const {
+    value: emailValue,
+    isValid: emailIsValid,
+    hasError: emailHasError,
+    updateValue: updateEmailHandler,
+    updateTouched: touchEmailHandler,
+    reset: resetEmail
+  } = useInputAlt(value => value.includes('@'));
+
+  // + Form Validation
+  // * Include all input values from hook in if check for valid
+  let formIsValid = false;
+  if (firstNameIsValid && lastNameIsValid && emailIsValid){
+    formIsValid = true;
+  }
+
+  const formSubmissionHandler = (event) => { 
+    event.preventDefault();
+    // If form is not valid, exit handler; do not submit
+    if(!formIsValid){
+      return;
+    }
+    // output current result if form is valid
+    console.log(`First Name: ${firstNameValue}`);
+    console.log(`Last Name: ${lastNameValue}`);
+    console.log(`Email: ${emailValue}`);
+
+    // reset input fields
+    resetFirstName();
+    resetLastName();
+    resetEmail();
+  }
+
+  // + Error class lists
+  // * 'form-control' always included 
+  // * if hasError === true then 'invalid' class is also included
+  let firstNameClassList = !firstNameHasError 
+    ? 'form-control' 
+    : 'form-control invalid';
+  
+  let lastNameClassList = !lastNameHasError
+    ? 'form-control'
+    : 'form-control invalid';
+
+  let emailClassList = !emailHasError
+    ? 'form-control'
+    : 'form-control invalid';
+
+  return (
+    <form onSubmit={formSubmissionHandler} autoComplete="off">
+      <div className='control-group'>
+        {/* First Name Input*/}
+        <div className={firstNameClassList}>
+          <label htmlFor='name'>First Name</label>
+          <input 
+            type='text' 
+            id='name' 
+            onChange={updateFirstNameHandler}
+            onBlur={touchFirstNameHandler}
+            value={firstNameValue}
+          />
+        </div>
+        {/* Display error message for first name */}
+        {firstNameHasError && <p className="error-text">Please enter a first name</p>}
+        {/* Last Name Input */}
+        <div className={lastNameClassList}>
+          <label htmlFor='name'>Last Name</label>
+          <input 
+            type='text' 
+            id='name' 
+            onChange={updateLastNameHandler}
+            onBlur={touchLastNameHandler}
+            value={lastNameValue}
+          />
+        </div>
+        {/* Display error message for last name */}
+        {lastNameHasError && <p className="error-text">Please enter a last name</p>}
+      </div>
+      <div className={emailClassList}>
+        <label htmlFor='name'>E-Mail Address</label>
+        <input 
+          type='text' 
+          id='name' 
+          onChange={updateEmailHandler}
+          onBlur={touchEmailHandler}
+          value={emailValue}
+        />
+      </div>
+      {emailHasError && <p className="error-text">Please enter a valid email</p>}
+      <div className='form-actions'>
+        <button disabled={!formIsValid}>Submit</button>
+      </div>
+    </form>
+  );
+};
+
+export default BasicForm;
+
+```
