@@ -896,3 +896,243 @@ export default SimpleInput;
 
 Teacher solution:
 The teacher did the same solution as me except in a slightly different order but ended up with about the same exact code
+
+
+
+
+___
+## 207. Adding A Custom Input Hook
+Looking at our code we have a lot of duplication
+We only have slightly different logic but the overall structure of each of our input validations is the same
+If we were to add yet another input we would need to replicate all of this logic again
+
+One way to handle this would be to create a seperate input component that handles that logic inside of it
+Then we would only need to write the code once and the validation and error handling would be done on each instance of the component
+But then you would need to handle the form validity since each input is being managed as an individual component
+This could be done with props and passing functions but there might be an easier way
+
+We could make a custom hook to manage the state logic
+To do this we will add a new folder/file
+Create: 'src/hooks/use-input.js'
+
+Inside of this hook we will want to manage the value of the input, the touched state, its validity, and valid + touched state
+We want this hook to be flexible by passing in the validation logic from the outside
+
+To start we will copy the name value state and touched state for name as well
+Except we don't need to it be as specific, we can just use a generic variabe name for our state
+```js
+import { useState } from 'react'
+
+const useInput = () => {
+  // Name input state
+  const [enteredValue, setEnteredValue] = useState('');
+  const [isTouched, setIsTouched] = useState(false);
+}
+
+export default useInput
+```
+Next we can copy the infered values we have based on state
+This is where we determine if the input is valid and if it should be marked as such
+```js
+const useInput = () => {
+  // Name input state
+  const [enteredValue, setEnteredValue] = useState('');
+  const [isTouched, setIsTouched] = useState(false);
+
+  // + Validation
+  // Name validation
+  const valueIsValid = (enteredValue.trim() !== '');
+  // Should an error show? Only if input is invalid and has been selected
+  const hasError = !valueIsValid && isTouched;
+}
+```
+
+The only issue here is that we have hardcoded our validity check
+Instead we want to pass in the check we will use whenever we call this hook
+We can make that adjustment by expecting a function as an argument to this hook
+Then we can use that function to return true or false to `valueIsValid` and it will receive `enteredValue` as an argument
+```js
+const useInput = (validateValue) => {
+  // Name input state
+  const [enteredValue, setEnteredValue] = useState('');
+  const [isTouched, setIsTouched] = useState(false);
+
+  // + Validation
+  // Name validation
+  const valueIsValid = validateValue(enteredValue);
+  // Should an error show? Only if input is invalid and has been selected
+  const hasError = !valueIsValid && isTouched;
+}
+```
+
+Next we want our hook to return something
+In this case we will return an object
+This object will contain the value, whether there is an error, and a function that will let the component using this hook set the value and touched state
+We will also return whether the value is valid within this object
+
+We already have that built out in the previous input as the `nameInputChangeHandler` and `nameInputBlurHandler`
+We will want to add both of these methods to our hook then make them available to the component calling the hook
+```js
+const useInput = (validateValue) => {
+  // Name input state
+  const [enteredValue, setEnteredValue] = useState('');
+  const [isTouched, setIsTouched] = useState(false);
+
+  // + Validation
+  // Name validation
+  const valueIsValid = validateValue(enteredValue);
+  // Should an error show? Only if input is invalid and has been selected
+  const hasError = !valueIsValid && isTouched;
+
+  // + Input handlers (onChange updates state values)
+  const valueChangeHandler = (event) => {
+    // Update state when user types in name field
+    setEnteredValue(event.target.value);
+  };
+
+  // + Blur handlers (toggle touched state to true)
+  const inputBlurHandler = (event) => {
+    setIsTouched(true);
+  }
+
+  return {
+    value: enteredValue,
+    valueIsValid,
+    hasError,
+    valueChangeHandler,
+    inputBlurHandler
+  }
+}
+```
+
+Now we can start using the hook in our `<SimpleInput>` component
+Remember to import it
+```js
+import useInput from '../hooks/use-input';
+```
+
+Then we can call useInput and extract the values that are returned by it 
+```js
+const SimpleInput = (props) => {
+  const {
+    value: enteredName, 
+    valueIsValid: nameIsValid
+    hasError: nameInputHasError, 
+    valueChangeHandler: nameChangeHandler, 
+    inputBlurHander: nameBlurHandler
+  } = useInput();
+  ...
+```
+
+Now we have a way to manage the state of our name input but we still need to pass our validation method in as an argument to `useInput`
+We can just pass an anonymous arrow function so we don't have to define one
+```js
+const {
+  value: enteredName, 
+  valueIsValid: nameIsValid
+  hasError: nameInputHasError, 
+  valueChangeHandler: nameChangeHandler, 
+  inputBlurHander: nameBlurHandler
+} = useInput(value => value.trim() !== '');
+```
+Now this anonymous arrow function will be called whenever validation needs to occur for these slices of state
+
+This lets us get rid of our two `useState` calls to manage the name input
+This also lets us remove `enteredNameIsValid` and use the returned values from our hook instead
+for the form validity
+```js
+const SimpleInput = (props) => {
+  const {
+    value: enteredName, 
+    isValid: enteredNameIsValid,
+    hasError: nameInputHasError, 
+    valueChangeHandler: nameChangeHandler, 
+    inputBlurHander: nameBlurHandler
+ } = useInput(value => value.trim() !== '');
+
+
+  // Email input state
+  const [enteredEmail, setEnteredEmail] = useState('');
+  const [enteredEmailTouched, setEnteredEmailTouched] = useState(false);
+
+  // + Validation
+  // Email validation
+  const enteredEmailIsValid = (enteredEmail.indexOf('@') > -1);
+
+  const emailInputIsInvalid = !enteredEmailIsValid && enteredEmailTouched;
+
+
+  // Check form validity
+  let formIsValid = false;
+  if(enteredNameIsValid && enteredEmailIsValid){
+    formIsValid = true;
+  }
+```
+Next we can get rid of the `nameInputChangeHandler` function since that is handled by the hook
+Instead we want to make sure that we are calling the `nameChangehandler` as the `onChange` action for our name input
+Do the same for the `nameInputBlurHandler`
+```js
+  <input 
+    type='text' 
+    id='name' 
+    onChange={nameChangeHandler} 
+    onBlur={nameBlurHandler}
+    value={enteredName}
+  />
+</div>
+{nameInputIsInvalid && <p className='error-text'>Name must not be empty</p>}
+```
+While we are here instead of `nameInputIsInvalid` to check whether we should show the error message we should use `nameInputHasError` retured by the hook
+
+Now in our `formSubmissionHandler` we don't need to mark the inputs as touched since they cannot be submitted without being touched or the submission cannot happen
+We do want to reset the input though
+We can do this by adding another method to our hook called `reset` which is returned within the object and will reset the state values for `enteredValue` and `isTouched`
+```js
+const reset = () => { 
+  setEnteredValue('');
+  setIsTouched(false);
+}
+
+return {
+  value: enteredValue,
+  isValid: valueIsValid,
+  hasError,
+  valueChangeHandler,
+  inputBlurHandler,
+  reset,
+}
+```
+
+Then in our input component be sure to add that returned function to our object receiving the hook object
+```js
+const {
+  value: enteredName, 
+  isValid: enteredNameIsValid,
+  hasError: nameInputHasError, 
+  valueChangeHandler: nameChangeHandler, 
+  inputBlurHander: nameBlurHandler,
+  reset: resetNameInput
+} = useInput(value => value.trim() !== '');
+```
+
+Now in our `formSubmissionHandler` we can reset the form quickly
+```js
+const formSubmissionHandler = (event) => {
+  event.preventDefault();
+
+  if(!formIsValid){
+    return;
+  }
+
+  resetNameInput();
+
+  setEnteredEmailTouched(false);
+  setEnteredEmail('');
+};
+```
+
+Lastly for the name, we need to change the variable being checked when we assign classes
+Instead of `nameInputIsInvalid` we need to check `nameInputHasError` from our hook
+```js
+const nameInputClasses = !nameInputHasError ? 'form-control' : 'form-control invalid';
+```
