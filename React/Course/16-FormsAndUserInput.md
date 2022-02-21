@@ -1136,3 +1136,62 @@ Instead of `nameInputIsInvalid` we need to check `nameInputHasError` from our ho
 ```js
 const nameInputClasses = !nameInputHasError ? 'form-control' : 'form-control invalid';
 ```
+
+
+
+
+___
+## 208. Re-Using The Custom Hook
+Now do the same with the email (try it on your own first)
+
+First thing to do is to call the hook and create an object to hold the values returned
+We can also pass in our validation to this hook as an anonymous arrow function
+```js
+const {
+  value: enteredEmail,
+  isValid: enteredEmailIsValid,
+  hasError: emailInputHasError,
+  valueChangeHandler: emailChangeHandler,
+  inputBlurHandler: emailBlurHandler,
+  reset: resetEmailInput
+} = useInput(value => value.indexOf('@') > -1);
+```
+Now make sure that the form validity check is using this new `enteredEmailIsValid` variable
+Remove the old email useState calls
+Also remove the `emailInputChangeHandler` and `emailInputBlurHandler`
+
+Then in the `formSubmissionHandler` make sure you are resetting the email input
+```js
+const formSubmissionHandler = (event) => {
+  event.preventDefault();
+  if(!formIsValid){
+    return;
+  }
+
+  resetNameInput();
+  resetEmailInput();
+};
+```
+
+Next where you determine css classes make sure you are using the new `emailInputHasError` variable
+```js
+const emailInputClasses = !emailInputHasError ? 'form-control' : 'form-control invalid';
+```
+
+Lastly in the input itself make sure you are pointing at the correct functions for the `onClick` and `onBlur` events, the value, and the error message below
+```js
+<div className={emailInputClasses}>
+  <label htmlFor='email'>Your Email</label>
+  <input
+    type='text'
+    id='email'
+    onChange={emailChangeHandler}
+    onBlur={emailBlurHandler}
+    value={enteredEmail}
+  />
+</div>
+{emailInputHasError && <p className='error-text'>Email must be valid</p>}
+```
+
+Now the hook is being used for both the name and email
+We have the same features with less code duplication and we can call this hook whenever we need
