@@ -1548,3 +1548,29 @@ const BasicForm = (props) => {
 
 export default BasicForm;
 ```
+
+
+
+
+___
+## 211. Summary
+Now how about some simplifications and other options
+
+We could try to outsource more of this logic such as to individual input components to handle validation logic
+You could build an entire form component or more custom hooks which return inputs or forms
+Here is an article outlining some of these other options
+https://academind.com/tutorials/reactjs-a-custom-useform-hook
+
+This was to focus on the basics and explain how we can use react specifically to build forms that work well for users
+He also wanted to demonstrate that using these hooks can help reduce this duplicated code
+
+There are also third party libraries like formik
+This is a popular library for working with forms
+It doesn't use hooks but uses components and patterns we know from older versions of react
+It is useful for rendering more complex forms and dealing with more complex validation
+The idea is that you won't have to write much state management logic 
+You just define validation logic and your fields and let formik handle the rest
+This is pretty similar to our approach except we wrote the hook for it
+
+For the course we will continue to use this approach
+Now we understand what is happening behind the scenes and are prepared to handle them in future projects
