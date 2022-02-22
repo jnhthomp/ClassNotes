@@ -886,3 +886,225 @@ return (
     <div className={classes.control}>
     ...
 ```
+
+
+
+
+___
+## 220. Reading From Values
+If you didn't add the styling previously go ahead and add it now (Checkout.module.css)
+You will need this file along with updated css for Modal.module.css
+There is also a Checkout.js file you can import as well, it doesn't have any different features than we have already developed, just some of the code is organized slightly differently such as wrapping buttons in a div and adding classes so the css works better
+Checkout.modue.css ('.form {height: value}` changed from laste section)
+```css
+.form {
+  margin: 1rem 0;
+  height: 19rem;
+  overflow: auto;
+}
+
+.control {
+  margin-bottom: 0.5rem;
+}
+
+.control label {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.control input {
+  font: inherit;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 20rem;
+  max-width: 100%;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.actions button {
+  font: inherit;
+  color: #5a1a01;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  border-radius: 25px;
+  padding: 0.5rem 2rem; 
+}
+
+.actions button:hover,
+.actions button:active {
+  background-color: #ffe6dc;
+}
+
+.actions .submit {
+  border: 1px solid #5a1a01;
+  background-color: #5a1a01;
+  color: white;
+}
+
+.actions .submit:hover,
+.actions .submit:active {
+  background-color: #7a2706;
+}
+
+.invalid label {
+  color: #ca3e51;
+}
+
+.invalid input {
+  border-color: #aa0b20;
+  background-color: #ffeff1;
+}
+```
+Modal.module.css (`.modal {top: value}` changed) 
+```js
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 20;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modal {
+  position: fixed;
+  top: 15vh;
+  left: 5%;
+  width: 90%;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 30;
+  animation: slide-down 300ms ease-out forwards;
+}
+
+@media (min-width: 768px) {
+  .modal {
+    width: 40rem;
+    left: calc(50% - 20rem);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-3rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+```
+Checkout.js
+```js
+import classes from './Checkout.module.css';
+
+const Checkout = (props) => {
+  const confirmHandler = (event) => {
+    event.preventDefault();
+  };
+
+  return (
+    <form className={classes.form} onSubmit={confirmHandler}>
+      <div className={classes.control}>
+        <label htmlFor='name'>Your Name</label>
+        <input type='text' id='name' />
+      </div>
+      <div className={classes.control}>
+        <label htmlFor='street'>Street</label>
+        <input type='text' id='street' />
+      </div>
+      <div className={classes.control}>
+        <label htmlFor='postal'>Postal Code</label>
+        <input type='text' id='postal' />
+      </div>
+      <div className={classes.control}>
+        <label htmlFor='city'>City</label>
+        <input type='text' id='city' />
+      </div>
+      <div className={classes.actions}>
+        <button type='button' onClick={props.onCancel}>
+          Cancel
+        </button>
+        <button className={classes.submit}>Confirm</button>
+      </div>
+    </form>
+  );
+};
+
+export default Checkout;
+```
+
+Now that our files have these slight changes we have a scrollable form underneath the total amount that shows whenever the order button is clicked
+
+Now if we add things to the cart and click order we should see our form
+
+Now lets work on getting our data
+We have two main options to do this we can either listen to every keystroke and update the a state with a new value on every key
+Or we can use a ref and get the value once when the form is submitted
+In the form section we covered multiple ways to handle this
+We will keep it simple here
+We won't get the values with every keystroke
+Instead we will only get those values when the form is submitted
+
+We can get a reference for each of our inputs by importing and calling `useRef` and assigning the return to a variable
+Then we just have to assign that variable as the value to the associated inputs `ref` property
+```js
+const nameInputRef = useRef()
+const streetInputRef = useRef()
+const postalInputRef = useRef()
+const cityInputRef = useRef()
+```
+
+Now add those refs to the form elements
+```js
+return (
+  <form className={classes.form} onSubmit={confirmHandler}>
+    <div className={classes.control}>
+      <label htmlFor='name'>Your Name</label>
+      <input type='text' id='name' ref={nameInputRef} />
+    </div>
+    <div className={classes.control}>
+      <label htmlFor='street'>Street</label>
+      <input type='text' id='street' ref={streetInputRef} />
+    </div>
+    <div className={classes.control}>
+      <label htmlFor='postal'>Postal Code</label>
+      <input type='text' id='postal' ref={postalInputRef} />
+    </div>
+    <div className={classes.control}>
+      <label htmlFor='city'>City</label>
+      <input type='text' id='city' ref={cityInputRef} />
+    </div>
+    <div className={classes.actions}>
+      <button type='button' onClick={props.onCancel}>
+        Cancel
+      </button>
+      <button className={classes.submit}>Confirm</button>
+    </div>
+  </form>
+);
+```
+Now we have these refs and can allow the user to read these values when the form is submitted within our `confirmHandler`
+```js
+const confirmHandler = (event) => {
+  event.preventDefault();
+
+  const enteredName = nameInputRef.current.value;
+  const enteredStreet = streetInputRef.current.value;
+  const enteredPostal = postalInputRef.current.value;
+  const enteredCity = cityInputRef.current.value;
+}
+```
+Now we have collected the input from the user
+We need to work on validating it
