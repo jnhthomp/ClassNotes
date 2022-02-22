@@ -123,6 +123,7 @@ Due 2/22:
       ```
 - COMPLETE: Delete the JS and do it again for all assignments
   1. background-picker + Add new color to add to button list and apply color as background
+    - Glitch Link: https://glitch.com/~background-picker-mixolydian-chestnut-fall
       ```js
       // Create new list item and give it an id
       const newColor = document.createElement('li');
@@ -149,6 +150,7 @@ Due 2/22:
         Will then us the id to extract the background color of that li and set it as background
 
   2. simple-calculator + add new function to calculator
+    - Glitch Link: https://glitch.com/~simple-calculator-humble-colossal-tangelo
       ```js
       let total = 0
 
@@ -187,6 +189,7 @@ Due 2/22:
 
       ```
   3. class-weekend-boring + add returned message to dom and handle casing
+  - Glitch Link: https://glitch.com/~class-weekend-boring-angry-lunar-penalty
       ```js
       const updateDOM = (message) => {
         document.getElementById('placeToSee').innerText = message;
