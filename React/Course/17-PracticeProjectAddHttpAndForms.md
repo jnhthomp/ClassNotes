@@ -598,3 +598,291 @@ fetchMeals().catch((error)=>{
 Now if we save and reload we will see the error after a short load
 
 Now we have an http request to fetch our meal data and can handle any errors it might throw
+
+
+
+
+___
+## 219. Adding A Checkout Form
+Now that we are getting our menu items from firebase and we can add them to the cart lets work on a checkout process
+We have an order button but it doesn't do anything
+We want to make sure that when we click the order button we exand the modal and show a form
+In this form the user will enter their address and name
+Then we will confirm that input with them before we send it to the backend
+The first step is to add the form and validation for it
+
+We want to work in the `<Cart>` component
+We will want to add a new component (the form) above the buttons in this cart component
+So create a new component called `<Checkout>` and a css module for it
+Create: src/Components/Cart/Checkout.jsx && src/Components/Cart/Checkout.module.css
+Checkout.module.css
+```css
+.form {
+  margin: 1rem 0;
+  height: 17rem;
+  overflow: auto;
+}
+
+.control {
+  margin-bottom: 0.5rem;
+}
+
+.control label {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.control input {
+  font: inherit;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 20rem;
+  max-width: 100%;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.actions button {
+  font: inherit;
+  color: #5a1a01;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  border-radius: 25px;
+  padding: 0.5rem 2rem; 
+}
+
+.actions button:hover,
+.actions button:active {
+  background-color: #ffe6dc;
+}
+
+.actions .submit {
+  border: 1px solid #5a1a01;
+  background-color: #5a1a01;
+  color: white;
+}
+
+.actions .submit:hover,
+.actions .submit:active {
+  background-color: #7a2706;
+}
+
+.invalid label {
+  color: #ca3e51;
+}
+
+.invalid input {
+  border-color: #aa0b20;
+  background-color: #ffeff1;
+}
+```
+
+Now in the `<Checkout>` component we will want to create our functional component
+```js
+import classes from './Checkout.module.css';
+
+
+const Checkout = () => {
+  return (
+    <div>Checkout</div>
+  )
+}
+
+export default Checkout
+```
+Now we can start on the markup for the form
+```js
+import classes from './Checkout.module.css';
+
+
+const Checkout = () => {
+  return (
+    <form>
+      <div className={classes.control}>
+        <label htmlFor="name">Your name</label>
+        <input type="text" id="name" />
+      </div>
+      <div className={classes.control}>
+        <label htmlFor="street">Street</label>
+        <input type="text" id="street" />
+      </div>
+      <div className={classes.control}>
+        <label htmlFor="postal">Postal Code</label>
+        <input type="text" id="postal" />
+      </div>
+      <div className={classes.control}>
+        <label htmlFor="city">City</label>
+        <input type="text" id="city" />
+      </div>
+      <button>Confirm</button>
+    </form>
+  )
+}
+
+export default Checkout
+```
+
+Now we can add this to the cart by importing it and calling it below the total amount
+For now we will make it always render but will change it later to show only when the order button is clicked
+Cart.jsx
+```js
+return (
+  // Modal UI component to display the cart inside of
+  // <Modal> contains a backdrop and an area to accept children such as the content of this card component
+  // Accepts `onHideCart` to close modal when backdrop is clicked
+  <Modal onHideCart={props.onHideCart}>
+    {/* Output cartItem <ul> with items rendered as <CartItem>; if empty then empty list rendered*/}
+    <div>{cartItems}</div>
+    {/* Total cart value and label */}
+    <div className={classes.total}>
+      {/* Label */}
+      <span>Total Amount</span>
+      {/* Formatted value */}
+      <span>{totalAmount}</span>
+    </div>
+    <Checkout/>
+    {/* Hold cart action buttons such as "Close" and "Order" */}
+    <div className={classes.actions}>
+      {/* Close Cart modal button */}
+      <button className={classes['button--alt']} onClick={props.onHideCart}>Close</button>
+      {/* Conditionally show "Order" button depending on if there are items in the cart
+            hasItems will only be true if cart is not empty (set above)*/}
+      {hasItems && <button className={classes.button}>Order</button>}
+    </div>
+  </Modal>
+)
+```
+
+Now we will make sure this form will only show up when we click order
+We will also want to hide the two close and order buttons and only show the confirm (and maybe a cancel button)
+
+For the first part we want to attach the order button to an action to show the form
+Currently the order button doesn't have a class attached to it
+We can add an `onClick` listener to trigger a function to handle that order
+```js
+{hasItems && <button className={classes.button} onClick={orderHandler}>Order</button>}
+```
+
+In order to manage this we will need a state that gets changed in the `orderHandler` 
+So import `useState` and call it to create a state to manage whether or not this form shows
+```js
+const [isCheckOut, setIsCheckOut] = useState(false);
+```
+We want this to be false initially so it hides the checkout but when the order button is clicked `orderHandler` will make this true
+```js
+  const orderHandler = () => {
+    setIsCheckOut(true);
+  }
+```
+Now we can check `isCheckout` to determine whether to show the checkout form
+```js
+return (
+  // Modal UI component to display the cart inside of
+  // <Modal> contains a backdrop and an area to accept children such as the content of this card component
+  // Accepts `onHideCart` to close modal when backdrop is clicked
+  <Modal onHideCart={props.onHideCart}>
+    {/* Output cartItem <ul> with items rendered as <CartItem>; if empty then empty list rendered*/}
+    <div>{cartItems}</div>
+    {/* Total cart value and label */}
+    <div className={classes.total}>
+      {/* Label */}
+      <span>Total Amount</span>
+      {/* Formatted value */}
+      <span>{totalAmount}</span>
+    </div>
+    {isCheckOut && <Checkout/>}
+    ...
+```
+Now when we save initially there is no form but when we click order it appears
+
+As a nice touch lets hide the order and cancel buttons if the checkout form is showing
+To keep it clean we will take the div with the buttons out and use a constant instead
+We can call it modal actions 
+We can then set it so it shows the buttons we just removed when the form is hidden but has no content when the form is showing
+```js
+  ...
+  const modalActions = (
+    // Hold cart action buttons such as "Close" and "Order" 
+    < div className = { classes.actions } >
+      {/* Close Cart modal button */ }
+      < button
+          className = { classes['button--alt']}
+          onClick = { props.onHideCart }> Close</ button>
+      {/* Conditionally show "Order" button depending on if there are items in the cart
+      hasItems will only be true if cart is not empty (set above)*/}
+      {hasItemds &&
+      <button
+        className={classes.button}
+        onClick={orderHandler}>Order</button>
+      }
+    </div >
+  );
+
+  return (
+    // Modal UI component to display the cart inside of
+    // <Modal> contains a backdrop and an area to accept children such as the content of this card component
+    // Accepts `onHideCart` to close modal when backdrop is clicked
+    <Modal onHideCart={props.onHideCart}>
+      {/* Output cartItem <ul> with items rendered as <CartItem>; if empty then empty list rendered*/}
+      <div>{cartItems}</div>
+      {/* Total cart value and label */}
+      <div className={classes.total}>
+        {/* Label */}
+        <span>Total Amount</span>
+        {/* Formatted value */}
+        <span>{totalAmount}</span>
+      </div>
+      {isCheckOut && <Checkout/>}
+      {!isCheckout && modalActions}
+    </Modal>
+  )
+}
+```
+
+Now the buttons hide whenever order is clicked
+
+Next we can add a new button to the form
+```js
+<div className={classes.control}>
+  <label htmlFor="city">City</label>
+  <input type="text" id="city" />
+</div>
+<button type="button">Cancel</button>
+<button>Confirm</button>
+```
+notice that we set a type of button to the cancel button so that it doesn't submit the form when clicked
+
+If we click the cancel button we want to close the modal 
+That means we want to do the same thing we did in the card button when it's closed button is clicked
+This is trigger by the `props.onHideCart` function in `<Cart>`
+
+So we are going to want to pass that prop into the `<Checkout>` component
+```js
+<button type="button" onClick={props.onCancel}>Cancel</button>
+```
+in `<Cart>`
+```js
+{isCheckout && <Checkout onCancel={props.onHideCart}/>}
+```
+We are passing props through multiple levels of components and could use context but we don't really need to right now
+
+Now we can add an item to the cart, click order, then click cancel and the entire cart modal will close
+
+Let's setup our confirm button
+This will be trigger by the form `onSubmit` action and needs to use the event object it receives to prevent the default submission of the form
+```js
+const confirmHandler = (event) => {
+    event.preventDefault();
+  }
+
+return (
+  <form onSubmit={confirmHandler}>
+    <div className={classes.control}>
+    ...
+```
