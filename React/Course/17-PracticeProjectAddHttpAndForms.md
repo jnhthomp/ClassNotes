@@ -244,7 +244,7 @@ const AvailableMeals = () => {
 
   useEffect(() => {
     const fetchMeals = async () => {
-      const response = await fetch('https://react-http-82bca-default-rtdb.firebaseio.com/meals.json')  
+      const response = await fetch('https://react-http-default-rtdb.firebaseio.com/meals.json')  
       const responseData = await response.json()
 
       const loadedMeals = [];
@@ -296,3 +296,171 @@ export default AvailableMeals
 ```
 
 Now if you save and reload you can see a brief instant where the food is not loaded before it appears
+
+
+
+
+___
+## 217. Handling the Loading State
+Now that we are fetching data there is a time period where there is no data to show
+It might be helpful to show a loading icon if the content hasn't loaded yet
+That way if there is a delay or it takes a long time the user knows it is doing something
+
+To do this we will manage more state
+We could use `useReducer` but don't have to
+I will because I like it better than `useState` but the teacher will be using `useState`
+The logic should remain the same though
+
+For the reducer approach we will need to create an initial state object that we will use
+We need to add `meals` to this state with an empty array as well as an `isLoading` boolean which is initialized to false
+This is because we may not want to start fetching as soon as the page loads all the time so we don't want a loading state when it is not loading
+Instead we will set this `isLoading` to true whenever we start our fetch action
+```js
+const initialMealState = {
+  meals: [],
+  isLoading: false
+}
+``` 
+Next we will need a reducer function
+For now it will just return this initial state object
+```js
+const mealStateReducer = (state, action) => {
+  return initialMealState;
+}
+```
+
+Then we need our `useReducer` call itself which will receive this reducer function as an argument along with the initial state object
+It will also return an array that will make available a state object we can access as well as a method to access our reducer function
+```js
+const [mealState, dispatch] = useReducer(mealStateReducer, initialMealState)
+```
+
+Now we will create our action to update the loading value and use it in our fetch method to start the loading
+```js
+const mealStateReducer = (state, action) => {
+  if (action.type === 'UPDATE_LOADING') {
+    return {...state, isLoading: action.value};
+  }
+  return initialMealState;
+}
+```
+Then just call it in the fetch function and pass in a true value since we are starting the loading
+We will also want to reset this value back to false once the loading is done
+```js
+useEffect(() => {
+    const fetchMeals = async () => {
+      dispatch({type: 'UPDATE_LOADING', value: true})
+
+      const response = await fetch('https://react-http-default-rtdb.firebaseio.com/meals.json')  
+      const responseData = await response.json()
+
+      const loadedMeals = [];
+
+      for (const key in responseData) {
+        loadedMeals.push({
+          id: key,
+          name: responseData[key].name,
+          description: responseData[key].description,
+          price: responseData[key].price
+        })
+      }
+
+      setMeals(loadedMeals);
+      dispatch({type:'UPDATE_LOADING', value: false})
+
+    }
+    fetchMeals();
+  }, [])
+```
+
+Above we are still use `setMeals` so we need to change that to a dispatch action and create one
+```js
+const mealStateReducer = (state, action) => {
+  if (action.type === 'UPDATE_MEALS') {
+    return {...state, meals: action.value};
+  }
+  
+  if (action.type === 'UPDATE_LOADING') {
+    return {...state, isLoading: action.value};
+  }
+  return initialMealState;
+}
+```
+
+Then call that dispatch action
+```js
+useEffect(() => {
+  const fetchMeals = async () => {
+    dispatch({type: 'UPDATE_LOADING', value: true})
+
+    const response = await fetch('https://react-http-default-rtdb.firebaseio.com/meals.json')  
+    const responseData = await response.json()
+
+    const loadedMeals = [];
+
+    for (const key in responseData) {
+      loadedMeals.push({
+        id: key,
+        name: responseData[key].name,
+        description: responseData[key].description,
+        price: responseData[key].price
+      })
+    }
+
+    dispatch({type: 'UPDATE_MEALS', value: loadedMeals});
+    dispatch({type: 'UPDATE_LOADING', value: false});
+
+  }
+  fetchMeals();
+}, [])
+```
+
+Now we can remove the original `meals` `useState` call
+Also make sure that you are accessing the `mealsState.meals` in our map function to create meal components
+```js
+const mealsList = mealState.meals.map((meal) => {
+  return (<MealItem 
+            id={meal.id}
+            key={meal.id}
+            name={meal.name}
+            description={meal.description}
+            price={meal.price}
+          />)
+})
+```
+
+Now we can handle what happens when `isLoading` is true
+We want to check if `isLoading` is true before we even map our `mealsList` because if it is loading that means `mealsState` doesn't have values yet and it would be a waste of time and resources
+If this `isLoading` check is true we will trigger the return of some jsx that way we don't hit this mapping at all 
+
+For now we can just return a simple section holding a paragraph
+```js
+if(mealState.isLoading){
+  return (
+    <section>
+      <p>Loading...</p>
+    </section>
+  )
+}
+```
+
+Now if you save and reload there will be a brief flash of loading but it isn't styled
+Let's go ahead and add a class to it and some quick styling so it is more apparent
+```js
+if(mealState.isLoading){
+  return (
+    <section className={classes.mealsLoading}>
+      <p>Loading...</p>
+    </section>
+  )
+}
+```
+For the css:
+```css
+.mealsLoading {
+  text-align: center;
+  color: white;
+}
+```
+
+Now the loading text will be more visible for the brief period that it is showing
