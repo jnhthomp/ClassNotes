@@ -464,3 +464,137 @@ For the css:
 ```
 
 Now the loading text will be more visible for the brief period that it is showing
+
+
+
+
+___
+## 218. Handling Errors
+Now lets try simulating an error and then being sure that we can handle it
+To trigger an error we can introduce a typo into our `fetch('url')`
+This will cause something other than the data we are looking for to be returned by firebase
+Remove `.json` from the end of the firebase url
+If you save and reload you will see an error where we failed to fetch that data
+Users won't usually check the console so we should show this error on the screen
+We will replace the loading text with the error message
+So we will need to use a third state
+We will call this `httpError` which can be initialized to `false`, `null`, or even `undefined`
+It isn't a true false value, later we will have a message and then after that we will want it cleared again
+I will use null since that seems like a good descriptor
+```js
+const initialMealState = {
+  meals: [],
+  isLoading: false,
+  httpError: null
+}
+```
+If you used a reducer that all you need to add for it to be initialized in state
+
+Now when we fetch data and fail we want to set this error
+First we have to check that the fetch did fail
+We can do this by just checking `response.ok` if it is falsey (not ok) then we hit an error and didn't get the data we were trying to get
+If that is the case we want to throw a new error were we say "something went wrong"
+We could look into the response and find something more specific but this will do for now
+If we throw this as a new error then the next lines won't execute
+```js
+const AvailableMeals = () => {
+  const [mealState, dispatch] = useReducer(mealStateReducer, initialMealState)
+
+  useEffect(() => {
+    const fetchMeals = async () => {
+      dispatch({type: 'UPDATE_LOADING', value: true});
+
+      const response = await fetch('https://react-http-82bca-default-rtdb.firebaseio.com/meals');
+
+      if (!response.ok) {
+        throw new Error('Something went wrong');
+      }
+
+      const responseData = await response.json()
+
+      const loadedMeals = [];
+
+      for (const key in responseData) {
+        loadedMeals.push({
+          id: key,
+          name: responseData[key].name,
+          description: responseData[key].description,
+          price: responseData[key].price
+        })
+      }
+
+      dispatch({type: 'UPDATE_MEALS', value: loadedMeals});
+      dispatch({type: 'UPDATE_LOADING', value: false});
+
+    }
+    fetchMeals();
+  }, [])
+  ...
+```
+The advantage to placing and then calling fetchMeals over doing this as an anonymous arrow function is that now our call to fetchMeals can now return an error
+That means we can go to where we call `fetchMeals` and wrap it with `try` and write a `catch` statement as well
+If we did this as an anonymous function we wouldn't be able to do this
+```js
+      dispatch({type: 'UPDATE_MEALS', value: loadedMeals});
+      dispatch({type: 'UPDATE_LOADING', value: false});
+
+    }
+
+    try {
+      fetchMeals();
+    } catch {
+      
+    }
+  }, [])
+```
+
+Now inside of the catch we need to handle what happens if there is an error
+First we have to reset our loading state to false
+Even though we didn't get the data we still aren't loading anymore
+Then we need to set our `httpError` to the error that was caught
+Remember with try/catch that catch can receive the error as an argument and error has a message property we can use
+```js
+try {
+  fetchMeals();
+} catch (error){
+  dispatch({type: 'UPDATE_LOADING', value: false});
+  dispatch({type: 'UPDATE_ERROR', value: error.message})
+}
+```
+
+Now we have an error state we can use to check if we have an error or not
+After we have checked if we are loading we can add an if statement to trigger if our state `httpError` is truthy (not null)
+Then in there we can display text, just like for our loading if block, except output the error message held in state
+```js
+if(httpError){
+  return (
+    <section className={classes.mealsError}>
+      <p>{httpError}</p>
+    </section>
+  )
+}
+```
+
+Now we have to write that css class we just added
+```css
+.mealsError {
+  text-align: center;
+  color: red;
+}
+```
+
+One issue we have before this works is that `fetchMeals` returns a promise and if you throw an error in a promise it breaks it
+The way to fix that is to use the `await` keyword where we call `fetchMeals` but as discussed earlier we cannot do that
+We can add `.catch()` to the end of our `fetchMeals()` call though instead of using try/catch
+Then we just pass our catch logic into there as an arrow function
+```js
+fetchMeals().catch((error)=>{
+  dispatch({type: 'UPDATE_LOADING', value: false});
+  dispatch({type: 'UPDATE_ERROR', value: error.message})
+});
+```
+
+
+Now if we save and reload we will see the error after a short load
+
+Now we have an http request to fetch our meal data and can handle any errors it might throw
