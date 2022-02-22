@@ -1374,3 +1374,261 @@ orders
     |-postal: "12345"
     |-street: "General Kenobi"
 ```
+
+
+
+
+___
+## 223. Adding Better User Feedback
+Now we want to handle the submission state in the cart while the POST request takes place
+We will need to add a new state to the cart component to handle the time when the submission is being added to the database before we hear back from the database that the submission was successful
+```js
+const [isSubmitting, setIsSubmitting] = useState(false);
+```
+
+This is false initially since the order isn't being submitted but as soon as the user starts to submit the order we want this to be true
+```js
+const submitOrderHandler = (userData) => {
+  setIsSubmitting(true);
+
+  fetch('https://react-http-82bca-default-rtdb.firebaseio.com/orders.json', {
+    method: 'POST',
+    body: JSON.stringify({
+      user: userData,
+      orderedItems: cartCtx.items
+    })
+  });
+}
+```
+
+Then we want to wait for the fetch function to finish so we can use the `await` keyword and turn our order handler into an async function
+```js
+const submitOrderHandler = async (userData) => {
+  setIsSubmitting(true);
+
+  await fetch('https://react-http-82bca-default-rtdb.firebaseio.com/orders.json', {
+    method: 'POST',
+    body: JSON.stringify({
+      user: userData,
+      orderedItems: cartCtx.items
+    })
+  });
+}
+```
+If we were to implement any kind of error handling we would need to store the response from this fetch request
+For now we will imagine that the submission will always work but that may not always be the case (especially if there is backend validation!)
+Maybe add error handling as an excercise later
+
+For now we just want to reset `isSubmitting` to false once this POST request is complete
+```js
+const submitOrderHandler = async (userData) => {
+  setIsSubmitting(true);
+
+  await fetch('https://react-http-82bca-default-rtdb.firebaseio.com/orders.json', {
+    method: 'POST',
+    body: JSON.stringify({
+      user: userData,
+      orderedItems: cartCtx.items
+    })
+  });
+
+  setIsSubmitting(false);
+}
+```
+
+Now we want to introduce a successful submission message and to trigger this we will need to introduce another piece of state
+We will call this `didSubmit` 
+It will turn to true after the submission is complete
+This means we could change our `isSubmitting` and `didSubmit` states (and arguably `isCheckout`) to a reducer but for now we will just use regular state
+```js
+const Cart = (props) => {
+  const [isCheckout, setIsCheckout] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [didSubmit, setDidSubmit] = useState(false);
+```
+
+Now we need to set this to true as soon as the data is submitted
+```js
+const orderHandler = () => {
+  setIsCheckout(true);
+}
+
+const submitOrderHandler = async (userData) => {
+  setIsSubmitting(true);
+
+  // TODO: Manage errors if submission doesn't work (store response from fetch and check it)
+  await fetch('https://react-http-82bca-default-rtdb.firebaseio.com/orders.json', {
+    method: 'POST',
+    body: JSON.stringify({
+      user: userData,
+      orderedItems: cartCtx.items
+    })
+  });
+
+  setIsSubmitting(false);
+  setDidSubmit(true);
+}
+```
+
+Now we can work with these two `isSubmitting` and `didSubmit` states to determine what content to show in the modal
+We have three different things we want to show
+1. The normal cart initially, while `isSubmitting` and `didSubmit` are both false
+2. Some loading text while `isSubmitting` is true
+3. A success message when `didSubmit` is true
+
+So we will take all of the content from in between the modal tags and store it in a variable
+Since we cut sibling elements and are pasting them we will have to wrap them all in a fragment so be sure to import and call that 
+```js
+const cartModalContent = (
+  <React.Fragment>
+    <div> { cartItems }</div>
+    <div className ={ classes.total }>
+      <span> Total Amount</span>
+      <span> { totalAmount }</span>
+    </div>
+    { isCheckout && <Checkout onConfirm={submitOrderHandler} onCancel={props.onHideCart} />}
+    { !isCheckout && modalActions }
+  </React.Fragment>
+)
+```
+
+Now we can call this variable
+```js
+return (
+  <Modal onHideCart={props.onHideCart}>
+    {cartModalContent}
+  </Modal>
+)
+```
+
+Now we need to show something if we are sending order data
+```js
+const isSubmittingModalContent = <p>Sending Order Data...</p>
+```
+and call it if `isSubmitting` is true and only show the `cartModalContent` if `isSubmitting` is false
+```js
+return (
+  <Modal onHideCart={props.onHideCart}>
+    {!isSubmitting && cartModalContent}
+    {isSubmitting && isSubmittingModalContent}
+  </Modal>
+)
+```
+
+Now last for the submission complete message 
+```js
+const didSubmitModalContent = <p>Successfully sent the order!</p>
+```
+
+and show that if `didSubmit` is true
+We should also tweak the other two to only show if `didSubmit` is false as well
+```js
+return (
+  <Modal onHideCart={props.onHideCart}>
+    {!isSubmitting && !didSubmit && cartModalContent}
+    {isSubmitting && isSubmittingModalContent}
+    {!isSubmitting && didSubmit && didSubmitModalContent}
+  </Modal>
+)
+```
+
+Now if we save and submit an order with valid inputs we will briefly see the submitting paragraph followed by our success message
+
+To make it a little nicer lets include a close modal button with the success message
+```js
+const didSubmitModalContent = (
+<React.Fragment>
+  <p>Successfully sent the order!</p>
+  <div className={classes.actions}>
+    <button className={classes.button} onClick={props.onHideCart}> 
+      Close
+    </button>
+  </div>
+</React.Fragment>
+)
+```
+
+Now we have a close button that will close the modal and looks nice
+
+As a last step we want to clear the cart when we submit
+To do this we need to go to the cart context and add a new action
+So far we only have actions for adding and removing single items
+Now we need one for clearing the entire cart
+
+We will add a new action in our if checks that will return a new state where the items array is cleared and the `totalAmount` is reset, we can use the `defaultCartState` for this
+```js
+const cartReducer = (state, action) => {
+  // Add item to state.items[] cartContext.addItem=>addItemToCartHandler=>'ADD'
+  // Receives an item object; uses it to update total and cartContext.items through state
+  if(action.type === 'ADD'){
+    //...Add logic
+    return {
+      items: updatedItems,
+      totalAmount: updatedTotal
+    }
+  if(action.type === 'REMOVE'){
+    //...Remove logic
+    return {
+      items: updatedItems,
+      totalAmount: updatedTotal
+    }
+  }
+
+  if(action.type === 'CLEAR'){
+    return defaultCartState;
+  }
+
+  return defaultCartState;
+}
+```
+
+Now we have to access this dispatch action within the `cartProvider` with a method
+```js
+const clearCartHandler = () => {
+  dispatchCartAction({type: 'CLEAR'})
+}
+```
+If we add this to our cart-context we will get better autocomplete
+```js
+const CartContext = React.createContext({
+  items: [],
+  totalAmount: 0,
+  addItem: (item) => {},
+  removeItem: (item) => {},
+  clearCart: ()=>{}
+});
+
+export default CartContext
+```
+
+Now in our `cartContext` variable within the provider we need to add this method so it can be accessed by the components that use this context
+```js
+const cartContext = {
+  items: cartState.items,
+  totalAmount: cartState.totalAmount,
+  addItem: addItemToCartHandler,
+  removeItem: removeItemFromCartHandler,
+  clearCart: clearCartHandler
+}
+```
+
+Now once our order is submitted at the end of the `submitOrderHandler` in the cart we can call this clear cart method
+```js
+const submitOrderHandler = async (userData) => {
+  setIsSubmitting(true);
+
+  await fetch('https://react-http-82bca-default-rtdb.firebaseio.com/orders.json', {
+    method: 'POST',
+    body: JSON.stringify({
+      user: userData,
+      orderedItems: cartCtx.items
+    })
+  });
+
+  setIsSubmitting(false);
+  setDidSubmit(true);
+  cartCtx.clearCart();
+}
+```
+
+Now our cart should clear after we submit an order and we have a better ui/ux
