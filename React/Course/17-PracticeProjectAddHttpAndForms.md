@@ -1632,3 +1632,14 @@ const submitOrderHandler = async (userData) => {
 ```
 
 Now our cart should clear after we submit an order and we have a better ui/ux
+
+
+
+
+___
+## 224. Summary
+That is all the changes for this module
+We are leveraging a backend for fetching meals and submitting orders
+We also added a form with validation
+
+There are a bunch of other changes and improvements we could use but this is to just practice the core concepts from previous sections
