@@ -5,11 +5,11 @@ const updateDOM = (message) => {
 const getDayHandler = () => {
   let message;
   const dotw = document.getElementById('day').value.toUpperCase();
-  if (dotw === ('TUESDAY') || dotw === 'THURSDAY') {
+  if ((dotw === 'TUESDAY') || (dotw === 'THURSDAY')) {
     message = 'class'
-  } else if (dotw === 'SATURDAY' || dotw === 'SUNDAY') {
+  } else if ((dotw === 'SATURDAY') || (dotw === 'SUNDAY')) {
     message = 'weekend'
-  } else if (dotw === ('MONDAY') || dotw === 'WEDNESDAY'){
+  } else if ((dotw === 'MONDAY') || (dotw === 'WEDNESDAY') || (dotw === 'FRIDAY')) {
     message = 'boring'
   } else {
     message = 'WE DON\'T GET GOT'
