@@ -1108,3 +1108,189 @@ const confirmHandler = (event) => {
 ```
 Now we have collected the input from the user
 We need to work on validating it
+
+
+
+
+___
+## 221. Adding Form Validation
+We will use pretty simple validation
+We will just make sure that the fields are not empty and that the postal code is exactly 5 digits long
+
+We can use a couple of helper functions (outside of the component function) so that way we can re-use them
+The first one is the `isEmpty` function which will accept an argument (the value to check)
+Then it will make sure this value is not an empty string
+```js
+const isEmpty = (value) => value.trim() === '';
+```
+The second will just check that the length of the value is exactly 5 characters
+```js
+const isFiveChars = (value) => value.trim().length === 5;
+```
+Now we can use these to validate our entered values
+```js
+const enteredNameIsValid = !isEmpty(enteredName);
+const enteredStreetIsValid = !isEmpty(enteredStreet);
+const enteredCityIsValid = !isEmpty(enteredCity);
+const enteredPostalIsValid = isFiveChars(enteredPostal);
+```
+Now we can check if the entire form is valid if all of these constants are true
+We are doing this very explicity and step by step so it is easy to come back and change and readable
+```js
+const formIsValid = enteredNameIsValid && enteredStreetIsValid && enteredCityIsValid && enteredPostalIsValid;
+```
+
+Now that we can check the form validity we can use an if statement to break out and show an error if `formIsValid` is false
+```js
+if(!formIsValid) {
+  //set an error and give feedback
+  return;
+}
+```
+We can add the details for this a little later for now we will work on updating the state just before that if check is hit
+We want a state to hold the validity of each of our fields that way we can update/check this state for their validity when showing a user what went wrong
+The teacher will use `useState` holding an object
+I will use `useReducer` because I like it better
+Create an initial state object, a reducer function, and a call to `useReducer` that accepts both of these as arguments and returns an array to access state and dispatch function
+```js
+const INITIAL_INPUTS_VALIDITY_STATE = {
+  name: true,
+  street: true,
+  city: true,
+  postal: true,
+}
+
+const inputsValidityReducer = (state, action) => {
+  return INITIAL_INPUTS_VALIDITY_STATE;
+}
+
+const Checkout = (props) => {
+
+  const [formInputsValidity, formDispatch] = useReducer(inputsValidityReducer, INITIAL_INPUTS_VALIDITY_STATE)
+
+  ...
+```
+We will set these as true even though they technically aren't 
+We could mess with a touched state like we did in the previous section but will not for the sake of keeping this simple for now
+
+Now the goal is to update each field for different inputs when we submit the form
+This will update the 'true' values with the actual validity
+We can do 
+
+Before we even check the form validity we can update these values (right after we check validity)
+```js
+formDispatch({type: 'VALIDATE_FORM', value: {
+  enteredNameIsValid,
+  enteredStreetIsValid,
+  enteredCityIsValid,
+  enteredPostalIsValid
+}});
+```
+
+We will also need to write our dispatch action to handle this update
+```js
+const inputsValidityReducer = (state, action) => {
+
+  if (action.type === 'VALIDATE_FORM'){
+    return {
+      ...state,
+      name: action.value.enteredNameIsValid,
+      street: action.value.enteredStreetIsValid,
+      city: action.value.enteredCityIsValid,
+      postal: action.value.enteredPostalIsValid
+    };
+  }
+
+  return INITIAL_INPUTS_VALIDITY_STATE;
+}
+```
+
+Now that we have these values set in state we can use these true/false values to show a message in the form if these state values are false
+```js
+return (
+  <form className={classes.form} onSubmit={confirmHandler}>
+    <div className={classes.control}>
+      <label htmlFor='name'>Your Name</label>
+      <input type='text' id='name' ref={nameInputRef} />
+      {!formInputsValidity.name && <p>Please enter a valid name</p>}
+    </div>
+    <div className={classes.control}>
+      <label htmlFor='street'>Street</label>
+      <input type='text' id='street' ref={streetInputRef} />
+      {!formInputsValidity.street && <p>Please enter a valid street</p>}
+    </div>
+    <div className={classes.control}>
+      <label htmlFor='postal'>Postal Code</label>
+      <input type='text' id='postal' ref={postalInputRef} />
+      {!formInputsValidity.postal && <p>Please enter a valid postal code</p>}
+    </div>
+    <div className={classes.control}>
+      <label htmlFor='city'>City</label>
+      <input type='text' id='city' ref={cityInputRef} />
+      {!formInputsValidity.city && <p>Please enter a valid city</p>}
+    </div>
+    <div className={classes.actions}>
+      <button type='button' onClick={props.onCancel}>
+        Cancel
+      </button>
+      <button className={classes.submit}>Confirm</button>
+    </div>
+  </form>
+);
+```
+
+Now if we save and don't fill in a field the error message will show up beneath it
+Fields with valid inputs will not have this message
+
+We can also conditionally add the `.invalid` class from our updated css to the div if the form is invalid
+To do this we can use a template literal and ternary expression
+Remember we want to always show the `.control` class
+```js
+<div className={`${classes.control} ${formInputsValidity.name ? '' : classes.invalid}`}>
+  <label htmlFor='name'>Your Name</label>
+  <input type='text' id='name' ref={nameInputRef} />
+  {!formInputsValidity.name && <p>Please enter a valid name</p>}
+</div>
+```
+
+We could also do this as a constant that is passed in as well
+```js
+const nameControlClasses = `${classes.control} ${formInputsValidity.name ? '' : classes.invalid }`
+const streetControlClasses = `${classes.control} ${formInputsValidity.street ? '' : classes.invalid}`
+const postalControlClasses = `${classes.control} ${formInputsValidity.postal ? '' : classes.invalid}`
+const cityControlClasses = `${classes.control} ${formInputsValidity.city ? '' : classes.invalid}`
+```
+```js
+return (
+  <form className={classes.form} onSubmit={confirmHandler}>
+    <div className={nameControlClasses}>
+      <label htmlFor='name'>Your Name</label>
+      <input type='text' id='name' ref={nameInputRef} />
+      {!formInputsValidity.name && <p>Please enter a valid name</p>}
+    </div>
+    <div className={streetControlClasses}>
+      <label htmlFor='street'>Street</label>
+      <input type='text' id='street' ref={streetInputRef} />
+      {!formInputsValidity.street && <p>Please enter a valid street</p>}
+    </div>
+    <div className={postalControlClasses}>
+      <label htmlFor='postal'>Postal Code</label>
+      <input type='text' id='postal' ref={postalInputRef} />
+      {!formInputsValidity.postal && <p>Please enter a valid postal code</p>}
+    </div>
+    <div className={cityControlClasses}>
+      <label htmlFor='city'>City</label>
+      <input type='text' id='city' ref={cityInputRef} />
+      {!formInputsValidity.city && <p>Please enter a valid city</p>}
+    </div>
+    <div className={classes.actions}>
+      <button type='button' onClick={props.onCancel}>
+        Cancel
+      </button>
+      <button className={classes.submit}>Confirm</button>
+    </div>
+  </form>
+);
+```
+This is a little cleaner
+We do have some code duplication that could be cleaned up if we were to use a custom input component or hooks or something
