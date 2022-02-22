@@ -1294,3 +1294,83 @@ return (
 ```
 This is a little cleaner
 We do have some code duplication that could be cleaned up if we were to use a custom input component or hooks or something
+
+
+
+
+___
+## 222. Submitting & Sending Cart Data
+Now lets send a request when our form is subitted
+It would make sense to put this in the cart since it has the cart data and can receive the checkout data from the `<Checkout>` component
+Then `<Cart>` can send both the items and the address from the form
+One thing to note is that on a real server you should never trust data received from a client
+The js that is run in the browser can be edited by the user to circumvent your validation and you could receive bad or malicious inputs
+See the attached article and video
+Article/video: https://academind.com/tutorials/hide-javascript-code
+
+To manage this you would want to validate this data on the backend (like with a node.js backend)
+
+So in our card component we will add a new function that handles submitting an order
+In there we expect to receive some `userData` 
+This function should already have access to the cart data since this function is in the cart
+Then we just pass this function down to our `<Checkout>` component
+```js
+const submitOrderHandler = (userData) => {
+  
+}
+```
+```js
+{isCheckout && <Checkout onConfirm={submitOrderHandler} onCancel={props.onHideCart}/>}
+```
+
+Now back in the `<Checkout>` component we want to call this action and pass in the user data as an object after our if statement checking validation is complete
+```js
+if(!formIsValid) {
+  //set an error and give feedback
+  return;
+}
+
+props.onConfirm({
+  name: enteredName,
+  street: enteredStreet,
+  postal: enteredPostal,
+  city: enteredCity
+});
+```
+
+Now we want to go back to the `<Cart>` component and finish our `submitOrderHandler` and send this request to the backend
+We will again have to use the 'fetch' function
+Except instead of a get request we are going to use a post request so we will have to attach an object outlining the request object parameters
+We will also want to create a new node, we can name it here in the fetch request and firebase will create it for us
+This means we need an object that includes the method key and a body containing the object we would like to push
+We have to transform this js object to a json object as well
+```js
+const submitOrderHandler = (userData) => {
+  fetch('https://react-http-default-rtdb.firebaseio.com/orders.json', {
+    method: 'POST',
+    body: JSON.stringify({
+      user: userData,
+      orderedItems: cartCtx.items
+    })
+  });
+}
+```
+
+Now like this it should already work
+We aren't handling the response or errors but we are sending a valid post request
+If we save and click confirm then we should see an orders node with our data
+```
+orders
+|-(uniqueId)
+  |-orderedItems
+  | |-0
+  |   |-amount: 1
+  |   |-id: "m1"
+  |   |-name: "Sushi"
+  |   |-price: 22.99
+  |-user
+    |-city: "BoldOne"
+    |-name: "HelloThere"
+    |-postal: "12345"
+    |-street: "General Kenobi"
+```
