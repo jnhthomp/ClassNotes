@@ -121,100 +121,14 @@ Due 2/22:
       // Run the demo
       // P.S. In this task the function should support only natural values of n: integers up from 1.
       ```
-- COMPLETE: Delete the JS and do it again for all assignments
-  1. background-picker + Add new color to add to button list and apply color as background
-    - Glitch Link: https://glitch.com/~background-picker-mixolydian-chestnut-fall
-      ```js
-      // Create new list item and give it an id
-      const newColor = document.createElement('li');
-      newColor.id = ('red');
-
-      const colorList = document.querySelector('ul');
-      const body = document.querySelector('body');
-
-      colorList.appendChild(newColor);
-      colorList.style.height = '265px';
-      newColor.style.background = 'rgb(227, 84, 79)';
-
-      const setBackgroundPurple = () => { body.style.background = 'rgba(241,63,247,1)'};
-      const setBackgroundGreen = () => { body.style.background = 'rgba(0,253,81,1)' };
-      const setBackgroundBlue = () => { body.style.background = 'rgba(0,254,255)' };
-      const setBackgroundRed = () => { body.style.background = 'rgb(227, 84, 79)' };
-
-      document.getElementById('purple').addEventListener('click', setBackgroundPurple);
-      document.getElementById('green').addEventListener('click', setBackgroundGreen);
-      document.getElementById('blue').addEventListener('click', setBackgroundBlue);
-      document.getElementById('red').addEventListener('click', setBackgroundRed);
-      ```
-      - Above answer works but try to make a single `setBackground` function that accepts the id as an argument
-        Will then us the id to extract the background color of that li and set it as background
-
-  2. simple-calculator + add new function to calculator
-    - Glitch Link: https://glitch.com/~simple-calculator-humble-colossal-tangelo
-      ```js
-      let total = 0
-
-      const zeroBtn = document.getElementById('pumpkin');
-      const plusThreeBtn = document.getElementById('dominosPizza');
-      const plusNineBtn = document.getElementById('zebra');
-      const minusTwoBtn = document.getElementById('cantThinkOfAnything');
-
-      const resultArea = document.getElementById('placeToPutResult');
-      // Update result with starting totat
-      resultArea.innerText = total
-
-      // Create new li and give it an id
-      const plusFiveBtn = document.createElement('li');
-      plusFiveBtn.id = 'plusFive';
-      plusFiveBtn.innerText = '+5';
-
-      // Target list of buttons and add new button as child
-      const btnList = document.querySelector('ul');
-      btnList.appendChild(plusFiveBtn);
-      // Adjust height to fit new child
-      btnList.style.height = '250px';
-
-      // Update result function
-      const updateResult = (updateAmount) => { 
-        total = total + updateAmount;
-        document.getElementById('placeToPutResult').innerText = total;
-      };
-
-      // onClick events for each button
-      zeroBtn.addEventListener('click', () => {updateResult(-Math.abs(parseInt(resultArea.innerText)))});
-      plusThreeBtn.addEventListener('click', () => { updateResult(parseInt(plusThreeBtn.innerText))});
-      plusNineBtn.addEventListener('click', () => { updateResult(parseInt(plusNineBtn.innerText))});
-      minusTwoBtn.addEventListener('click', () => { updateResult(parseInt(minusTwoBtn.innerText))});
-      plusFiveBtn.addEventListener('click', () => { updateResult(parseInt(plusFiveBtn.innerText))});
-
-      ```
-  3. class-weekend-boring + add returned message to dom and handle casing
-  - Glitch Link: https://glitch.com/~class-weekend-boring-angry-lunar-penalty
-      ```js
-      const updateDOM = (message) => {
-        document.getElementById('placeToSee').innerText = message;
-      }
-
-      const getDayHandler = () => {
-        let message;
-        const dotw = document.getElementById('day').value.toUpperCase();
-        if (dotw === ('TUESDAY') || dotw === 'THURSDAY') {
-          message = 'class'
-        } else if (dotw === 'SATURDAY' || dotw === 'SUNDAY') {
-          message = 'weekend'
-        } else if (dotw === ('MONDAY') || dotw === 'WEDNESDAY'){
-          message = 'boring'
-        } else {
-          message = 'WE DON\'T GET GOT'
-        }
-        updateDOM(message);
-      }
-      // document.getElementById('check').addEventListener('click', getDayHandler);
-      // Prevent page reloading when form submits (enter key or submit button)
-      document.querySelector('form').addEventListener('submit', (event) => {
-        event.preventDefault();
-        getDayHandler();
-      });
-      document.getElementById('check').addEventListener('click', getDayHandler);
-      ```
-- Do: Something special for yourself this weekend
+___
+Due 2/29:
+- Read: Read: https://javascript.info/function-expressions + Tasks 
+- Read: https://javascript.info/arrow-functions-basics + Tasks
+- Read:https://github.com/thejsway/thejsway/blob/master/manuscript/chapter04.md
+- Do:
+  - angry-parent-simulator (delete and do again)
+  - bachelor-code (delete and do again)
+  - temperature-converter (delete and do again)
+  - simple-functions (follow instructions)
+  - bring it home (follow instructions)
