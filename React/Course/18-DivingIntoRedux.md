@@ -325,3 +325,80 @@ We will also need to install react-redux
 This is because redux isn't react specific so we need a package so that react can manage redux
 This makes it easy to subscribe components to the redux store
 Install these two components with `$npm install redux react-redux` in the terminal
+
+
+
+
+___
+## 233. Creating a Redux Store for React
+Now to get started with redux we have to again make a store just like in our vanilla js version
+To do this we will create a store folder inside the src folder
+create 'src/store/index.js'
+In here we want to repeat what we did before
+We want to create a store and reducer
+
+First we need to import something from redux
+```js
+import {createStore} from 'redux'
+```
+Then we need to use the `createStore()` function and pass in a reducer
+```js
+const store = createStore(counterReducer)
+```
+Then we need to provide the reducer function
+```js
+const counterReducer = (state = { counter: 0 }, action) => { 
+  return state
+}
+```
+
+Now we can write our dispatch functions and pass in an action argument
+```js
+store.dispatch({ type: 'increment' })
+store.dispatch({ type: 'decrement' })
+```
+
+Now we need to create actions for these types in our reducer function
+```js
+const counterReducer = (state = { counter: 0 }, action) => { 
+  if(action.type === 'increment'){
+    return{
+      counter: state.counter + 1
+    }
+  }
+  if (action.type === 'decrement') {
+    return {
+      counter: state.counter - 1
+    }
+  }
+  return state
+}
+```
+
+Now instead of calling these dispatch actions inside of this file we want to call them in our react components
+
+Add an export to the end of our file to export the store constant
+```js
+import {createStore} from 'redux';
+
+const counterReducer = (state = { counter: 0 }, action) => { 
+  if(action.type === 'increment'){
+    return{
+      counter: state.counter + 1
+    };
+  }
+  if (action.type === 'decrement') {
+    return {
+      counter: state.counter - 1
+    };
+  }
+  return state;
+}
+
+const store = createStore(counterReducer);
+
+store.dispatch({ type: 'increment' });
+store.dispatch({ type: 'decrement' });
+
+export default store;
+```
