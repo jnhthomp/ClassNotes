@@ -40,3 +40,39 @@ This is a built in feature in react that makes managing cross component and app 
 
 Redux solves this same problem
 Redux and context both accomplish the same thing
+
+
+
+
+___
+## 228. Redux Vs React Context
+So if redux and context do the same thing we do we have both of them?
+
+Context has a few potential disadvantages
+These reasons may not matter in the app you are building so sometimes context will be totally fine to use
+You can also use both of them in the same application for different reasons
+You may use Redux for general app wide state but use context for multi component state
+
+First the disadvantages of react context:
+- One is that it may have a very complicated setup and managing state with context can get complex
+For small or medium sized applications this may not be a problem but you may eventually have a lot of provider components that are nested within each other like this:
+```js
+return (
+  <AuthContextProvider>
+    <ThemeContextProvider>
+      <UIInteractionContextProvider>
+        <MultiStepFormContextProvider>
+          <UserRegistration />
+        <MultiStepFormContextProvider/>
+      <UIInteractionContextProvider/>
+    <ThemeContextProvider/>
+  <AuthContextProvider/>
+)
+```
+This can be hard to read, write, or modify
+You could just use one big context provider for managing the entire state and different kinds 
+But that could result in a large context provider component which is also hard to manage
+You may have a single context which is in charge of authentication, theming, and everything else from the above example
+
+- Another is performance the context we are using is good for changes that don't happen often (like a theme change or authentication) 
+But shouldn't be used for high frequency updates (like tracking keystrokes but nothing specific as far as how frequent)
