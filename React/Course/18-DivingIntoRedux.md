@@ -245,3 +245,66 @@ If you remember reducer functions then technically this is all that we need
 We do not have an action defined in our reducer function to andle an `'increment'` action so the default return statement is returned instead
 This will update `state.counter` by 1 which triggers our `counterSubscribe` function since it is subsrcibed to this state
 `counterSubscribe` will then get the current value of state and then log it to the console as 2 (count was initialized to 1)
+
+
+
+
+
+___
+## 231. More Redux Basics
+Currently we are dispatching an action that has a type of 'increment' 
+Normally when we use redux the goal is to do different things with different actions which is why we receive the action object
+
+We can choose what kind of action we take by looking at the action and using an if statement to return different values based on the action provided
+```js
+const counterReducer = (state = { counter: 0 }, action) => { 
+
+  if(action.type === 'increment') {
+    return { counter: state.counter + 1 }
+  }
+
+  return state;
+}
+```
+
+Now when we initialize counter will be 0
+Then when we increment it will go to 1 each time that dispatch action is called
+This will trigger `counterSubscriber` to trigger since it is called when state is updated
+We can also dispatch other actions as well
+```js
+// import redux
+const redux = require('redux');
+
+// Redux reducer function
+const counterReducer = (state = { counter: 0 }, action) => { 
+
+  if(action.type === 'increment') {
+    return { counter: state.counter + 1 }
+  }
+  if(action.type === 'decrement') {
+    return {counter: state.counter - 1}
+  }
+
+  return state;
+}
+
+// Create redux store
+const store = redux.createStore(counterReducer);
+
+// Create subscriber
+const counterSubscriber = () => { 
+  const latestState = store.getState(); 
+  console.log(latestState);
+}
+
+// add subscriber function to redux
+store.subscribe(counterSubscriber);
+
+// dispatch an action on our state
+store.dispatch({type: 'increment'});
+store.dispatch({type: 'decrement'});
+// => { counter: 1 }
+// => { counter: 0 }
+```
+
+This is basically how redux works and can be used in any js project, not just react
