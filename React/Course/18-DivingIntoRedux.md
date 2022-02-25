@@ -112,3 +112,136 @@ The operation will return a new state to the data store to update the state
 Then any component subscribed to that state will update (like the one that triggered the dispatch action)
 
 This is the same pattern that `useReducer` utilizes but applied to an app wide state like context
+
+
+
+
+___
+## 230. Exploring the Core Redux Concepts
+For exploring the redux basics the teacher is going to use a brand new project
+This is not a react project, it is an empty folder so feel free to follow along in an empty folder
+
+In that folder create a new js file with any name
+create: 'redux-demo.js'
+
+We will execute this file with node.js which allows us to run js outside the browser
+It should already be installed since we need it to create and develop react apps
+
+In the folder where we created the file run `$npm init -y` in the terminal
+This will create a 'package.json' file which we need to install third party packages
+
+We need this to install redux
+To do this we run `$npm install redux`
+This will install redux to our empty project folder
+This will give us `node_modules` folder with redux and it's dependencies
+
+Now in our 'redux-demo.js' we can import and use redux
+The syntax is a little different since we are using node instead of the browser but the concept is the same
+Import redux
+```js
+const redux = require('redux');
+```
+
+Now we need to do a couple of things such as creating the store, reducer function, actions, and a component (or js code that sets up a subscription since we aren't using react)
+
+We will start with the store since that is the core of redux and the most important piece of it
+We can create the store by calling the redux object we imported
+It has a function built in called `createStore()`
+This will return a store so we will need to store it in a constant
+```js
+
+const redux = require('redux');
+
+const store = redux.createStore();
+```
+
+Now what do we do with this store?
+It should manages some data
+This data is managed by the reducer function and it is the reducer function that will provide state snapshots to this store
+
+When we run our `createStore()` call is run for the first time it will also need to run this reducer function in order to get an initial state
+So we can now create the reducer function that will return an initial state to this `createStore()` call
+A reducer function is a standard type of js function but when it is called by the redux library it will always receive two parameters
+The old state, and the action that was dispatched
+Then the reducer must return a new state object
+A reducer function should be a pure function
+The same values for the same inputs should produce the exact same outputs and there should be no side effects
+Do not send http requests inside of this reducer or write to local storage or fetch from local storage
+
+So we need to include `state` and `action` parameters to our reducer function
+Then we need to return a new state object which will replace the existing state object
+In this case the object will just be a key with an initial value of 0
+```js
+// import redux
+const redux = require('redux');
+
+// Redux reducer function
+const counterReducer = (state, action) => { 
+  return { counter: 0}
+}
+
+// Create redux store
+const store = redux.createStore();
+```
+Now our reducer function will always return an object with a counter set to 0
+To make it a little more realistic we will just output the current value of the counter + 1
+```js
+const counterReducer = (state, action) => { 
+  return { counter: state.counter + 1}
+}
+```
+Now we can pass this `counterReducer` to the `createStore()` function so that it can receive an initial state and know which function will handle updating the state
+```js
+// Create redux store
+const store = redux.createStore(counterReducer);
+```
+
+Now we need something to subscribe to the store and an action to dispatch
+We will start with the subscription
+We will create a new constant called `counterSubscriber` which will hold a function
+It does not receive any arguments but can use the store object to call `.getState()`
+We will just console.log that state
+```js
+const counterSubscriber = () => { 
+  const latestState = store.getState(); 
+  console.log(latestState);
+}
+```
+
+Now we can make redux aware of the subscriber function
+we have to call `store.subscribe()` and pass in the method we created as an argument
+
+Redux will execute the method passed in as an argument any time that the state value changes
+```js
+store.subscribe(counterSubscriber);
+```
+
+Now we have a subscriber and reducer but we don't have an action
+But lets just open a terminal/command prompt and see what this does
+In the project folder run `$node redux-demo.js`
+
+We will get an error and this is expected because we are creating a store and the store has a reducer and we are returning a state object which sets the counter to the old state counter + 1
+The problem is that when the store is initialized there is no previous state counter
+
+So we should give state a default value in our reducer 
+This will assign a default value to state the first time the reducer function is run since no state is passed in as an argument
+```js
+const counterReducer = (state = { counter: 0 }, action) => { 
+  return { counter: state.counter + 1}
+}
+```
+
+Now if we try again we still aren't getting anything in the console
+
+Instead we are initializing the state and subscribing a component to it but that component does not update because the state value does not change (it is just initialized to 1)
+
+We need to write a dispatch function which we can access by calling `store.dispatch()` this function receives an object as an argument
+This object should have a key called `type` which holds a string that will 'choose' the action we want to take
+```js
+store.dispatch({type: 'increment'});;
+```
+
+If you remember reducer functions then technically this is all that we need
+We do not have an action defined in our reducer function to andle an `'increment'` action so the default return statement is returned instead
+This will update `state.counter` by 1 which triggers our `counterSubscribe` function since it is subsrcibed to this state
+`counterSubscribe` will then get the current value of state and then log it to the console as 2 (count was initialized to 1)
