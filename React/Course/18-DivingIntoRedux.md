@@ -450,3 +450,69 @@ ReactDOM.render(
 
 Now our redux store has been provided to the react app
 This doesn't do much but your components can now tap into the store, setup a subscription, and dispatch actions
+
+
+
+
+___
+## 235. Using Redux Data in React Components
+What if we wanted to use the store data from redux inside of the `<Counter>` component?
+This is the component we see when we run the app
+It is a container that outputs the counter value and we can get a toggle counter button which will show or hide the counter
+
+To start we want to output the current counter value
+We can get that by using the 'react-redux' library
+It has a custom hook that is made by the react-redux team called `useSelector`
+
+It allows us to automatically select a part of our state managed by the store
+We could use `useStore` but that would select the entire store which we don't necessarily want to do
+If we were using a class based component and not a functional component then there is a 'connect' function to use instead
+This can be used as a wrapper around the class component to connect it to the store
+
+For now we will focus on `useSelector` since we are using functional components
+import
+```js
+import { useSelector } from 'react-redux';
+```
+
+Now we can call this function to get that data
+We need to pass a function inside that will be executed by react redux to determine which piece of data we want to extract from the store
+For now we have a very simple store but in a large application there can be a large store with a bunch of data and getting a slice will be very helpful
+This function will get the current state as an argument fromm react redux
+We just want to return the part of state that we want to access
+```js
+useSelector((state) => state.counter )
+```
+
+This will pass the redux state into the function and retrieve the part of state that we specified and return it
+```js
+const counter =  useSelector((state) => state.counter )
+```
+
+Now that we have used `useSelector` react redux will automatically setup a subscription to this component for this store
+Changes to that store will cause the componet to rerender
+
+If you unmount the component react redux will also clear the subscription for you
+
+Now that we have the coutner we can use it in our return to output the counter value
+```js
+import { useSelector } from 'react-redux';
+import classes from './Counter.module.css';
+
+const Counter = () => {
+  const counter =  useSelector((state) => state.counter );
+
+  const toggleCounterHandler = () => {};
+
+  return (
+    <main className={classes.counter}>
+      <h1>Redux Counter</h1>
+      <div className={classes.value}>{counter}</div>
+      <button onClick={toggleCounterHandler}>Toggle Counter</button>
+    </main>
+  );
+};
+
+export default Counter;
+
+```
