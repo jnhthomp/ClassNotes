@@ -402,3 +402,51 @@ store.dispatch({ type: 'decrement' });
 
 export default store;
 ```
+
+
+
+
+___
+## 234. Providing the Store
+To provide the store to our react application
+We will typically go to the `src/index.js` file 
+This is because it renders app and therefore is able to provide our store to the `<App>` component as well as all of it's children and nested children
+This is the exact same idea as we did with context where we wrapped components that needed access to that context with a provider component
+
+Here we import the provider component from react redux and wrap `<App>` with it
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+
+import './index.css';
+import App from './App';
+
+ReactDOM.render(<Provider><App /></Provider>, document.getElementById('root'));
+```
+
+You could also wrap nested components with the provider with this provider but only the wrapped components and their children will have access to redux
+If most components need access to the store then you should provide it on the highest level
+
+We haven't told react-redux which store to provide
+We only have one store but react-redux doesn't know that file holds the store
+So we have to import this store  and add it as the store property of the `<Provider>`
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import store from './store/index.js';
+
+import './index.css';
+import App from './App';
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>, 
+  document.getElementById('root')
+);
+```
+
+Now our redux store has been provided to the react app
+This doesn't do much but your components can now tap into the store, setup a subscription, and dispatch actions
