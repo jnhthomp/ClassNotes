@@ -308,3 +308,20 @@ store.dispatch({type: 'decrement'});
 ```
 
 This is basically how redux works and can be used in any js project, not just react
+
+
+
+
+___
+## 232. Prepping a New Project
+Now we try using redux in a react application
+See the starting app here: https://github.com/academind/react-complete-guide-code/tree/18-diving-into-redux/code/01-starting-project
+
+Now in our demo project there are a few prepared components
+We will transfer our previous counter example to this react application
+
+We will need to install the redux package to do this
+We will also need to install react-redux
+This is because redux isn't react specific so we need a package so that react can manage redux
+This makes it easy to subscribe components to the redux store
+Install these two components with `$npm install redux react-redux` in the terminal
