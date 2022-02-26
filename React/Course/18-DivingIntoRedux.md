@@ -835,3 +835,79 @@ When we point at this handler in our button we will update our counter by 5 each
 ```
 
 We could even get rid of the `increment` action and just pass in 1 but will keep it as is for now since this is just a sample app
+
+
+
+
+___
+## 239. Working With Multiple State Properties
+So far we have been using redux with only a single state value
+Let's add another via a toggle state
+
+There is a toggle counter button
+We want to be able to click it to show and hide the counter
+Obviously we could and even should do this locally with `useState` but for the sake of the example we are going to use redux
+
+When we click the button the toggleCounterHandler is triggered
+We will want to make sure that it triggers an action to update state in redux to control whether the counter div shows
+
+To do this we need a new state in our redux store
+We need to go to our reducer and add it to all of our state snapshots
+Starting with the initial state snapshot 
+We don't want to change this value in any of our existing actions so we can use the spread operator to drop in the current value of state before updating the counter
+```js
+const counterReducer = (state = initialState, action) => { 
+
+  if(action.type === 'increment'){
+    return{
+      ...state,
+      counter: state.counter + 1
+    };
+  }
+
+  if(action.type === 'increase'){
+    return{
+      ...state,
+      counter: state.counter + action.amount
+    };
+  }
+
+  if (action.type === 'decrement') {
+    return {
+      ...state,
+      counter: state.counter - 1
+    };
+  }
+
+  return state;
+}
+```
+
+Now we will add a new action type that handles changing the value of `showCounter` without changing the value of counter
+```js
+if (action.type === 'toggleShowCounter') {
+  return {
+    ...state,
+    showCounter: !state.showCounter
+  }
+}
+```
+
+Now that we have this action we can dispatch it in our `toggleCounterHandler`
+```js
+const toggleCounterHandler = () => {
+  dispatch({type: 'toggleShowCounter'});
+};
+```
+
+Now in order to read and do something based on the value of `showCounter` state we need to access it just like we did to access the value of `counter` with `useSelector`
+```js
+const showCounter = useSelector((state) => state.showCounter);
+```
+
+Now we can use `showCounter` to conditionally render the counter div
+```js
+{showCounter && <div className={classes.value}>{counter}</div>}
+```
+
+If we save and reload and click the toggle button the counter value is hidden
