@@ -761,3 +761,77 @@ export default connect(mapStateToProps, mapDispatchToProps)(Counter);
 
 If we comment out the functional component and save it should work as before but with a class based component
 I will switch the project back to the class based version before continuing
+
+
+
+
+___
+## 238. Attaching Payloads to Actions
+So far we have only dispatched actions that have a type
+Sometimes we will want to attach a value to that type to so that we can have the action use that value in its assignment
+
+Say we want to add a button to the counter component to increase by 5
+```js
+<div>
+  <button onClick={incrementHandler}>Increment</button>
+  <button onClick={incrementHandler}>Increase by 5</button>
+  <button onClick={decrementHandler}>Decrement</button>
+</div>
+```
+
+We could go to the store and prepare the reducer for another type to increase by 5 but that is not scaleable
+The counter is just a dummy example but you may need to insert a value to a state that is passed in via these actions
+
+So we could create an action called increase that instead of just incrementing by 1 it increases state by a value we expect to pass via the action object
+```js
+const counterReducer = (state = { counter: 0 }, action) => { 
+  
+  if(action.type === 'increment'){
+    return{
+      counter: state.counter + 1
+    };
+  }
+
+  if(action.type === 'increase'){
+    return{
+      counter: state.counter + action.amount
+    };
+  }
+
+  if (action.type === 'decrement') {
+    return {
+      counter: state.counter - 1
+    };
+  }
+
+  return state;
+}
+```
+
+Now we will make an `increaseHandler` back in the counter to dispatch this action and pass in the value
+```js
+const Counter = () => {
+  const dispatch = useDispatch();
+  const counter =  useSelector((state) => state.counter );
+
+  const incrementHandler = () => {
+    dispatch({type: 'increment'})
+  }
+
+  const increaseHandler = () => {
+    dispatch({type: 'increase', amount: 5});
+  }
+
+  const decrementHandler = () => {
+    dispatch({type: 'decrement'});
+  }
+  ...
+```
+
+Now when we attach an amount key the value will be passed into the action object
+When we point at this handler in our button we will update our counter by 5 each click
+```js
+<button onClick={increaseHandler}>Increase by 5</button>
+```
+
+We could even get rid of the `increment` action and just pass in 1 but will keep it as is for now since this is just a sample app
