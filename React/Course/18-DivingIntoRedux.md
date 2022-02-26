@@ -945,3 +945,28 @@ If you always return a brand new object as state then you shouldn't run into thi
 
 When you have a state with nested objects and arrays it is easy to accidentally mutate your existing state so you need to be careful
 Never just dive into an existin object and start manipulating its properties
+
+
+
+
+___
+## 241. Redux Challenges & Introducing Redux Toolkit
+The more complicated our complex become the more complicated it is to manage redux directly
+There is a slightly different way that redux can be managed as well that can be easier to setup and maintain
+
+First we will look at some issues our project could face if it were to continue to grow
+
+One issue is the action types
+We have to make sure to avoid any typos the action we want won't be handled correctly
+This can be a problem in bigger applications where clashing or messed up identifiers showup
+
+Another potential problem is the amount of data we have
+The more data we have, the bigger the state is and the more state we have to copy whenever we are writing these actions
+It can be a challenge to make sure you are nesting any data that you are saving properly
+
+There could also be an issue with the state immutability and don't accidentally change the existing state anywhere, especially with more complex data that has nested objects and arrays
+
+There are solutions we could implement for all of these problems but there is also an easier way to manage this called redux toolkit
+
+This is a library that is developed by the same team that builds react-redux and redux
+It is an extra package that makes working with redux a little easier but isn't required to use
