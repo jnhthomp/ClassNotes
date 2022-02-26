@@ -516,3 +516,80 @@ const Counter = () => {
 export default Counter;
 
 ```
+
+
+
+
+___
+## 236. Dispatching Actions From Inside Components
+Now we want to dispatch some actions
+We are going to want two new buttons that activate these actions
+One will increment and the other will decrement
+
+Simply add two buttons to the counter component
+```js
+import { useSelector } from 'react-redux';
+import classes from './Counter.module.css';
+
+const Counter = () => {
+  const counter =  useSelector((state) => state.counter );
+
+  const toggleCounterHandler = () => {};
+
+  return (
+    <main className={classes.counter}>
+      <h1>Redux Counter</h1>
+      <div className={classes.value}>{counter}</div>
+      <div>
+        <button>Increment</button>
+        <button>Decrement</button>
+      </div>
+      <button onClick={toggleCounterHandler}>Toggle Counter</button>
+    </main>
+  );
+};
+
+export default Counter;
+
+```
+Then for spacing we will change the css a little
+Add this css rule to Counter.module.css
+```css
+.counter button {
+  margin: 1rem;
+}
+```
+
+Now we want to wire up these two buttons so that they increase or decrease the counter by one
+We know we need to dispatch an action but how do we do that in a react component?
+There is another hook we can use called `useDispatch` which we also need to import
+```js
+import { useSelector, useDispatch } from 'react-redux';
+```
+
+When we call `useDispatch` we don't pass any arguments to it
+Instead we receive a function back that we can call which will dispatch an action against our redux store
+```js
+const dispatch = useDispatch();
+```
+
+So let's add two new functions to handle the increment and decrement
+Inside of these handler functions which will be executed by the buttons we will call the dispatch function we just recieved back from `useDispatch`
+It will need to be passed an object with the appropriate type values just like with other reducer functions
+```js
+const incrementHandler = () => {
+  dispatch({type: 'increment'})
+}
+
+const decrementHandler = () => {
+  dispatch({type: 'decrement'});
+}
+```
+
+Now we need to wire up these handler functions to the buttons
+```js
+<div>
+  <button onClick={incrementHandler}>Increment</button>
+  <button onClick={decrementHandler}>Decrement</button>
+</div>
+```
