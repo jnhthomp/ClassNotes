@@ -911,3 +911,37 @@ Now we can use `showCounter` to conditionally render the counter div
 ```
 
 If we save and reload and click the toggle button the counter value is hidden
+
+
+
+
+___
+## 240. How To Work With Redux State Correctly
+It was mentioned that we always return a brand new snapshot of a state object that redux will use to replace the existing state with
+
+This is important because it means the objects we return in the reducer will not be merged with the existing state, they will OVERRIDE the existing state
+If we were to forget to set showCounter when we increment then our counter will hide when we click increment
+This is because since `showCounter` is no longer defined it is falsey and therefore hides the counter
+So you have to be careful to set all of the other states
+This is why I use the spread operator instead of listing them in each
+That way if there is a new piece of state added you don't have to add it to every action when you are making the update
+
+So why do you have to return a whole new state object every time?
+Why can't you just do something like this?
+```js
+state.counter++
+return state
+```
+If we were to do that it would work so it isn't easy to see that is wrong but it is wrong
+Do not ever do this
+Never mutate the existing state always override it by returning a brand new state object
+Because objects and arrays are reference values it is easy to override and change the existing state
+You should absolutely not mutate the existing objects in state
+You can see an article and video about this here: https://academind.com/tutorials/reference-vs-primitive-values
+
+If you were to do it this way there could be bugs, unpredictable behavior, and make debuggin difficult
+It is possible for the state to get out of sync when updating the state this way
+If you always return a brand new object as state then you shouldn't run into this problem
+
+When you have a state with nested objects and arrays it is easy to accidentally mutate your existing state so you need to be careful
+Never just dive into an existin object and start manipulating its properties
