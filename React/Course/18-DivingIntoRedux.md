@@ -593,3 +593,171 @@ Now we need to wire up these handler functions to the buttons
   <button onClick={decrementHandler}>Decrement</button>
 </div>
 ```
+
+
+
+
+___
+## 237. Redux With Class-Based Components
+Even though they aren't the focus of the course we should cover how class based components use redux
+There are some projects that will already be using class based components so it is good to know
+
+For this we will just add another component to our counter component below our existing code while we swap it out
+
+Remember for class based components we need to import `Component` from react
+```js
+import { Component } from 'react';
+```
+
+Next we need to create a class component add the render method which will return our jsx code
+```js
+class Counter extends Component {
+  render(){
+    return (
+      <main className={classes.counter}>
+        <h1>Redux Counter</h1>
+        <div className={classes.value}>{counter}</div>
+        <div>
+          <button onClick={incrementHandler}>Increment</button>
+          <button onClick={decrementHandler}>Decrement</button>
+        </div>
+        <button onClick={toggleCounterHandler}>Toggle Counter</button>
+      </main>
+    );
+  }
+}
+```
+
+Now we will need to add the increment/decrement handler, the toggle handler, and get access to our counter
+First the methods
+Then when we hook them up remember we have to use the `this` keyword since we are using class based components
+```js
+class Counter extends Component {
+
+  incrementHandler(){}
+  decrementHandler(){}
+  toggleCounterHandler(){}
+
+  render(){
+    return (
+      <main className={classes.counter}>
+        <h1>Redux Counter</h1>
+        <div className={classes.value}>{counter}</div>
+        <div>
+          <button onClick={this.incrementHandler}>Increment</button>
+          <button onClick={this.decrementHandler}>Decrement</button>
+        </div>
+        <button onClick={this.toggleCounterHandler}>Toggle Counter</button>
+      </main>
+    );
+  }
+}
+```
+
+Now how do we get access to redux?
+In the functional component we used hooks but we cannot do that in class based components
+react-redux allows you to import a connect method which is used in class based components 
+Technically you could use connect in a functional component as well but our hooks are more simpler
+```js
+import { useSelector, useDispatch, connect } from 'react-redux';
+```
+
+To use connect we call `connect()` in the export
+When it is executed it will return a new function which we execute immediately, passing our class as an argument
+```js
+export default connect()(Counter);
+```
+This looks weird but connect is called a higher order component which is used in this way
+connect will execute which will return a function which will also execute and receive our counter as an argument
+
+We do it this way because connect also wants some arguments
+Both arguments are functions
+The first is one that maps redux state to props which will be recieved in our component
+We will call this function `mapStateToProps` this name isn't required but is convention in a lot of projects
+This function will receive the redux state as an argument return an object 
+For this object the keys will be available as props inside of our counter component
+The value of the keys are the logic for drilling into the redux state
+```js
+const mapStateToProps = (state) => { 
+  return {
+    counter: state.counter
+  };
+}
+```
+This is the first argument we pass to `connect`
+```js
+export default connect(mapStateToProps,)(Counter);
+```
+
+Now we need to map our dispatch actions to props
+It is the same idea as maping state except we are going to map our dispatch actions to props that will be available to our component
+This will give us certain props that we can execute as a function which will execute actions in the redux store
+
+This functions receives `dispatch` as an argument
+Then it returns an object which uses the names we want the props to be as keys
+For the value of these keys we call 'dispatch' with the action we want to pass as the result of an anonymous arrow function
+```js
+const mapDispatchToProps = (dispatch) => {
+  return {
+    increment: () => dispatch({ type: 'increment' }),
+    decrement: () => dispatch({ type: 'decrement' })
+  };
+}
+```
+This ensures that when increment and decrement are called it will call the function and execute the action
+
+Now we can add this method as the second argument to connect
+```js
+export default connect(mapStateToProps, mapDispatchToProps)(Counter);
+```
+
+Now react redux will setup and manage a subscription for us
+
+Now lets take advantage of these props in our component
+Now we can execute these functions in our component
+We will have to call `.bind(this)` on our methods so that they can keep track of the fact that `.this` within them refers to the class
+```js
+class Counter extends Component {
+
+  incrementHandler(){
+    this.props.increment() // Add dispatch
+  }
+  decrementHandler(){
+    this.props.decrement() // Add dispatch
+  }
+  toggleCounterHandler(){}
+
+  render(){
+    return (
+      <main className={classes.counter}>
+        <h1>Redux Counter</h1>
+        // Add counter state
+        <div className={classes.value}>{this.props.counter}</div>
+        <div>
+          <button onClick={this.incrementHandler.bind(this)}>Increment</button>
+          <button onClick={this.decrementHandler.bind(this)}>Decrement</button>
+        </div>
+        <button onClick={this.toggleCounterHandler}>Toggle Counter</button>
+      </main>
+    );
+  }
+}
+
+const mapStateToProps = (state) => { 
+  return {
+    counter: state.counter
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    increment: () => dispatch({ type: 'increment' }),
+    decrement: () => dispatch({ type: 'decrement' })
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Counter);
+```
+
+If we comment out the functional component and save it should work as before but with a class based component
+I will switch the project back to the class based version before continuing
