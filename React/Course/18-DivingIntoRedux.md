@@ -1,4 +1,4 @@
-# Section 17: Practice Project: Adding Http & Forms To The Food Order App
+# Section 18: Diving Into Redux
 Section github: https://github.com/academind/react-complete-guide-code/tree/18-diving-into-redux
 ___
 ## 226. Module Introduction
@@ -1790,3 +1790,18 @@ Redux helps cover some of the shortcomings of context but your app may not need 
 In that case react context is completely fine to use
 
 Keep in mind that by using redux you are using a third party library which does make your application bigger
+
+
+
+
+___
+## 249. Module Resources
+You may want to compare your code to mine (e.g. to find + fix errors).
+
+For that, you find multiple code snapshots for this module here in this Github repository: https://github.com/academind/react-complete-guide-code/tree/18-diving-into-redux
+
+Usage instructions can be found on the page that link is leading to.
+
+Simply pick one of the snapshots in the /code folder - the subfolder names are chosen such that they are easy to match against lecture names in this course section.
+
+You also find section slides (if available) in that Github repository.
