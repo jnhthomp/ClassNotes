@@ -1109,7 +1109,7 @@ To make our code more readable we can remove the previous reducer we had now tha
 
 Now in `createStore` instead of passing in our old reducer function we can passin our new reducers
 ```js
-const store = createStore(counterSlice.reducers);
+const store = createStore(counterSlice.reducer);
 ```
 
 If we had bigger applications we would have a problem because there can only be 1 reducer passed into `createStore`
@@ -1136,9 +1136,9 @@ This would create a map of reducers
 ```js
 const store = configureStore({
   reducer: {
-    counter: counterSlice.reducers,
-    otherSlice: otherSlice.reducers,
-    yetAnother: yetAnother.reducers
+    counter: counterSlice.reducer,
+    otherSlice: otherSlice.reducer,
+    yetAnother: yetAnother.reducer
     ...
   }
 });
@@ -1147,6 +1147,86 @@ const store = configureStore({
 We only need one so it is easy for us
 ```js
 const store = configureStore({
-  reducer: counterSlice.reducers
+  reducer: counterSlice.reducer
 });
 ```
+
+
+
+
+___
+## 244. Migrating Everything to Redux Toolkit
+Now that we have a slice we need to be able to dispatch the actions
+`createSlice` helps us by automatically creating unique actions for each of these actions
+To get these action identifiers we can use our `counterSlice` value we have stored and access `.actions`
+This is an object full of keys where the key names match the method names in `createSlice.reducers`
+If we use 
+`counterSlice.actions.toggleCounter` we get access to a method that is created automatically by redux-toolkit that will create actions objects on these methods
+These methods are called action creators
+The actions these objects will execute will have a unique idenifier per action
+This is automatically created behind the scenes
+This means we don't have to create action objects when we call them like we used to
+These are called action creator methods
+
+So this means we could save `counterSlice.actions` to a variable that is then exported in our file
+This would allow other files to import this constant and therefore access the actions/methods inside and be able to call our reducer actions
+
+```js
+export const counterActions = counterSlice.actions;
+export default store;
+```
+
+Now we can go to the component that we need the actions and import them
+(Counter.js)
+```js
+// import { Component } from 'react'; //Class import
+import { useSelector, useDispatch, /*connect*/} from 'react-redux'; // connect used for class version
+import { counterActions } from '../store';
+import classes from './Counter.module.css';
+```
+
+Now when we want to dispatch an action we just have to access `counterActions` and use the methods attached
+```js
+const incrementHandler = () => {
+  dispatch(counterActions.increment());
+}
+```
+
+We will also do this for decrement and toggle
+```js
+const decrementHandler = () => {
+  dispatch(counterActions.decrement());
+}
+
+const toggleCounterHandler = () => {
+  dispatch(counterActions.toggleCounter());
+};
+```
+
+But what do we do in increase where we need to attach a payload?
+We still use the same approach but pass our payload data 
+It can be just a value or an object
+Any kind of value can be passed to increase
+What is important is how you extract that value
+What redux toolkit will do is automatically create action objects with a type key (automatically generated unique identifier) AND a payload key
+Any arguments passed into the action when you call it will be placed directly in the payload key
+Behind the scenes it will look like this
+```js
+dispatch(counterActions.increase(10)) // {type: UNIQUE_IDENTIFIER, payload: 10}
+dispatch(counterActions.increase({value: 10})) // {type: UNIQUE_IDENTIFIER, payload: {value: 10}}
+```
+
+So we need to make sure that we are accessing this value consistently in our reducer
+```js
+const increaseHandler = () => {
+  dispatch(counterActions.increase(5));
+}
+```
+store/index.js:
+```js
+increase(state, action) {
+  state.counter = state.counter + action.payload;
+},
+```
+
+Now if we save and reload our application we can use it as before except now we are using redux-toolkit instead of plain redux
