@@ -1555,3 +1555,209 @@ export default Header;
 
 Now we can easily go back and forth between login/logout states
 Our react app is working with multiple different states that are shared across components
+
+
+
+
+___
+## 247. Splitting Our Code
+To end the module we will split up the index.js file in the store folder
+This one isn't too big but in a react application you can have many slices and it is easier to split them up
+It might make sense to put every slice in its own file
+We can create a new file in the store folder for each slice
+
+create: src/store/counter.js
+
+This is where we will create and manage the counter slice
+Cut/paste the counter initial state and slice from store/index.js
+```js
+const initialCounterState = {
+  counter: 0,
+  showCounter: true
+}
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: initialCounterState,
+  reducers: {
+    increment(state) {
+      state.counter++;
+    },
+    decrement(state) {
+      state.counter--;
+    },
+    increase(state, action) {
+      state.counter = state.counter + action.payload;
+    },
+    toggleCounter(state) {
+      state.showCounter = !state.showCounter
+    }
+  }
+});
+```
+
+Now to use `createSlice` we will need to import it to this file
+Then we will need to export `counterSlice` so we can use it in store/index.js
+```js
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialCounterState = {
+  counter: 0,
+  showCounter: true
+}
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: initialCounterState,
+  reducers: {
+    increment(state) {
+      state.counter++;
+    },
+    decrement(state) {
+      state.counter--;
+    },
+    increase(state, action) {
+      state.counter = state.counter + action.payload;
+    },
+    toggleCounter(state) {
+      state.showCounter = !state.showCounter
+    }
+  }
+});
+
+export default counterSlice;
+```
+
+
+Now we can do the same for our `authSlice`
+
+create: src/store/auth.js
+```js
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialAuthState = {
+  isAuthenticated: false
+}
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: initialAuthState,
+  reducers: {
+    login(state) {
+      state.isAuthenticated = true;
+    },
+    logout(state) {
+      state.isAuthenticated = false;
+    }
+  }
+});
+
+export default authSlice;
+```
+
+Now we can remove the `createSlice` import from the redux index.js
+Also import counterSlice and authSlice
+We can actually edit our exports to only export their reducers since that is all we need in store/index.js
+Then we don't have to export and import the entire slice and can only take what we need
+
+store/counter.js
+```js
+export default counterSlice.reducer;
+```
+store/auth.js
+```js
+export default authSlice.reducer;
+```
+
+Now when we impor these to store/index.js we are only getting the reducer function from each
+For the actions that are being exported we actually want to export them in the appropriate slice configuration files instead of in here to keep things seperated
+When complete our three files should look like this:
+store/index.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import counterReducer from './counter';
+import authReducer from './auth';
+
+
+const store = configureStore({
+  reducer: {
+    counter: counterReducer,
+    auth: authReducer
+  }
+});
+
+export default store;
+
+```
+store/counter.js
+```js
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialCounterState = {
+  counter: 0,
+  showCounter: true
+}
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: initialCounterState,
+  reducers: {
+    increment(state) {
+      state.counter++;
+    },
+    decrement(state) {
+      state.counter--;
+    },
+    increase(state, action) {
+      state.counter = state.counter + action.payload;
+    },
+    toggleCounter(state) {
+      state.showCounter = !state.showCounter
+    }
+  }
+});
+
+export const counterActions = counterSlic
+```
+store/auth.js
+```js
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialAuthState = {
+  isAuthenticated: false
+}
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: initialAuthState,
+  reducers: {
+    login(state) {
+      state.isAuthenticated = true;
+    },
+    logout(state) {
+      state.isAuthenticated = false;
+    }
+  }
+});
+
+export const authActions = authSlice.actions;
+export default authSlice.reducer;
+```
+
+Now each slice is more manageable and within their own file
+
+We will need to fix a few imports though since some components were importing the actions from store/index.js
+`<Counter>`
+```js
+import { counterActions } from '../store/counter';
+```
+`<Auth>`
+```js
+import { authActions } from '../store/auth';
+```
+`<Header>`
+```js
+import { authActions } from '../store/auth'; 
+```
+
+Now if we save and reload everything should work as expected but now our code is split up which is more maintainable and easier to manage
