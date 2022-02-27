@@ -1761,3 +1761,32 @@ import { authActions } from '../store/auth';
 ```
 
 Now if we save and reload everything should work as expected but now our code is split up which is more maintainable and easier to manage
+
+
+
+
+___
+## 248. Summary
+That is it for the basics of redux
+We learned how we can setup redux without react and without redux toolkit
+Redux toolkit is really nice and it is recommended to use it since it is easier to manage, state, reducers, and actions
+
+It is important to know what is happening behind the scenes which is why we started from the basics
+
+We learned about core redux concepts and its flow and actions/reducers and the one central data store that redux holds
+We can configure this store with `configureStore()` with redux toolkit which accepts an object holding the root reducer for our store
+This can be a single reducer function or an object that has a map of reducer functions tied to keys
+These are automatically merged into one big reducer behind the scenes
+
+We also learned how to use our redux managed data within the app  with `useSelector` to read data or `useDispatch` to access dispatch functions to perform our actions changing the redux state
+We also learned how to pass a payload along with this data
+
+We covered how to connect a class based component to redux just in case we need to do that
+
+Now we have a solid foundation of redux
+
+It is a great library that can replace react context but it isn't a necessity
+Redux helps cover some of the shortcomings of context but your app may not need to overcome any of those
+In that case react context is completely fine to use
+
+Keep in mind that by using redux you are using a third party library which does make your application bigger
