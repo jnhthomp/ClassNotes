@@ -1327,7 +1327,7 @@ const initialAuthState = {
 
 const authSlice = createSlice({
   name: 'auth',
-  initialAuthState,
+  initialState: initialAuthState,
   reducers: {
     login(state){
       state.isAuthenticated = true;
@@ -1338,6 +1338,27 @@ const authSlice = createSlice({
   }
 });
 
+```
+Go ahead and update counter to explicity assign `initialState` as well because otherwise I ran into some issues with the application
+```js
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: initialCounterState,
+  reducers: {
+    increment(state) {
+      state.counter++; 
+    },
+    decrement(state) {
+      state.counter--;
+    },
+    increase(state, action) {
+      state.counter = state.counter + action.payload;
+    },
+    toggleCounter(state) {
+      state.showCounter = !state.showCounter
+    }
+  }
+});
 ```
 We want to add this to our redux store now
 We still only have one redux store and can only call configure store once and it can only have one root reducer
@@ -1368,3 +1389,169 @@ We now have named counter inside of the store so we have to include that when dr
 const counter =  useSelector((state) => state.counter.counter );
 const showCounter = useSelector((state) => state.counter.showCounter);
 ```
+
+
+
+
+___
+## 246. Reading & Dispatching From A New Slice
+Now we want to use this new slice that we created and attach it to the rest of our application
+We will start in the `<App>` component and conditionally render the `<Auth>` component based on if `store.auth.isAuthenticated` is true or not
+If it is true then we will render a new component called `<UserProfile>` if it is false we will render the `<Auth>` component
+First we will need to import this new component
+Then we need to import `useSelector` so that we can choose the slice we want to work with and get its values just like we did with counter
+```js
+import { Fragment } from 'react';
+import { useSelector } from 'react-redux';
+
+import Header from './components/Header';
+import Auth from './components/Auth';
+import UserProfile from './components/UserProfile';
+import Counter from './components/Counter';
+
+```
+
+Now in our `<App>` component we can call `useSelector` and pass in the arrow function that will return the data we are interested in (auth.isAuthenticated)
+Remember this function has access to a state argument which will be used to get these values
+```js
+const isAuth = useSelector((state) => state.Auth.isAuthenticated);
+```
+
+Now we can use `isAuth` to check if we should show `<Auth>` or `<UserProfile>`
+```js
+return (
+  <Fragment>
+    <Header/>
+    {!isAuth ? <Auth/> : <UserProfile/>}
+    <Counter />
+  </Fragment>
+);
+```
+
+Now we can go to the header and do the same to conditionally render its content
+```js
+import { useSelector } from 'react-redux';
+import classes from './Header.module.css';
+
+const Header = () => {
+
+  const isAuth = useSelector((state) => state.auth.isAuthenticated);
+
+  return (
+    <header className={classes.header}>
+      <h1>Redux Auth</h1>
+      {isAuth && (
+        <nav>
+          <ul>
+            <li>
+              <a href='/'>My Products</a>
+            </li>
+            <li>
+              <a href='/'>My Sales</a>
+            </li>
+            <li>
+              <button>Logout</button>
+            </li>
+          </ul>
+        </nav>
+      )}
+      
+    </header>
+  );
+};
+
+export default Header;
+
+```
+
+Now we shouldn't see any of those nav items in the header by default since `isAuth` is falsey initially
+
+Next we are going to attach the login button to the login action
+We won't bother validating the input since that is not the point of the excercise
+
+So we will just add an `onSubmit` handler to the form which marks `isAuthenticated` to true using the `login` action
+We want to do this in the same way we did in the counter
+There we imported `useDispatch` which returns a function to us we can use
+Then we call that function and point it at the action we wanted to take (we also have to import our actions)
+```js
+import { useDispatch } from 'react-redux';
+import { authActions } from '../store';
+import classes from './Auth.module.css';
+
+const Auth = () => {
+  const dispatch = useDispatch();
+  const loginHandler = (event) => {
+    event.preventDefault();
+    dispatch(authActions.login())
+  }
+
+  return (
+    <main className={classes.auth}>
+      <section>
+        <form onSubmit={loginHandler}>
+          <div className={classes.control}>
+            <label htmlFor='email'>Email</label>
+            <input type='email' id='email' />
+          </div>
+          <div className={classes.control}>
+            <label htmlFor='password'>Password</label>
+            <input type='password' id='password' />
+          </div>
+          <button>Login</button>
+        </form>
+      </section>
+    </main>
+  );
+};
+
+export default Auth;
+
+```
+
+Now if we click the login button it should update the value of `isAuthenticatd` which will hide the login, show the user profile, and show some of the navigation options
+
+Next we want to attach the logout button to the logout actoin in the header
+This is the same process as the login action
+```js
+import { useSelector, useDispatch } from 'react-redux';
+import { authActions } from '../store';
+import classes from './Header.module.css';
+
+const Header = () => {
+
+  const dispatch = useDispatch();
+  const logoutHandler = (event) => { 
+    dispatch(authActions.logout());
+  }
+
+  const isAuth = useSelector((state) => state.auth.isAuthenticated);
+
+  return (
+    <header className={classes.header}>
+      <h1>Redux Auth</h1>
+      {isAuth && (
+        <nav>
+          <ul>
+            <li>
+              <a href='/'>My Products</a>
+            </li>
+            <li>
+              <a href='/'>My Sales</a>
+            </li>
+            <li>
+              <button onClick={logoutHandler}>Logout</button>
+            </li>
+          </ul>
+        </nav>
+      )}
+      
+    </header>
+  );
+};
+
+export default Header;
+
+```
+
+Now we can easily go back and forth between login/logout states
+Our react app is working with multiple different states that are shared across components
