@@ -970,3 +970,107 @@ There are solutions we could implement for all of these problems but there is al
 
 This is a library that is developed by the same team that builds react-redux and redux
 It is an extra package that makes working with redux a little easier but isn't required to use
+
+
+
+
+___
+## 242. Adding State Slices
+Now lets get started with redux toolkit
+Be able to quit any running instances of our application and install it by using the following command from a terminal in your project folder
+```bash
+$npm install @reduxjs/tookit
+```
+
+Once installed we can uninstall redux because it is included in the toolkit we just installed
+To do that simply go to package.json and remove the redux entry
+Then a quick `$npm install` should have us ready to go
+
+Now we are ready to use it but how?
+We use it in the store folder in index.js just like we did with redux
+We will start with the reducer
+We can import something called `createSlice` from the toolkit
+```js
+import { createSlice } from '@reduxjs/toolkit';
+```
+
+There is also `createReducer` but `createSlice` is more powerful
+Once this is imported we can call it
+We will call it below our `initialState`
+We can create multiple slices but for now we will create one slice
+This method should receive an object with a few different key/values
+One is the name of the slice, one is the initial value of the slice and one is reducers that are associated with that slice
+The reducers property is also an object holding all the reducer methods that this slice of state will need
+```js
+createSlice({
+  name: 'counter',
+  initialState,
+  reducers: {
+    increment() {},
+    decrement() {},
+    increase() {},
+    toggleCounter() {}
+  }
+});
+```
+Each of the methods in the reducers will automatically receive the latest state as an argument when it is called so we need to add that to each
+```js
+createSlice({
+  name: 'counter',
+  initialState,
+  reducers: {
+    increment(state) {},
+    decrement(state) {},
+    increase(state) {},
+    toggleCounter(state) {}
+  }
+});
+```
+We don't need to pass in an action because we will have a way of targetting these methods without if checks
+
+Now we need to write our methods inside of these methods
+We can do something a little different and we are allowed to mutate the state
+Why can we do this when this was previously forbidden?
+That is because even though it looks like we are mutating the state redux toolkit makes it so you CANNOT mutate the original state
+Redux toolkit uses another package that will detect our code and automatically clone the existing state, create a new state objects, keep the state that we are not editing, and put in the state we are changing
+This means it actually isn't immutable and is replacing the entire object behind the scenes thanks to redux toolkit
+But it looks like we are editing the state directly
+This makes it much easier to work with redux
+```js
+createSlice({
+  name: 'counter',
+  initialState,
+  reducers: {
+    increment(state) {
+      state.counter++; 
+    },
+    decrement(state) {
+      state.counter--;
+    },
+    ...
+```
+
+Now for our `increase` method we need some extra data so how do we pass that in?
+We can add an action argument for these we just don't need to include them in methods that don't have extra arguments since redux toolkit handles the type value that we have been using to select actions
+```js
+createSlice({
+  name: 'counter',
+  initialState,
+  reducers: {
+    increment(state) {
+      state.counter++; 
+    },
+    decrement(state) {
+      state.counter--;
+    },
+    increase(state, action) {
+      state.counter = state.counter + action.value;
+    },
+    toggleCounter(state) {
+      state.showCounter = !state.showCounter
+    }
+  }
+});
+```
+
+Now we have a slice created and need to make our store aware of it and dispatch the actions inside
