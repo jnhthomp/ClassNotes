@@ -1230,3 +1230,141 @@ increase(state, action) {
 ```
 
 Now if we save and reload our application we can use it as before except now we are using redux-toolkit instead of plain redux
+
+
+
+
+___
+## 245. Working With Multiple Slices
+Now we have our redux only non-react example to this react application
+We are managing a counter state with redux
+
+In the starting project there are a few other components that we haven't used
+These are:
+`<Auth>`, `<Header>`, and `<UserProfile>`
+
+We will use some of these
+In `<App>` we will return more than just the counter
+We will add a fragment component to hold a few adjacent elements
+We will add the header component and auth component alongside the counter component
+```js
+import { Fragment } from 'react';
+import Header from './components/Header';
+import Auth from './components/Auth';
+import Counter from './components/Counter';
+
+
+function App() {
+  return (
+    <Fragment>
+      <Header/>
+      <Auth/>
+      <Counter />
+    </Fragment>
+  );
+}
+
+export default App;
+
+```
+Now we have a mini demo with a header, login area, and counter
+
+The counter isn't related to the other content but we are going to leave it so we are managing multiple state slices
+Here we want to make the login form 'work'
+Note that this won't be real authentification but will just be for the purposese of managing state
+We want to make sure that when we click login we switch to a 'login' mode which changes what we see in the header
+We also want to swap the login form for the user profile component instead
+We will need a new state to manage
+The authentification state is not just local state here it is actually application wide because it matters to the header, auth, and user profile components
+
+This `isUserAuthenticated` state we will add is a perfect example for how we would use redux states
+
+To do this we need to add a brand new state in our store/index.js
+Where do we add this?
+We don't want it in our counter slice because that is different data and we want to keep data grouped with similar data
+The authentification status has nothing to do with the counter so we want to keep them seperate
+
+So we can create a brand new slice for the authentification state just like we did for our counter 
+
+To start we will rename our `initialState` to `initialCounterState` to be more specific since we will have more than 1 initial state
+```js
+const initialCounterState = {
+  counter: 0,
+  showCounter: true
+}
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialCounterState,
+  reducers: {
+    increment(state) {
+      state.counter++; 
+    },
+    decrement(state) {
+      state.counter--;
+    },
+    increase(state, action) {
+      state.counter = state.counter + action.payload;
+    },
+    toggleCounter(state) {
+      state.showCounter = !state.showCounter
+    }
+  }
+});
+```
+
+Now we can add a new slice below the other slice but exact position does not matter
+We will need to provide an object to our `createSlice` call
+This object is just like the object for the other `createSlice` call and needs an objects with a name, initial state value, and a reducers object holding our methods
+
+In this case the initial state will simply be an object holding a boolean for `isAuthenticated` (initialized to false)
+The reducer methods will just be login/logout methods that set the `isAuthenticated` value to the appropriate boolean for each
+
+```js
+const initialAuthState = {
+  isAuthenticated: false
+}
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialAuthState,
+  reducers: {
+    login(state){
+      state.isAuthenticated = true;
+    },
+    logout(state){
+      state.isAuthenticated = false;
+    }
+  }
+});
+
+```
+We want to add this to our redux store now
+We still only have one redux store and can only call configure store once and it can only have one root reducer
+Remember this reducer can take an object to act as a map of reducers instead of just a single reducer function as we were
+```js
+const store = configureStore({
+  reducer: {
+    counter: counterSlice.reducer,
+    auth: authSlice.reducer
+  }
+});
+```
+These individual reducers will be automatically merged together into one reducer and exposed to the store constant
+
+This authslice needs access to actions as well just like our `counterActions` did so we can export these
+```js
+export const counterActions = counterSlice.actions;
+export const authActions = authSlice.actions;
+export default store;
+```
+
+Now we can use this in different components
+
+There is one issue with our application right now
+If we reload we can see the counter is hidden that is because we changed the store and therefore must change how we dig into the state to get those values
+We now have named counter inside of the store so we have to include that when drilling into our store in other components
+```js
+const counter =  useSelector((state) => state.counter.counter );
+const showCounter = useSelector((state) => state.counter.showCounter);
+```
