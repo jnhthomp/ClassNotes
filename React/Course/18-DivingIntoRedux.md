@@ -1074,3 +1074,79 @@ createSlice({
 ```
 
 Now we have a slice created and need to make our store aware of it and dispatch the actions inside
+
+
+
+
+___
+## 243. Connecting Redux Toolkit State
+Now how do we use the slice?
+To do this we need to use the return value from calling `createSlice`
+```js
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState,
+  reducers: {
+    increment(state) {
+      state.counter++; 
+    },
+    decrement(state) {
+      state.counter--;
+    },
+    increase(state, action) {
+      state.counter = state.counter + action.value;
+    },
+    toggleCounter(state) {
+      state.showCounter = !state.showCounter
+    }
+  }
+});
+```
+`counterSlice` is a slice of a global state that is responsible for managing the counter
+We want to register this with our store
+
+To make our code more readable we can remove the previous reducer we had now that we have copied all of te functionality
+
+Now in `createStore` instead of passing in our old reducer function we can passin our new reducers
+```js
+const store = createStore(counterSlice.reducers);
+```
+
+If we had bigger applications we would have a problem because there can only be 1 reducer passed into `createStore`
+If we had multiple state slices we wouldn't be able to pass more than 1 of their reducers into `createStore`
+One way we could handle this is `configureStore`
+This creates a store just like `createStore` but makes merging multiple reducers into one reducer easier
+```js
+// You can remove the createStore import since we will be replacing it with configure store
+// import {createStore} from 'redux';
+import { createSlice, configureStore } from '@reduxjs/toolkit';
+```
+Now instead of calling `createStore` we can call `configureStore
+```js
+const store = configureStore();
+```
+
+This will create a store but makes it easer to merge multiple reducers
+Inside of `configureStore` we need to pass an argument
+This argument will be an object which has a reducer property which is expected by `configureStore` (use the singular reducer)
+The value for this reducer can be a single reducer like from our slice
+If we had multiple state slices we could set an object
+In that object we can setup any keys of our choice and link them to different reducer funtions
+This would create a map of reducers
+```js
+const store = configureStore({
+  reducer: {
+    counter: counterSlice.reducers,
+    otherSlice: otherSlice.reducers,
+    yetAnother: yetAnother.reducers
+    ...
+  }
+});
+```
+
+We only need one so it is easy for us
+```js
+const store = configureStore({
+  reducer: counterSlice.reducers
+});
+```
