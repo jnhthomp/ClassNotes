@@ -35,3 +35,263 @@ We will look at both options in this section and so there will be a new project 
 See this github repo: https://github.com/academind/react-complete-guide-code/tree/19-advanced-redux/code/01-starting-project
 
 We are going to build a basic react redux application and explore async code with redux
+
+
+
+
+___
+## 252. Refresher/Practice: Part 1/2
+The starting project from the previous lesson can be found here
+This is what we will use to explore these new concepts
+In case you missed it: 
+https://github.com/academind/react-complete-guide-code/tree/19-advanced-redux/code/01-starting-project
+
+Get the project, npm install, git init etc...
+Then we have to add redux to this project because it has not been included yet
+Currently the app does nothing and only shows a dummy data
+
+When the app is complete the following features will be added
+1. When we click cart then toggle a cart list of items
+2. When we click add to cart then the item is added to the cart 
+  - If it is already a part of the cart we just increase the existing quantity of the item
+3. In the cart with the buttons we want to control the quantity
+  - If the quantity is 1 and we click minus we remove the item entirely
+
+First we will need to setup redux with react-redux and redux toolkit
+Be sure there is no dev server running then run:
+```bash
+$ npm install @reduxjs/toolkit react-redux
+```
+You could use just redux and react redux but this makes working with redux either
+
+Once both are installed we can start setting up the redux logic
+
+Within src create a store folder and index.js file which will setup the redux store
+We will also want to manage a few slices
+1. To hold the cart item data
+2. To hold information on whether the cart should be shown or not
+So we will create a slice file for each of those as well
+
+create: src/store/index.js
+create: src/store/ui-slice.js
+create: src/store/cart-slice.js
+
+These could be in one file but this keeps in maintainable and manageable
+Now lets get started with the ui slice
+
+We will need to import createSlice from the redux toolkit in order to create a slice
+```js
+import { createSlice } from "@reduxjs/toolkit";
+```
+
+Remember that when we call this function it accepts an object with a few required properties
+1. name
+2. initial state
+3. reducers
+
+The name is pretty straightforward and can be anything we want
+For initial state we only need an object with a single key that is a boolean that tracks whether the cart should show or not
+We only need one reducer function that toggles the value of our single state value in this slice to the opposite of the current boolean value
+Remember that we can only mutate the existing state because of redux toolkit since it manages state behind the scenes and will ensure that state is not mutated even though it looks like we are
+Then we can store this slice in a constant and export it as the default as well as the actions object on this slice
+```js
+import { createSlice } from "@reduxjs/toolkit";
+
+const uiSlice = createSlice({
+  name: 'ui',
+  initialState: { cartIsVisible: false},
+  reducers: {
+    toggle(state) {
+      state.cartIsVisible = !state.cartIsVisible;
+    }
+  }
+});
+
+export const uiActions = uiSlice.actions
+export default uiSlice.reducer;
+```
+These two exports allows us to import the actions in the file that we need it while importing the reducer in the store/index.js
+
+Now in store/index.js we need to configure our store and receive the state from this slice
+To do this we use the `configureStore` method imported from redux toolkit
+
+This method receives an object as an argument and that object should have a single key holding reducer functions within an object
+in here we import our uiSlice reducer
+This configure store method will return the store object that will hold our redux state which we will want to export
+```js
+import { configureStore } from "@reduxjs/toolkit";
+import uiSliceReducer from './ui-slice';
+
+const store = configureStore({
+  reducer: {
+    ui: uiSliceReducer;
+  }
+});
+
+export default store;
+```
+
+Now that the store is exported we need to provide it to the application which we can do within index.js (where we render our root application component, not store/index.js)
+
+Here we can import the provider from `react-redux`
+Then wrap our app component with it and provide it our store as the store property
+```js
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import store from './store/index'
+
+import './index.css';
+import App from './App';
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>, 
+  document.getElementById('root')
+);
+```
+
+Now we can utilize our redux store inside of different components
+
+In the main header we have the cart button which when clicked should show the cart area
+To do that we need to go to the `<CartButton>` and dispatch the toggle action from store/ui-slice.js
+
+First add an onClick listener and point at a new handler
+Write this handler to dispatch the logic for toggling a cart
+To do this we will need to import `useDispatch`, call it and capture the returned dispatch function
+Then we call this dispatch function and pass in `uiActions.toggle` from `ui-slice` since it is exported in that file as `uiActions`
+```js
+import { useDispatch } from 'react-redux';
+import { uiActions } from '../../store/ui-slice';
+import classes from './CartButton.module.css';
+
+const CartButton = (props) => {
+
+  const dispatch = useDispatch();
+
+  const toggleCartHandler = () => { 
+    dispatch(uiActions.toggle());
+  }
+
+  return (
+    <button className={classes.button} onClick={toggleCartHandler}>
+      <span>My Cart</span>
+      <span className={classes.badge}>1</span>
+    </button>
+  );
+};
+
+export default CartButton;
+```
+
+Now we are triggering a state change whenever the button is clicked
+However we aren't taking advantage of this state change
+We want to render the cart conditionally based on the value of `cartIsVisible` from our `uiSlice` (accessed via `store`)
+
+To do this we should go to the `<App>` component because that is where the cart is rendered
+We will need to extract data from redux using `useSelector`
+
+Import it then call it and to use it we need to pass a function that will receive state (from redux) then returns the data we want to use
+In this case it is the `cartIsVisible` using the key that we defined in the store reducer
+Then we can save the returned value and use it to conditionally show or hide the cart
+```js
+import { useSelector } from 'react-redux';
+
+import Cart from './components/Cart/Cart';
+import Layout from './components/Layout/Layout';
+import Products from './components/Shop/Products';
+
+function App() {
+
+  const showCart = useSelector((state) => state.ui.cartIsVisible)
+
+  return (
+    <Layout>
+      {showCart && <Cart />}
+      <Products />
+    </Layout>
+  );
+}
+
+export default App;
+```
+
+Now if we save we should be able to hide and show the cart in our app by clicking the cart button
+
+Now we want to manage the cart items so lets work on that
+For this we will use the cart-slice.js file and repeat the setup only slightly different
+Again we will import `createSlice` call it and pass in the setup object with name, initialStae, and reducers object
+For initialState we will want an object with items that is an array (empty to start), and a total quantity of items in the cart (sums up quantity of each item)
+```js
+import { createSlice } from "@reduxjs/toolkit";
+
+createSlice({
+  name: 'cart',
+  initialState: {
+    items: [],
+    totalQuantity: 0,
+  },
+  reducers:{
+
+  }
+})
+```
+
+For the reducers we will want to be able to add an item, and a remove item from cart action
+These actions will receive state as an argument by default but probably need to receive an action argument so we know what items are being added and the items details
+
+For adding an item we will need to extract the item from the actions payload
+We will make action.payload an object holding data about the item when we get there
+We want to see if the item already exists in the items array before pushing it to the array 
+We can use `.find()` to search our current items array and return true if the array has an item with an id matching the id of the item being added
+```js
+addItemToCart(state, action){
+  const newItem  = action.payload;
+  const existingItem = state.items.find(item => item.id === newItem.id)
+},
+```
+If it does not exist we want to add it to the array
+We will create the item to be added to the array here instead of using the payload directly
+Then if there are changes to the item in the future it shouldn't cause any issues
+```js
+addItemToCart(state, action){
+  const newItem  = action.payload;
+  const existingItem = state.items.find(item => item.id === newItem.id)
+  if(!existingItem){
+    state.items.push({
+      itemId: newItem.id,
+      name: newitem.title,
+      price: newItem.price,
+      quantity: 1,
+      total: newItem.price,
+    });
+  }
+},
+```
+
+Remember we couldn't do this if we weren't using redux toolkit since it makes sure it will not update state in a mutable way
+
+Now we are pushing a new item to the products array if it does not exist in the items array already
+
+Now we have to work on the else case, or if the item does exist in the array already
+
+In that case we want to edit the existing item in the array
+Again something we cannot do with plain redux but is ok with the redux toolkit
+```js
+addItemToCart(state, action) {
+  const newItem = action.payload;
+  const existingItem = state.items.find(item => item.id === newItem.id)
+  if (!existingItem) {
+    state.items.push({
+      itemId: newItem.id,
+      name: newitem.title,
+      price: newItem.price,
+      quantity: 1,
+      totalPrice: newItem.price,
+    });
+  } else {
+    existingItem.quantity++;
+    existingItem.totalPrice = existingItem.totalPrice + existingItem.price
+  }
+},
+```
