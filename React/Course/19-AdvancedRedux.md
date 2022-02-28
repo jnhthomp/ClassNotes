@@ -295,3 +295,406 @@ addItemToCart(state, action) {
   }
 },
 ```
+
+
+
+
+___
+## 253. Refresher/Practice: Part 2/2
+Now we will work on the removal action
+It will receive state as normal as well as an action object
+This object will simply hold the id of the item being removed which we can assign to an id
+```js
+removeItemFromCart(state, action){
+  const id = action.payload;
+}
+```
+
+Now we want to check our list of items to see how many of that item are currently in the array and retrieve its listing
+```js
+const existingItem = state.items.find((item) => item.id === id);
+```
+
+If there is only 1 of that item in the list we want to do something different than if there is more than 1 
+Let's start with the case that there is only 1 
+In that case we want to remove it from the array
+We can do this easily by using filter and updating the array with the new array by filtering out the item we want to remove
+```js
+if(existingItem.quantity === 1){
+  state.items = state.items.filter((item)=> item.id !== id)
+}
+```
+For the else statement we just want to reduce the quantity and the total price
+```js
+removeItemFromCart(state, action){
+  const id = action.payload;
+  const existingItem = state.items.find((item) => item.id === id);
+  if(existingItem.quantity === 1){
+    state.items = state.items.filter((item)=> item.id !== id)
+  } else {
+    existingItem.quantity--;
+    existingItem.totalPrice = existingItem.totalPrice - existingItem.price;
+  }
+}
+```
+
+Now we can update these items to remove items from the array while keeping the other items (hopefully)
+
+Now that our slice is written we will store it in another constant so that it can be exported as well as the actions
+```js
+import { createSlice } from "@reduxjs/toolkit";
+
+const cartSlice = createSlice({
+  name: 'cart',
+  initialState: {
+    items: [],
+    totalQuantity: 0,
+    totalAmount: 0
+  },
+  reducers:{
+    addItemToCart(state, action) {
+      const newItem = action.payload;
+      const existingItem = state.items.find(item => item.id === newItem.id)
+      if (!existingItem) {
+        state.items.push({
+          itemId: newItem.id,
+          name: newitem.title,
+          price: newItem.price,
+          quantity: 1,
+          totalPrice: newItem.price,
+        });
+      } else {
+        existingItem.quantity++;
+        existingItem.totalPrice = existingItem.totalPrice + existingItem.price
+      }
+    },
+    removeItemFromCart(state, action){
+      const id = action.payload;
+      const existingItem = state.items.find((item) => item.id === id);
+      if(existingItem.quantity === 1){
+        state.items = state.items.filter((item)=> item.id !== id)
+      } else {
+        existingItem.quantity--;
+        existingItem.totalPrice = existingItem.totalPrice - existingItem.price;
+      }
+    }
+  }
+})
+
+export const cartActions = cartSlice.actions;
+export default cartSlice.reducer;
+```
+
+Now we need to merge this slice into our overall redux store within store/index.js
+First import it then add it to the reducer map
+```js
+import { configureStore } from "@reduxjs/toolkit";
+import uiSliceReducer from './ui-slice';
+import cartSliceReducer from './cart-slice';
+
+const store = configureStore({
+  reducer: {
+    ui: uiSliceReducer,
+    cart: cartSliceReducer
+  }
+});
+
+export default store;
+```
+Now we should be able to access this slice
+In order to do this we will need some real products 
+We could manage our products with redux as well but since we don't do anything with them we will just add a `DUMMY_PRODUCTS` array to `<Products>`
+Each item in the array will need several keys which we have specified in the cart-slice reducer
+These include: 
+- id
+- title
+- price
+
+We will also need to add a description since that is used in the product listing
+```js
+const DUMMY_PRODUCTS = [
+  { id: 'EP1tPM',
+    title: 'The Phantom Menace',
+    description: 'A long time ago in a galaxy far, far away... ',
+    price: 66 
+  },
+  ...
+]
+```
+
+Now we want to use the dummy data to dynamically render the items
+```js
+const Products = (props) => {
+  return (
+    <section className={classes.products}>
+      <h2>Buy your favorite products</h2>
+      <ul>
+        {DUMMY_PRODUCTS.map((product) => (
+          <ProductItem
+            key={product.id}
+            title={product.title}
+            price={product.price}
+            description={product.description}
+          />
+        ))}
+      </ul>
+    </section>
+  );
+};
+```
+
+Next we want to wire the add item to cart button within `<ProductItem>` to the `addItemToCart` action in our `cart-slice`
+
+To do this we need to add a handler to `<ProductItem>` to handle this click event
+In this handler event we want to dispatch these actions
+So we will have to import `useDispatch` and the actions from the `cart-slice`
+Remember when we call `addItemToCart` we will have to pass in an object with the needed values of id, title, and price
+Here title and price are already passed via props but not id so we will need to include that when we call this component as well
+```js
+<ProductItem
+  key={product.id}
+  id={product.id}
+  title={product.title}
+  price={product.price}
+  description={product.description}
+/>
+```
+```js
+import { useDispatch } from 'react-redux';
+import { cartActions } from '../../store/cart-slice';
+
+import Card from '../UI/Card';
+import classes from './ProductItem.module.css';
+
+const ProductItem = (props) => {
+
+  const dispatch = useDispatch();
+
+  const { title, price, description, id } = props;
+
+  const addToCartHandler = () => {
+    dispatch(cartActions.addItemToCart({
+      id: id,
+      title: title,
+      price: price,
+    }));
+  } 
+
+  return (
+    <li className={classes.item}>
+      <Card>
+        <header>
+          <h3>{title}</h3>
+          <div className={classes.price}>${price.toFixed(2)}</div>
+        </header>
+        <p>{description}</p>
+        <div className={classes.actions}>
+          <button onClick={addToCartHandler}>Add to Cart</button>
+        </div>
+      </Card>
+    </li>
+  );
+};
+
+export default ProductItem;
+```
+
+Now we need to show the proper items in our cart and the badge
+We will start with the badge
+For this we go to the `<CartButton>` component
+Here we are dispatching actions but we also need to get the data from `cart-slice` to get the total quantity
+
+Sidenote we forgot to update the total quantity in both of our cart handler actions
+We will just want to always add/subtract 1 from the total quantity
+```js
+const cartSlice = createSlice({
+  name: 'cart',
+  initialState: {
+    items: [],
+    totalQuantity: 0,
+    totalAmount: 0
+  },
+  reducers:{
+    addItemToCart(state, action) {
+      const newItem = action.payload;
+      const existingItem = state.items.find(item => item.id === newItem.id)
+      state.totalQuantity++;
+      if (!existingItem) {
+        state.items.push({
+          itemId: newItem.id,
+          name: newItem.title,
+          price: newItem.price,
+          quantity: 1,
+          totalPrice: newItem.price,
+        });
+      } else {
+        existingItem.quantity++;
+        existingItem.totalPrice = existingItem.totalPrice + existingItem.price
+      }
+    },
+    removeItemFromCart(state, action){
+      const id = action.payload;
+      const existingItem = state.items.find((item) => item.id === id);
+      state.totalQuantity--;
+      if(existingItem.quantity === 1){
+        state.items = state.items.filter((item)=> item.id !== id)
+      } else {
+        existingItem.quantity--;
+        existingItem.totalPrice = existingItem.totalPrice - existingItem.price;
+      }
+    }
+  }
+})
+```
+
+Now we can import and call `useSelector` to get the slice of state showing the `totalQuantity`
+Then we can output that in the badge
+```js
+import { useDispatch, useSelector } from 'react-redux';
+import { uiActions } from '../../store/ui-slice';
+import classes from './CartButton.module.css';
+
+const CartButton = (props) => {
+
+  const dispatch = useDispatch();
+  const cartQuantity = useSelector((state) => state.cart.totalQuantity);
+
+  const toggleCartHandler = () => { 
+    dispatch(uiActions.toggle());
+  }
+
+  return (
+    <button className={classes.button} onClick={toggleCartHandler}>
+      <span>My Cart</span>
+      <span className={classes.badge}>{cartQuantity}</span>
+    </button>
+  );
+};
+
+export default CartButton;
+
+```
+
+Now if we save and check our app then the badge on the cart every time we add an item to the cart
+
+Now we want to make sure we render the cart correctly and show the correct data
+This is in `<Cart>`
+Here we need to get access to the items array that is in our store state
+```js
+import { useSelector } from 'react-redux';
+
+import Card from '../UI/Card';
+import classes from './Cart.module.css';
+import CartItem from './CartItem';
+
+const Cart = (props) => {
+  const cartItems = useSelector((state) => state.cart.items);
+  return (
+    <Card className={classes.cart}>
+      <h2>Your Shopping Cart</h2>
+      <ul>
+        {cartItems.map((item) => (
+          <CartItem
+            key={item.id}
+            item={{ title: item.name, quantity: item.quantity, price: item.price, total: item.totalPrice}}
+          />
+        ))}
+      </ul>
+    </Card>
+  );
+};
+
+export default Cart;
+```
+
+However but this isn't working quite like we want it to
+This is because of a typo in our cart-slice
+We are checking for an existing `item.id` but then save the new ids as `item.itemId`
+We just need to fix how we save it
+```js
+addItemToCart(state, action) {
+  const newItem = action.payload;
+  const existingItem = state.items.find(item => item.id === newItem.id)
+  state.totalQuantity++;
+  if (!existingItem) {
+    state.items.push({
+      id: newItem.id,
+      name: newItem.title,
+      price: newItem.price,
+      quantity: 1,
+      totalPrice: newItem.price,
+    });
+  } else {
+    existingItem.quantity++;
+    existingItem.totalPrice = existingItem.totalPrice + existingItem.price
+  }
+},
+```
+
+Now if we save our cart listing will be correct and group items together
+
+Now let's make sure the minus and plus buttons in the cart items work
+For that we need to `<CartItem>` and then import our `cartActions` and `useDispatch` so we can use our actions 
+Then we will have to write event handlers for each and make sure that when we call our mehods we pass in the needed data
+Make sure you are passing id down from `<Cart>` and accept it in the props here 
+```js
+<ul>
+  {cartItems.map((item) => (
+    <CartItem
+      key={item.id}
+      item={{ id: item.id, title: item.name, quantity: item.quantity, price: item.price, total: item.totalPrice}}
+    />
+  ))}
+</ul>
+```
+```js
+import { useDispatch } from 'react-redux';
+import { cartActions } from '../../store/cart-slice';
+
+import classes from './CartItem.module.css';
+
+const CartItem = (props) => {
+
+  const dispatch = useDispatch();
+
+  const { id, title, quantity, total, price } = props.item;
+
+  const removeItemFromCartHandler = () => {
+    dispatch(cartActions.removeItemFromCart(id));
+  }
+
+  const addItemToCartHandler = () => {
+    dispatch(cartActions.addItemToCart({
+      id: id,
+      title: title,
+      price: price
+    }));
+  }
+
+  return (
+    <li className={classes.item}>
+      <header>
+        <h3>{title}</h3>
+        <div className={classes.price}>
+          ${total.toFixed(2)}{' '}
+          <span className={classes.itemprice}>(${price.toFixed(2)}/item)</span>
+        </div>
+      </header>
+      <div className={classes.details}>
+        <div className={classes.quantity}>
+          x <span>{quantity}</span>
+        </div>
+        <div className={classes.actions}>
+          <button onClick={removeItemFromCartHandler}>-</button>
+          <button onClick={addItemToCartHandler}>+</button>
+        </div>
+      </div>
+    </li>
+  );
+};
+
+export default CartItem;
+
+```
+
+Now we can add items to our cart and remove them and have all the features we were looking for
