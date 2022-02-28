@@ -726,3 +726,25 @@ We can execute it in the components and "ignore" redux
 Or we can create something called an action creator
 We have only used these indirectly and allow us to run async code or code with side effects
 We will use both options for the demo
+
+
+
+
+___
+## 255. Frontend Code Vs Backend Code
+We will first practice running async code from direclty inside of the component
+We will start with adding items to the cart from the `<ProductItem>`component
+There is a handler in there that is currently being used to dispatch our action but we could also make a POST request using `fetch`
+This does pose one issue
+If we just send the product data to firebase then we are only storing the product data but firebase doesn't have any logic
+We wouldn't be running any extra code and would be added to the database
+Our logic that would update our cart wouldn't happen
+If you were using firebase for a real project you could add this logic and would be possible
+Or if you were building your own backend you could of course do something with the incoming data
+But since this course doesn't cover that we won't take that route
+This means that the code that we write on the front end will depend on our backend code
+If we had a backend api that did a lot of work and didn't just store data but transformed it then our frontend could do less work
+It could just send the data to the backend, the backend would take care of it, then the frontend would receive some sort of response which the frontend would use
+This would let us slim down our reducer and just take our backend response and store it
+Obviously we cannot do that here because this is a front end course and our backend only stores the data it receives
+We can't just receive the data in redux we have to also transform it like we are currently
