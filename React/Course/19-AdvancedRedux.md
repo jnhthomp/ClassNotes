@@ -698,3 +698,31 @@ export default CartItem;
 ```
 
 Now we can add items to our cart and remove them and have all the features we were looking for
+
+
+
+
+___
+## 254. Redux & Async Code
+Now that we have repeated the core redux basics again lets see how we can connect redux with side effects and asynchronous code
+We will add a backend or a server where we can send the card
+We want to make it so that whenever you add items to the cart it is saved to a server so that if we reload if we fetch from that server we can fill the cart based on what contents were in there before
+For that we will use firebase like we have before
+
+In firebase we will use the same project we have created earlier and it's realtime databse
+He gets rid of all the data in this database but I kind of don't want to so I made a new application in firebase
+
+Now we have a backend
+We have a couple of different kind of requests we want to make to this backend
+We want to post to it and update it whenever we add or remove cards
+We also want to fetch from the backend so when we reload we get the cart data
+
+How do we integrate these requests with our application using redux?
+Keep in mind reducers must be pure, side-effect free, and synchronous
+We cannot send http requests inside of our reducers because it will not work
+
+Instead we have two main options where we can put it
+We can execute it in the components and "ignore" redux
+Or we can create something called an action creator
+We have only used these indirectly and allow us to run async code or code with side effects
+We will use both options for the demo
