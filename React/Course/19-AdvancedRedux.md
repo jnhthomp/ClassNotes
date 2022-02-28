@@ -748,3 +748,35 @@ It could just send the data to the backend, the backend would take care of it, t
 This would let us slim down our reducer and just take our backend response and store it
 Obviously we cannot do that here because this is a front end course and our backend only stores the data it receives
 We can't just receive the data in redux we have to also transform it like we are currently
+
+
+
+
+___
+## 256. Where To Put Our Logic
+So if the backend is not doing that work and we have to do it here and we cannot send our request in the reducer function where do we put our logic?
+
+We cannot send our http request in the reducer but we can do it in the component
+One approach we could take is to copy our reducer functionality into our `addToCartHandler`, copy the current state, run our logic on the state and submit the result
+This is what that would look like: https://github.com/academind/react-complete-guide-code/tree/19-advanced-redux/code/zz-suboptimal-example-code
+
+However we won't do this because there are some problems
+The first of which being we are repeating a lot of code this way
+If we were to do this everywhere in the application where we need to update the cart it would get messy
+There is still another problem we are doing data transformation in our components instead of in our reducers
+Our redux reducers wouldn't really be doing anything other than getting data and storing it
+This isn't necessarily bad but isn't the main idea of redux
+
+When it comes to where to put our code we often have to make one of three choices
+1. Fat Reducers
+2. Fat Components
+3. Fat Actions
+
+When doing this we have to differentiate between synchronous side effect free code and code that is async or has side effects
+
+With the suboptimal approach linked above there is a lot of code that is in the component that is synchronous and side effect free so it probably should go in the reducer if possible
+
+For code with side effects or code that is async you should prefer to put it within the component or an action creator but NEVER inside a reducer
+
+So the code above is not the best option
+We want to organize our code so the data transformation is in the reducer but the async portion of it is in the component
