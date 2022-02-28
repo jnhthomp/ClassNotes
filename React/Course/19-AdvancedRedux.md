@@ -864,3 +864,370 @@ Why is this an issue?
 It's a problem because this will send the initial (i.e. empty) cart to our backend and overwrite any data stored there.
 
 We'll fix this over the next lectures, I just wanted to point it out here!
+
+
+
+
+___
+## 259. Handling Http States & Feedback with Redux
+Currently we are sending an http request and am not doing anything with the response or handling any potential errors
+
+We will clean it up so that this is taken care of
+To do this he has added a new component which should go in the ui folder
+Find the files for it here: https://github.com/academind/react-complete-guide-code/tree/19-advanced-redux/extra-files
+
+This component just displays a title and message and displays different css classes based on a status prop that is passed
+It is a little bar at the top that says "sending request" or tells if the request was successful or had an error
+
+Now to use this in our fetch function we need to use async await since this is an async function and we will have to handle different promise resolutions
+Remember that we can't use the `await` keyword with the function passed into `useEffect` but we can write an async function inside of that function
+```js
+useEffect(() => {
+  const sendCartData = async () => {
+    const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json', {
+      method: 'PUT',
+      body: JSON.stringify(cartData)
+    });
+  }
+}, [cartData])
+```
+
+Now we want to handle this response first we will check if the `response.ok` value which we expect to receive is falsey, if it is then we will throw an errror
+Otherwise we will transform our response into a javascript object with `.json()` (also needs await keyword)
+```js
+useEffect(() => {
+  const sendCartData = async () => {
+    const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json', {
+      method: 'PUT',
+      body: JSON.stringify(cartData)
+    });
+
+    if (!response.ok) {
+      throw new Error('Sending Cart Data Failed');
+    }
+
+    const responseData = await response.json();
+     
+  }
+}, [cartData])
+```
+Now we want to trigger a notification that is show if this is successful, we also want this notification to show when we start sending
+To do this we could set up a local state to manage this but because we are practicing redux we will do it with redux
+
+We already have a ui slice and can add more to it
+We can manage this notification within there
+To do that we need to add a notification key to our initial state and set it to null
+This is so that initially we don't have a notification
+```js
+const uiSlice = createSlice({
+  name: 'ui',
+  initialState: { cartIsVisible: false, notification: null },
+  reducers: {
+    toggle(state) {
+      state.cartIsVisible = !state.cartIsVisible;
+    }
+  }
+});
+```
+
+Then we can create a reducer called `showNotification`
+This will trigger at different points of our submission/loading process so we will need to accept an action to determine which kind of loading status we want to be in
+Here we will set the notification value to an object with a status key that we receive from the payload
+```js
+const uiSlice = createSlice({
+  name: 'ui',
+  initialState: { cartIsVisible: false, notification: null },
+  reducers: {
+    toggle(state) {
+      state.cartIsVisible = !state.cartIsVisible;
+    },
+    showNotification(state, action){
+      state.notification = {
+        status: action.payload.status,
+        title: action.payload.title,
+        message: action.payload.message
+      }
+    }
+  }
+});
+```
+Now we can call this show notification and pass in the data we want to update the `store.notification` object in redux
+Then we can check the value of this wherever we need to call/show a notification and pass these values in from the redux state when doing so
+
+We want to show this notification for three different types of events
+1. When we start submitting the data
+2. when we have successfully submitted the data
+3. When we hit an error submitting data
+
+
+So within `<App>` we need to import `useDispatch` so we can use the dispatch functions as well as our `uiActions` so we can select which actions to execute
+When we call our dispatch function to execute the `showNotification` action we need to be sure to pass an argument with an object with the appropriate values
+```js
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { uiActions } from './store/ui-slice';
+
+import Cart from './components/Cart/Cart';
+import Layout from './components/Layout/Layout';
+import Products from './components/Shop/Products';
+
+function App() {
+  const dispatch = useDispatch();
+  const showCart = useSelector((state) => state.ui.cartIsVisible)
+  const cartData = useSelector((state) => state.cart)
+
+  useEffect(() => {
+    const sendCartData = async () => {
+      dispatch(uiActions.showNotification({
+        status: 'pending',
+        title: 'Sending...',
+        message: 'Sending cart data!'
+      }))
+      const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json', {
+        method: 'PUT',
+        body: JSON.stringify(cartData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Sending Cart Data Failed');
+      }
+
+      const responseData = await response.json();
+      
+      
+    }
+
+  }, [cartData])
+  ...
+```
+Now we should be able to set the initial notification
+We also want to set a notification whenever we receive a successful response
+We don't care what the response says as long we don't hit the if statement checking the `response.ok` value we want to update to a positive notification
+```js
+useEffect(() => {
+  const sendCartData = async () => {
+    dispatch(uiActions.showNotification({
+      status: 'pending',
+      title: 'Sending...',
+      message: 'Sending cart data!'
+    }))
+    const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json', {
+      method: 'PUT',
+      body: JSON.stringify(cartData)
+    });
+
+    if (!response.ok) {
+      throw new Error('Sending Cart Data Failed');
+    }
+
+    const responseData = await response.json();
+    dispatch(uiActions.showNotification({
+      status: 'success',
+      title: 'Success!',
+      message: 'Sent cart data successfully!'
+    }))
+    
+    
+  }
+
+}, [cartData])
+```
+
+Now whenever we throw an error lets update the notification
+We can do this by calling this sendCartData method we have defined within `useEffect` then adding `.catch()` to catch the error from our if block
+We should also add our dispatch function to the dependency array even though it will never change, just for the sake of completeness
+```js
+useEffect(() => {
+  const sendCartData = async () => {
+    dispatch(uiActions.showNotification({
+      status: 'pending',
+      title: 'Sending...',
+      message: 'Sending cart data!'
+    }))
+    const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json', {
+      method: 'PUT',
+      body: JSON.stringify(cartData)
+    });
+
+    if (!response.ok) {
+      throw new Error('Sending Cart Data Failed');
+    }
+
+    const responseData = await response.json();
+    dispatch(uiActions.showNotification({
+      status: 'success',
+      title: 'Success!',
+      message: 'Sent cart data successfully!'
+    }));
+  }
+
+  sendCartData().catch(error => {
+    dispatch(uiActions.showNotification({
+      status: 'error',
+      title: 'Error!',
+      message: 'Sending cart data failed!'
+    }));
+  })
+
+}, [cartData, dispatch])
+```
+
+Now we need to just use the new notification ui state
+Within app we want to read the value of this state and conditionally render the notification component if it is not null and provide the component data
+We will want to render this side by side with layout so we will need to use a fragment to hold these elements as well
+```js
+import { useEffect, Fragment } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { uiActions } from './store/ui-slice';
+
+import Cart from './components/Cart/Cart';
+import Notification from './components/UI/Notification';
+import Layout from './components/Layout/Layout';
+import Products from './components/Shop/Products';
+
+function App() {
+  const dispatch = useDispatch();
+  const showCart = useSelector((state) => state.ui.cartIsVisible)
+  const cartData = useSelector((state) => state.cart)
+  const notification = useSelector((state) => state.ui.notification)
+
+  useEffect(() => {
+    const sendCartData = async () => {
+      dispatch(uiActions.showNotification({
+        status: 'pending',
+        title: 'Sending...',
+        message: 'Sending cart data!'
+      }))
+      const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json', {
+        method: 'PUT',
+        body: JSON.stringify(cartData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Sending Cart Data Failed');
+      }
+
+      const responseData = await response.json();
+      dispatch(uiActions.showNotification({
+        status: 'success',
+        title: 'Success!',
+        message: 'Sent cart data successfully!'
+      }));
+    }
+
+    sendCartData().catch(error => {
+      dispatch(uiActions.showNotification({
+        status: 'error',
+        title: 'Error!',
+        message: 'Sending cart data failed!'
+      }));
+    })
+
+  }, [cartData, dispatch])
+  
+
+  return (
+    <Fragment>
+      {notification && <Notification status={notification.status} title={notification.title} message={notification.message}/>}
+      <Layout>
+        {showCart && <Cart />}
+        <Products />
+      </Layout>
+    </Fragment>
+    
+  );
+}
+
+export default App;
+
+```
+
+Now if we save we will see a notification up top as well as a brief loading notification when adding or removing from the cart
+
+The only problem is that this shows immediately as soon as the page loads because we are sending the card state at the beginning
+We don't want this because if we do our cart on the backend will be overwritten with an empty cart every time we reload
+
+We want to make sure that we don't send the cart when our `useEffect` runs for the first time
+
+To do this we could add a variable outside of our function 
+It will be initialized only when the file is loaded for the first time
+We can use this value to check if it is the first time loading the page and if it is we will skip sending the cart data
+Then we just have to flip it after hitting that check to be false
+```js
+import { useEffect, Fragment } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { uiActions } from './store/ui-slice';
+
+import Cart from './components/Cart/Cart';
+import Notification from './components/UI/Notification';
+import Layout from './components/Layout/Layout';
+import Products from './components/Shop/Products';
+
+let isInitial = true;
+
+function App() {
+  const dispatch = useDispatch();
+  const showCart = useSelector((state) => state.ui.cartIsVisible)
+  const cartData = useSelector((state) => state.cart)
+  const notification = useSelector((state) => state.ui.notification)
+
+  useEffect(() => {
+    const sendCartData = async () => {
+      dispatch(uiActions.showNotification({
+        status: 'pending',
+        title: 'Sending...',
+        message: 'Sending cart data!'
+      }))
+      const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json', {
+        method: 'PUT',
+        body: JSON.stringify(cartData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Sending Cart Data Failed');
+      }
+
+      const responseData = await response.json();
+      dispatch(uiActions.showNotification({
+        status: 'success',
+        title: 'Success!',
+        message: 'Sent cart data successfully!'
+      }));
+    }
+
+    if(isInitial){
+      isInitial = false;
+      return;
+    }
+
+    sendCartData().catch(error => {
+      dispatch(uiActions.showNotification({
+        status: 'error',
+        title: 'Error!',
+        message: 'Sending cart data failed!'
+      }));
+    })
+
+  }, [cartData, dispatch])
+  
+
+  return (
+    <Fragment>
+      {notification && <Notification status={notification.status} title={notification.title} message={notification.message}/>}
+      <Layout>
+        {showCart && <Cart />}
+        <Products />
+      </Layout>
+    </Fragment>
+    
+  );
+}
+
+export default App;
+
+```
+
+Now if we reload we don't see the notification until we add items to the cart
+
+Lets test the error state by breaking the url
+If you remove `'.json' from the end of the fetch url and try to add something to the cart you should get an error
