@@ -851,3 +851,16 @@ This will update `cartData` to have the most recent version of `store.cart`
 If it is different than before then our PUT request will update our database with the new cart
 
 Now our database should update when adding or removing items from the cart
+
+
+
+
+___
+## 258. A Problem with useEffect()
+We face one problem when using useEffect the way we currently do it: It will execute when our app starts.
+
+Why is this an issue?
+
+It's a problem because this will send the initial (i.e. empty) cart to our backend and overwrite any data stored there.
+
+We'll fix this over the next lectures, I just wanted to point it out here!
