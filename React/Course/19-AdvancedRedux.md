@@ -780,3 +780,74 @@ For code with side effects or code that is async you should prefer to put it wit
 
 So the code above is not the best option
 We want to organize our code so the data transformation is in the reducer but the async portion of it is in the component
+
+
+
+
+___
+## 257. Using useEffect With Redux
+One possible better solution is pretty obvious when you see it
+Instead of using the previous approach we can stick to what we were doing originally 
+That is, dispatching the `addItemToCart` action and passing the object to our reducer
+Then after that we can sync our new state to the server and just update the server with the new state we have after we have updated the state
+
+This way redux will update the store and we send this updated store to our server as the new data to hold
+We don't do this inside of the reducer function, we could do it in the `<ProductItem>` 
+OR we could do it inside of a completely different component such as `<App>` 
+This way if there are other components that update the cart this database update is still triggered
+
+Inside of `<App>` we will get our slice for the cart data with `useSelector` 
+```js
+const cartData = useSelector((state) => state.cart)
+```
+
+Now we can use `useEffect`to watch for changes in `cartData` and run our cart update api call within there
+```js
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
+import Cart from './components/Cart/Cart';
+import Layout from './components/Layout/Layout';
+import Products from './components/Shop/Products';
+
+function App() {
+
+  const showCart = useSelector((state) => state.ui.cartIsVisible)
+  const cartData = useSelector((state) => state.cart)
+
+  useEffect(() => {
+  
+  }, [])
+  
+
+  return (
+    <Layout>
+      {showCart && <Cart />}
+      <Products />
+    </Layout>
+  );
+}
+
+export default App;
+
+```
+
+Inside of `useEffect` we will want to send an http request to our firebase database and create a `cart.json` node
+Then we will send a PUT request
+This is new to us and similar to a post request except instead of posting new data alongside other data it will update that node directly
+PUT will override the existing cart with whatever data we attach
+Then we just set the body to be the cart data (transform it to json first)
+Since cart data will be in the `useEffect` function we should list it as a dependency
+```js
+useEffect(() => {
+  fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json', {
+    method: 'PUT',
+    body: JSON.stringify(cartData)
+  })
+}, [cartData])
+```
+Now whenever our store data changes, `useSelector` will notify this component and cause it to reload
+This will update `cartData` to have the most recent version of `store.cart`
+If it is different than before then our PUT request will update our database with the new cart
+
+Now our database should update when adding or removing items from the cart
