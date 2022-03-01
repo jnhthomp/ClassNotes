@@ -1845,3 +1845,27 @@ replaceCart(state, action) {
 ```
 Now items will never be undefined and will be an empty array if it is 
 We should be able to add items, remove them, and sync our cart with the backend with several different approaches
+
+
+
+
+___
+## 263. Exploring the Redux Dev Tools
+Now we have explored a lot of how to deal with redux and handling async function or functions with side effects
+There is one more topic to cover this module and that is redux dev tools
+These are extra tools we can use which makes debugging redux state easier
+
+In large applications it can be difficult to find errors without diving into different components
+You can find info here: https://github.com/reduxjs/redux-devtools
+I just downloaded the chrome extension
+
+When using redux without redux toolkit you need some extra code but since we are using toolkit it should work right away (reload your app if it isn't showing)
+If you click the icon or go to the devtools and select the redux menu you will see some options
+In this panel we can get insights to our redux store and actions
+On the left we can see actiions that are dispatched
+If we add something to the cart we can see `addItemToCart` being dispatched and `showNotification`
+If you click each action you can see the data for the action and payload for the action
+This makes it easy to see the impact of our actions
+
+We can even time travel by picking an action and clicking 'jump' which will take us to the moment that action was executed
+This can help give much deeper insights into our redux store and understand what is happening
