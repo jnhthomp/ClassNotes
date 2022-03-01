@@ -1869,3 +1869,20 @@ This makes it easy to see the impact of our actions
 
 We can even time travel by picking an action and clicking 'jump' which will take us to the moment that action was executed
 This can help give much deeper insights into our redux store and understand what is happening
+
+
+
+
+___
+## 264. Summary
+That is it for this module
+We practiced using redux again and learned about how to handle async code/side effects
+We learned there is different places we can put this code
+1. In the component
+2. Inside action creators
+
+We saw how not to do it when we added data transformation code in the component
+While it worked it was not the correct idea behind using redux
+We should prefer reducers for transformations and only put side effects or async code into components or action creators
+
+Then we looked at redux dev tools which helps us understand our redux store and state
