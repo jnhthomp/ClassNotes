@@ -1450,3 +1450,299 @@ If we save and reload we should have the same functionality and firebase should 
 Remember doing it the way we did before is perfectly fine and we can keep this logic in our components
 This is just another way to do it and allows us to split our code
 Either option is completely fine though
+
+
+
+
+___
+## 261. Getting Started with Fetching Data
+Now that we know about thunks and action creator thunks we will build another one that fetches the cart data when the application loads
+Currently if we reload all of our state is lost but the database still has data from the old cart
+But when we add an item that old cart is completely overridden
+We want to load the old cart when the page loads so that we dont lose our cart data
+
+To do that we will create another action creator (although you could do this within the component if you felt like)
+We would do this within 'cart-slice' but because the file is getting a little big we will create a new store file called cart-actions (name up to you though)
+Then we will copy the `sendCartData` function and put it in this actions file
+(Make sure you fix your import in `<App>`)
+`<App>`
+```js
+import { useEffect, Fragment } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { sendCartData } from './store/cart-actions';
+```
+cart-slice.js
+```js
+import { createSlice } from "@reduxjs/toolkit";
+
+const cartSlice = createSlice({
+  name: 'cart',
+  initialState: {
+    items: [],
+    totalQuantity: 0,
+    totalAmount: 0
+  },
+  reducers:{
+    addItemToCart(state, action) {
+      const newItem = action.payload;
+      const existingItem = state.items.find(item => item.id === newItem.id)
+      state.totalQuantity++;
+      if (!existingItem) {
+        state.items.push({
+          id: newItem.id,
+          name: newItem.title,
+          price: newItem.price,
+          quantity: 1,
+          totalPrice: newItem.price,
+        });
+      } else {
+        existingItem.quantity++;
+        existingItem.totalPrice = existingItem.totalPrice + existingItem.price
+      }
+    },
+    removeItemFromCart(state, action){
+      const id = action.payload;
+      const existingItem = state.items.find((item) => item.id === id);
+      state.totalQuantity--;
+      if(existingItem.quantity === 1){
+        state.items = state.items.filter((item)=> item.id !== id)
+      } else {
+        existingItem.quantity--;
+        existingItem.totalPrice = existingItem.totalPrice - existingItem.price;
+      }
+    }
+  }
+})
+
+export const cartActions = cartSlice.actions;
+export default cartSlice.reducer;
+```
+cart-actions.js
+```js
+import { uiActions } from "./ui-slice";
+
+export const sendCartData = (cartData) => {
+  return async (dispatch) => {
+    // do async stuff and construct object
+    dispatch(
+      uiActions.showNotification({
+        status: 'pending',
+        title: 'Sending...',
+        message: 'Sending cart data!'
+      })
+    );
+
+    const sendRequest = async () => {
+      const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json', {
+        method: 'PUT',
+        body: JSON.stringify(cartData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Sending Cart Data Failed');
+      }
+    }
+
+    try {
+      await sendRequest();
+      dispatch(
+        uiActions.showNotification({
+          status: 'success',
+          title: 'Success!',
+          message: 'Sent cart data successfully!'
+        })
+      );
+    } catch (error) {
+      dispatch(uiActions.showNotification({
+        status: 'error',
+        title: 'Error!',
+        message: 'Sending cart data failed!'
+      }));
+    }
+  }
+}
+```
+
+Now we can add our other action creator that we want to create within this cart-actions file as well
+This will also immediately return a function that receives dispatch as an argument just like our other action creator
+```js
+export const fetchCartData = () => {
+  return (dispatch) => { 
+    // fetch cart data
+    // update state with fetched cart data
+  } 
+}
+```
+
+Now we can create a fetch data function inside of this since we know we will need to handle errors and will need to wrap this function with try/catch
+We will just need to make a standard get request to the same url we have been using
+```js
+export const fetchCartData = () => {
+  return (dispatch) => { 
+    // fetch cart data
+    const fetchData = async () => {
+      const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json');
+    }
+    // update state with fetched cart data
+  } 
+```
+
+Now we are interested in the data so we will need to transform it from json to a js object after we check to see if the response is not ok and throw an error if not
+If we do have the data we just want to return it since this is a nested function
+```js
+export const fetchCartData = () => {
+  return (dispatch) => { 
+    // fetch cart data
+    const fetchData = async () => {
+      const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json');
+
+      if(!response.ok){
+        throw new Error('Could not fetch cart data!');
+      }
+      const data = await response.json();
+      return data;
+    }
+
+    // update state with fetched cart data
+  } 
+}
+```
+
+Now we can set up our try/catch to call `fetchData` and catch any errors thrown if response is not ok
+In that case we can show a notification with the appropriate error message
+We also need to capture the returned data and specify that `fetchData` will be async so we will need to use the await keyword as well as async on the overall function
+```js
+export const fetchCartData = () => {
+  return async (dispatch) => { 
+    // fetch cart data
+    const fetchData = async () => {
+      const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json');
+
+      if(!response.ok){
+        throw new Error('Could not fetch cart data!');
+      }
+      const data = await response.json();
+      return data;
+    }
+
+    try {
+      const cartData = await fetchData();
+    } catch (error) {
+      dispatch(uiActions.showNotification({
+        status: 'error',
+        title: 'Error!',
+        message: 'Fetching cart data failed!'
+      }));
+    }
+    // update state with fetched cart data
+  } 
+}
+```
+
+Lasly we want to use this cartData to set our cart state
+
+The cart we are fetching will be in the format we are sending it to firebase
+So it will be an object with an items array of objects and a total quantity key
+This is exactly what we need in our front end so we are getting correctly formatted data automatically
+This is convenient because we wrote it that way
+
+Because of this we can use the `replaceCart` reducer to replace the empty cart we have when the page first loads with the cart retrieved from firebase
+If you don't have this it would look like this:
+```js
+reducers:{
+  replaceCart(state, action) {
+    state.items = action.payload.items || []; // Note must include || [] or will cause a crash due to trying to read a null value within the app
+    state.totalQuantity = action.payload.totalQuantity || 0; // note must include || 0 or will cause a crash
+  },
+  ...
+```
+```js
+export const fetchCartData = () => {
+  return async (dispatch) => { 
+    // fetch cart data
+    const fetchData = async () => {
+      const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json');
+
+      if(!response.ok){
+        throw new Error('Could not fetch cart data!');
+      }
+      const data = await response.json();
+      return data;
+    }
+
+    try {
+      const cartData = await fetchData();
+      dispatch(cartActions.replaceCart(cartData))
+    } catch (error) {
+      dispatch(uiActions.showNotification({
+        status: 'error',
+        title: 'Error!',
+        message: 'Fetching cart data failed!'
+      }));
+    }
+    // update state with fetched cart data
+  } 
+}
+```
+
+Now we just need to call `fetchCartData` somewhere in our application to fetch the data from our database
+`<App>` is probably the best place for this
+
+We already have a `useEffect` call and we want to call `fetchCartData` when the application loads 
+We could do that inside of the `isInitial` check but it is better and cleaner code to make a second `useEffect` call with an empty dependency array so that it will only run once
+```js
+import { useEffect, Fragment } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { sendCartData, fetchCartData } from './store/cart-actions';
+
+import Cart from './components/Cart/Cart';
+import Notification from './components/UI/Notification';
+import Layout from './components/Layout/Layout';
+import Products from './components/Shop/Products';
+
+let isInitial = true;
+
+function App() {
+  const dispatch = useDispatch();
+  const showCart = useSelector((state) => state.ui.cartIsVisible)
+  const cartData = useSelector((state) => state.cart)
+  const notification = useSelector((state) => state.ui.notification)
+
+  useEffect(() => { 
+    dispatch(fetchCartData());
+  }, []);
+
+  useEffect(() => {
+    if(isInitial){
+      isInitial = false;
+      return;
+    }
+
+    dispatch(sendCartData(cartData))
+
+  }, [cartData, dispatch])
+  
+
+  return (
+    <Fragment>
+      {notification && <Notification status={notification.status} title={notification.title} message={notification.message}/>}
+      <Layout>
+        {showCart && <Cart />}
+        <Products />
+      </Layout>
+    </Fragment>
+    
+  );
+}
+
+export default App;
+```
+
+Now if we save and reload we can add items to the cart and then reload and they will still be there since we are fetching them from firebase
+
+We do have one error and that we get the "Sent cart data successfully" notification even though we shouldn't be
+This is because in `<App>` we have a `useEffect` call that executes whenever the cart data changes
+Then when the page loads cart is very briefly initially set as empty but the the fetch request happens and updates the cart
+This causes an update to the cart which triggers that second `useEffect` call that sends cart data
+So as soon as we are retrieving the data we are sending the data right back immediately afterwords
+We will prevent this in the next lesson
