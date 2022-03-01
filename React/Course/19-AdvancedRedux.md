@@ -1231,3 +1231,222 @@ Now if we reload we don't see the notification until we add items to the cart
 
 Lets test the error state by breaking the url
 If you remove `'.json' from the end of the fetch url and try to add something to the cart you should get an error
+
+
+
+
+___
+## 260. Using an Action Creator Thunk
+Before we fetch data we will see the alternative approach
+Currently we are putting our side effect logic inside of the component
+The other approach is to use an action creator 
+We have actually used this already but we didn't realize it
+When we call `uiActions.showNotification` and pass in the object that is an action creator
+We get action creators automatically from redux toolkit and we call them to create action objects
+We can also write our own action creator to make a "thunk"
+
+What is a thunk?
+A thunk is a function that delays an action until after another action has finished
+We could write an action creator as a thunk this would make it so that it doesn't immediately return the action object but instead returns another function which will EVENTUALLY return the action
+This allows us to run other code before returning the actual action object that we want to create
+
+Let's see how to implement this
+We will move hte code for sending the cart data out of the component and into an action creator
+We will do this within 'cart-slice'
+To make a new action creator we can go to the end of our file (or outside of the slice) and write a new function
+Normally we would return an object like this which would be the action object
+```js
+const sendCartData = (cartData) => { 
+  return { type: '', payload:{}}
+}
+```
+Redux toolkit will create these actions for us whenever we dispatch actions automatically so we don't usually have to do this
+However instead of returning an object we can return a function instead 
+Then that function can run and do whatever it needs to do (even async tasks) and it will return the action object when it is complete
+This function will receive dispatch as an argument so it can dispatch the object that it has created using an action 
+The important part is before we call dispatch we want to construct the object using the function
+```js
+const sendCartData = (cartData) => { 
+  return (dispatch) => {
+    // do async stuff and construct object
+    dispatch()
+  }
+}
+```
+It is ok to do this because we are not yet running the async code in a reducer because dispatch has not been hit yet
+For example we can go to the `<App>` component and grab the first dispatch action before we start submitting the data and use it as the dispatch call in our new `sendCartData`
+```js
+const sendCartData = (cartData) => { 
+  return (dispatch) => {
+    // do async stuff and construct object
+    dispatch(uiActions.showNotification({ // NOTE: IMPORT uiActions
+      status: 'pending',
+      title: 'Sending...',
+      message: 'Sending cart data!'
+    }))
+  }
+}
+```
+
+Now we can dispatch this action from inside this `sendCartData`
+
+Next we want to grab all the code for handling the submission and response
+Note that we CAN make this returned function an async function
+```js
+const sendCartData = (cartData) => { 
+  return (dispatch) => {
+    // do async stuff and construct object
+    dispatch(
+      uiActions.showNotification({
+        status: 'pending',
+        title: 'Sending...',
+        message: 'Sending cart data!'
+      })
+    );
+    
+    const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json', {
+      method: 'PUT',
+      body: JSON.stringify(cartData)
+    });
+
+    if (!response.ok) {
+      throw new Error('Sending Cart Data Failed');
+    }
+  }
+}
+```
+
+Then we just need the final dispatch action 
+```js
+const sendCartData = (cartData) => { 
+  return async (dispatch) => {
+    // do async stuff and construct object
+    dispatch(
+      uiActions.showNotification({
+        status: 'pending',
+        title: 'Sending...',
+        message: 'Sending cart data!'
+      })
+    );
+
+    const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json', {
+      method: 'PUT',
+      body: JSON.stringify(cartData)
+    });
+
+    if (!response.ok) {
+      throw new Error('Sending Cart Data Failed');
+    }
+
+    dispatch(
+      uiActions.showNotification({
+        status: 'success',
+        title: 'Success!',
+        message: 'Sent cart data successfully!'
+      })
+    );
+  }
+}
+```
+
+We do have to be able to handle the response and any erros it might throw though so we will add the fetch/response actions to an async method
+Then we can call this method and wrap it in try/catch to handle errors
+If it succeeds we will run the dispatch action with the success object
+If it fails we will do the dispatch with the error
+```js
+const sendCartData = (cartData) => { 
+  return async (dispatch) => {
+    // do async stuff and construct object
+    dispatch(
+      uiActions.showNotification({
+        status: 'pending',
+        title: 'Sending...',
+        message: 'Sending cart data!'
+      })
+    );
+
+    const sendRequest = async () => {
+      const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json', {
+        method: 'PUT',
+        body: JSON.stringify(cartData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Sending Cart Data Failed');
+      }
+    }
+
+    try {
+      await sendRequest();
+      dispatch(
+        uiActions.showNotification({
+          status: 'success',
+          title: 'Success!',
+          message: 'Sent cart data successfully!'
+        })
+      );
+    } catch (error) {
+      dispatch(uiActions.showNotification({
+        status: 'error',
+        title: 'Error!',
+        message: 'Sending cart data failed!'
+      }));
+    }
+  }
+}
+```
+
+So what are we doing?
+We are making a function that when called will immediately returns an async function
+In that function we dispatch a notification action, create a new function which is called and it will dispatch an action if it succeeds or fails
+
+So how do we call this function and where?
+To start we will clean up the `<App>` component since we just moved all of the functionality
+We will keep the `useEffect` call but it will only do the check of `isInitial` and set it to false if it is
+```js
+ useEffect(() => {
+    if(isInitial){
+      isInitial = false;
+      return;
+    }
+  }, [cartData, dispatch])
+```
+
+Now we will do something different we will want to use this `sendCartData` as an action creator
+We do this by still calling dispatch but instead of passing an object we pass this function in
+Be sure to export it within cart-slice first
+```js
+export const sendCartData = (cartData) => { 
+  ...
+```
+
+Then import and call it within `<App>` (we no longer need `uiActions`)
+```js
+import { useEffect, Fragment } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { sendCartData } from './store/cart-slice';
+```
+
+```js
+useEffect(() => {
+  if(isInitial){
+    isInitial = false;
+    return;
+  }
+
+  dispatch(sendCartData(cartData))
+
+}, [cartData, dispatch])
+```
+
+This looks weird because we haven't done this before and have only passed in action objects
+The cool thing is that redux is prepared to receive a function as an action object instead
+In the case that this happens redux will execute that function and expect you to dispatch within that executed function
+
+Now when we dispatch redux will execute the function we passed and perform any async actions we need
+
+If we save and reload we should have the same functionality and firebase should be receiving updates
+
+Remember doing it the way we did before is perfectly fine and we can keep this logic in our components
+This is just another way to do it and allows us to split our code
+Either option is completely fine though
