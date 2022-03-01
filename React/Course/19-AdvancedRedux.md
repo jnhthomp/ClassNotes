@@ -1746,3 +1746,102 @@ Then when the page loads cart is very briefly initially set as empty but the the
 This causes an update to the cart which triggers that second `useEffect` call that sends cart data
 So as soon as we are retrieving the data we are sending the data right back immediately afterwords
 We will prevent this in the next lesson
+
+
+
+
+___
+## 262. Finalizing the Fetching Logic
+Now we have some fixes we need to apply to our fetching logic
+Currently we are resending the card as soon as the application loads
+One solution is to go to our cart slice and add a `changed` property which is set to false initially
+Then we don't change that value if we replace the cart but we do if we add or remove from the cart
+Then within our `useEffect` function we can check if this value is true and only then should we dispatch the `sendCartData` action creator
+```js
+import { createSlice } from "@reduxjs/toolkit";
+
+const cartSlice = createSlice({
+  name: 'cart',
+  initialState: {
+    items: [],
+    totalQuantity: 0,
+    changed: false
+  },
+  reducers:{
+    replaceCart(state, action) {
+      state.items = action.payload.items || [];
+      state.totalQuantity = action.payload.totalQuantity || 0;
+    },
+    addItemToCart(state, action) {
+      const newItem = action.payload;
+      const existingItem = state.items.find(item => item.id === newItem.id)
+      state.totalQuantity++;
+      state.changed = true;
+      if (!existingItem) {
+        state.items.push({
+          id: newItem.id,
+          name: newItem.title,
+          price: newItem.price,
+          quantity: 1,
+          totalPrice: newItem.price,
+        });
+      } else {
+        existingItem.quantity++;
+        existingItem.totalPrice = existingItem.totalPrice + existingItem.price
+      }
+    },
+    removeItemFromCart(state, action){
+      const id = action.payload;
+      const existingItem = state.items.find((item) => item.id === id);
+      state.totalQuantity--;
+      state.changed = true;
+      if(existingItem.quantity === 1){
+        state.items = state.items.filter((item)=> item.id !== id)
+      } else {
+        existingItem.quantity--;
+        existingItem.totalPrice = existingItem.totalPrice - existingItem.price;
+      }
+    }
+  }
+})
+
+export const cartActions = cartSlice.actions;
+export default cartSlice.reducer;
+```
+
+Now if we reload we are not sending the cart data when the page is loaded
+This property will be saved to firebase which we can avoid by going to our `sendRequst` and creating a new object that doesn't include that changed property
+```js
+export const sendCartData = (cartData) => {
+  return async (dispatch) => {
+    // do async stuff and construct object
+    dispatch(
+      uiActions.showNotification({
+        status: 'pending',
+        title: 'Sending...',
+        message: 'Sending cart data!'
+      })
+    );
+
+    const sendRequest = async () => {
+      const response = await fetch('https://redux-http-default-rtdb.firebaseio.com/cart.json', {
+        method: 'PUT',
+        body: JSON.stringify({items: cartData.items, totalQuantity: cartData.totalQuantity})
+      });
+      ...
+```
+
+Now it syncs to firebase and doesn't include this unnecessary value in the db
+
+At this point max points out a bug that you may have if you did the `replaceCart` reducer function incorrectly
+If there is no items in the items array there is no items key in firebase anymore
+This makes items not an empty array but is instead undefined
+To solve this make sure that when you are replacing cart you  have an or case to use an empty array in case `cartData.items` is undefined
+```js
+replaceCart(state, action) {
+  state.items = action.payload.items || [];
+  state.totalQuantity = action.payload.totalQuantity || 0;
+},
+```
+Now items will never be undefined and will be an empty array if it is 
+We should be able to add items, remove them, and sync our cart with the backend with several different approaches
