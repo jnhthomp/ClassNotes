@@ -554,3 +554,9 @@ Due 2/29:
     mult(3, 5, 2) // => ZEBRA alert
     mult(2, 2, 2) // No alert
     ```
+
+Due: 3/8
+Watch: Fuck You Pay Me
+Do: Setup Your Portfolio
+Do: Setup Your Proposal & Contract
+Do: Pick A Vertical and Start Reaching Out
