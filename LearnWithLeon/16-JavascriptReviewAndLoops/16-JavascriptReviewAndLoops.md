@@ -1,6 +1,7 @@
 # Javascript - Review & Loops
 Slides: https://slides.com/leonnoel/100devs2-js-review-loops
 ___
+
 ## Agenda
 Questions? 
 Let's Talk -  Next Week
@@ -10,52 +11,61 @@ Review - Conditionals
 Review - Functions
 Learn - Loops
 Homework - Work During Break
+
 ## Questions
 About last class or life
+
 ## Checking In
 https://twitter.com/leonnoel/status/1499512575393820677
 Like and Retweet the Tweet
 !checkin
-## Submitting Work
 
- Share What JS You Added in codepen.io
+## Submitting Work
+Share What JS You Added in codepen.io
 Submit URLs here: https://forms.gle/G7LhHnyTA7zYq7UV6
 
 ## Thinking by Walter D Wintle
 https://allpoetry.com/poem/8624439-Thinking-by-Walter-D-Wintle
+
 ## Javascript Should NOT Make Sense YET
 ## You Should Still Struggle With CSS
 ## You Should Still Stumble Choosing HTML Tags
 ## THIS IS ALL NORMAL YOU CAN AND WILL DO THIS
+
 ## But What About Freelancing?
+How are you supposed to freelance if this doesn't make sense?
+When there is money and a client on the line you gone learn today
+
 ## I'm NOT GOING TO
 TEXT YOU, CALL YOU, EMAIL YOU OUTSIDE OF THE NEWSLETTER, DM YOU ON TWITTER OR DISCORD, Or EVER ASK YOU FOR MONEY!
+
 ## There Are No Other 100Devs Classes or Teachers 
 But We Have An Amazing Stream Team
 https://www.twitch.tv/thedabolical
 
 https://www.twitch.tv/oldcoderchick
 
- 
-
 And Amazing Folx on Discord
 
 Shout Out @Mayanwolfe
 
 30+ Alumni Mentors!
+
 ## Stream Team Assemble
-
 https://forms.gle/LcnfRn6NMJqbto6q6
-## Please Be Kind
-## Want to be fancy?
 
+## Please Be Kind
+
+## Want to be fancy?
 Best Clip Get's Special Color On Discord!
+
 ## The Winner Is: 
 Nikolaus#1985
 https://clips.twitch.tv/PhilanthropicFineCurryGingerPower-skaxA9MSCde-XOrU
 
 ## What's Next?
-## ## The Golden Rule SEPERATION OF CONCERNS (Review)
+
+## The Golden Rule SEPERATION OF CONCERNS (Review)
 SEPERATION OF CONCERNS
 HTML = Content / Structure
 CSS = Style
@@ -68,6 +78,7 @@ If you wanted something to move when you clicked it you would use js
 
 This is important so that it organizes all of the work so it is easier to work on or change something
 You know exactly where to go when you want to make a change
+
 ## IDs & Classes (Review)
 These are identifiers that allow you to target elements and give the highest specificity score to elements that are targetted by it
 
@@ -297,6 +308,67 @@ One good use of the modulus symbol is to determine if a number is even or odd
 
 ## Let's Code
 Variable Fun Time
+use 'class16-materials/variable-fun-time' and follow the instructions in the js file
+Give yourself 5 minutes and get through as many as you can
+```js
+//--- Easy
+//create a variable and assign it a number
+
+//minus 10 from that number
+
+//print that number to the console
+
+//--- Medium
+//create a variable that holds a value from the input
+
+//add 25 to that number
+
+//alert that number
+
+//--- Hard
+//create a variable that holds the h1
+
+
+//add an event listener to that element that console logs the sum of the two previous variables
+
+```
+
+For the solutions:
+easy:
+```js
+//--- Easy
+//create a variable and assign it a number
+let num = 5
+//minus 10 from that number
+num -= 10;
+//print that number to the console
+console.log(num);
+```
+
+medium:
+```js
+//--- Medium
+//create a variable that holds a value from the input
+let inputVal = document.getElementById('danceDanceRevolution').value;
+//add 25 to that number
+inputVal = +inputVal + 25 // convert inputVal to number with '+' in front
+//alert that number
+alert(inputVal);
+```
+
+hard:
+```js
+//--- Hard
+//create a variable that holds the h1
+const header = document.querySelector('h1');
+
+//add an event listener to that element that console logs the sum of the two previous variables
+header.addEventListener('click', () => console.log(+num + +inputVal));
+```
+Notice that there is an anonymous arrow function that runs console log
+That is because if you just put console log in with the arguments it will execute as soon as the page loads
+To prevent this we put it in a function and that function only runs when the element is clicked
+
 ## Making Decisions (Review)
 We can make decisions based on whether something is either TRUE or FALSE 
 If you are greater than 18 you are an adult
@@ -426,11 +498,76 @@ if (day === "Saturday" || day === "Sunday"){
 ```
 ## Let's Code
 Age Checker
+This is in 'class16-materials/age-checker'
+```js
+//Create a conditonal that checks their age
+//If under 16, tell them they can not drive
+//If under 18, tell them they can't hate from outside the club, because they can't even get in
+//If under 21, tell them they can not drink
+//If under 25, tell them they can not rent cars affordably
+//If under 30, tell them they can not rent fancy cars affordably
+//If under over 30, tell them there is nothing left to look forward too
+
+
+//--- Harder
+//On click of the h1
+//Take the value from the input
+//Place the result of the conditional in the paragraph
+```
+Give yourself 5 minutes to complete the tasks
+There are a couple of ways to approach this, especially the 'harder' part
+```js
+function checkAge(age){
+  let message
+  //Create a conditonal that checks their age
+  if (age < 16) {//If under 16, tell them they can not drive
+    message  = 'You cannot drive'
+    console.log(message);
+    return message;
+  } else if (age < 18) { //If under 18, tell them they can't hate from outside the club, because they can't even get in
+    message = 'You can\'t hate from outside the club, you can\'t even get in';
+    console.log(message);
+    return message;
+  } else if (age < 21) { //If under 21, tell them they can not drink
+    message = 'You cannot drink';
+    console.log(message);
+    return message;
+  } else if (age < 25) { //If under 25, tell them they can not rent cars affordably
+    message = 'You cannot rent cars affordable';
+    console.log(message);
+    return message;
+  } else if (age < 30) { //If under 30, tell them they can not rent fancy cars affordably
+    message = 'You cannot rent fancy cars affordably';
+    console.log(message);
+    return message;
+  } else { //If under over 30, tell them there is nothing left to look forward too
+    message = 'There is nothing left to look forward to';
+    console.log(message);
+    return message;
+  }
+}
+
+
+
+
+//--- Harder
+//On click of the h1
+//Take the value from the input
+//Place the result of the conditional in the paragraph
+document.querySelector('h1').addEventListener('click', runCheckAge);
+
+function runCheckAge() {
+  inputVal = document.getElementById('danceDanceRevolution').value
+  document.querySelector('p').innerText = checkAge(+inputVal);
+}
+```
+
 ## In Chat: (Review)
 What is the best TV show of all time?
 
 ## Answer: (Review)
 The Bachelor
+
 ## Functions
 What are functions?
 
@@ -470,6 +607,65 @@ Now when the alert is trigger it will show the `"HELLO"` that was passed in
 
 ## Let's Code
 Simple Functions
+see 'class16-materials/simple-functions'
+Give yourself 5 minutes
+```js
+//---Easy
+//create a function that subtracts two numbers and alerts the difference
+
+//create a function that divides three numbers and console logs the quotient
+
+//create a function that multiplys three numbers and returns the product
+
+//---Medium
+//create a function that takes in three numbers. Add the first two numbers and return the remainder of dividing the sum of the first two numbers by the third number
+
+//---Hard
+//create a function that takes in 4 numbers. Multiply the first two numbers. If the product is greater than 100 add the sum of the last two numbers and console log the value. If the product is less that 100, subtract the difference of the last two numbers and console log the value. If the product is 100, multiply the first three numbers together and alert the remainder of dividing the fourth number
+```
+Solution:
+```js
+//---Easy
+//create a function that subtracts two numbers and alerts the difference
+const subtract = (a, b) => { alert(a - b) }
+// subtract(50, 30); // alerts 20
+// subtract(100,33); // alerts 67
+
+//create a function that divides three numbers and console logs the quotient
+const div = (a, b, c) => { console.log(a/b/c) }
+// div(12, 4, 3) // logs=>1
+
+
+//create a function that multiplys three numbers and returns the product
+const mult = (a, b, c) => a * b * c
+// console.log(mult(5, 10, 2)); //=>100
+
+//---Medium
+//create a function that takes in three numbers. 
+//Add the first two numbers and return 
+// the remainder of dividing the sum of the first two numbers by the third number
+const med = (a, b, c) => ((a + b) % c)
+console.log(med(5, 2, 3)) //=> 1
+
+//---Hard
+//create a function that takes in 4 numbers. 
+// Multiply the first two numbers. 
+// If the product is greater than 100 add the sum of the last two numbers 
+//and console log the value. If the product is less that 100, 
+//subtract the difference of the last two numbers and console log the value. 
+//If the product is 100, multiply the first three numbers together 
+// and alert the remainder of dividing the fourth number
+const hard = (a, b, c, d) => { 
+  if((a * b) > 100){
+    console.log((a * b) + c + d)
+  } else if ((a * b) < 100){
+    console.log(c -d);
+  } else if ((a * b) === 100){
+    alert((a * b * c)% d);
+  }
+}
+```
+
 ## Loops
 What are loops?
 - Repeat an action some number of times!
@@ -480,19 +676,57 @@ What are loops?
 ## Loops - For
 ```js
 for ([initialExpression]; [conditionExpression]; [incrementExpression]){
-  
   //do stuff 
-  
 }
 ```
+Iniitial expression: Where does the loop start?
+Condition expression: Where does the loop stop?
+Increment expression: How does the loop change?
+
 ```js
 for (let i = 1; i < 5; i++) {
   console.log(i)
 }
 ```
+In the above loop we are creating a variable and setting it to 1
+Then as long as that variable is less than 5 we do stuff in the block (log the variable)
+After that value is logged increase it by 1
+This will cause it to print the number 1, 2, 3, 4
+
+Because the first time we start this loop i is one
+Since 1 is less than 5 the value is logged
+Then the value is increased by 1 to 2
+Now since 2 is less than 5 the value is logged
+Then the value is increased by 1 to 3 etc...
+
 ## Let's Code
 21 Savage Loop
+
+See 'class16-materials/sir-savage-the-21st'
+Give yourself 2 minutes
+```js
+//Create a function that has a loop that prints '21' 21 times to the console and then call that function
+//Bonus can you make it print '21' 21 times to the dom?
+```
+
+Solution:
+```js
+//Create a function that has a loop that prints '21' 21 times to the console and then call that function
+//Bonus can you make it print '21' 21 times to the dom?
+const savage = () => { 
+  for(let i = 1; i <= 21; i++){
+    console.log(21)
+    document.getElementById('savageSays').innerHTML += '21';
+  }
+}
+savage();
+```
+
 ## Loops - While
+There are other types of loops
+Don't worry about it too much, just know they exist
+We will practice them more later
+
 ```js
 let count = 0 
 
@@ -501,12 +735,182 @@ while(count < 5){
   count++
 }
 ```
+Be careful with these as they are easier to get stuck in an infinite loop
+
 ## Let's Code
 Stop Night Snacking
+
+See 'class16-materials/stop-snacking'
+```js
+//Create a function that grabs the number of snacks from the input
+// and tells you to stop that many times
+```
+```js
+//Create a function that grabs the number of snacks from the input
+// and tells you to stop that many times
+const stopSnack = () => { 
+  let num = Number(document.querySelector('input').value)
+  document.getElementById('stops').innerText = ''; // clear prev stop msg
+  for(let i = 1; i <= num; i++){
+    document.getElementById('stops').innerText += ' STOP!';
+  }
+}
+
+document.getElementById('help').addEventListener('click', stopSnack);
+```
+
 ## Let's Code
 Bring It On!
+
+See 'class16-materials/bring-it-on'
+Give yourself 5 minutes and try to get as much done as you can
+```js
+// Create a variable and console log the value
+
+// Create a variable, add 10 to it, and alert the value
+
+
+// *Functions*
+// Create a function that subtracts 4 numbers and alerts the difference
+
+// Create a function that divides one number by another 
+// and returns the remainder
+
+// *Conditionals*
+// Create a function that adds two numbers and 
+// if the sum is greater than 50 alert Jumanji
+
+// Create a function that multiplys three numbers and 
+// if the product is divisible by 3 alert ZEBRA
+
+
+//*Loops*
+//Create a function that takes in a word and a number. 
+//Console log the word x times where x was the number passed in
+
+```
+
+Solutions:
+```js
+// *Variables*
+// Create a variable and console log the value
+let num = 5;
+console.log(num);
+// Create a variable, add 10 to it, and alert the value
+let num2 = 10;
+alert(num += 10);
+
+// *Functions*
+// Create a function that subtracts 4 numbers and alerts the difference
+const sub4nums = (a, b, c, d) => { alert(a - b - c - d) }
+// Create a function that divides one number by another 
+// and returns the remainder
+const findRemainder = (a, b) => a % b
+// *Conditionals*
+// Create a function that adds two numbers and 
+// if the sum is greater than 50 alert Jumanji
+const add2nums = (a, b) => { 
+  if(a + b > 50){
+    alert(jumanji)
+  }
+}  
+// Create a function that multiplys three numbers and 
+// if the product is divisible by 3 alert ZEBRA
+const mult3nums = (a, b, c) => { 
+  if(a * b * c % 3 === 0){
+    alert('ZEBRA');
+  }
+}
+
+//*Loops*
+//Create a function that takes in a word and a number. 
+//Console log the word x times where x was the number passed in
+const wordAndNum = (word, num) => { 
+  for(let i = 1; i <= num; i++){
+    console.log(word);
+  }
+}
+```
+
 ## Let's Code
 Bring It On Again!
+See 'class16-materials/bring-it-on-again'
+
+Give yourself 5 minutes and try to get as much done as you can
+```js
+// *Variables*
+// Declare a variable, assign it a value, and alert the value
+
+// Create a variable, divide it by 10, and console log the value
+
+// *Functions*
+// Create a function that multiplys 3 numbers and alerts the product
+
+// Create a function that takes in 4 numbers. Add the first two numbers and subtract the next two. Console log the result
+
+// *Conditionals*
+// Create a function that takes in 3 numbers. Starting with 100 add the first number, subtract the second, and divide the third. If the value is greater then 25, console log "WE HAVE A WINNNA"
+
+// Create a function that takes in a day of the week. If it is a weekend alert, "weekend" and if not alert "week day". Handle capitilization and if the user does not enter a day of the week alert "Try again!"
+
+//*Loops*
+//Create a function that takes in a number. Console log all values from 1 to that number or greater, but count by 3
+
+```
+```js
+// *Variables*
+// Declare a variable, assign it a value, and alert the value
+let num = 5
+alert(num);
+
+// Create a variable, divide it by 10, and console log the value
+let num2 = 100
+console.log(num2/10);
+
+// *Functions*
+// Create a function that multiplys 3 numbers and alerts the product
+const mult = (a, b, c) => { alert(a * b * c) }
+
+// Create a function that takes in 4 numbers. 
+// Add the first two numbers and subtract the next two. 
+// Console log the result
+const take4num = (a, b, c, d) => { console.log((a + b) -c - d) }
+
+// *Conditionals*
+// Create a function that takes in 3 numbers. 
+// Starting with 100 add the first number, subtract the second, 
+// and divide the third. 
+// If the value is greater then 25, console log "WE HAVE A WINNNA"
+const takes3num = (a, b, c) => { 
+  let result = ((100 + a - b) / c);
+  if(result > 25){
+    console.log('WE HAVE A WINNA');
+  }  
+}
+
+// Create a function that takes in a day of the week. 
+// If it is a weekend alert, "weekend" and if not alert "week day". 
+// Handle capitilization 
+// and if the user does not enter a day of the week alert "Try again!"
+const takeDOTW = (day) => { 
+  if(day.toLowerCase === 'saturday' || day.toLowerCase === 'sunday'){
+    alert('weekend');
+  } else if (day.toLowerCase === 'monday' || day.toLowerCase === 'tuesday' || day.toLowerCase === 'wednesday' || day.toLowerCase === 'thursday' || day.toLowerCase === 'friday'){
+    alert('weekday');
+  } else {
+    alert('try again');
+  }
+}
+
+//*Loops*
+//Create a function that takes in a number. 
+// Console log all values from 1 to that number or greater, but count by 3
+const takeNum = (num) => { 
+  for(let i = 1; i <= num; i + 3){
+    console.log(i);
+  }
+}
+```
 ## Homework
 On Discord, you have more than a week!
 Homework (Due Tuesday - Mar. 15th):
