@@ -21,24 +21,30 @@ Like and Retweet the Tweet
 !checkin
 
 ## Want to be fancy?
-Best Clip Get's Special Color On Discord!
+Best Clip Get's Special Color On Discord! 
 
 ## Submitting Work
-
 I WANT IT
 Homework: https://forms.gle/PLuuSi7aHeL7wbMQ9
 
 ## Networking
-
 3 Individuals Already In Tech
 2 Coffee Chats
 
 ## USE THE SHEET!
-
 Networking Google Sheet
+
 ## Coding Challenges
 Daily
 Codewars 8kyu Fundamentals
+No harder than level 8 fundamentals
+There is also a 100Devs clan on codewars
+!clan in chat
+#100Devs - leonnoel.com/twitch
+
+If you can't figure it out just look at the solution and see if you can make it make sense
+Once you have done a few you will start to realize ones that you may have an idea how to do if you put time into it
+Don't spend more than 20 minutes on a coding challenge for now
 
 ## Paid Client
 Due by Mar. 31st
@@ -314,147 +320,337 @@ Be careful with these as they are easier to get stuck in an infinite loop
 
 ## Let's Code
 Bring It On - All Or Nothing!
+see 'class19-materials/bring-it-on-all-or-nothing'
+In index.js follow the instructions in 5 minutes
+```js
+// *Variables*
+// Declare a variable, assign it a boolean, and alert the value
+
+
+// Declare a variable, reassign it to your favorite color, and console log the value
+
+
+// *Functions*
+// Create a function that takes in 4 numbers and returns the sum of the first 3 numbers divided by the fourth. Return the result. Call the function.
+
+
+// Create a function that takes in 2 numbers. Console log the first number to the power of the second. Call the function.
+
+
+// *Conditionals*
+// Create a function that takes in a boolean and a string. If the boolean is true, alert the string. If the boolean is false, console log the string
+
+
+//*Loops*
+//Create a function that takes in a number. Console log all values from 1 to that number, but if the number is divisible by 3 log "fizz" instead of that number, if the number is divisible by 5 log "buzz" instead of the number, and if the number is divisible by 3 and 5 log "fizzbuzz" instead of that number
+
+```
+Solution:
+```js
+// *Variables*
+// Declare a variable, assign it a boolean, and alert the value
+let bool = true;
+alert(bool);
+
+// Declare a variable, reassign it to your favorite color, and console log the value
+let favColor
+favColor = 'black';
+console.log(favColor);
+
+
+// *Functions*
+// Create a function that takes in 4 numbers and returns the sum of the first 3 numbers 
+// divided by the fourth. Return the result. Call the function.
+const doesMath = (a, b, c, d) => {
+  return (a + b + c) / d;
+}
+
+doesMath(1, 1, 2, 4);
+
+// Create a function that takes in 2 numbers. 
+// Console log the first number to the power of the second. Call the function.
+const doesExp = (a, b) => {
+  console.log(a**b);
+}
+
+doesExp(2, 2);
+
+// *Conditionals*
+// Create a function that takes in a boolean and a string. 
+// If the boolean is true, alert the string. 
+// If the boolean is false, console log the string
+const boolAndString = (bool, str) => {
+  if(bool){
+    alert(str);
+  } else{
+    console.log(str);
+  }
+}
+// Oneline version
+const oneLine = (bool, str) => bool ? alert(str) : console.log(str);
+
+//*Loops*
+//Create a function that takes in a number. 
+// Console log all values from 1 to that number, 
+// but if the number is divisible by 3 log "fizz" instead of that number, 
+// if the number is divisible by 5 log "buzz" instead of the number, 
+// and if the number is divisible by 3 and 5 log "fizzbuzz" instead of that number
+const takesNum = (a) => {
+  for(let i = 1; i <= a; i++){
+    if((i % 3=== 0) && (i % 5 === 0)){
+      console.log('fizzbuzz');
+    } else if(i % 3 === 0){
+      console.log('fizz')
+    } else if(i % 5 === 0){
+      console.log('buzz')
+    } else {
+      console.log(i);
+    }
+  }
+}
+```
 
 ## Arrays
 What are arrays?
 
 ## Toasters
+Think of arrays as toasters
+They have slots that you fill with different data or can be empty
+It is a single thing that can hold a lot of other stuff
+A single data type that can hold other data and data types inside
+Arrays are as big (or small) as you need them to be
+An array with 4 items will have a lenth of 4 and an array with 400 items will have a length of 400
+
 ## Arrays
 - A data structure to store ordered collections!
 - Array elements are numbered starting with zero
+  - Each item in the array is a new element and gets an indx
+  - What can confuse people is that the first number that is used to identify the first element gets an id of 0 instead of 1
+  - Why? Don't worry about it right now just know that this is how it works
+  - `[0, 1, 2, 3, 4...]`
 - Arrays have many methods to manage the order of elements
 - Can be created by a constructor or literal notation
 
+There are a couple of gotchas with arrays
+Each item in the array is a new element
+What can confuse people is that the number for each element
+
 ## Declaring Arrays
+There are a few different ways to declare arrays
+Array Constructor:
 ```js
 let newArr = new Array()
 ```
-Array Constructor
+Don't worry about this way too much, it isn't as common
 
-## Declaring Arrays
+Literal Notation
 ```js
 let newArr = []
 ```
-Literal Notation
+This is how you LITERALLLY create an array
+You just have to assign a variable to square brackets
 
-## Declaring Arrays
+Instead of having an empty array we can add values to it when we declare it
+They can hold ANY data type that we have used so far
 ```js
-newArr = ['Zebra',true,21]
+let newArr = ['Zebra', true, 21]
 ```
+
+REMEMBER
 Arrays are populated with elements
 Elements can be of any type
 
-## Declaring Arrays
+🚨 WARNING 🚨
 🚨Empty spaces leave an empty element 🚨
 
 ## Array Indexing
+See this array and note the index number for each element written below
+```js
+['nyc', 'la', 'syd', 'ldn']
+// 0,    1,     2,     3
+``` 
+
+Elements can be accessed by their index numbers
 ```js
 newArr = ['Zebra',,true,21]
 
 console.log( newArr[0] )  //Zebra
-console.log( newArr[1] )  //undefined
+console.log( newArr[1] )  //undefined (see empty space in array)
 console.log( newArr[2] )  //true
 console.log( newArr[3] )  //21
 ```
-Elements can be accessed by their index numbers
+Notice that the first element is at the 0th index and so on
 
-## Array Indexing
+Elements can be updated by using the index at that position
 ```js
 newArr = ['Zebra',,true,21]
 
 newArr[1] = 'Bob'
 
-console.log( newArr )  
-
-// ['Zebra','Bob',true,21]
-
+console.log( newArr ) //=> ['Zebra','Bob',true,21]
 ```
-Elements can be updated by using the index at that position
 
-## Array Indexing
+Like any other variable you can overwrite whole arrays by assigning an array to a different array
 ```js
 let cars = ['Honda', 'Toyota', 'Ford', 'Tesla']
 let nums = [1,2,3]
 cars = nums
-console.log( cars ) //[1,2,3]
+console.log( cars ) //=> [1,2,3]
 ```
-You can overwrite whole arrays by assigning an array to a different array
 
 ## Array Length
+How do you determine how many elements are in your array?
+Arrays come with some goodies and functions built in
+One of them is the length property
 ```js
 console.log( newArr.length ) //4
 ```
-How do you determine how many elements are in your array?
 
 ## Let's Code
 Array Dat - In It To Win It
+see 'class19-materials/arrays-in-it-to-win-it'
+```js
+//Create an array of movies with at least three movies.
+
+//Using the array from above, store the first movie in a variable
+
+//Get the length of the original array and store it in a new variable
+
+//Get the last element in that array and store it in a new variable. What if your array was really large and you didn't know the last index? Would your solution still work?
+```
+
+Solution:
+```js
+//Create an array of movies with at least three movies.
+let movies = ['Shrek','Shrek 2','Shrek 3'];
+//Using the array from above, store the first movie in a variable
+let firstMovie = movies[0]
+//Get the length of the original array and store it in a new variable
+let moviesLength = movies.length // => 3
+//Get the last element in that array and store it in a new variable. 
+// What if your array was really large and you didn't know the last index? 
+// Would your solution still work?
+let lastMovie = movies[moviesLength - 1]; //=> 'Shrek 3'
+```
+Note that by using the length of the array and subtracting 1 we are getting the last index since counting starts at 0
+Even though the index starts at 0 the count for length still starts at 1
+So we have to subtract 1 to line these two values up 
 
 ## Array Iteration
+
+We can go through an array and pull values out by using a for loop
 ```js
 let bestColors = ['green','blue','yellow','black']
-
+// Iterates through an array passing in the value and index of each element 
 for(let i = 0; i < bestColors.length;i++){
   console.log( bestColors[i] )
 }
 ```
-Iterates through an array passing in the value and index of each element 
+Above we create an array
+Then we do a for loop that runs as many times as there are elements in the array
+Then for each iteration (starting at 0) it logs the value at that index
 
-## Array Iteration
+Since this is so common we can do this much more directly instead of having to use the iterator to match an index
 ```js
 let bestColors = ['green','blue','yellow','black']
-
-bestColors.forEach((x,i)=> console.log(x))
+// Iterates through an array passing in the value and index of each element 
+bestColors.forEach((element, index, array)=> console.log(element))
+//=>'green'
+//=>'blue'
+//=>'yellow'
+//=>'black'
 ```
-Iterates through an array passing in the value and index of each element 
+`forEach` is a function that can be run on arrays
+It will do whatever function we pass in as an argument for every element in the array
+This function has access to several variables 
+One of which is the current element in the loop
 
 ## Let's Code
 Array Dat - Fight To The Finish
+see 'class19-materials/arrays-fight-to-the-finish'
+Try to finish in 5 minutes
+```js
+// Create an array of movie titles. 
+// Loop through the array and add each element to the h2.
+
+//Create an array of numbers. 
+// Loop through the array and add three to each number and replace the old number.
+
+//Find the average of all the numbers from question three
+```
+
+Solution:
+```js
+// Create an array of movie titles. 
+let movies = ['Shrek 1', 'Shrek 2', 'Shrek 3'];
+// Loop through the array and add each element to the h2.
+movies.forEach((el) => { 
+  document.querySelector('h2').innerHTML += (el + ' ');
+})
+
+//Create an array of numbers. 
+let nums = [1, 2, 3]
+// Loop through the array 
+// and add three to each number and replace the old number.
+nums.forEach((el, i) => { 
+  nums[i] += 3;
+})
+
+console.log(nums);
+
+//Find the average of all the numbers from question three
+let sum = 0
+nums.forEach((el) => { 
+  sum += el
+})
+let avg = (sum / nums.length);
+console.log(avg);
+```
+
+___
+Class ends here
 
 ## Other Arrays Methods
+There are other methods available to arrays besides `forEach`
+
+`.shift()`: Remove item from the beginning of an Array
 ```js
 let bestRappers2020 = ['6ix9ine','Polo G','6ix9ine']
 
 let removed = bestRappers2020.shift()
 
 console.log( bestRappers2020 ) // ['Polo G', '6ix9ine']
-
 ```
-Remove item from the beginning of an Array
 
-## Other Arrays Methods
+`.pop()`: Remove item from the end of an Array
 ```js
 let bestRappers2020 = ['Polo G','6ix9ine']
 
 let removedAgain = bestRappers2020.pop()
 
 console.log( bestRappers2020 ) // ['Polo G']
-
 ```
-Remove item from the end of an Array
 
-## Other Arrays Methods
+`unshift()`: Add item to the beginning of an Array
 ```js
 let bestRappers2020 = ['Polo G']
 
 let removed = bestRappers2020.unshift('Dylan')
 
 console.log( bestRappers2020 ) // ['Dylan','Polo G']
-
 ```
-Add item to the beginning of an Array
 
-## Other Arrays Methods
+
+`push()`: Add item to the end of an Array 
 ```js
 let bestRappers2020 = ['Dylan','Polo G']
 
 let removed = bestRappers2020.push('Dylan')
 
 console.log( bestRappers2020 ) // ['Dylan','Polo G','Dylan']
-
 ```
-Add item to the end of an Array 
 
-## Other Arrays Methods
+`.map()`: Change the value of each element in the array
 ```js
 let bestRappers2020 = ['Dylan','Polo G','Dylan']
 
@@ -467,7 +663,6 @@ bestRappersAllTime.push('Dylan')
 console.log( bestRappersAllTime ) 
 
 // ['Dylan','Dylan','Dylan', 'Dylan', 'Dylan']
-
 ```
 
 ## Let's Code
