@@ -1,4 +1,56 @@
 3/16/2022
+```js
+// Story (7kyu)
+//  Ben has a very simple idea to make some profit: 
+// he buys something and sells it again. 
+// Of course, this wouldn't give him any profit at all if he was simply to buy and sell it at the same price. 
+// Instead, he's going to buy it for the lowest possible price and sell it at the highest.
+
+// Task
+// Write a function that returns both the minimum and maximum number of the given list/array.
+
+// Examples
+console.log(minMax([1, 2, 3, 4, 5]))   //== [1,5]
+console.log(minMax([2334454, 5]))   //== [5, 2334454]
+console.log(minMax([1]))           //== [1, 1]
+// Remarks
+// All arrays or lists will always have at least one element, so you don't need to check the length. 
+// Also, your function will always get an array or a list, you don't have to check for null, undefined or similar.
+
+function minMax(arr){
+  // Initial values for low and high numbers we will return
+  let low = arr[0]
+  let high = arr[0]
+
+  // Loop through each element in the array
+  arr.forEach((el, i) => { 
+    // If the current element is lower value than the current low value then replace it
+    if (el < low){
+      low = el
+    }
+    // If the current element is higher value than the current high value then replace it
+    if (el > high){
+      high = el
+    }
+  })
+
+  // Return low and high values
+  return [low, high];
+}
+
+// Another answer I liked:
+function minMaxV2(arr) {
+  // Utilizes Math.min/max functions which take a list of numbers as an argument
+  // Then uses spread operator to fill arguments with all the values in the array
+  return [Math.min(...arr), Math.max(...arr)];
+}
+
+// Examples
+console.log(minMaxV2([1, 2, 3, 4, 5]))   //== [1,5]
+console.log(minMaxV2([2334454, 5]))   //== [5, 2334454]
+console.log(minMaxV2([1]))           //== [1, 1]
+```
+
 3/15/2022
 ```js
 // Summing a number's digits (7kyu)
