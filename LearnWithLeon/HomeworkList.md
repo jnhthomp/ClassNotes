@@ -394,16 +394,69 @@ function getAverageAge(arr) {
 // For instance:
 
 function unique(arr) {
-  /* your code */
-  let newArr = arr.filter((el, i, a) => )
+    /* your code */
+    let newArr = arr.filter((el, i, a) => a.indexOf(el) === i);
+    return newArr;
 }
+
 let strings = [
-  "Hare", "Krishna", "Hare", 
-  "Krishna", "Krishna", "Krishna", 
-  "Hare", "Hare", ":-O"
+    "Hare", "Krishna", "Hare", 
+    "Krishna", "Krishna", "Krishna", 
+    "Hare", "Hare", ":-O"
+];
+  
+alert(unique(strings)); // Hare, Krishna, :-O
+
+
+
+
+//_______________
+// Create keyed object from array
+// importance: 4
+// Let’s say we received an array of users in the form 
+//  {id:..., name:..., age:... }.
+
+// Create a function groupById(arr) that creates an object from it, 
+// with id as the key, and array items as values.
+// For example:
+
+let users = [
+  {id: 'john', name: "John Smith", age: 20},
+  {id: 'ann', name: "Ann Smith", age: 24},
+  {id: 'pete', name: "Pete Peterson", age: 31},
 ];
 
-alert(unique(strings)); // Hare, Krishna, :-O
+let usersById = groupById(users);
+console.log(usersById);
+/*
+// after the call we should have:
+
+usersById = {
+  john: {id: 'john', name: "John Smith", age: 20},
+  ann: {id: 'ann', name: "Ann Smith", age: 24},
+  pete: {id: 'pete', name: "Pete Peterson", age: 31},
+}
+*/
+// Such function is really handy when working with server data.
+
+// In this task we assume that id is unique. 
+// There may be no two array items with the same id.
+
+// Please use array .reduce method in the solution.
+
+function groupById(arr){
+    // Reduce current array to single object
+    let newObj = arr.reduce((acc, item) => {
+        // For each item in array create a new key named after the id
+        // add item data to that key
+        acc[item.id] = item;
+        // Return obj as is to continue iterating on it
+        return acc;
+    }, {})
+
+    // Return object derived from reducing array
+    return newObj;
+}
 ```
 Read: JSWay Objects (https://github.com/thejsway/thejsway/blob/master/manuscript/chapter06.md)
 Read: https://eloquentjavascript.net/04_data.html
