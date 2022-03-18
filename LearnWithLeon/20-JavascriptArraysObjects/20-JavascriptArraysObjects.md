@@ -19,6 +19,8 @@ Like and Retweet the Tweet
 !checkin
 
 ## Little bit more time
+There was supposed to be an announcement today but it will happen next Tuesday
+
 ## Want to be fancy?
 Best Clip Get's Special Color On Discord!
 
@@ -40,6 +42,9 @@ https://forms.gle/VkbSwgnyRo6VkTFL8
 
 ## TURN IT UP!
 ## Research
+We are going to pick up the pace a little bit so you may need to research on your own a little
+This is on purpose so you are comfortable with finding information yourself
+
 ## Trough Of Sorrow (Review)
 Why does not everyone do it?
 It takes a really long time
@@ -66,6 +71,8 @@ Don't get discouraged and don't set your hopes too high
 Right now it is about getting the tools we need to get to the point where we can apply
 
 ## Don't feel bad for being exactly where you should be...
+You should be in the trough of sorrow so don't feel bad if this is hard to grasp
+
 ## Programming (Review)
 ## A computer will do what you tell it to do. (Review)
 The key rule of programming is that a computer will do what you tell it to
@@ -320,6 +327,68 @@ Be careful with these as they are easier to get stuck in an infinite loop
 
 ## Let's Code
 Review - In Paradise
+See 'class20-materials/review-in-paradise'
+```js
+// *Variables*
+// Declare a variable, reassign it to your favorite food, 
+// and alert the value
+let favFood = 'Dominos';
+favFood = 'Yats';
+
+//Declare a variable, assign it a string, 
+// alert the second character in the string 
+// (Use your google-fu and the MDN)
+let str = 'Hello There!'
+alert(str[1]);
+// Alt 
+alert(str.charAt(1)); //.charAt(index)
+
+// *Functions*
+// Create a function that takes in 3 numbers. 
+// Divide the first two numbers and multiply the last. 
+// Alert the product. Call the function.
+const divFirstTwoMultLast = (a, b, c) => {
+  alert(a / b * c)
+}
+divFirstTwoMultLast(12, 3, 4); // 16
+
+// Create a function that takes in 1 number. 
+// Console log the cube root of the number. 
+// Call the function.
+const logRoot = (a) => {
+  console.log(Math.cbrt(a));
+}
+logRoot(64);
+
+// *Conditionals*
+//Create a function that takes in a month. 
+// If it is a summer month alert "YAY". 
+// If another other month, alert "Booo"
+const sayMonth = (month) => {
+  const monthsArr = ['january','february', 'march','april','may','june','july','august','september','october','november', 'december']
+  if(monthsArr.indexOf(month.toLowerCase()) > 4 && monthsArr.indexOf(month.toLowerCase()) < 8){
+    alert('Yay');
+  } else {
+    alert('Boo');
+  }
+}
+
+//*Loops*
+// Create a function that takes in a number. 
+/// Console log every number from 1 to that number 
+// while skipping multiples of 5.
+const logToNumSkip5 = (num) => {
+  for(let i = 1; i <= num; i++){
+    if(i % 5 !== 0){
+      console.log(i);
+    }
+  }
+}
+
+//test
+logToNumSkip5(25); // =>1, 2, 3, 4, 6, 7, 8, 9, 11...
+```
+
 ## Arrays (Review)
 What are arrays?
 
@@ -418,8 +487,38 @@ console.log( newArr.length ) //4
 
 ## Let's Code
 In Paradise: After Paradise
-## Array Iteration (Review)
+See 'class20-materials/review-in-paradise-after-paradise'
+```js
+// Create a function that takes in an array. 
+// If the first number, is less than the last number, alert "Hi". 
+// If the first number is greater than the last number, alert "Bye". 
+// If they are equal, alert "We close in an hour".
+```
 
+Solution: 
+```js
+// Create a function that takes in an array. 
+// If the first number, is less than the last number, alert "Hi". 
+// If the first number is greater than the last number, alert "Bye". 
+// If they are equal, alert "We close in an hour".
+function alertSomething(arr) {
+  let first = arr[0]
+  let last = arr[arr.length - 1];
+  if(first < last){
+    alert('Hi');
+  } else if (first > last){
+    alert('Bye');
+  } else {
+    alert("We close in an hour");
+  }
+}
+
+// Tests
+alertSomething([1,2,3,4,5,6,6,7]) // 'Hi'
+alertSomething([10,2,3,4,5,6,6,7]) // 'Bye'
+alertSomething([7,2,3,4,5,6,6,7]) // 'We close in an hour'
+```
+## Array Iteration (Review)
 We can go through an array and pull values out by using a for loop
 ```js
 let bestColors = ['green','blue','yellow','black']
@@ -449,6 +548,40 @@ One of which is the current element in the loop
 
 ## Let's Code
 Summer Games
+See 'class20-materials/review-summer-games'
+```js
+// Create a function that takes in an array of numbers. 
+// Multiply each number together and alert the product. 
+```
+
+```js
+// Create a function that takes in an array of numbers.
+// Multiply each number together and alert the product. 
+// EZ way
+const multArr = (arr) => {
+  alert(arr.reduce((acc, val) => acc * val ));
+}
+
+multArr([1,2,3]) // =>6
+multArrV2([1, 2, 3, 4]) // =>24
+multArrV2([1, 2, 3, 4, 5]) // =>120
+
+// Other way (without reduce)
+function multArrV2(arr) {
+  let product = 1
+  arr.forEach((el) => { product *= el })
+  alert(product);
+}
+
+// With a for loop
+function multArrV3(arr) {
+  let product = arr[0];
+  for(let i = 1; i < arr.length; i++){
+    product *= arr[i];
+  }
+  alert(product);
+}
+```
 ## Other Arrays Methods
 There are other methods available to arrays besides `forEach`
 
@@ -505,6 +638,44 @@ console.log( bestRappersAllTime )
 ```
 ## Let's Code
 Winter Games
+See 'class20-materials/review-winter-games'
+```js
+// Create a function that takes in an array of numbers. 
+// Return a new array containing every even number from the original array
+// (do not use map or filter)
+```
+
+Solution:
+```js
+//Create a function that takes in an array of numbers. 
+// Return a new array containing every even number from the original array 
+// (do not use map or filter)
+
+// No map/filter
+const makeEvenArr = (arr) => {
+  let newArr = [];
+  arr.forEach((el) => { 
+    if(el % 2 === 0){
+      newArr.push(el);
+    }
+  })
+
+  return newArr;
+}
+
+// With filter
+const makeEvenArrV2 = (arr) => {
+  return arr.filter((el) => el % 2 === 0)
+}
+
+console.log(makeEvenArr([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+console.log(makeEvenArrV2([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+```
+
+
+Class Ended Here
+___
+
 ## Objects
 What are objects?
 ## Objects
