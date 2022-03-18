@@ -1,3 +1,66 @@
+3/18/2022
+```js
+// Small enough? - Beginner (7kyu)
+// 
+// You will be given an array and a limit value.
+// You must check that all values in the array are below or equal to the limit value.
+// If they are, return true.Else, return false.
+
+// You can assume all values in the array are numbers.
+
+console.log(smallEnough([66, 101], 200)); // true
+console.log(smallEnough([78, 117, 110, 99, 104, 117, 107, 115], 100)); // false
+console.log(smallEnough([101, 45, 75, 105, 99, 107], 107)); // true 
+console.log(smallEnough([80, 117, 115, 104, 45, 85, 112, 115], 120)); // true
+console.log(smallEnoughV2([66, 101], 200)); // true
+console.log(smallEnoughV2([78, 117, 110, 99, 104, 117, 107, 115], 100)); // false
+console.log(smallEnoughV2([101, 45, 75, 105, 99, 107], 107)); // true 
+console.log(smallEnoughV2([80, 117, 115, 104, 45, 85, 112, 115], 120)); // true
+
+function smallEnough(a, limit) {
+  // Reduce array to boolean value
+  // If the current element is greater than than limit passed in
+  //  return false (sets a to false)
+  // Otherwise 
+  //  return current value of a 
+  //  can be false or true depending on if a previous el flipped it or not
+  return a.reduce((a, el) => (el > limit) ? false : a, true)
+}
+
+// Alternate version I also Liked
+function smallEnoughV2(a, limit) {
+  // Spread array values are arguments and get the largest from the list w/ .max
+  // Return whether the largest value is less than the limit
+  return Math.max(...a) <= limit
+}
+```
+```js
+// Remove anchor form URL (7kyu)
+//
+// Complete the function/method so that it returns the url with anything after the anchor (#) removed.
+// Examples
+// "www.codewars.com#about" --> "www.codewars.com"
+// "www.codewars.com?page=1" -->"www.codewars.com?page=1"
+
+console.log(removeUrlAnchor('www.codewars.com#about')); // => www.codewars.com
+console.log(removeUrlAnchor('www.codewars.com?page=1')); // => www.codewars.com?page=1
+console.log(removeUrlAnchorV2('www.codewars.com#about')); // => www.codewars.com
+console.log(removeUrlAnchorV2('www.codewars.com?page=1')); // => www.codewars.com?page=1
+
+function removeUrlAnchor(url) {
+  return url.includes('#') ? url.slice(0, url.indexOf('#')) : url;
+}
+
+// Other solution I liked
+// Splits string into array at '#' 
+// (only one element if no '#')
+// Returns first element of that array
+const removeUrlAnchorV2 = (url) => url.split("#")[0];
+
+// url => www.codewars.com#about
+// url.split('#') => ['www.codewars.com', 'about']
+// url.split('#')[0] => 'www.codewars.com'
+```
 3/17/2022
 ```js
 // Growth of a Population (7 kyu)
