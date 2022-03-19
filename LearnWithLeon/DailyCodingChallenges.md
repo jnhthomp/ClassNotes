@@ -1,3 +1,34 @@
+3/19/2022
+```js
+// Reverse words (7 kyu)
+//
+// Complete the function that accepts a string parameter, 
+// and reverses each word in the string.
+// All spaces in the string should be retained.
+
+// Examples
+console.log(reverseWords("Hello There!")); // => "olleH !erehT"
+console.log(reverseWords("This is an example!")) //=> "sihT si na !elpmaxe"
+console.log(reverseWords("double  spaces")) //=> "elbuod  secaps"
+
+
+
+function reverseWords(str) {
+  // Go for it
+  // Split string into array of words
+  return str.split(' ') // 'Hello there!' => ['Hello', 'There!']
+    // split each word into array of strings to give an array of arrays
+    // [['H', 'e', 'l', 'l', 'o'],['T', 'h', 'e', 'r', 'e', '!']]
+    // Reverse each sub array
+    // [['0', 'l', 'l', 'e', 'H'],['!', 'e', 'r', 'e', 'h', 'T']]
+    // Join subarrays back together into stringss
+    // ['olleH', '!erehT']
+    .map((el, i , a) => el.split('').reverse().join(''))
+    // Join main array back to one string
+    // 'olleH !erehT'
+    .join(' ');
+}
+```
 3/18/2022
 ```js
 // Small enough? - Beginner (7kyu)
