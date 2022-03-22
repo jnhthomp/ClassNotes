@@ -72,7 +72,7 @@ while(!shouldStop){
 
 console.log(wordList);
 ```
-Read: https://javascript.info/array-methods
+COMPLETE: https://javascript.info/array-methods
 ```js
 
 // Translate border-left-width to borderLeftWidth
@@ -201,8 +201,7 @@ alert(arr); // HTML, JavaScript, CSS (no changes)
 
 
 //_______________
-// NOT COMPLETE
-🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+
 //Create an extendable calculator
 //importance: 5
 //Create a constructor function Calculator that creates “extendable” calculator //objects.
@@ -220,18 +219,48 @@ alert(arr); // HTML, JavaScript, CSS (no changes)
 //
 //For instance, let’s add the multiplication *, division / and power **:
 //
-//let powerCalc = new Calculator;
-//powerCalc.addMethod("*", (a, b) => a * b);
-//powerCalc.addMethod("/", (a, b) => a / b);
-//powerCalc.addMethod("**", (a, b) => a ** b);
-//
-//let result = powerCalc.calculate("2 ** 3");
-//alert( result ); // 8
+let powerCalc = new Calculator;
+powerCalc.addMethod("*", (a, b) => a * b);
+powerCalc.addMethod("/", (a, b) => a / b);
+powerCalc.addMethod("**", (a, b) => a ** b);
+
+let result = powerCalc.calculate("2 ** 3");
+alert( result ); // 8
 //No parentheses or complex expressions in this task.
 //The numbers and the operator are delimited with exactly one space.
 //There may be error handling if you’d like to add it.
 
+function Calculator() {
+  // Hold all methods in object
+  this.methods = {
+    "-": (a, b) => a - b,
+    "+": (a, b) => a + b
+  };
 
+  // Calculate function
+  this.calculate = function(str) {
+
+    // Split string into array by spaces
+    let split = str.split(' '),
+      // set each element of the array as an argument for calculation
+      a = +split[0],
+      op = split[1],
+      b = +split[2];
+
+    // If a, op, or b, are invalid return NaN
+    if (!this.methods[op] || isNaN(a) || isNaN(b)) {
+      return NaN;
+    }
+
+    // if a, op, and b are valid run the op method with a and b arguments
+    return this.methods[op](a, b);
+  };
+
+  // add method receives a name and function to run when that name is called
+  this.addMethod = function(name, func) {
+    this.methods[name] = func;
+  };
+}
 
 
 //_______________
@@ -458,7 +487,395 @@ function groupById(arr){
     return newObj;
 }
 ```
-Read: JSWay Objects (https://github.com/thejsway/thejsway/blob/master/manuscript/chapter06.md)
-Read: https://eloquentjavascript.net/04_data.html
-Do: Minimum of 1 https://codewars.com 8 Kyu Fundamentals Track EVERY DAY - 20 mins then look at solution!
-Do: https://javascript30.com Day 04 Array Cardio (super hard, do it on Discord together)
+COMPLETE: JSWay Objects (https://github.com/thejsway/thejsway/blob/master/manuscript/chapter06.md)
+```js
+// Adding character experience
+// Improve our example RPG program to add an experience property named xp to the character. 
+// Its initial value is 0. 
+//Experience must appear in character description.
+
+// create the character object here
+const aurora = {
+  name: "Aurora",
+  health: 150,
+  strength: 25,
+  xp: 0, 
+  describe() {
+    return `Aurora has ${this.health} health points, ${this.strength} as strength and ${this.xp} xp points`
+  }
+}
+
+
+// Aurora is harmed by an arrow
+aurora.health -= 20;
+
+// Aurora equips a strength necklace
+aurora.strength += 10;
+
+// Aurora learn a new skill
+aurora.xp += 15;
+
+console.log(aurora.describe());
+// "Aurora has 130 health points, 35 as strength and 15 xp points"
+
+
+
+
+
+//_______________
+// Modeling a dog
+// Complete the following program to add the dog object definition.
+
+// create the dog object here
+const dog = {
+  name: 'Chewbacca',
+  species: 'bipedal',
+  size: '8ft',
+
+  bark() {
+    return 'aaahnruh huuguughghg!';
+  }
+
+}
+/*
+name, species, size, bark()
+*/
+console.log(`${dog.name} is a ${dog.species} dog measuring ${dog.size}`);
+//=> "Chewbacca is a bipedal dog measuring 8ft"
+console.log(`Look, a cat! ${dog.name} barks: ${dog.bark()}`);
+//=> "Look, a cat! Chewbacca barks: aaahnruh huuguughghg!"
+
+
+
+
+//_______________
+// Modeling a circle
+// Complete the following program to add the circle object definition. 
+// Its radius value is input by the user.
+
+const r = Number(prompt("Enter the circle radius:"));
+
+//create the circle object here
+const circle = {
+  radius: +r,
+  circumference() {
+    return Math.PI * 2 * this.radius;
+  },
+
+  area() {
+    return Math.PI * this.radius ** 2
+  }
+}
+
+console.log(`Its circumference is ${circle.circumference()}`);
+// (r=10) => 'Its circumference is 62.83185307179586'
+console.log(`Its area is ${circle.area()}`);
+// (r=10) => 'Its area is 314.1592653589793'
+
+
+
+
+//_______________
+// Modeling a bank account
+// Write a program that creates an account object with the following characteristics:
+
+// A name property set to "Alex".
+// A balance property set to 0.
+// A credit method adding the (positive or negative) value passed as an argument to the account balance.
+// A describe method returning the account description.
+
+// Use this object to show its description, crediting 250, debiting 80, then show its description again.
+
+const account = {
+  name: 'Alex',
+  balance: 0,
+
+  credit(num) {
+    this.balance += num;
+  },
+
+  describe() {
+    return `Owner: ${this.name}, balance ${this.balance}`
+  }
+}
+
+console.log(account.describe()) // => 'Owner: Alex, balance 0'
+account.credit(250); // => 'Owner: Alex, balance 0'
+account.credit(-80); 
+console.log(account.describe()) // => 'main.js: 27 Owner: Alex, balance 170'
+```
+COMPLETE: https://eloquentjavascript.net/04_data.html
+```js
+// The sum of a range
+// The introduction of this book alluded to the following as a nice way to compute the sum of a range of numbers:
+
+// console.log(sum(range(1, 10))); // => 55
+// Write a range function that takes two arguments, start and end, 
+// and returns an array containing all the numbers from start up to (and including) end.
+function range(start, end, step){
+  let rangeArr = []
+  if(start <= end){
+    step === undefined ? step = 1 : step = step;
+    for(start; start <= end; start += step){
+      rangeArr.push(start)
+    }
+  } else{
+    step === undefined ? step = -1 : step = step;
+    for(start; start >= end; start += step){
+      rangeArr.push(start)
+    }
+  }
+  return rangeArr
+}
+
+// Next, write a sum function that takes an array of numbers and returns the sum of these numbers.Run the example program and see whether it does indeed return 55.
+// As a bonus assignment, modify your range function to take an optional third argument that indicates the “step” value used when building the array.If no step is given, the elements go up by increments of one, corresponding to the old behavior.The function call range(1, 10, 2) should return [1, 3, 5, 7, 9].Make sure it also works with negative step values so that range(5, 2, -1) produces[5, 4, 3, 2].
+
+function sum(numArr){
+  return numArr.reduce((a, el, i) => a + el)
+}
+
+console.log(range(1, 10));
+// → [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+console.log(range(5, 2, -1));
+// → [5, 4, 3, 2]
+console.log(sum(range(1, 10)));
+// → 55
+
+
+
+
+//_______________
+// Reversing an array
+//
+// Arrays have a reverse method that changes the array by inverting the order in which its elements appear.
+// For this exercise, write two functions, reverseArray and reverseArrayInPlace.
+// The first, reverseArray, takes an array as argument and produces a new array that has the same elements in the inverse order.
+// The second, reverseArrayInPlace, does what the reverse method does: 
+//  it modifies the array given as argument by reversing its elements.
+// Neither may use the standard reverse method.
+// Thinking back to the notes about side effects and pure functions in the previous chapter,
+// which variant do you expect to be useful in more situations ? Which one runs faster ?
+
+// Your code here.
+function reverseArray(arr){
+  let newArr = []
+  arr.forEach((el) => { newArr.unshift(el) })
+  return newArr
+}
+
+function reverseArrayInPlace(arr){
+  for(let i = arr.length - 1; i >= 0; i--){
+    el = arr[i]
+    arr.splice(i, 1)
+    arr.push(el)
+  }
+  return arr;
+}
+
+console.log(reverseArray(["A", "B", "C"]));
+// → ["C", "B", "A"];
+let arrayValue = [1, 2, 3, 4, 5];
+reverseArrayInPlace(arrayValue);
+console.log(arrayValue);
+// → [5, 4, 3, 2, 1]
+
+
+
+
+//_______________
+// A list
+//
+// Objects, as generic blobs of values, can be used to build all sorts of data structures.
+// A common data structure is the list(not to be confused with array).
+// A list is a nested set of objects, with the first object holding a reference to the second, the second to the third, and so on.
+
+let list = {
+  value: 1,
+  rest: {
+    value: 2,
+    rest: {
+      value: 3,
+      rest: null
+    }
+  }
+};
+
+// The resulting objects form a chain
+
+// A linked list
+// A nice thing about lists is that they can share parts of their structure.
+// For example, if I create two new values { value: 0, rest: list } and { value: -1, rest: list } 
+// (with list referring to the binding defined earlier), they are both independent lists, 
+// but they share the structure that makes up their last three elements.
+// The original list is also still a valid three - element list.
+
+// Write a function arrayToList that builds up a list structure like the one shown when given[1, 2, 3] as argument.
+// Also write a listToArray function that produces an array from a list.
+// Then add a helper function prepend, which takes an element and a list 
+//  and creates a new list that adds the element to the front of the input list, 
+// Then create nth, which takes a list and a number and returns the element at the given position in the list
+// (with zero referring to the first element) or undefined when there is no such element.
+
+// If you haven’t already, also write a recursive version of nth.
+
+  // Your code here.
+
+function arrayToList(arr){
+  let list = null
+  for(let i = arr.length - 1; i >=0; i--){
+    list = {value: arr[i], rest: list}
+  }
+  return list;
+}
+
+function listToArray(list){
+  let newArr = []
+  while(list !== null){
+    newArr.push(list.value)
+    list = list.rest;
+  }
+  return newArr;
+}
+
+function prepend(el, list){
+  let newList = {value: el, rest: list}
+  return newList;
+}
+
+function nth(list, num){
+  
+  let arr =listToArray(list)
+  
+  if(num !== 0) {
+    num--;
+    arr.shift();
+    list = arrayToList(arr)
+    nth(list, num)
+  }
+
+  return arr[0];
+}
+
+console.log(arrayToList([10, 20])); //=> {value: 10, rest: {value: 20, rest: null}}
+console.log(listToArray(arrayToList([10, 20, 30]))); //=> [10, 20, 30]
+console.log(prepend(10, prepend(20, null))); //=> {value: 10, rest: {value: 20, rest: null}}
+console.log(nth(arrayToList([10, 20, 30]), 1)); //=> 20
+
+
+
+
+//_______________
+// Deep comparison
+//
+// The == operator compares objects by identity.
+// But sometimes you’d prefer to compare the values of their actual properties.
+
+// Write a function deepEqual that takes two values and returns true only if they are the same value or are objects with the same properties, 
+// where the values of the properties are equal when compared with a recursive call to deepEqual.
+
+// To find out whether values should be compared directly(use the === operator for that) or have their properties compared, 
+// you can use the typeof operator.
+// If it produces "object" for both values, you should do a deep comparison.
+// But you have to take one silly exception into account: because of a historical accident, typeof null also produces "object".
+
+// The Object.keys function will be useful when you need to go over the properties of objects to compare them.
+
+// Your code here.
+function deepEqual(a, b) {
+  for (const key in a) { // Using for-in in a object you can iterate the properties
+    const a_value = a[key]
+    const b_value = b[key]
+    if (a_value !== b_value) {
+      if((typeof a_value === 'object' && a_value !== null) && (typeof b_value === 'object' && b_value !== null)){
+        deepEqual(a_value, b_value)
+      }
+      else {
+        return false
+      }
+    }
+  }
+  return true
+}
+
+let obj = { here: { is: "an" }, object: 2 };
+
+console.log(deepEqual(obj, obj)); //=> true
+console.log(deepEqual(obj, { hee: 1, object: 2 })); //=> false
+console.log(deepEqual(obj, { here: { is: "an" }, object: 2 })); //=> true
+
+```
+COMPLETE: Minimum of 1 https://codewars.com 8 Kyu Fundamentals Track EVERY DAY - 20 mins then look at solution!
+COMPLETE: https://javascript30.com Day 04 Array Cardio (super hard, do it on Discord together)
+```js
+// Get your shorts on - this is an array workout!
+// ## Array Cardio Day 1
+
+// Some data we can work with
+
+const inventors = [
+  { first: 'Albert',    last: 'Einstein',     year: 1879, passed: 1955 },
+  { first: 'Isaac',     last: 'Newton',       year: 1643, passed: 1727 },
+  { first: 'Galileo',   last: 'Galilei',      year: 1564, passed: 1642 },
+  { first: 'Marie',     last: 'Curie',        year: 1867, passed: 1934 },
+  { first: 'Johannes',  last: 'Kepler',       year: 1571, passed: 1630 },
+  { first: 'Nicolaus',  last: 'Copernicus',   year: 1473, passed: 1543 },
+  { first: 'Max',       last: 'Planck',       year: 1858, passed: 1947 },
+  { first: 'Katherine', last: 'Blodgett',     year: 1898, passed: 1979 },
+  { first: 'Ada',       last: 'Lovelace',     year: 1815, passed: 1852 },
+  { first: 'Sarah E.',  last: 'Goode',        year: 1855, passed: 1905 },
+  { first: 'Lise',      last: 'Meitner',      year: 1878, passed: 1968 },
+  { first: 'Hanna',     last: 'Hammarström',  year: 1829, passed: 1909 }
+];
+
+const people = [
+  'Bernhard, Sandra', 'Bethea, Erin', 'Becker, Carl', 'Bentsen, Lloyd', 'Beckett, Samuel', 'Blake, William', 'Berger, Ric', 'Beddoes, Mick', 'Beethoven, Ludwig',
+  'Belloc, Hilaire', 'Begin, Menachem', 'Bellow, Saul', 'Benchley, Robert', 'Blair, Robert', 'Benenson, Peter', 'Benjamin, Walter', 'Berlin, Irving',
+  'Benn, Tony', 'Benson, Leana', 'Bent, Silas', 'Berle, Milton', 'Berry, Halle', 'Biko, Steve', 'Beck, Glenn', 'Bergman, Ingmar', 'Black, Elk', 'Berio, Luciano',
+  'Berne, Eric', 'Berra, Yogi', 'Berry, Wendell', 'Bevan, Aneurin', 'Ben-Gurion, David', 'Bevel, Ken', 'Biden, Joseph', 'Bennington, Chester', 'Bierce, Ambrose',
+  'Billings, Josh', 'Birrell, Augustine', 'Blair, Tony', 'Beecher, Henry', 'Biondo, Frank'
+];
+
+// Array.prototype.filter()
+// 1. Filter the list of inventors for those who were born in the 1500's
+console.log(inventors.filter((el) => el.year >= 1500 && el.year <= 1599));
+
+// Array.prototype.map()
+// 2. Give us an array of the inventors first and last names
+console.log(inventors.map((el) => { 
+  return `${el.first} ${el.last}`
+}))
+
+// Array.prototype.sort()
+// 3. Sort the inventors by birthdate, oldest to youngest
+console.log(inventors.sort((a, b) => a.year - b.year))
+
+
+// Array.prototype.reduce()
+// 4. How many years did all the inventors live all together?
+console.log(inventors.reduce((a,el) => a += (el.passed - el.year), 0))
+
+// 5. Sort the inventors by years lived
+console.log(inventors.sort((a, b) => (a.passed - a.year) - (b.passed - b.year)));
+
+// 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
+// https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
+// const list = document.querySelectorAll('.mw-category')
+// const links = [...list[0].querySelectorAll('a')];
+
+// const filtered = links.filter((el) => el.textContent.includes('de')).map((el) => `${el.textContent}`)
+
+
+// 7. sort Exercise
+// Sort the people alphabetically by last name
+console.log(people.sort());
+
+// 8. Reduce Exercise
+// Sum up the instances of each of these
+const data = ['car', 'car', 'truck', 'truck', 'bike', 'walk', 'car', 'van', 'bike', 'walk', 'car', 'van', 'car', 'truck'];
+
+console.log(data.reduce((a, el) => {
+  a[el] ? a[el] += 1 : a[el] = 1;
+  return a
+}, {}));
+```
