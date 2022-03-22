@@ -1,3 +1,75 @@
+3/22/2022
+```js
+// Give me a Diamond (6kyu)
+//
+// Jamie is a programmer, and James' girlfriend. 
+// She likes diamonds, and wants a diamond string from James. 
+// Since James doesn't know how to make this happen, he needs your help.
+//
+// Task
+// You need to return a string that looks like a diamond shape when printed on the screen, 
+// using asterisk(*) characters.
+// Trailing spaces should be removed, 
+// and every line must be terminated with a newline character(\n).
+// Return null / nil / None /... if the input is an even number or negative, 
+// as it is not possible to print a diamond of even or negative size.
+
+// Examples
+// A size 3 diamond:
+//  *
+// ***
+//  *
+// ...which would appear as a string of " *\n***\n *\n"
+
+// A size 5 diamond:
+
+//   *
+//  ***
+// *****
+//  ***
+//   *
+// ...that is:
+// "  *\n ***\n*****\n ***\n  *\n"
+
+// Tests
+console.log(diamond(1)) // => "*/n"
+console.log(diamond(3)) // => " *\n***\n *\n"
+console.log(diamond(5)) // => "  *\n ***\n*****\n ***\n  *\n"
+console.log(diamond(2)) // => null
+console.log(diamond(-3)) // => null
+console.log(diamond(0)) // => null
+
+function diamond(d){
+  // Create empty array to hold lines we will create
+  let dArr = [];
+  // Check to make sure d input number is valid
+  //  Will keep dArr empty if d <= 0 or is divisible by 2
+  //  (cannot make diamond with these values)
+  if(d % 2 !== 0 && d > 0){
+    // Create a line of diamonds d characters long (and add newline) 
+    dArr.push(`${'*'.repeat(d)}\n`)
+    // Start loop and run while i is greater than d/2 + .5
+    // ex: 5/2 = 2.5 + .5 = 3 So run 4 loops (i = 5, 4, 3)
+    for(let i = d; i >= (d/2) + .5; i--){
+      // Create a 'newLine' var we will edit to add to array
+      // Initialize it to the first array item
+      let newLine = dArr[0]
+      // Remove the last '*' character (and \n newline char)
+      newLine = newLine.slice(0, newLine.length - 2)
+      // Replace first '*' with a space character
+      newLine = newLine.replace('*', ' ')
+      // Add newline char to end of current string
+      newLine = `${newLine}\n`
+      // Add this string to the beginning and end of the array
+      dArr.push(newLine);
+      dArr.unshift(newLine);
+    }
+  }
+  // If we added to the dArr then join each element to create diamond shape
+  // If we didn't add to it (d was invalid) return null
+  return dArr.length > 0 ? dArr.join('') : null
+}
+```
 3/21/2022
 ```js
 // Replace With Alphabet Position (6kyu)
@@ -13,7 +85,11 @@
 console.log(alphabetPosition("The sunset sets at twelve o' clock.")) //=> "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 15 3 11"
 
 function alphabetPosition(text) {
+  // Key to check what number should replace a value
   let key = "abcdefghijklmnopqrstuvwxyz"
+  // set argument to lowercase, make each character an element in an array and filter invalid characters (non-letters)
+  // Convert each letter in array to a number that is index from key + 1 
+  // Rejoin all elements to a string with a space between
   return text.toLowerCase().split('').filter((el) => key.includes(el)).map((el, i, a) => { 
     return key.indexOf(el) + 1
   }).join(' ')
