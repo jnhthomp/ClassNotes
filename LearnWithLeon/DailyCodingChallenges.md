@@ -1,3 +1,24 @@
+3/21/2022
+```js
+// Replace With Alphabet Position (6kyu)
+//
+// Welcome.
+// In this kata you are required to, 
+// given a string, replace every letter with its position in the alphabet.
+// If anything in the text isn't a letter, ignore it and don't return it.
+
+// "a" = 1, "b" = 2, etc.
+
+// Example
+console.log(alphabetPosition("The sunset sets at twelve o' clock.")) //=> "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 15 3 11"
+
+function alphabetPosition(text) {
+  let key = "abcdefghijklmnopqrstuvwxyz"
+  return text.toLowerCase().split('').filter((el) => key.includes(el)).map((el, i, a) => { 
+    return key.indexOf(el) + 1
+  }).join(' ')
+}
+```
 3/20/2022
 ```js
 // Count the Digit (7kyu)
