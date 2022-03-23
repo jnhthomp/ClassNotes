@@ -9,12 +9,22 @@ Review - Arrays
 Learn - Objects
 Learn - Basic APIs
 Homework - Objects Reading
+
 ## Questions
 About last class or life
+
 ## Health First
+Keep healthy while learning
+Don't let learning get in the way of your health
+
 ## Coding Challenges
+Continue to do coding challenges even if they are hard
+If you see a question and have no idea how to even approach it just look at the solution
+
 ## Live Portfolio & Resume Review
 https://forms.gle/VkbSwgnyRo6VkTFL8
+If you would like your resume/portfolio reviewed live fill out the form
+
 ## TURN IT UP!
 ## Trough Of Sorrow (Review)
 Why does not everyone do it?
@@ -42,9 +52,17 @@ Don't get discouraged and don't set your hopes too high
 Right now it is about getting the tools we need to get to the point where we can apply
 
 ## We Have All The LEGOS
+After learning objects we have everything we need in order to make REAL applications
+We just have to know how to put them together
 
 Loud Music And Confetti Next Slide
+
 ## The BIG News!
+The goal of #100Devs was met and there are 100 people who got jobs
+To celebrate we are going to have the best week ever (next week)
+
+Merch drops, agency opening, job board opening, sponsored class by Microsoft
+
 ## Programming (Review)
 ## A computer will do what you tell it to do. (Review)
 The key rule of programming is that a computer will do what you tell it to
@@ -299,6 +317,100 @@ Be careful with these as they are easier to get stuck in an infinite loop
 
 ## Let's Code
 Mighty Morphin Review
+See 'class21-materials/mighty-morphin-review'
+Follow instructions and do in 5 minutes:
+```js
+// *Variables*
+// Declare a variable, reassign it to your fav holiday, 
+// make sure it is in all caps, and print the value to the console
+
+//Declare a variable, assign it a string, 
+// alert the last three characters in the string 
+// (Use your google-fu and the MDN)
+
+// *Functions*
+// Create a function that takes in 5 numbers. 
+// Subtract all five from 100. 
+// Alert the absolute value of the difference. 
+// Call the function.
+
+
+// Create a function that takes in 3 numbers. 
+// Console log lowest and highest values. 
+// Call the function.
+
+
+// *Conditionals*
+//Create a function that returns heads or tails randomly 
+// and as fairly as possible. 
+// Call the function.
+
+
+//*Loops*
+//Create a function that takes in a number. 
+// Console log the result of heads or tails using the previous 
+// function x times where x is the number passed into the function. 
+// Call the function.
+
+```
+
+Solutions:
+```js
+// *Variables*
+// Declare a variable, reassign it to your fav holiday, 
+// make sure it is in all caps, and print the value to the console
+let favHoliday
+favHoliday = 'Christmas';
+favHoliday.toUpperCase();
+console.log(favHoliday);
+
+//Declare a variable, assign it a string, 
+// alert the last three characters in the string 
+// (Use your google-fu and the MDN)
+let str = 'This has more than three chars'
+alert(str.substring(str.length - 3));
+
+// *Functions*
+// Create a function that takes in 5 numbers. 
+// Subtract all five from 100. 
+// Alert the absolute value of the difference. 
+// Call the function.
+const subsFrom100 = (a, b, c, d, e) => {
+  alert(Math.abs(100 - a - b - c - d - e))
+}
+
+subsFrom100(1,2,3,4,5);
+
+// Create a function that takes in 3 numbers. 
+// Console log lowest and highest values. 
+// Call the function.
+const findHighAndLow = (a, b, c) => {
+  console.log(Math.max(a, b, c), Math.min(a, b, c))
+}
+
+findHighAndLow(1, 2, 3)
+
+// *Conditionals*
+//Create a function that returns heads or tails randomly 
+// and as fairly as possible. 
+// Call the function.
+const headsOrTails = () => Math.random() > .5 ? console.log('heads') : console.log('tails')
+
+headsOrTails();
+
+//*Loops*
+//Create a function that takes in a number. 
+// Console log the result of heads or tails using the previous 
+// function x times where x is the number passed into the function. 
+// Call the function.
+const flipCoinXTimes = (n) => {
+  for(let i = 1; i <= n; i++){
+    headsOrTails();
+  }
+}
+
+flipCoinXTimes(5)
+```
 ## Arrays (Review)
 What are arrays?
 
@@ -477,40 +589,171 @@ console.log( bestRappersAllTime )
 ```
 ## Let's Code
 Alien Rangers Review
+See 'class21-materials/alien-rangers-review'
+Follow the instructions and solve in 5 minutes:
+```js
+//*Arrays*
+
+//Create and array of tv shows. 
+// Loop through and print each show to the console
+
+// Create and array of numbers
+// Return a new array of numbers that includes 
+//  every even number from the previous Arrays
+
+// Create a function that takes in an array of numbers
+// Alert the sum of the second lowest 
+// and the second highest number
+
+```
+
+Solutions:
+```js
+//*Arrays*
+
+//Create and array of tv shows. 
+// Loop through and print each show to the console
+const tvShow = ['show1', 'show2', 'show3']
+tvShow.forEach((el) => { console.log(el) })
+
+// Create and array of numbers
+// Return a new array of numbers that includes 
+//  every even number from the previous Arrays
+const nums = [1,2,3,4,5,6,7,8,9,10]
+const evens = (arr) => arr.filter((el) => el % 2 === 0)
+console.log(evens(nums));
+
+// Create a function that takes in an array of numbers
+// Alert the sum of the second lowest 
+// and the second highest number
+const alert2ndLowAndHigh = (arr) => {
+  arr = arr.sort((a,b) => a - b)
+  alert(arr[1] + arr[arr.length - 2]);
+}
+
+alert2ndLowAndHigh(nums);
+```
+
 ## Objects
 What are objects?
-## Objects
-Objects are a collection of variables and functions!
-Objects represent the attributes and behavior of something used in a program
-Object variables are called properties and object functions are called methods
-Objects store "keyed" collections
+
+- Objects are a collection of variables and functions!
+- Objects represent the attributes and behavior of something used in a program
+- Object variables are called properties and object functions are called methods
+- Objects store "keyed" collections
+
 ## Think of a physical object
-
 What are it's attributes and behaviors?
-## How about a stopwatch
 
+## How about a stopwatch
 What are its attributes and behaviors? 
+
+Attributes:
+- color
+- brand
+- model
+- minutes value
+- seconds value
+- milliseconds value
+
+Behaviors
+- Can start counting time
+- Can count a lap
+- reset time
+- change modes
+- beep
+
 ## Stopwatch Object
 Properties (attributes):
 Might contain a variable to represent hours, another to represent minutes, and another to represent seconds. 
 
 Methods (behaviors):
 Might also contain functions that manipulate those values, such as "start ()" and "stop ()".
+
 ## Stopwatch Object
 ```js
+// Create an object with literal notation
 let stopwatch = {}
 
+// Add currentTime property and give it a value of 12
 stopwatch.currentTime = 12
 
+// Add tellTime function
 stopwatch.tellTime = function(time){
   console.log(`The current time is ${time}.`)
 }
 
+// Call tellTime function on stopwatch object and pass in the current time of the stopwatch
 stopwatch.tellTime(stopwatch.currentTime)
 ```
 
 ## Let's Code
 Objects - ZEO
+See 'class21-materials/objects-zeo'
+Follow instructions and complete:
+```js
+// Create a stopwatch object that has 
+//    four properties 
+//    and three methods
+```
+
+Solution:
+```js
+ // Create a stopwatch object that has 
+//    four properties 
+//    and three methods
+
+const stopwatch  = {
+  color: 'black',
+  brand: 'casio',
+  minutes: 0,
+  seconds: 0,
+  
+  increaseMinutes: function() {
+    this.minutes++
+  },
+
+  increaseSeconds: function() {
+    this.seconds++
+  },
+
+  ouputTime: function() {
+    console.log(`CurrentTime: ${this.minutes}:${this.seconds}`)
+  }
+}
+
+stopwatch.increaseMinutes()
+stopwatch.increaseSeconds()
+stopwatch.ouputTime()
+
+// ALTERNATIVE
+const stopwatchAlt = {};
+stopwatchAlt.color = 'black';
+stopwatchAlt.brand = 'casio';
+stopwatchAlt.minutes = 0;
+stopwatchAlt.seconds = 0;
+
+stopwatchAlt.increaseMinutes = function() {
+  stopwatchAlt.minutes++
+}
+stopwatchAlt.increaseSeconds = function () {
+  stopwatchAlt.seconds++
+}
+stopwatchAlt.outputTime =  function(minutes, seconds) {
+  console.log(`${minutes}:${seconds}`)
+}
+
+
+stopwatchAlt.increaseMinutes()
+stopwatchAlt.increaseSeconds()
+stopwatchAlt.outputTime(stopwatchAlt.minutes, stopwatchAlt.seconds)
+```
+
+
+
+
+Class ended here
+___
 ## Objects
 What if we want to make
 a lot of objects?
@@ -635,98 +878,3 @@ Read Again: https://javascript.info/object
 Do: All the tasks 👆🏽
 Do: Daily Challenges
 Do: Codewars Fundamentals
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
