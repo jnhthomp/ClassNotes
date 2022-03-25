@@ -1,3 +1,126 @@
+3/25/2022
+```js
+// Statistics for an Athletic Association (6kyu)
+//
+// You are the "computer expert" of a local Athletic Association(C.A.A.).
+// Many teams of runners come to compete.
+// Each time you get a string of all race results of every team who has run.
+// For example here is a string showing the individual results of a team of 5 runners:
+//
+//  "01|15|59, 1|47|6, 01|17|20, 1|32|34, 2|3|17"
+//
+// Each part of the string is of the form: h | m | s 
+// where h, m, s(h for hour, m for minutes, s for seconds) 
+// are positive or null integer(represented as strings) 
+// with one or two digits.
+// Substrings in the input string are separated by, or,.
+
+// To compare the results of the teams you are asked for giving three statistics;
+// range, average and median.
+//
+// Range : difference between the lowest and highest values.
+//         In { 4, 6, 9, 3, 7 } the lowest value is 3, 
+//         and the highest is 9, 
+//         so the range is 9 − 3 = 6.
+// Mean or Average: To calculate mean, add together all of the numbers in a set and 
+//                  then divide the sum by the total count of numbers.
+// Median : In statistics, the median is the number separating the higher half of a data sample from the lower half.
+//          The median of a finite list of numbers can be found by 
+//          arranging all the observations from lowest value to highest value 
+//          and picking the middle one
+//          (e.g., the median of { 3, 3, 5, 9, 11} is 5) when there is an odd number of observations.
+//          If there is an even number of observations, then there is no single middle value; 
+//          the median is then defined to be the mean of the two middle values
+//          (the median of { 3, 5, 6, 9} is(5 + 6) / 2 = 5.5).
+
+// Your task is to return a string giving these 3 values.
+// For the example given above, the string result will be
+// "Range: 00|47|18 Average: 01|35|15 Median: 01|32|34"
+// of the form: "Range: hh|mm|ss Average: hh|mm|ss Median: hh|mm|ss"`
+
+// where hh, mm, ss are integers (represented by strings) with each 2 digits.
+
+// Remarks:
+// if a result in seconds is ab.xy... it will be given truncated as ab.
+// if the given string is "" you will return ""
+
+
+console.log(stat("01|15|59, 1|47|16, 01|17|20, 1|32|34, 2|17|17")) //=> "Range: 01|01|18 Average: 01|38|05 Median: 01|32|34"
+console.log(stat("02|15|59, 2|47|16, 02|17|20, 2|32|34, 2|17|17, 2|22|00, 2|31|41")) //=> "Range: 00|31|17 Average: 02|26|18 Median: 02|22|00"
+
+//1 hr= 3600
+// 15 min = 900
+
+
+function stat(strg){
+  // Handle empty string input
+  if(strg === ''){
+    return ''
+  }
+
+  // Convert input to array of seconds and sort low to high
+  strg = strg.split(', ').map((el) => el.split('|')
+    .reduce((a, el, i) => {
+      if(i === 0){
+        el = el * 60 * 60
+      }
+      if(i=== 1){
+        el = el * 60
+      }
+      return a + Number(el)
+    }, 0)).sort((a, b) => a - b);
+
+  // find range by subtracting first element in sorted array from last element
+  const range = strg[strg.length - 1] - strg[0];
+  
+  // find average
+  const avg = strg.reduce((a, el, i) => {
+    // On last element add element then divide total by length to return avg
+    if(i === strg.length - 1){
+      a += el
+      return Math.floor(a / strg.length)
+    }
+    return a += el
+  }, 0)
+
+  // find median
+  const median = strg.length % 2 === 0 ? 
+    // When strg.length is even get avg of two median elements
+    Math.floor((strg[(strg.length / 2) - 1] + strg[(strg.length / 2)]) / 2) : 
+    // When strg.length is odd return the middle element
+    strg[Math.floor(strg.length / 2)]
+  
+
+  // Convert seconds to HMS
+  const convertToHMS = (s) => {
+    // initialize hours and minutes
+    let h = 0;
+    let m = 0;
+    if(s > 60){
+      // Divide seconds by 60 to get whole minutes
+      m = Math.floor(s / 60);
+      // Remainder of seconds / 60 is number of seconds not converted and stay as seconds
+      s = s % 60
+      if(m > 60){
+        // Divide minutes by 60 to get whole hours
+        h = Math.floor(m / 60);
+        // Remainder of min/60 is number of minutes not converted and stay as minutes
+        m = m % 60;
+      }
+    }
+
+    // Function to ensure h, m, and s always have two digits
+    const setTwoDigs = (t) => {
+      return ('0' + t).slice(-2);
+    }
+
+    // Return formatted HMS string from seconds
+    return `${setTwoDigs(h)}|${setTwoDigs(m)}|${setTwoDigs(s)}`
+  }
+
+  return `Range: ${convertToHMS(range)} Average: ${convertToHMS(avg)} Median: ${convertToHMS(median)}`
+}
+```
 3/24/2022
 ```js
 // Title Case (6kyu)
