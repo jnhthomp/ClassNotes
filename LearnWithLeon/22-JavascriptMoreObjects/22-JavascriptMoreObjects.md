@@ -9,25 +9,42 @@ Review - Arrays
 Learn - Objects
 Learn - Basic APIs
 Homework - Object City Yall
+
 ## Questions
 About last class or life
+
 ## Checking In
 https://twitter.com/leonnoel/status/1507107645416620041
 Like and Retweet the Tweet
 !checkin
+
 ## Submitting Work
 Please submit your Tasks code here: https://forms.gle/jK41o5QGNdzY8rPk9
+
 ## !newsletter
-## Health First
-## Coding Challenges
+## Health First (Review)
+Keep healthy while learning
+Don't let learning get in the way of your health
+
+## Coding Challenges (Review)
+Continue to do coding challenges even if they are hard
+If you see a question and have no idea how to even approach it just look at the solution
+
 ## TURN IT UP!
 ## Let's Push It
 ## GET HYPE
-
 BEST WEEK OF #100Devs EVER
+Coming next week something special every day
+
 ## Microsoft
 Sponsored Stream
 Thursday Mar. 31st
+Covers Git/Github
+Do not miss there will be prizes
+Part of the hw is intro to github which needs to be done
+This will enter you in a raffle for a laptop
+There is also a class that will help prime us for the class
+
 ## Programming (Review)
 ## A computer will do what you tell it to do. (Review)
 The key rule of programming is that a computer will do what you tell it to
@@ -272,6 +289,98 @@ Be careful with these as they are easier to get stuck in an infinite loop
 
 ## Let's Code
 Turbo Review
+See 'class22-materials/turbo-review'
+Give yourself 10 minutes to solve
+
+```js
+// *Variables*
+// Declare a variable and assign it to your fav drink as a string. 
+// Make sure there is no whitespace on either side of the string, 
+// and print the value to the console
+
+// Declare a variable, assign it a string of multiple words, 
+// and check to see if one of the words is "apple".
+
+// *Functions*
+// Create a function that returns rock, paper, or scissors as randomly as possible
+
+// *Conditionals*
+//Create a function that takes in a choice (rock, paper, or scissors) 
+// and determines if they won a game of rock paper scissors 
+// against a bot using the above function
+
+// *Loops*
+// Create a function that takes an array of choices. 
+// Play the game x times where x is the number of choices in the array. 
+// Print the results of each game to the console.
+```
+
+Solution:
+```js
+// *Variables*
+// Declare a variable and assign it to your fav drink as a string. 
+// Make sure there is no whitespace on either side of the string, 
+// and print the value to the console
+let favDrink = 'RedBull'
+console.log(favDrink.trim())
+
+// Declare a variable, assign it a string of multiple words, 
+// and check to see if one of the words is "apple".
+// and check to see if one of the words is "apple".
+let stringOfWords = 'this is a string of words'
+console.log(stringOfWords.includes('apple'))
+
+// *Functions*
+// Create a function that returns rock, paper, or scissors as randomly as possible
+const rps = () => {
+  let play = Math.floor(Math.random() * 3)
+  if(play === 0){
+    return 'rock'
+  } else if (play === 1){
+    return 'paper'
+  } else {
+    return 'scissors'
+  }
+}
+// console.log(rps());
+
+// *Conditionals*
+//Create a function that takes in a choice (rock, paper, or scissors) 
+// and determines if they won a game of rock paper scissors 
+// against a bot using the above function
+const playRPS = (choice) => {
+  let botChoice = rps()
+  if ((botChoice === 'rock' && choice !== 'paper') || 
+      (botChoice === 'paper' && choice !== 'scissors') || 
+      (botChoice === 'scissors' && choice !== 'rock')){
+    return `${choice} vs ${botChoice}: lose`
+  } else if (botChoice === choice) {
+    return `${choice} vs ${botChoice}: tie`
+  } else {
+    return `${choice} vs ${botChoice}: WIN!`
+  }
+}
+
+// console.log(playRPS('rock'))
+// console.log(playRPS('paper'))
+// console.log(playRPS('scissors'))
+
+
+// *Loops*
+// Create a function that takes an array of choices. 
+// Play the game x times where x is the number of choices in the array. 
+// Print the results of each game to the console.
+const multiRPS = (choiceArr) => {
+  choiceArr.forEach((el) => {
+    console.log(playRPS(el))
+  })
+}
+
+multiRPS(['rock','paper','scissors',
+          'rock','paper','scissors',
+          'rock','paper', 'scissors']);
+```
+
 ## Arrays (Review)
 What are arrays?
 
@@ -448,6 +557,53 @@ console.log( bestRappersAllTime )
 
 // ['Dylan','Dylan','Dylan', 'Dylan', 'Dylan']
 ```
+
+## Let's Code
+Space Review
+See 'class22-materials/space-review' 
+Only need to do the first problem but get all if you can
+```js
+//Arrays
+//Create and array of numbers. Sum all of the numbers. Alert the sum.
+
+//Create a function that takes in an array of numbers
+//Return a new array of numbers that is every original number squared
+
+//Create a function that takes string
+//Print the reverse of that string to the console
+
+//Create a function that takes in a string
+//Alert if the string is a palindrome or not
+
+
+```
+
+```js
+//Arrays
+//Create and array of numbers. Sum all of the numbers. Alert the sum.
+alert([1,2,3,4,5].reduce((a, el) => a += el, 0))
+
+//Create a function that takes in an array of numbers
+//Return a new array of numbers that is every original number squared
+const squArray = (arr) => {
+  return arr.map((el) => el ** 2)
+}
+console.log(squArray([1,2,3,4,5]))
+
+//Create a function that takes string
+//Print the reverse of that string to the console
+const printReverse = (str) => {
+  return str.split('').reverse().join('')
+}
+console.log(printReverse('Hello there!'));
+
+//Create a function that takes in a string
+//Alert if the string is a palindrome or not
+const isPalindrome = (str) => str === printReverse(str) ? true : false
+alert(isPalindrome('racecar')); //=> true
+alert(isPalindrome('no.')); //=> false
+```
+
 ## Objects (Review)
 What are objects?
 
@@ -503,16 +659,72 @@ stopwatch.tellTime(stopwatch.currentTime)
 
 ## Let's Code
 Objects - Lost Galaxy
+See: 'class22-materials/objects-lost-galaxy'
+Give yourself a couple of minutes
+```js
+//Create a mouse object that has four properties and three methods
+```
+
+Solution:
+```js
+let mouse = {};
+mouse.color = 'black';
+mouse.size = 'small'
+mouse.brand = 'logitech;
+mouse.hasRGB = true;
+
+mouse.leftClick = function(){
+  // leftClick
+}
+mouse.rightClick = function(){
+  //rightClick
+}
+mouse.scrollWheel = function(){
+  //scrollWheel
+}
+
+// OR
+let mouse = {
+  color: 'black',
+  size: 'small',
+  brand: 'logitech',
+  hasRGB: true,
+
+  leftClick: function(){
+    console.log('leftClick')
+  },
+  rightClick: function(){
+    console.log('rightClick')
+  },
+  scrollWheel: function(){
+    console.log('scrollWheel')
+  }
+}
+```
+
 ## Objects
 What if we want to make
 a lot of objects?
-## Car Factory?
 
+Like a car what if we wanted to make a lot of cars?
+We would need  a car factory
+
+## Car Factory?
 Constructors then Classes
+These are like factories that can create a bunch of objects
+
+First we will learn constructors, then classes
+
+A constructor is something that takes in values for properties
+Then these values are assigned to properties in the object being created
+
 ## Car Factory
 Constructor
 ```js
+// Constructors are functions
+// (Best practice is to capitalize contructor functions)
 function MakeCar(carMake,carModel,carColor,numOfDoors){
+  // Assign arguments to the object being created's properties
   this.make = carMake
   this.model = carModel
   this.color = carColor
@@ -525,12 +737,32 @@ function MakeCar(carMake,carModel,carColor,numOfDoors){
   }
 }
 
+// all the constructor function while creating an object with new keyword
+// Also pass in values that are used in construction
 let hondaCivic = new MakeCar('Honda','Civic','Silver', 4)
-
 let teslaRoadster = new MakeCar('Tesla','Roadster', 'Red', 2)
+
+// Now all the properties and methods from constructor are available to hondaCivic and teslaRoadster
+console.log(`HONDA-  
+  Make: ${hondaCivic.make} 
+  Model: ${hondaCivic.model} 
+  Color: ${hondaCivic.color}
+  Doors: ${hondaCivic.doors}`)
+hondaCivic.honk()
+hondaCivic.lock()
+
+console.log(`Tesla-  
+  Make: ${teslaRoadster.make} 
+  Model: ${teslaRoadster.model} 
+  Color: ${teslaRoadster.color}
+  Doors: ${teslaRoadster.doors}`)
+teslaRoadster.honk()
+teslaRoadster.lock()
 ```
-## Car Factory
+
+What if we forgot something?
 We forgot enable bluetooth!
+We can use a prototype to provide fallback values and properties
 ```js
 let teslaRoadster = new MakeCar('Tesla','Roadster', 'Red', 2)
 
@@ -538,21 +770,63 @@ console.log( teslaRoadster.bluetooth )  //undefined
 
 MakeCar.prototype.bluetooth = true
 
-console.log( teslaRoadster.bluetooth ) //true 
+// The prototype will change ALL objects that use that contructor
+console.log(teslaRoadster.bluetooth) //true 
+console.log(hondaCivic.bluetooth) //true
 ```
 A prototype is another object that is used as a fallback source of properties
 
-## Car Factory
-Why does .toString() work?!?
+
+Why does `.toString()` work?!?
 ```js
 let teslaRoadster = new MakeCar('Tesla','Roadster', 'Red', 2)
 
 console.log( teslaRoadster.doors.toString() )  // "2" not 2
-
 ```
+
+Because of the prototype inheritance chain our object will continue to look up to see if a parent has that method or property
+`.toString()` is a part of the object prototype and so all objects have access to this method
 A prototype is another object that is used as a fallback source of properties
+
 ## Let's Code
 Objects - Street Fighter
+See 'class22-materials/objects-street-fighter'
+Try to do it in 3 minutes
+Use the constructor we just learned about
+```js
+//Create a street fighter constructor that makes fighting game characters with 4 properties and 3 methods
+```
+Solution:
+```js
+//Create a street fighter constructor that makes fighting game characters with 4 properties and 3 methods
+function MakeCharacter(name, health, power, defense, attk1, attk2, attk3){
+  this.name = name
+  this.health = health,
+  this.power = power,
+  this.defense = defense
+
+  this.lightAttk = function(){
+    console.log(`${attk1}`)
+  }
+  this.heavyAttk = function () {
+    console.log(`${attk2}`)
+  }
+  this.specialAttk = function () {
+    console.log(`${attk3}`)
+  }
+}
+
+let ken = new MakeCharacter('ken', 100, 75, 60, 'jab', 'haymaker', 'saiyan')
+// get each key and output the key value pair
+console.log(Object.keys(ken).forEach(key => console.log(`key: ${key} value: ${ken[key]}`)))
+// Functions are available to method
+ken.lightAttack()
+```
+
+
+
+Class ended here
+___
 ## Car Factory
 Look Ma! New syntax!
 ```js
