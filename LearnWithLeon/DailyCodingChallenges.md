@@ -1,3 +1,100 @@
+3/27/2022
+```js
+// The Supermarket Queue (6kyu)
+// There is a queue for the self-checkout tills at the supermarket.
+// Your task is write a function 
+//  to calculate the total time required 
+//  for all the customers to check out!
+
+// input
+// customers: an array of positive integers representing the queue.
+//  Each integer represents a customer, 
+//  and its value is the amount of time they require to check out.
+// n: a positive integer, 
+//  the number of checkout tills.
+
+// output
+// The function should return an integer, the total time required.
+// Important
+// Please look at the examples and clarifications below, 
+// to ensure you understand the task correctly:)
+
+//Examples
+// console.log(`Should return 12: ${queueTime([5, 3, 4], 1)}`)
+// should return 12
+// because when there is 1 till, the total time is just the sum of the times
+
+// console.log(`Should return 10: ${queueTime([10, 2, 3, 3], 2)}`)
+// should return 10
+// because here n=2 and the 2nd, 3rd, and 4th people in the 
+// queue finish before the 1st person has finished.
+
+// console.log(`Should return 12: ${queueTime([2, 3, 10], 2)}`)
+// should return 12
+// Clarifications
+// There is only ONE queue serving many tills, and
+// The order of the queue NEVER changes, and
+// The front person in the queue
+// (i.e.the first element in the array / list) 
+// proceeds to a till as soon as it becomes free.
+
+// N.B.You should assume that all the test input will be valid, 
+// as specified above.
+// P.S.The situation in this kata can be likened to the more 
+//  computer-scienc-related idea of a thread pool, 
+//  with relation to running multiple processes at the same time: 
+//  https://en.wikipedia.org/wiki/Thread_pool
+
+
+// ?Didn't pass all test cases?
+function queueTime(customers, n) {
+
+  if(n > customers.length && customers.length > 0){
+    return Math.max(...customers)
+  }
+
+  let tills = Array.apply(null, Array(n)).map((el, i) => {
+    let tillFill = customers[0]
+    customers.shift()
+    return tillFill
+  })
+
+  let totalCheckoutTime = 0 
+  while(customers.length >= 1){
+    
+    let shortLine = Math.min(...tills)
+    console.log(tills, totalCheckoutTime)
+    tills = tills.map((el) => el - shortLine)
+    tills.forEach((el, i) => {
+      if(el === 0){
+        tills[i] = customers[0]
+        customers.shift()
+      } 
+    });
+    totalCheckoutTime += shortLine
+    console.log(totalCheckoutTime)
+    console.log(customers)
+    
+  }
+  
+  return totalCheckoutTime + (tills.map((a, el) => a += el, 0)[0] ? tills.map((a, el) => a += el, 0)[0] : 0)
+  
+}
+
+// Other answer I liked
+function queueTimeV2(customers, n) {
+  // Create array for queue n length (filled with 0 values)
+  var w = new Array(n).fill(0); //=> [0,0,0]
+  for (let t of customers) {
+    // Find smallest line index
+    let idx = w.indexOf(Math.min(...w));
+    // Add current customer to smallest line
+    w[idx] += t;
+  }
+  // Return longest line total time
+  return Math.max(...w);
+}
+```
 3/26/2022
 ```js
 // Consecutive Strings (6kyu)
