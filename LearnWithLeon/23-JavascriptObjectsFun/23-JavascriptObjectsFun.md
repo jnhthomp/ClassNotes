@@ -16,25 +16,72 @@ About last class or life
 Like and Retweet the Tweet
 !checkin
 ## You Are Not Alone!
-## Trough Of Sorrowq
+Whatever issues you are having in class right now someone else is having them too
+Ask for help in discord!
+
+## Trough Of Sorrow (Review)
+Why does not everyone do it?
+It takes a really long time
+This is called the trough of sorrow (see slide pic): https://slides.com/leonnoel/100devs2-html-the-basics#/5
+
+Leon says it can feel good to buy udemy courses but a lot of people don't finish them
+I've found them very helpful myself
+
+For a lot of people the novelty wears off and it takes a while through pursuing other means of education
+Don't get too focused on getting a FAANG job - instead focus on getting A job
+(Don't try to go straight to playing for the NFL - play some rec league first)
+
+To make it through the trough of sorrow you will take about ~20 weeks of not feeling great and learning
+Then some wiggles of soft hope
+This is when you start getting responses for jobs and maybe even a few interviews
+It is a good idea to apply to 60 companies
+This doesn't mean just clicking apply this means networking with real people and talking with them
+A few of them will go absolutely terrible and be absolutely bombed (10?)
+Most will be alright (40?)
+Then maybe 10 of them will go great 
+Out of those ten maybe you will get 2 offers
+Don't get discouraged and don't set your hopes too high
+
+Right now it is about getting the tools we need to get to the point where we can apply
+
 ## Health First
+Class may start taking a toll since we will be coding more
+Take care of yourself
 ## No Networking Until May
+We are focusing on coding instead of networking until may
+May 3 is when networking will start again
+
 ## Client Deadline: May 3rd
+Client deadline has also been extend until May 3rd
+
 ## Client Alternatives
+If you cannot get a paid client right now
+(due to either being unable to find one or unable to take on a paid client)
+
 ## Grassroots Volunteer*
+Find a grassroots campaign near you and see if they need a webpresence
+Instead of being paid they should be an ENTHUSIASTIC reference
+Still go through the proposal/contract process with them
+
 ## Free Software / Open Source
 https://www.firsttimersonly.com/
-## Live Portfolio & Resume Review
+Contains a list of website that aggregate project issues
+There should be some that are easy enough to contribute to for the first time
 
+## Live Portfolio & Resume Review
 Monday
 6:30pm EST
+
 ## !youtube
+Youtube lectures were a little behind but they should be caught up now
 
 ## !newsletter
+There was a form for a raffle in today's newsletter
 
 ## Welcome, helloitsrufio
 https://www.twitch.tv/helloitsrufio
 Tomorrow @ 6:30pm ET! 
+Doing codewars if you want to hangout and learn
 
 ## Microsoft
 Sponsored Stream
@@ -42,23 +89,40 @@ Thursday Mar. 31st
 
 
 Thursday 6:30pm ET
+
 ## https://aka.ms/learnwithleon 
+Do intro to github before class thursday
+Give microsoft email to enter a raffle for a laptop
+
 ## Friday With Friends
-
 Friday 6pm ET on Discord!
+Chat with mods and previous students
+
 ## /r/place
-
 Saturday All Day
+Try to get a place in the r/place game
+There will be a channel on discord for people to organize and lockdown a section
+
 ## Office Hours
-
 Sunday - 1pm ET
-## Mentor Monday
-Portfolio / Resume Review Part 1
-## BEST WEEK EVER END?
 
+## Mentor Monday
+Portfolio / Resume Review Part 1 6:00pm
+There will be a place for people who want to be mentors/support the community
+They will learn how to give portfolio/resume reviews
+Then they will give these reviews to others
+
+## BEST WEEK EVER END?
+Gotta be a banger
+Something big is going down?
 Tuesday 6:30pm ET
+
 ## !Merch
+If you want to buy merch
+https://streamlabs.com/learnwithleon/merch
+
 ## THANK YOU
+
 ## Programming (Review)
 ## What is a program? (Review)
 A program is a set of instructions that you write to tell a computer what to do
@@ -73,6 +137,7 @@ JS is a language that we will use to tell the computer what to do
 You don't need to get it tonight
 Just take in the concepts and ideas and worry about the execution later
 We will go deep on this the next couple classes
+
 ## Variables (Review)
 What are variables?
 Variables are something we can use to tell our program to remember values for us to use later on
@@ -164,6 +229,7 @@ if (pizza === "Papa Johns") {
   console.log("What are you even doing with your life?")
 }
 ```
+
 ## Multiple Conditions (Review)
 We can also use multiple conditions in our conditional logic and chain them
 This allows us to check for multiple things at the same time
@@ -248,8 +314,101 @@ Since 1 is less than 5 the value is logged
 Then the value is increased by 1 to 2
 Now since 2 is less than 5 the value is logged
 Then the value is increased by 1 to 3 etc...
+
 ## Let's Code
 Turbo Review
+See 'class23-materials/turbo-review'
+See instructions and try to solve in 5 minutes:
+```js
+// *Variables*
+// Declare a variable and assign it to a sentance as a string. 
+// Alert if the sentance is a question
+
+// Declare a variable, assign it a string of multiple words, 
+// replace every "jr. dev" with "software engineer", 
+// and print it to the console
+
+// *Functions*
+// Create a function that returns rock, paper, or scissors 
+// as randomly as possible
+
+// *Conditionals*
+// Create a function that takes in a choice (rock, paper, or scissors) 
+// and determines if they won a game of rock paper scissors against a bot 
+// using the above function
+
+//*Loops*
+// Create a function that takes an array of choices. 
+// Play the game x times where x is the number of choices in the array. 
+// Print the results of each game to the console.
+```
+
+Solution:
+```js
+// *Variables*
+// Declare a variable and assign it to a sentance as a string. 
+// Alert if the sentance is a question
+let sentence = 'This is a question'
+sentence.includes('?') && alert(sentence)
+
+// Declare a variable, assign it a string of multiple words, 
+// replace every "jr. dev" with "software engineer", 
+// and print it to the console
+let anotherSentence = 'random word jr. dev more words jr. dev'
+console.log(anotherSentence.replaceAll('jr. dev', 'software engineer'))
+
+// *Functions*
+// Create a function that returns rock, paper, or scissors 
+// as randomly as possible
+function rps(){
+  let play = Math.floor(Math.random() * 3)
+  if(play === 0){
+    return 'rock'
+  } else if(play === 1){
+    return 'paper'
+  } else {
+    return 'scissors'
+  }
+}
+console.log(rps())
+
+// *Conditionals*
+// Create a function that takes in a choice (rock, paper, or scissors) 
+// and determines if they won a game of rock paper scissors against a bot 
+// using the above function
+function playRPS(userChoice){
+  let botChoice = rps()
+  if(userChoice === botChoice){
+    return `${userChoice} vs ${botChoice}: You tie`
+  } else if((userChoice === 'rock' && botChoice === 'scissors') ||
+            (userChoice === 'paper' && botChoice === 'rock') ||
+            (userChoice === 'scissors' && botChoice == 'paper')){
+    return `${userChoice} vs ${botChoice}: You win`
+  } else {
+    return `${userChoice} vs ${botChoice}: You lose 😢`
+  }
+}
+// console.log(playRPS('rock'))
+// console.log(playRPS('paper'))
+// console.log(playRPS('scissors'))
+
+//*Loops*
+// Create a function that takes an array of choices. 
+// Play the game x times where x is the number of choices in the array. 
+// Print the results of each game to the console.
+function playRPSxTimes(arr){
+  arr.forEach((el) => { 
+    console.log(playRPS(el))
+  })
+}
+
+let rpsArr = ['rock', 'paper', 'scissors',
+  'rock', 'paper', 'scissors',
+  'rock', 'paper', 'scissors'
+]
+
+playRPSxTimes(rpsArr)
+```
 ## Arrays (Review)
 What are arrays?
 
@@ -372,8 +531,55 @@ bestColors.forEach((element, index, array)=> console.log(element))
 It will do whatever function we pass in as an argument for every element in the array
 This function has access to several variables 
 One of which is the current element in the loop
+
 ## Let's Code
 Space Review
+See 'class23-materials/space-review'
+Follow the instructions and solve in 5 minutes
+```js
+// * Arrays *
+// Create an array of numbers. 
+// Sum all of the numbers. 
+// Alert the sum.
+
+// Create a function that takes in an array of numbers
+// Return a new array of numbers
+// that is every original number squared
+
+// Create a function that takes string
+// Print the reverse of that string to the console
+
+// Create a function that takes in a string
+// Alert if the string is a palindrome or not
+```
+
+Solution:
+```js
+// * Arrays *
+// Create an array of numbers. 
+// Sum all of the numbers. 
+// Alert the sum.
+let numbers = [1, 2, 3, 4, 5];
+alert(numbers.reduce((a, el) => a += el, 0)); //=> 15
+
+// Create a function that takes in an array of numbers
+// Return a new array of numbers
+// that is every original number squared
+const sqArray = (arr) => arr.map((el) => el ** 2);
+console.log(sqArray(numbers)); //=> [1, 4, 9, 16, 25]
+console.log(numbers); //=> [1, 2, 3, 4, 5](unchanged)
+
+// Create a function that takes string
+// Print the reverse of that string to the console
+const rev = (str) => str.split('').reverse().join('');
+console.log(rev('test')); //=> 'tset'
+
+// Create a function that takes in a string
+// Alert if the string is a palindrome or not
+const isPalindrome = (str) => (str === rev(str));
+alert(`racecar ${isPalindrome('racecar')}`);
+alert(`not a drome ${isPalindrome('not a drome')}`);
+```
 ## Objects (Review)
 What are objects?
 
@@ -429,6 +635,43 @@ stopwatch.tellTime(stopwatch.currentTime)
 
 ## Let's Code
 Objects - Lost Galaxy
+See 'class23-materials/objects-lost-galaxy'
+Follow the instructions and solve in 2 minutes:
+```js
+//Create a dog object that has four properties and three methods
+```
+
+Solution:
+```js
+//Create a dog object that has four properties and three methods
+let dog = {
+  name: 'Ghost',
+  breed: 'Husky',
+  goodBoi: true,
+  color: 'white',
+
+  lick: () => { console.log('licking') },
+  sleep: () => { console.log('sleeping') },
+  rooRoo: () => { console.log('ROOOOOOOO') }
+}
+
+// Alternate
+let dog ={}
+dog.name = 'Ghost';
+dog.breed = 'Husky';
+dog.goodBoi = true;
+dog.color = 'white'
+
+dog.lick = function(){
+  console.log('licking')
+};
+dog.sleep = function(){
+  console.log('sleeping')
+};
+dog.rooRoo = function(){
+  console.log('ROOOOOOOO')
+};
+```
 ## Objects (Review)
 What if we want to make
 a lot of objects?
@@ -517,8 +760,44 @@ A prototype is another object that is used as a fallback source of properties
 
 ## Let's Code
 Objects - Tony Hawk Pro Skater
+See 'class23-materials/objects-tony-hawk-pro-skater'
+Try to do in 4 minutes:
+```js
+// Create a Tony Hawk Pro Skater constructor 
+// that makes fighting game characters 
+// with 4 properties and 3 methods
+```
+
+Solution:
+```js
+// Create a Tony Hawk Pro Skater constructor 
+// that makes fighting game characters 
+// with 4 properties and 3 methods
+function MakeSkater(name, boardColor, style, stance){
+  this.name = name
+  this.boardColor = boardColor
+  this.style = style
+  this.stance = stance
+
+  this.move1 = function(){
+    console.log('kickflip')
+  }
+
+  this.move2 = function(){
+    console.log('pop-shove it')
+  }
+
+  this.move3 = function () {
+    console.log('impossible')
+  }
+}
+
+let bamMargera = new MakeSkater('Bam', 'black/red', 'street', 'regular');
+```
 ## Car Factory
 Look Ma! New syntax!
+This is just a new way to make a constructor
+Nothing changes under the hood
 ```js
 class MakeCar{
   constructor(carMake,carModel,carColor,numOfDoors){
@@ -540,20 +819,41 @@ let hondaCivic = new MakeCar('Honda','Civic','Silver', 4)
 let teslaRoadster = new MakeCar('Tesla','Roadster', 'Red', 2)
 ```
 Classes are like templates for objects!
+
 ## APIs
 What are APIs?
+
 ## APIs
 A simple interface for some complex action!
 Think of a restaurant menu! Remember those...
 Lets one thing communicate with another thing without having to know how things are implemented.
-## APIs
+
+Think of your webcam 
+If you want to turn it off you could do that by unplugging it
+Instead you are usually provided an interface to turn off the camera (a button)
+This is a simple interface that handles the complex action of turning off the camera
+
+APIs are similar
+You can use them to make a simple request and cause a complex action
+It might return something to you or it might trigger something
+We don't really care about how it happens we just want the action to happen
+
+Restaurants give you a simple interface to get food
+They give you a menu 
+This lets you say something simple to the server
+Then back in the kitchen it will be prepared for you and brought out complete
+You don't care or know what is going back in the kitchen you just want to get something back after a simple request
+
+Usually when you get something back from an API it will come in the form oof json
 ```
         |---Request--->|
 YourApp |              | API 
         |<-----JSON----|
 ```
-## APIs
+
 Fetch Fido, Fetch!
+Here is an example of how to make a fetch request to a url
+When you use an api you  usually make what is called a fetch request
 ```js
 fetch("https://dog.ceo/api/breeds/image/random")
     .then(res => res.json()) // parse response as JSON
@@ -568,6 +868,31 @@ API returns a JSON object that we can use within our apps
 
 ## Let's Code
 DOG PHOTOS!
+See: 'class23-materials/objects-dog-photos'
+Follow the instructions and try to solve (use the snippet from previous section)
+```js
+//Get a dog photo from the dog.ceo api 
+// and place the photo in the DOM
+```
+
+Solution:
+```js
+//Get a dog photo from the dog.ceo api 
+// and place the photo in the DOM
+let url
+fetch("https://dog.ceo/api/breeds/image/random")
+  .then(res => res.json()) // parse response as JSON
+  .then(data => {
+    console.log(data.message)
+    document.querySelector('img').src = data.message
+  })
+  .catch(err => {
+    console.log(`error ${err}`)
+  });
+```
+
+Class ended here
+___
 ## APIs
 Stop trying to make Fetch happen!
 ```
