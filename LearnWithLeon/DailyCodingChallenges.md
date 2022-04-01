@@ -1,4 +1,4 @@
-4/1/2022
+2022-4-1
 ```js
 // Write Number in Expanded Form (6kyu)
 //
@@ -43,7 +43,7 @@ const expandedFormV2 = n => n.toString()
                               .reverse()
                               .join(" + ");
 ```
-3/31/2022
+2022-3-31
 ```js
 // Buying a car (6 kyu)
 //
@@ -107,7 +107,7 @@ function nbMonths(startPriceOld, startPriceNew, savingPerMonth, percentLossByMon
   return [months, Math.round((startPriceOld + savings) % startPriceNew)]
 }
 ```
-3/30/2022
+2022-3-30
 ```js
 // Detect Pangram (6 kyu)
 //
@@ -128,7 +128,7 @@ console.log(isPangram('Cwm fjord bank glyphs vext quiz'))//=> true
 console.log(isPangram('Detect Pangram')) //=> false
 console.log(isPangram('Pack my box with five dozen liquor jugs'))//=> true
 ```
-3/29/2022
+2022-3-29
 ```js
 // Multi - tap Keypad Text Entry on an Old Mobile Phone (6yu)
 //
@@ -202,7 +202,7 @@ function presses(phrase) {
   }).reduce((a, el) => a += el,0);
 }
 ```
-3/28/2022
+2022-3-28
 ```js
 // IPv4 to int32 (6kyu)
 // 
@@ -249,7 +249,7 @@ function ipToInt32(ipStr){
   return Number(`0b${ip2Arr}`)
 }
 ```
-3/27/2022
+2022-3-27
 ```js
 // The Supermarket Queue (6kyu)
 // There is a queue for the self-checkout tills at the supermarket.
@@ -346,7 +346,7 @@ function queueTimeV2(customers, n) {
   return Math.max(...w);
 }
 ```
-3/26/2022
+2022-3-26
 ```js
 // Consecutive Strings (6kyu)
 //
@@ -418,7 +418,7 @@ console.log(longestConsec(["it", "wkppv", "ixoyx", "3452", "zzzzzzzzzzzz"], 15))
 console.log(longestConsec(["it", "wkppv", "ixoyx", "3452", "zzzzzzzzzzzz"], 0)) //=> ''
 console.log(longestConsec(['test1', 'test2', 'test3'])) //=> 'test1test2'
 ```
-3/25/2022
+2022-3-25
 ```js
 // Statistics for an Athletic Association (6kyu)
 //
@@ -541,7 +541,7 @@ function stat(strg){
   return `Range: ${convertToHMS(range)} Average: ${convertToHMS(avg)} Median: ${convertToHMS(median)}`
 }
 ```
-3/24/2022
+2022-3-24
 ```js
 // Title Case (6kyu)
 // A string is considered to be in title case if each word in the string is either
@@ -599,7 +599,7 @@ function titleCase(title, minorWords) {
   }).join(' ') // join to string with spaces before returning
 }
 ```
-3/23/2022
+2022-3-23
 ```js
 // Playing with digits (6 kyu)
 // 
@@ -658,7 +658,7 @@ function digPowV2(n, p) {
 }
 
 ```
-3/22/2022
+2022-3-22
 ```js
 // Give me a Diamond (6kyu)
 //
@@ -730,7 +730,7 @@ function diamond(d){
   return dArr.length > 0 ? dArr.join('') : null
 }
 ```
-3/21/2022
+2022-3-21
 ```js
 // Replace With Alphabet Position (6kyu)
 //
@@ -755,7 +755,7 @@ function alphabetPosition(text) {
   }).join(' ')
 }
 ```
-3/20/2022
+2022-3-20
 ```js
 // Count the Digit (7kyu)
 //
@@ -806,7 +806,7 @@ function nbDigV2(n, d) {
   return o.split(d).length-1
 }
 ```
-3/19/2022
+2022-3-19
 ```js
 // Reverse words (7 kyu)
 //
@@ -837,7 +837,7 @@ function reverseWords(str) {
     .join(' ');
 }
 ```
-3/18/2022
+2022-3-18
 ```js
 // Small enough? - Beginner (7kyu)
 // 
@@ -900,7 +900,7 @@ const removeUrlAnchorV2 = (url) => url.split("#")[0];
 // url.split('#') => ['www.codewars.com', 'about']
 // url.split('#')[0] => 'www.codewars.com'
 ```
-3/17/2022
+2022-3-17
 ```js
 // Growth of a Population (7 kyu)
 //
@@ -963,7 +963,7 @@ function nbYearV2(p0, percent, aug, p) {
   return n;
 }
 ```
-3/16/2022
+2022-3-16
 ```js
 // Story (7kyu)
 //  Ben has a very simple idea to make some profit: 
@@ -1015,7 +1015,7 @@ console.log(minMaxV2([1, 2, 3, 4, 5]))   //== [1,5]
 console.log(minMaxV2([2334454, 5]))   //== [5, 2334454]
 console.log(minMaxV2([1]))           //== [1, 1]
 ```
-3/15/2022
+2022-3-15
 ```js
 // Summing a number's digits (7kyu)
 // 
