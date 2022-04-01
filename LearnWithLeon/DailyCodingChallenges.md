@@ -1,3 +1,48 @@
+4/1/2022
+```js
+// Write Number in Expanded Form (6kyu)
+//
+// You will be given a number and you will need to return it 
+// as a string in Expanded Form.
+// For example:
+expandedForm(12); // Should return '10 + 2'
+expandedForm(42); // Should return '40 + 2'
+expandedForm(70304); // Should return '70000 + 300 + 4'
+// NOTE: All numbers will be whole numbers greater than 0.
+// If you liked this kata, check out part 2!!
+
+
+function expandedForm(num) {
+  num = `${num}`.split('')
+  let zeroPlace = ''
+  for(let i = num.length -1; i >=0; i--){
+    if(num[i] !== '0'){
+      num[i] = num[i] + zeroPlace
+    } else {
+      num.splice(i, 1)
+    }
+    zeroPlace = zeroPlace + '0'
+  }
+
+  return num.join(' + ')
+}
+
+// Another solution I liked
+const expandedFormV2 = n => n.toString()
+                              .split("")
+                              // Reverse array instead of iterating backwards
+                              .reverse()
+                              // Math.pow to the 10 at the index will add the approrpriate number of 0
+                              // for 1's place will not add any 0 since i = 0
+                              // for 10's place will add 1 0 since i = 1
+                              // etc...
+                              .map((a, i) => a * Math.pow(10, i))
+                              // Remove elements equal to 0
+                              .filter(a => a > 0)
+                              // set array back to correct order
+                              .reverse()
+                              .join(" + ");
+```
 3/31/2022
 ```js
 // Buying a car (6 kyu)
