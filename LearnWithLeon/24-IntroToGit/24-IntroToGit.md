@@ -24,12 +24,13 @@ Tomorrow (Apr. 1st) 6pm ET on Discord!
 
 ## Who is this for?
 *Never used the terminal, and thought I was saying get
-
+Don't worry if you don't feel comfortable with terminal or have never heard of git
+This class is for you
 ## Community Rules
 Github Code of Conduct
 https://github.com/microsoft/virtual-events
-
 !githubcoc
+
 
 ## Career? (Review)
 Learning to Code is the current gold rush
@@ -171,9 +172,14 @@ Microsoft Azure you a real one
 ## First, The Terminal
 ## Terminal, Bash, Git Bash, Unix, Shell, CLI, cmd
 ## A place where you can type commands that cause actions
+Terminals can be confusing with a lot of commands and lingo
+But to keep it simple it is a place where you can type commands and cause actions
+
 ## APPLE II
 Emulator
 https://www.scullinsteel.com/apple2/
+This was one of the first personal computers available
+It was pretty much only a terminal
 
 ## CLI > GUI
 Command Line Interface vs. Graphical User Interface
@@ -258,12 +264,13 @@ view -> Command Palette ->
 Shell Command: Install 'code' command in PATH
 
 ## Access The Terminal?
+There are a few different ways to access a terminal based on your operating system
 ## Windows
 Git Bash
 https://gitforwindows.org
 (for today)
 
-WSL
+WSL (RECOMMENDED BY ME)
 https://ubuntu.com/wsl
 (rest of program - will walk through during office hours)
 
@@ -272,12 +279,63 @@ Applications -> Terminal
 
 ## Let's Code
 Normal Folder Setup
+Take 5 minutes to try to create our template folder/file structure in command line
+It should look like this:
+```
+100DevsNormalFolder
+  - css
+    - style.css
+  - javascript
+    - main.js
+  - index.html
+```
+
+Solution:
+Make sure you are in a folder where you want to add our template
+Create folder
+```
+$mkdir 100DevsNormalFolder
+```
+Create css and javascript folders
+```
+$mkdir css
+$mkdir javascript
+```
+Create an index.html
+```
+$touch index.html
+```
+Go into css and create css file
+```
+$cd css
+$touch style.css
+```
+Go to javascript and create js file
+```
+$cd ../javascript
+$touch main.js
+```
+Now delete it all and do it again
+```
+$cd ../../
+$rm -rf example
+```
 
 ## !raffle
 ## WHAT IS GIT?
 ## While working on a really important Word Doc what did you do?
+You made sure to save it
+Sometimes you might have more than 1 version of that file saved
+(ex: finalversion.docx, realfinalversion.docx, finalfinal.dox etc )
+Maybe you would email it to yourself?
+
 ## What if you wanted to work with someone else?
+You might have to email it to them and make sure you are using their version
+Then someone else might make changes with a different color
+It can be really difficult to track and manage when other people get involved
+
 ## Git solves this problem when working with code
+git does this by creating save points
 (save points)
 
 ## Git is a version control system
@@ -290,6 +348,7 @@ This has a deeper meaning, but similar to save points
 Just the term for creating that save point
 
 ## Git enables you to roll back to previous "snapshots" (commits)
+You can go back to your previous snapshots so you don't accidentally mess something up
 No more file -> save as -> folder132
 
 ## !raffle
@@ -299,7 +358,7 @@ Git Bash
 https://gitforwindows.org
 (for today)
 
-WSL
+WSL (RECOMMENDED BY ME)
 (rest of program - will walk through during office hours)
 
 ## MacOS
@@ -317,6 +376,8 @@ $ sudo apt-get install git
 
 ## Once Installed 
 Setup User Name and Email
+Use the email you use with your github account to make life easier
+This information will be used to identify taht you are the one that made a commit
 ```
 $ git config --global user.name "Leon Noel" 
 $ git config --global user.email "leon@leonnoel.com"
@@ -325,6 +386,8 @@ $ git config --global user.email "leon@leonnoel.com"
 ## Let's Install
 Try Installing Git
 *If you get stuck, office hours! (Saturday - 12pm EST)
+Try to get git installed 
+(not adding instructions as there are a lot of different ways for different platforms)
 
 ## !raffle
 ## Basic Git Commands
@@ -378,55 +441,101 @@ $git branch -M main
 
 ## Let's Code
 Make A Commit
+Try to commit the files we have created so far
+
+Solution:
+```
+$git add *
+$git commit -m "Initial commit"
+```
+
 ## !raffle
 ## Want to try something without borking all your code
+You can use branches to experiment with new features/ideas without messing up all of your code
+
 ## BRANCHES
 ## git status
 Find out if you are on main first
+```
+$git status
+=> on branch main
+```
 
-## git branch <name>
+## git branch < name >
 Creates a new branch for you to make changes on without affecting the rest of your code!
+```
+$git branch risky
+```
 
-## git checkout <name>
+## git checkout < name >
 Moves you to new branch where you can make changes without affecting the rest of your code! 
+```
+$git checkout risky
+```
 
 ## Make Your Changes
 Add your changes to staging
 Commit Your Changes
+```
 git add .
 git commit -m "changes made"
+```
 
 ## git checkout main
 Moves you back to main branch
+```
+$git checkout main
+```
 
-## git merge <branch>
+## git merge < branch >
 Adds changes from other branch to main
-
+```
+$git merge risky
+```
 ## Let's Code
 Use A Branch
+You can use the above process to make changes and merge them back into your main branch
 
+(didn't do in class)
 ## !raffle
 ## What is Github?
+Github is like a 'clound storage' with a lot of extra features
+We can backup all of our files to here
+We can also enable actions that happen and host github pages
+
 ## Local Vs. Remote
+Having remote backups means it is harder to lose your work
 ## Not only backups,
 but a whole suite of tools to work with other developers
 
 ## Let's Make
 A Github Account
+Create a github account that you will use in the coures (and outside of it)
+(didn't do in class)
 
 ## !raffle
 ## PUSH IT
 ## Create A Github Repo
+Click new repository on github
+
 ## Instructions with each new repo
+Instructions for how to push are listed when creating a new repo
+(for ssh there is setup in github and within terminal but should be done)
+
 ## Let's Push
 Our First Repo
+Follow the instructions to add your commit to github
 
 ## !raffle
 ## What are
 Github Pages?
+Github pages is a way to host your website on github quickly and easily
+You can keep it up to date with your main branch automatically
 
 ## Let's Host
 Host On Github Pages
+By just clicking new branch and naming it `gh-pages` 
+The repo will be hosted on github for you automatically
 
 ## Homework
 Due (Tues. 4/5):
