@@ -1,3 +1,34 @@
+2022-4-2
+```js
+// Find the Odd Int (6kyu)
+//
+// Given an array of integers, 
+// find the one that appears an odd number of times.
+// There will always be only one integer that appears an odd number of times.
+
+// Examples
+console.log(findOdd([7])) //=> 7 because it occurs 1 time(which is odd).
+console.log(findOdd([0])) //=> 0, because it occurs 1 time(which is odd).
+console.log(findOdd([1, 1, 2])) //=> 2, because it occurs 1 time(which is odd).
+console.log(findOdd([0, 1, 0, 1, 0])) //=> 0, because it occurs 3 times(which is odd).
+console.log(findOdd([1, 2, 2, 3, 3, 3, 4, 3, 3, 3, 2, 2, 1])) //=> 4, because it appears 1 time(which is odd).
+
+function findOdd(A) {
+  let val
+  A.forEach((el) => { 
+    let indexes = [] // hold list of indexes where the current value exists
+    let i = -1; // -1 so while loop will start at index 0
+    while((i = A.indexOf(el, i + 1)) !== -1){ // search for an index of the element starting after the current index (last found index or 0)
+      indexes.push(i) // if an index is found add the index to the index array
+    }
+    if(indexes.length % 2 !== 0){
+      // This is the number repeated odd times if indexes.length is odd
+      val = el
+    }
+  })
+  return val
+}
+```
 2022-4-1
 ```js
 // Write Number in Expanded Form (6kyu)
