@@ -1,3 +1,58 @@
+2022-4-3
+```js
+// Ball Upwards (6kyu)
+// 
+// You throw a ball vertically upwards with an initial speed v(in km per hour).
+// The height h of the ball at each time t is given by h = v * t - 0.5 * g * t * t 
+// where g is Earth's gravity (g ~ 9.81 m/s**2). 
+// A device is recording at every tenth of second the height of the ball. 
+// For example with v = 15 km/h the device gets something of the following form: 
+// (0, 0.0), (1, 0.367...), (2, 0.637...), (3, 0.808...), (4, 0.881..) ... 
+// where the first number is the time in tenth of second 
+// and the second number the height in meter.
+//
+// Task
+// Write a function max_ball with parameter v(in km per hour) 
+// that returns the time in tenth of second of the maximum height recorded by the device.
+
+// Examples:
+console.log(maxBall(15)) //=> 4
+console.log(maxBall(25)) //=> 7
+
+// Notes
+// Remember to convert the velocity from km / h to m / s 
+// or from m / s in km / h when necessary.
+// The maximum height recorded by the device is not necessarily the maximum height reached by the ball.
+
+function maxBall(v){
+
+  let t = 0;
+  let heights = [];
+
+
+  // Check that the last element in height array is still bigger than the previous (ball going up)
+  // If it is not then the ball is going down and we no longer need to calculate
+  while (heights[heights.length - 1] > heights[heights.length - 2] || heights.length <= 1){
+    t += 1;
+    // T will be in tenth of a second (multiply by .1 to convert)
+    // V will be in km per hour (divide by 3.6 to convert)
+    // G will be in m per second
+    // Convert all relative to a second in calculation
+    // Add result as height to heights array
+    heights.push((v / 3.6) * (t*.1) - 0.5 * (9.81) * (t*.1) * (t*.1))
+  }
+
+  // return t - 1 because t is currently the time for the final calculation which is when the ball started heading down
+  return t - 1;
+}
+
+// Much better solution just calculating second of max height given velocity
+// Then converting the resulting second value to a tenth of a second and rounding to the nearest full value
+function maxBallV2(v0) {
+  const g = 9.81, mpsToKph = 3.6, secondsToTenths = 10;
+  return Math.round(secondsToTenths * v0 / mpsToKph / g);
+}
+```
 2022-4-2
 ```js
 // Find the Odd Int (6kyu)
