@@ -1,3 +1,37 @@
+2022-4-4
+```js
+// Multiplication Table (6kyu)
+//
+// Your task, is to create NxN multiplication table, 
+// of size provided in parameter.
+
+// for example, when given size is 3:
+// [[1, 2, 3],
+// [2, 4, 6],
+// [3, 6, 9]]
+
+multiplicationTable = function(size) {
+  let table = [];
+  for(let i = 1; i <= size; i++){
+    let subTable = [];
+    for(let n = 1; n <= size; n++){
+      subTable.push(n * i)
+    }
+    table.push(subTable)
+  }
+  return table
+}
+
+// Another solution I liked:
+// Same idea as mine except creating the arrays dynamically instead of pushing to empty/existing arrays
+multiplicationTableV2 = function(size) {
+  return Array.apply(null, new Array(size)).map(function(val, i) {
+    return Array.apply(null, new Array(size)).map(function(val, j) {
+      return (i+1) * (j+1);
+    });
+  });
+}
+```
 2022-4-3
 ```js
 // Ball Upwards (6kyu)
