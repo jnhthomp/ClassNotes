@@ -1,3 +1,62 @@
+2022-4-5
+```js
+// Lottery Ticket (6 kyu)
+//
+// Time to win the lottery!
+// Given a lottery ticket(ticket), 
+// represented by an array of 2 - value arrays, 
+// you must find out if you've won the jackpot.
+// Example ticket:
+//
+// [['ABC', 65], ['HGR', 74], ['BYHT', 74]]
+// To do this, you must first count the 'mini-wins' on your ticket.
+// Each subarray has both a string and a number within it.
+// If the character code of any of the characters in the string matches the number, 
+// you get a mini win.
+// Note you can only have one mini win per sub array.
+//
+// Once you have counted all of your mini wins, 
+// compare that number to the other input provided(win).
+// If your total is more than or equal to(win), 
+// return 'Winner!'. Else return 'Loser!'.
+// 
+// All inputs will be in the correct format.
+// Strings on tickets are not always the same length.
+// bingo([['ABC', 65], ['HGR', 74], ['BYHT', 74]], 2) //=> Loser!
+bingo([['ABC', 65], ['HGR', 74], ['BYHT', 74]], 1) //=> Winner!
+// bingo([['HGTYRE', 74], ['BE', 66], ['JKTY', 74]], 3) //=> Loser!
+function bingo(ticket, win) {
+  let ticketVal = ticket.map((el, i) => {
+    let str = el[0]
+    let found = false
+    for (let i = 0; i < str.length; i++) {
+      console.log(str[i], el[1])
+      if (str.charCodeAt(i) === el[1]) {
+        found = true
+      }
+    }
+    return found ? 1 : 0
+    console.log(el)
+  }).reduce((acc, el) => acc += el, 0)
+
+  return ticketVal >= win ? 'Winner!' : 'Loser!'
+}
+
+// Another solution I liked
+// Instead of translating each letter to a charcode
+// Translate the charcode to a letter and see if the string contains it
+function bingoV2(ticket, win) {
+  var count = 0;
+
+  ticket.forEach(game => {
+    if (game[0].includes(String.fromCharCode(game[1]))) {
+      count++;
+    }
+  });
+
+  return (count >= win) ? "Winner!" : "Loser!";
+}
+```
 2022-4-4
 ```js
 // Multiplication Table (6kyu)
