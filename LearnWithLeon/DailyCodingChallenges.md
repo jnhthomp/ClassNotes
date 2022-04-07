@@ -1,3 +1,31 @@
+2022-4-7
+```js
+// String Transformer (6kyu)
+//
+// Given a string, return a new string 
+// that has transformed based on the input:
+// Change case of every character, 
+//   ie.lower case to upper case, upper case to lower case.
+// Reverse the order of words from the input.
+// Note: You will have to handle multiple spaces, and leading / trailing spaces.
+//
+// For example:
+// "Example Input" ==> "iNPUT eXAMPLE"
+// You may assume the input only contain English alphabet and spaces.
+
+
+console.log(stringTransformer('Example Input'))  //=> "iNPUT eXAMPLE"
+function stringTransformer(str){
+  return str.split(' ').reverse().map((el) => {
+    return el.split('').map((el) => el.toUpperCase() === el ? el.toLowerCase().toLowerCase() : el.toUpperCase()).join('') 
+  }).join(' ');
+}
+
+
+// Another version of the above
+const stringTransformerV2 = (str) => str.split(' ').reverse().map((el) => el.split('').map((el) => el.toUpperCase() === el ? el.toLowerCase().toLowerCase() : el.toUpperCase()).join('')).join(' ')
+console.log(stringTransformerV2('Example Input')) //=> "iNPUT eXAMPLE"
+```
 2022-4-6
 ```js
 // Count letters in string (6kyu)
