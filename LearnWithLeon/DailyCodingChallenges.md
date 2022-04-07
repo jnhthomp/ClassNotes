@@ -1,3 +1,38 @@
+2022-4-6
+```js
+// Count letters in string (6kyu)
+//
+// In this kata, 
+// you've to count lowercase letters in a given string 
+// and return the letter count in a hash 
+// with 'letter' as key and count as 'value'. 
+// The key must be 'symbol' instead of string in Ruby 
+// and 'char' instead of string in Crystal.\
+
+letterCount('arithmetics') //=> {"a": 1, "c": 1, "e": 1, "h": 1, "i": 2, "m": 1, "r": 1, "s": 1, "t": 2}
+
+function letterCount(s){
+  let returnObj ={}
+  s.split('').forEach((el,i) => { 
+    if(returnObj.hasOwnProperty(el)){
+      returnObj[el] += 1
+    } else{
+      returnObj[el] = 1
+    }
+  })
+
+  return returnObj;
+}
+
+// Another solution I liked
+// This reduces to an object instead of adding to a new object
+const letterCount = s => s
+  .split('')
+  .reduce((accum, value) => {
+    accum[value] = accum[value] ? accum[value] + 1 : 1
+    return accum
+  }, {})
+```
 2022-4-5
 ```js
 // Lottery Ticket (6 kyu)
