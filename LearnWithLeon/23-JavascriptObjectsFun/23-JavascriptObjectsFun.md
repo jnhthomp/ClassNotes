@@ -1,4 +1,4 @@
-# Javascript - Objects
+# Javascript - Objects Fun
 Slides: https://slides.com/leonnoel/100devs2-javascript-objects-fun-time
 ___
 ## Agenda

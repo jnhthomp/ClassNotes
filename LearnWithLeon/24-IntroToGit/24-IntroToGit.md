@@ -1,4 +1,4 @@
-# Javascript - Objects
+# Git - Intro to Git
 Slides: https://slides.com/leonnoel/100devs2-intro-to-git-and-github
 ___
 ## Agenda

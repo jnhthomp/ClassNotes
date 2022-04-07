@@ -1,4 +1,4 @@
-# Javascript - Objects
+# Javascript - More Objects
 Slides: https://slides.com/leonnoel/100devs2-more-javascript-objects
 ___
 ## Agenda
