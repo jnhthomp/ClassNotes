@@ -1,3 +1,59 @@
+2022-4-8
+```js
+// Count the number of Duplicates (6kyu)
+//
+// Write a function that will 
+// return the count of distinct case -insensitive 
+// alphabetic characters and numeric digits that 
+// occur more than once in the input string.
+// The input string can be assumed to contain only alphabets
+// (both uppercase and lowercase) and numeric digits.
+
+// Example
+//
+console.log(duplicateCount("abcde")) //=> 0 # no characters repeats more than once
+console.log(duplicateCount("aabbcde")) //=> 2 # 'a' and 'b'
+console.log(duplicateCount("aabBcde")) //=> 2 # 'a' occurs twice and 'b' twice(`b` and`B`)
+console.log(duplicateCount("indivisibility")) //=> 1 # 'i' occurs six times
+console.log(duplicateCount("Indivisibilities")) //=> 2 # 'a' and '1'
+console.log(duplicateCount("ABBA")) //=> 2 # 'A' and 'B' each occur twice
+
+function duplicateCount(str){
+  // Object: key = letter & value = number of times appearing in string
+  let returnObj = {}
+  // Convert string to returnObj
+  str.toLowerCase().split('').forEach((el) => {
+    // If key exists increase the value to count this letter
+    if(returnObj.hasOwnProperty(el)){
+      returnObj[el] += 1
+    } else {// no key yet, initialize one to value 1
+      returnObj[el] = 1
+    }
+  })
+
+  // Count keys in obj with value > 1
+  let count = 0
+  for(key in returnObj){
+    if(key > 1){
+      count++
+    }
+  }
+
+  return count
+}
+
+// Another solution I liked
+// This filters the string down to an array of chars that are repeated 
+// Does this by making sure this is not the first instance of that char 
+//  and IS the last instance of the char
+// If so then it is added to the filtered array
+// The length of the filtered results is how many characters are repeated
+function duplicateCountV2(text){
+  return text.toLowerCase().split('').filter(function(val, i, arr){
+    return arr.indexOf(val) !== i && arr.lastIndexOf(val) === i;
+  }).length;
+}
+```
 2022-4-7
 ```js
 // String Transformer (6kyu)
