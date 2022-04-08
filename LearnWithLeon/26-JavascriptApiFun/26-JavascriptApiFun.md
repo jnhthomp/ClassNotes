@@ -39,9 +39,14 @@ https://www.firsttimersonly.com/
 Contains a list of website that aggregate project issues
 There should be some that are easy enough to contribute to for the first time
 
-## !youtube
+## !youtube (Review)
+Youtube lectures were a little behind but they should be caught up now
+
 ## !Merch
+New merch up with r/place designs
+
 ## THANK YOU
+
 ## Programming (Review)
 ## What is a program? (Review)
 A program is a set of instructions that you write to tell a computer what to do
@@ -112,6 +117,35 @@ stopwatch.tellTime(stopwatch.currentTime)
 
 ## Let's Code (Review)
 Objects - Lost Galaxy
+See 'class26-materials/objects-lost-galaxy'
+Instead of a dog object do a pizza object
+```js
+//Create a pizza object that has four properties and three methods
+```
+
+Solution:
+```js
+//Create a pizza object that has four properties and three methods
+const pizza = {
+  toppings: ['pepperoni', 'pineapple'],
+  size: 'large',
+  crust: 'stuffed',
+  sauce: 'red',
+
+  addTopping(newTopping) {
+    this.toppings.push(newTopping)
+  },
+
+  removeTopping(toppingIndex) {
+    this.toppings = this.toppings.filter((topping, i) => i !== toppingIndex)
+  },
+
+  submitOrder(){
+    console.log(`Making ${this.size} ${this.crust} crust pizza with ${this.sauce} sauce and ${this.toppings.join(',')}`);
+  }
+  
+};
+```
 
 ## Objects (Review)
 What if we want to make
@@ -201,6 +235,53 @@ A prototype is another object that is used as a fallback source of properties
 
 ## Let's Code
 Objects - Tony Hawk Pro Skater
+See: 'class26-materials/objects-constructor-fun'
+
+Follow the instructions to make a constructor for the pizza object we designed earlier
+```js
+//Create a constructor with 4 properties and 3 methods
+```
+
+Solution:
+```js
+//Create a constructor with 4 properties and 3 methods
+function Pizza (size, crust, sauce){
+  this.toppings = []
+  this.size = size
+  this.crust = crust
+  this.sauce = sauce
+
+  this.addTopping = function(newTopping){
+
+    this.toppings.push(newTopping);
+  }
+
+  this.removeTopping = function(toppingIndex){
+    this.toppings = this.toppings.filter((topping,i) => i !== toppingIndex)
+  }
+
+  this.submitOrder = function(){
+    console.log(`Making ${this.size} ${this.crust} crust pizza with ${this.sauce} sauce and ${this.toppings.join(', ')}`);
+  }
+}
+
+// Make a pizza
+let dominos = new Pizza('large', 'traditional', 'bbq')
+console.log(dominos)
+
+// Add toppings
+dominos.addTopping('pepperoni')
+dominos.addTopping('pineapple')
+dominos.addTopping('mushroom')
+console.log(dominos.toppings)
+
+// Remove a topping
+dominos.removeTopping(dominos.toppings.indexOf('pineapple'))
+console.log(dominos.toppings)
+
+// Submit order
+dominos.submitOrder()
+```
 
 ## Car Factory (Review)
 Look Ma! New syntax!
@@ -276,6 +357,25 @@ API returns a JSON object that we can use within our apps
 
 ## Let's Code
 DOG PHOTOS!
+See 'class26-materials/objects-dog-photos'
+Follow the instructions (use the previous slide as a reference)
+```js
+//Get a dog photo from the dog.ceo api and place the photo in the DOM
+```
+
+Solution:
+```js
+//Get a dog photo from the dog.ceo api and place the photo in the DOM
+fetch("https://dog.ceo/api/breeds/image/random")
+  .then(res => res.json()) // parse response as JSON
+  .then(data => {
+    console.log(data);
+    document.querySelector('img').src = data.message
+  })
+  .catch(err => {
+    console.log(`error ${err}`)
+  });
+```
 
 ## APIs
 Stop trying to make Fetch happen!
@@ -294,6 +394,72 @@ Some APIs need Query Parameters to return the correct data
 
 ## Let's Code
 EVERYBODY! SHOTS! SHOTS! SHOTS!
+See: 'class26-materials/objects-shots'
+```js
+// The user will enter a cocktail. 
+// Get a cocktail name, photo, and instructions 
+// and place them in the DOM
+```
+
+Solution:
+```js
+//The user will enter a cocktail. Get a cocktail name, photo, and instructions and place them in the DOM
+
+
+let url = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${'margarita'}`
+
+
+function fetchDrinks(){
+  fetch(url)
+    .then(res => res.json()) // parse response as JSON
+    .then(data => {
+      // Save a random drink data
+      let drink = data.drinks[Math.ceil(Math.random() * data.drinks.length - 1)]
+      console.log(drink)
+      // Add drink details to dom
+      document.querySelector('h2').innerText = drink.strDrink
+      document.querySelector('h3').innerText = drink.strInstructions
+    })
+    .catch(err => {
+      console.log(`error ${err}`)
+    });
+}
+
+// Event listener on button to retrieve input, update url and perform fetch request with new url
+document.querySelector('button').addEventListener('click', (e) => {
+  url = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${document.querySelector('input').value}`
+  fetchDrinks()
+})
+
+fetchDrinks()
+//
+// function to perform or async fetch action
+function fetchDrinks(search = 'margarita'){ // base url
+  const url = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${search}`
+  fetch(url)
+    .then(res => res.json()) // parse response as JSON
+    .then(data => {
+      // Save a random drink from returned drinks array
+      let drink = data.drinks[Math.ceil(Math.random() * data.drinks.length - 1)]
+      // console.log(drink)
+      // Add drink data to DOM
+      document.querySelector('h2').innerText = drink.strDrink
+      document.querySelector('img').src = drink.strDrinkThumb
+      document.querySelector('h3').innerText = drink.strInstructions
+    })
+    .catch(err => {
+      console.log(`error ${err}`)
+    });
+}
+
+// On button click make new fetch function with input as search param/argument
+document.querySelector('button').addEventListener('click', (e) => {
+  fetchDrinks(document.querySelector('input').value)
+})
+
+// Fetch default drink method on page load
+fetchDrinks()
+```
 
 ## Let's Code
 NASA PHOTOS
@@ -303,6 +469,7 @@ Do: Make the cocktailDB api work with spaces between the names!
 Do: Find three APIs and build three simple apps using those APIs (Not all of these work, but it is a start: https://github.com/public-apis/public-apis)
 Do: Codewars Daily!
 Do: Anki Daily!
+DO: Get NASA picture of the day api working
 
 Want to push?
 Do: Make a rotating list of drinks (an automatic carousel) from the cocktailDB

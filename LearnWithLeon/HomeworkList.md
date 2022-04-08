@@ -1,4 +1,4 @@
-# Due 3/31
+# Due 3/31 
 COMPLETE: https://youtu.be/PFmuCDHHpwk
 ```js
 
@@ -202,7 +202,7 @@ COMPLETE https://youtu.be/0fKg7e37bQE​
 COMPLETE: https://aka.ms/learnwithleon (Intro. To Github)
   - https://github.com/jnhthomp/github-slideshow
 
-## Bonus:
+## Bonus 3/31:
 COMPLETE: https://javascript.info/ Whole Chapter - Objects: the basics 
   - 4.1: Objects
     - ```js
@@ -493,3 +493,17 @@ COMPLETE: https://javascript.info/ Whole Chapter - Objects: the basics
 COMPLETE: Pillars of OOP - https://medium.com/@hamzzza.ahmed95/four-pillars-of-object-oriented-programming-oop-e8d7822aa219
 
 Complete and Submit this project: https://github.com/leonnoel/100devs-calculator
+
+
+Above will most likely not be submitted
+___
+
+# Due 4/14
+Do: Make the cocktailDB api work with spaces between the names!
+Do: Find three APIs and build three simple apps using those APIs (Not all of these work, but it is a start: https://github.com/public-apis/public-apis)
+DO: Get NASA picture of the day api working
+
+## Bonus 3/31
+Do: Make a rotating list of drinks (an automatic carousel) from the cocktailDB
+Do: Make the NASA API handle all the data types including video
+Do: Add an API to your portfolio website
