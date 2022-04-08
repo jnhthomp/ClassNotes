@@ -16,7 +16,7 @@ function fetchDrinks(search = 'margarita') { // base url
 }
 
 document.querySelector('button').addEventListener('click', (e) => {
-  fetchDrinks(document.querySelector('input').value)
+  fetchDrinks(document.querySelector('input').value.split(' ').join('+'))
 })
 
 fetchDrinks()
