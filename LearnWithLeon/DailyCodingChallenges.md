@@ -1,3 +1,50 @@
+2022-4-10
+```js
+// What's a Perfect Power anyway? (5kyu)
+//
+// A perfect power is a classification of positive integers:
+// In mathematics, a perfect power is 
+// a positive integer that can be expressed as 
+// an integer power of another positive integer.
+// More formally, n is a perfect power if 
+// there exist natural numbers m > 1, and k > 1 such that mk = n.
+
+// Your task is to check wheter a given integer is a perfect power.
+// If it is a perfect power, return a pair m and k with mk = n as a proof.
+// Otherwise return Nothing, Nil, null, NULL, None or your language's equivalent.
+
+// Note: For a perfect power, there might be several pairs.
+// For example 81 = 3 ^ 4 = 9 ^ 2, so(3, 4) and(9, 2) are valid solutions.
+// However, the tests take care of this, so if a number is a perfect power, 
+// return any pair that proves it.
+
+// Examples:
+// console.log(isPP(4)) //=> "4 = 2^2"
+// console.log(isPP(9)) //=> "9 = 3^2"
+// console.log(isPP(5)) //=> "null"
+
+for(let i = 4; i <= 1024; i++){
+  // Will return pairs for the following: (See Sequence A001597 https://oeis.org/A001597)
+  // 1, 4, 8, 9, 16, 25, 27, 32, 36, 49, 64, 81, 100, 121,
+  // 125, 128, 144, 169, 196, 216, 225, 243, 256, 289, 324, 343, 361, 400, 
+  // 441, 484, 512, 529, 576, 625, 676, 729, 784, 841, 900, 961, 1000, 1024
+  console.log(isPP(i))
+}
+
+function isPP(n){
+  let k = 2
+  for(let m = 2; m**2 <= n; m++){
+    while(m**k < n){
+      k++
+    }
+    if(m**k === n){
+      return [m, k]
+    }
+    k = 2
+  }
+  return null
+}
+```
 2022-4-9
 ```js
 // Reverse the Words (?kyu)
