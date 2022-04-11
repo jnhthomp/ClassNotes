@@ -1,3 +1,46 @@
+2022-4-9
+```js
+// Reverse the Words (?kyu)
+//
+// Write a function that will reverse the order of the characters in each word
+// Without changing the order of the words themselves
+// A word is defined as a collection of letter chars 
+// All non-letter chars are considered delimiters
+//
+// example:
+console.log(reverseWords("The fox'es dog left, the house.")); 
+//^=> "ehT xof'se god tfel, eht esouh."
+console.log(reverseWords("Works with no delimiting char at the end"));
+//^=> "skroW htiw on gnitimiled rahc ta eht dne"
+
+function reverseWords(input) {
+  let wordArray = [];
+  let curWord = [];
+  // Cycle through each char in input
+  for (let i = 0; i < input.length; i++) {
+    // If char is letter (by charCode) add to curWord array
+    if (
+      (input.charCodeAt(i) >= 65 && input.charCodeAt(i) <= 90) ||
+      (input.charCodeAt(i) >= 97 && input.charCodeAt(i) <= 122)
+    ) {
+      curWord.push(input[i]);
+      // If char is not a letter then the current word is over
+      // Flip/compress back to string before adding to wordArray
+      // Immediately add the delimiter char to word array as well
+      // Clear current word
+    } else {
+      wordArray.push(curWord.reverse().join(""));
+      wordArray[wordArray.length - 1] += input[i];
+      curWord = [];
+    }
+  }
+  // If string doesn't end in delimiter
+  wordArray.push(curWord.reverse().join(""));
+  // return array of flipped words after joining elements into string
+  return wordArray.join("");
+}
+
+```
 2022-4-8
 ```js
 // Count the number of Duplicates (6kyu)
