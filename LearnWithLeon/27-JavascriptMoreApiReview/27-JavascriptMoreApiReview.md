@@ -49,8 +49,12 @@ Contains a list of website that aggregate project issues
 There should be some that are easy enough to contribute to for the first time
 
 ## Codewars !Clan
+Don't forget to be doing codewars every day
+Use the following clan to join the 100Dev clan 
+(past full string as clan name)
 
-Clan: #100Devs - leonnoel.com/twitch
+Clan: 
+#100Devs - leonnoel.com/twitch
 
 ## Programming (Review)
 ## What is a program? (Review)
@@ -390,6 +394,57 @@ Classes are like templates for objects!
 
 ## Let's Code
 Objects - Netflix TV Shows
+See 'class27-materials/objects-netflix-tv-shows'
+Follow the instructions and complete in 3 minutes:
+```js
+// Create a Netflix TV Show class with a constructor 
+// that makes Netflix TV Shows with 4 properties and 3 methods
+```
+
+Solution:
+```js
+// Create a Netflix TV Show class with a constructor 
+// that makes Netflix TV Shows with 4 properties and 3 methods
+class NetflixTvShow{
+  constructor(title, description, category, rating) {
+    this.title = title
+    this.description = description
+    this.category = category
+    this.rating = rating
+  }
+
+  play(){
+    console.log(`Now playing: ${this.title}`)
+  }
+
+  recommend(){
+    console.log(`Watch ${this.title} about ${this.description}!`)
+  }
+
+  addToList(){
+    console.log(`${this.title} added to your list`)
+  }
+}
+```
+To use this class in the browser
+In the browser console do:
+```js
+// Create object
+let bojackHorseman = new NetflixTvShow('Bojack Horseman', 'A horse walks into a bar and the bartender asks, "Why the long face?"', 'Comedy', 99)
+
+// View object and properties
+bojackHorseman
+bojackHorseman.title
+bojackHorseman.description
+bojackHorseman.category
+bojackHorseman.rating
+
+// Access methods
+bojackHorseman.play()
+bojackHorseman.recommend()
+bojackHorseman.addToList()
+```
+
 ## APIs (Review)
 What are APIs?
 
@@ -436,9 +491,9 @@ fetch("https://dog.ceo/api/breeds/image/random")
 ```
 API returns a JSON object that we can use within our apps
 
-## APIs
+## APIs (Review)
 Stop trying to make Fetch happen!
-```
+```js
 const url = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita'
 fetch(url)
     .then(res => res.json()) // parse response as JSON
@@ -454,9 +509,225 @@ Some APIs need Query Parameters to return the correct data
 ## Let's Code
 NASA PHOTOS
 
+See 'class27-materials/api-template'
+When you click the button it will grab the value in the input
+Then it will plug that value into the url
+Then it will make a fetch request with that url
+```js
+//Example fetch using pokemonapi.co
+document.querySelector('button').addEventListener('click', getFetch)
+
+function getFetch(){
+  const choice = document.querySelector('input').value
+  const url = 'https://pokeapi.co/api/v2/pokemon/'+choice
+
+  fetch(url)
+      .then(res => res.json()) // parse response as JSON
+      .then(data => {
+        console.log(data)
+      })
+      .catch(err => {
+          console.log(`error ${err}`)
+      });
+}
+```
+
+Change this so that it will work with NASA's Astronomy Picture of the Day API
+If you signup for an api key you should get a link that you can use to query NASA's api
+
+```js
+//Example fetch using pokemonapi.co
+document.querySelector('button').addEventListener('click', getFetch)
+
+function getFetch(){
+  const choice = document.querySelector('input').value
+  // NASA APOD API URL
+  // https://api.nasa.gov/planetary/apod?api_key=3Lq27Fp6DXC6iXkqDf6coImbwriiDarFSMG59lgE
+  const url = `https://api.nasa.gov/planetary/apod?api_key=3Lq27Fp6DXC6iXkqDf6coImbwriiDarFSMG59lgE${choice}`
+
+  fetch(url)
+      .then(res => res.json()) // parse response as JSON
+      .then(data => {
+        console.log(data)
+      })
+      .catch(err => {
+          console.log(`error ${err}`)
+      });
+}
+```
+
+If we see the object there is an explanation and image that we can show on the page
+Lets use these and add them to our page when we get that object
+```js
+//Example fetch using pokemonapi.co
+document.querySelector('button').addEventListener('click', getFetch)
+
+function getFetch(){
+  const choice = document.querySelector('input').value
+  // NASA APOD API URL
+  // https://api.nasa.gov/planetary/apod?api_key=3Lq27Fp6DXC6iXkqDf6coImbwriiDarFSMG59lgE
+  const url = `https://api.nasa.gov/planetary/apod?api_key=3Lq27Fp6DXC6iXkqDf6coImbwriiDarFSMG59lgE${choice}`
+
+  fetch(url)
+      .then(res => res.json()) // parse response as JSON
+      .then(data => {
+        console.log(data)
+        // Add image
+        document.querySelector('img').src = data.hdurl
+        // Add explanation text
+        document.querySelector('h3').innerText = data.explanation
+      })
+      .catch(err => {
+          console.log(`error ${err}`)
+      });
+}
+```
+
+Now lets make it so you can enter a date and get a photo back
+If we want to do that we need to collect the input
+We can get a date picker by changing the input in our html
+```html
+<input type="date" name="" value="">
+```
+
+Now if we console.log this we can see how our date is stored
+```js
+//Example fetch using pokemonapi.co
+document.querySelector('button').addEventListener('click', getFetch)
+
+function getFetch(){
+  const choice = document.querySelector('input').value
+  // NASA APOD API URL
+  // https://api.nasa.gov/planetary/apod?api_key=3Lq27Fp6DXC6iXkqDf6coImbwriiDarFSMG59lgE
+  const url = `https://api.nasa.gov/planetary/apod?api_key=3Lq27Fp6DXC6iXkqDf6coImbwriiDarFSMG59lgE${choice}`
+
+  fetch(url)
+      .then(res => res.json()) // parse response as JSON
+      .then(data => {
+        console.log(data)
+        document.querySelector('img').src = data.hdurl
+        document.querySelector('h3').innerText = data.explanation
+        console.log(document.querySelector('input').value) // => 2022-04-12
+      })
+      .catch(err => {
+          console.log(`error ${err}`)
+      });
+}
+```
+
+This will log
+```js
+//=> 2022-04-05
+```
+
+The NASA API want the string just like this as a url parameter to 
+Except we need to add this as another query parameter
+In order to do this we use the ampersand
+```js
+//Example fetch using pokemonapi.co
+document.querySelector('button').addEventListener('click', getFetch)
+
+function getFetch(){
+  const choice = document.querySelector('input').value
+  // NASA APOD API URL
+  // https://api.nasa.gov/planetary/apod?api_key=3Lq27Fp6DXC6iXkqDf6coImbwriiDarFSMG59lgE
+  const url = `https://api.nasa.gov/planetary/apod?api_key=3Lq27Fp6DXC6iXkqDf6coImbwriiDarFSMG59lgE&date=${choice}`
+
+  fetch(url)
+      .then(res => res.json()) // parse response as JSON
+      .then(data => {
+        console.log(data)
+        document.querySelector('img').src = data.hdurl
+        document.querySelector('h3').innerText = data.explanation
+        console.log(document.querySelector('input').value)
+      })
+      .catch(err => {
+          console.log(`error ${err}`)
+      });
+}
+```
+
+There is one issue
+If we search 2/3/2021 we get an error
+This is because this is actually a video not a photo
+Sometimes the photo of the day is a video
+We need to figure out a way to solve this
+We can use a conditional to check the media type before we add the media to our dom
+In that case we will need something in our html that will accept video
+We will use an iframe
+```html
+<h2>NASA APOD</h2>
+<img src="img/pokemon.jpeg" alt="">
+<iframe src="" frameborder="0"></iframe>
+<h3>Explanation</h3>
+```
+
+Now we can use a conditional to check the media type of our data
+Then we can append the photo/video to the correct element
+Remember to clear the src for the non-used element
+```js
+//Example fetch using pokemonapi.co
+document.querySelector('button').addEventListener('click', getFetch)
+
+function getFetch(){
+  const choice = document.querySelector('input').value
+  // NASA APOD API URL
+  // https://api.nasa.gov/planetary/apod?api_key=3Lq27Fp6DXC6iXkqDf6coImbwriiDarFSMG59lgE
+  const url = `https://api.nasa.gov/planetary/apod?api_key=3Lq27Fp6DXC6iXkqDf6coImbwriiDarFSMG59lgE&date=${choice}`
+
+  fetch(url)
+      .then(res => res.json()) // parse response as JSON
+      .then(data => {
+        console.log(data)
+        if(data.media_type === 'image'){
+          document.querySelector('img').src = data.hdurl  
+          document.querySelector('iframe').src = ''
+        } else {
+          document.querySelector('iframe').src = data.url
+          document.querySelector('img').src = ''
+        }
+        document.querySelector('img').src = data.hdurl
+        document.querySelector('h3').innerText = data.explanation
+        console.log(document.querySelector('input').value)
+      })
+      .catch(err => {
+          console.log(`error ${err}`)
+      });
+}
+```
+
 ## Local Storage
-## Local Storage
-Allows you to store data across browser sessions
+Local storage is another api that lets us do something complex
+This is a simple method we can use to store stuff in the users browser
+This will make data persist across browser sessions
+
+What does this mean?
+This means we can build an app, the user can come in and do things
+Then they can leave and come back later and they will still be able to access that data
+
+This can let us start to build apps that are a little bit more real
+Currently our apps reset whenever we reload
+With local storage we can make that data persistent on refresh
+
+One example is wordle (NYTimes puzzle game)
+If you solve a puzzle, close, and come back then your session will still be saved
+Any guesses you made will still be there
+
+This is because of local storage
+You can see this by using inspect and going to the application tab
+Then under storage click local storage
+This contains everything that NYTimes is storing on your PC through wordle
+This is an object that they can pull from whenever needed
+
+If you go to the console you can be reckless and clear your local storage by using
+```js
+localStorage.clear()
+```
+Now we lost our session and some of the data in the application tab is gone
+
+There are other actions we can take on local storage
+(not all inclusive)
+You can test the methods below in the browser
 
 ## Put Item Into Local Storage
 ```js
@@ -465,7 +736,7 @@ localStorage.setItem('bestFriend', 'Bob')
 
 ## Get Item Out Of Local Storage
 ```js
-localStorage.getItem('bestFriend', 'Bob')
+localStorage.getItem('bestFriend') //=> 'Bob'
 ```
 ## Remove Item In Local Storage
 ```js
@@ -479,9 +750,271 @@ localStorage.clear()
 
 ## Let's Code
 Local botScore Button
+See 'class27-materials/local-storage-botScore-button'
+```js
+//Create a button that adds 1 to a botScore stored in localStorage 
+```
+
+Solution:
+```js
+//Create a button that adds 1 to a botScore stored in localStorage 
+document.querySelector('button').addEventListener('click', addToScore);
+
+// When the button is clicked start this function
+function addToScore(){
+  // Check if there is a value for score in loacl storage
+  if(localStorage.getItem('score')){
+    // If so then get the current value, add one, and update
+    let localScore = localStorage.getItem('score');
+    localStorage.setItem('score', +localScore + 1)
+    console.log(localStorage.getItem('score'))
+  } else{
+    // If no value in local storage initialize to 1
+    localStorage.setItem('score', 1)
+  }
+}
+```
+
+This will only start working after we click
+We can refactor this to initialize the score on page load
+```js
+//Create a button that adds 1 to a botScore stored in localStorage 
+document.querySelector('button').addEventListener('click', addToScore);
+
+if(!localStorage.getItem('score')){
+  localStorage.setItem('score', 0)
+}
+
+function addToScore(){
+    let localScore = localStorage.getItem('score');
+    localStorage.setItem('score', +localScore + 1)
+    console.log(localStorage.getItem('score'))
+}
+```
 
 ## Let's Code
 A Card Game
+Create a copy of the api template to do this activity
+We are going to build a card game called war
+
+The way this works is you are playing against someone else and you both draw cards
+We want to compare those cards and the one with the higher card wins
+That person takes both cards
+If there is a tie then each will put 3 cards down, then, they flip the fourth and the winner takes all
+
+Instead of having to code all of our card logic we can use a deck of cards api to simplify some of the work
+See: https://www.deckofcardsapi.com/
+
+First lets see what we can get from them
+Try testing their api in postman
+```
+GET: https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1
+Returns:
+  {
+    "success": true,
+    "deck_id": "6eiuqtek8to1",
+    "remaining": 52,
+    "shuffled": true
+  }
+```
+
+Now we can use this deck id to get a specific deck with a draw action
+```
+GET: https://www.deckofcardsapi.com/api/deck/6eiuqtek8to1/draw/?count=2
+Returns:
+  {
+    "success": true,
+    "deck_id": "6eiuqtek8to1",
+    "cards": [
+        {
+            "code": "JH",
+            "image": "https://deckofcardsapi.com/static/img/JH.png",
+            "images": {
+                "svg": "https://deckofcardsapi.com/static/img/JH.svg",
+                "png": "https://deckofcardsapi.com/static/img/JH.png"
+            },
+            "value": "JACK",
+            "suit": "HEARTS"
+        },
+        {
+            "code": "2D",
+            "image": "https://deckofcardsapi.com/static/img/2D.png",
+            "images": {
+                "svg": "https://deckofcardsapi.com/static/img/2D.svg",
+                "png": "https://deckofcardsapi.com/static/img/2D.png"
+            },
+            "value": "2",
+            "suit": "DIAMONDS"
+        }
+    ],
+    "remaining": 50
+  }
+```
+
+We can see that this returned a draw from that deck 
+
+Now that we have tested the api we can get started working on the game
+
+First we will create the game area in html
+```js
+<body>
+  <h1>Card Game!</h1>
+
+  <button>Deal Two Cards</button>
+  
+  <h2>Player 1</h2>
+  <img id="player1" src="" alt="playing card">
+  <h2>Player 2</h2>
+  <img id="player2" src="" alt="playing card">
+  <script type="text/javascript" src="js/main.js"></script>
+</body>
+```
+
+Now the first thing we need is to get a deck id
+The app only works if we get a deck id
+Then we can use it draw cards
+
+To get that deck id we had to use the first api request
+We will do a fetch outside of the click event because the click will draw cards
+We want the deck to initialize when the page loads (for now at least)
+```js
+let deckId = ''
+fetch('https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
+  .then(res=> res.json())
+  .then(data => {
+    console.log(data)
+  })
+  .catch(err => {
+    console.log(`error ${err}`)
+  })
+```
+This will get a new deck every time the page loads for homework save the deck id to local storage
+
+Now we want to save the deck id to the variable we saved
+```js
+...
+  .then(data => {
+    console.log(data)
+    deckId = data.deck_id
+  })
+  ...
+```
+
+Now lets try to add the draw two cards function just like in postman
+We can use the `deck_Id` to plug in the current deck
+```js
+document.querySelector('button').addEventListener('click', drawTwo)
+
+function drawTwo(){
+  const url = `https://www.deckofcardsapi.com/api/deck/${deckId}/draw/?count=2`
+
+  fetch(url)
+      .then(res => res.json()) // parse response as JSON
+      .then(data => {
+        console.log(data)
+      })
+      .catch(err => {
+          console.log(`error ${err}`)
+      });
+}
+```
+
+Now lets try getting these cards to show up in the dom
+```js
+function drawTwo(){
+  const url = `https://www.deckofcardsapi.com/api/deck/${deckId}/draw/?count=2`
+
+  fetch(url)
+      .then(res => res.json()) // parse response as JSON
+      .then(data => {
+        console.log(data)
+        document.querySelector('#player1').src = data.cards[0].image
+        document.querySelector('#player2').src = data.cards[1].image
+      })
+      .catch(err => {
+          console.log(`error ${err}`)
+      });
+}
+```
+
+Now we can draw cards but we aren't doing any comparison to see who won
+(Add a result h3 to index.html)
+We only care about the number so lets get the value of each card
+We want to assignt this value to variables for each player
+```js
+function drawTwo(){
+  const url = `https://www.deckofcardsapi.com/api/deck/${deckId}/draw/?count=2`
+
+  fetch(url)
+      .then(res => res.json()) // parse response as JSON
+      .then(data => {
+        console.log(data)
+        document.querySelector('#player1').src = data.cards[0].image
+        document.querySelector('#player2').src = data.cards[1].image
+        let player1Val = +data.cards[0].value
+        let player2Val = +data.cards[1].value
+        if(player1Val > player2Val){
+          document.querySelector('h3').innerText = 'Player 1 wins!'
+        } else if(player1Val < player2Val){
+          document.querySelector('h3').innerText = 'Player 2 wins!'
+        } else {
+          document.querySelector('h3').innerHTML = 'WAR!'
+        }
+
+      })
+      .catch(err => {
+          console.log(`error ${err}`)
+      });
+}
+```
+
+One thing is that we will need to convert the face cards to numbers
+We can create a helper function for this
+```js
+function convertToNum(val){
+  if(val === 'ACE'){
+    return 14
+  } else if(val === 'KING'){
+    return 13
+  } else if (val === 'QUEEN') {
+    return 12
+  } else if (val === 'JACK') { 
+    return 11
+  } else {
+    // Val must still be converted to num
+    return +val
+  }
+}
+```
+
+Then we can call this function when getting the values
+```js
+function drawTwo(){
+  const url = `https://www.deckofcardsapi.com/api/deck/${deckId}/draw/?count=2`
+
+  fetch(url)
+      .then(res => res.json()) // parse response as JSON
+      .then(data => {
+        console.log(data)
+        document.querySelector('#player1').src = data.cards[0].image
+        document.querySelector('#player2').src = data.cards[1].image
+        // Convert cards to numbers
+        let player1Val = convertToNum(data.cards[0].value)
+        let player2Val = convertToNum(data.cards[1].value)
+        if(player1Val > player2Val){
+          document.querySelector('h3').innerText = 'Player 1 wins!'
+        } else if(player1Val < player2Val){
+          document.querySelector('h3').innerText = 'Player 2 wins!'
+        } else {
+          document.querySelector('h3').innerHTML = 'WAR!'
+        }
+
+      })
+      .catch(err => {
+          console.log(`error ${err}`)
+      });
+}
+```
 
 ## Let's Code
 A Book Tracker
