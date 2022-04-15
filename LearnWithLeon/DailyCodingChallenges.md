@@ -1,3 +1,55 @@
+2022-4-14
+```js
+// Sort the Odd (6kyu)
+//
+// Task
+// You will be given an array of numbers.
+// You have to sort the odd numbers in ascending order 
+// while leaving the even numbers at their original positions.
+
+// Examples
+console.log(sortArray([7, 1])) //=> [1, 7]
+console.log(sortArray([5, 8, 6, 3, 4])) //=> [3, 8, 6, 5, 4]
+console.log(sortArray([9, 8, 7, 6, 5, 4, 3, 2, 1, 0])) //=> [1, 8, 3, 6, 5, 4, 7, 2, 9, 0]
+
+function sortArray(array){
+  // Extract odd numbers to own array and replace with placehodler value
+  let oddArr = []
+  array = array.map((el) => { 
+    if(el % 2 !== 0 ){
+      oddArr.push(el)
+      return 1
+    }
+    else return el
+  })
+
+  // sort odd array
+  oddArr.sort((a, b) => a - b)
+
+  // Replace placeholder values with oddArray values from beginning
+  array = array.map((el) => { 
+    if(el === 1){
+      let toPush = oddArr[0]
+      oddArr.shift()
+      return toPush
+    } else {
+      return el
+    }
+  })
+  
+  // Return sorted array
+  return array
+}
+
+// Another solution I liked
+// Same process except condensed
+function sortArrayV2(array) {
+  // Filter out odd numbes and sort them into a new array
+  const odd = array.filter((x) => x % 2).sort((a, b) => a - b);
+  // If the current element in the original array is odd remove first element from odd array and replace
+  return array.map((x) => x % 2 ? odd.shift() : x);
+}
+```
 2022-4-13
 ```js
 // Get the Middle Character (7kyu)
