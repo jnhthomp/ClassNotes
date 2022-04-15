@@ -63,8 +63,11 @@ No "Class" Next Week
 
 ## Work Together Nights
 Tuesday / Thursday
+There will be a remo where you can work with other students if you would like
 
 ## Homework
+There is some work over the break that is due however
+
 Do: Catch Up
 Do: Intro JS Course https://www.codecademy.com/learn/introduction-to-javascript
 Do: Professional Checklist https://docs.google.com/document/d/1L2vTX3qvLhoGHeG5cVD2ljCfRGr1uJ_Gf-hNZj9KzTg/edit
@@ -359,6 +362,77 @@ Some APIs need Query Parameters to return the correct data
 
 ## Let's Code
 Objects - DnD https://www.dnd5eapi.co/
+See 'class28-materials/dnd'
+We want to be able to enter a spell
+Then see the subclasses that use that spell
+Starter:
+```js
+//Example fetch using DnD5eAPI - place subclasses in ul
+document.querySelector('button').addEventListener('click', getFetch)
+
+function getFetch(){
+  const choice = document.querySelector('input').value
+  const url = `https://www.dnd5eapi.co/api/spells/${choice}`
+
+  fetch(url)
+      .then(res => res.json()) // parse response as JSON
+      .then(data => {
+       
+      })
+      .catch(err => {
+          console.log(`error ${err}`)
+      });
+}
+```
+
+This is a little more complex than a normal api request because instead of returning a single piece of data (like a name)
+We are returning a list of names
+We can treat this list like any other array
+We can just loop through each item in it and for each item append it to the list
+Since each item is an object we will have to pull the value we want out of the object
+Solution:
+```js
+//Example fetch using DnD5eAPI - place subclasses in ul
+document.querySelector('button').addEventListener('click', getFetch)
+
+function getFetch(){
+  const choice = document.querySelector('input').value
+  const url = `https://www.dnd5eapi.co/api/spells/${choice}`
+
+  fetch(url)
+    .then(res => res.json()) // parse response as JSON
+    .then(data => {
+      if(document.querySelector('ul').hasChildNodes()){
+        document.querySelector('ul').removeChild(document.querySelector('ul').children[0])
+      }
+      // Add name
+      document.querySelector('h2').innerText = data.name;
+      // Handle multiple classes
+      data.classes.forEach((el, i) => { 
+        if(i > 0){
+          document.querySelector('h3').innerText += `/${el.name}`
+        } else{
+          document.querySelector('h3').innerText = el.name
+        }
+      })
+
+      // Clear previous entries from subclass list
+      while (document.querySelector('ul').hasChildNodes()) { // runs while child nodes exist in ul element
+        // Remove first child until all children are cleared and loop exits
+        document.querySelector('ul').removeChild(document.querySelector('ul').children[0])
+      }
+
+      // Loop through subclasses array
+      data.subclasses.forEach((el) => { 
+        // Create new li for each object in subclass array
+        document.querySelector('ul').innerHTML += `<li>${el.name}</li>`
+      })
+    })
+    .catch(err => {
+      console.log(`error ${err}`)
+    });
+}
+```
 
 ## Local Storage (Review)
 Local storage is another api that lets us do something complex
@@ -413,6 +487,70 @@ localStorage.clear()
 ```
 ## Let's Code
 A Book Tracker https://openlibrary.org/dev/docs/api/books
+Use the api above to enter an isbn and get back a book title
+Make a copy of the api template called book-title to do this
+
+solution:
+```js
+//Example fetch using pokemonapi.co
+document.querySelector('button').addEventListener('click', getFetch)
+document.querySelector('input').value = 1524713317
+function getFetch(){
+  
+  const choice = document.querySelector('input').value 
+  // console.log(choice)
+  const url = `https://openlibrary.org/isbn/${choice}.json`
+
+  fetch(url)
+      .then(res => res.json()) // parse response as JSON
+      .then(data => {
+        console.log(data)
+        title = data.title
+        document.querySelector('h2').innerText = title
+        console.log(title)
+      })
+      .catch(err => {
+          console.log(`error ${err}`)
+      });
+}
+```
+
+Now that we can get the title alter it so that we can store the title in local storage
+```js
+document.querySelector('button').addEventListener('click', getFetch)
+document.querySelector('input').value = 1524713317
+// Initialize local storage if it does not exist
+if(!localStorage.getItem('books')){
+  localStorage.setItem('books', '')
+}
+// set title from local storage
+document.querySelector('h2').innerText = localStorage.getItem('books')
+
+function getFetch(){
+  
+  const choice = document.querySelector('input').value 
+  // console.log(choice)
+  const url = `https://openlibrary.org/isbn/${choice}.json`
+
+  fetch(url)
+      .then(res => res.json()) // parse response as JSON
+      .then(data => {
+        console.log(data)
+        title = data.title
+        // put title into local storage and concatenate with previous value
+        // We are concattenating a string because local storage cannot store arrays without json format
+        // Easier to just concat strings for now
+        let books = localStorage.getItem('books') + ';' + data.title
+        localStorage.setItem('books', books)
+        document.querySelector('h2').innerText = localStorage.getItem('books').split(';').join('\n')
+
+        
+      })
+      .catch(err => {
+          console.log(`error ${err}`)
+      });
+}
+```
 
 ## Homework
 Do: Catch Up

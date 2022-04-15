@@ -745,3 +745,8 @@ COMPLETE: Get NASA picture of the day api working
 Do: Make a rotating list of drinks (an automatic carousel) from the cocktailDB
 Do: Make the NASA API handle all the data types including video
 Do: Add an API to your portfolio website  
+
+## Due 4/26
+Do: Catch Up
+Do: Intro JS Course https://www.codecademy.com/learn/introduction-to-javascript
+Do: Professional Checklist https://docs.google.com/document/d/1L2vTX3qvLhoGHeG5cVD2ljCfRGr1uJ_Gf-hNZj9KzTg/edit
