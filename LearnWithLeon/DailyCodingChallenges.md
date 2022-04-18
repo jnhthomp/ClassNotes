@@ -1,3 +1,27 @@
+2022-4-15
+```js
+// Disemvowel Trolls (7 kyu)
+//
+// Trolls are attacking your comment section!
+
+// A common way to deal with this situation is to 
+// remove all of the vowels from the trolls' comments, neutralizing the threat.
+// Your task is to write a function that takes a string 
+// and return a new string with all vowels removed.
+// For example, the string "This website is for losers LOL!" 
+// would become: "Ths wbst s fr lsrs LL!".
+//
+//  Note: for this kata y isn't considered a vowel.
+console.log(disemvowel('This website is for losers LOL!')) //=> 'Ths wbst s fr lsrs LL!'
+const disemvowel = (str) => str.split('').reduce((acc, el) => ['A', 'E', 'I', 'O', 'U'].includes(el.toUpperCase()) ? acc += '' : acc += el, '')
+
+// Another solution I liked
+// This replaces any casing of vowels with empty string
+// I prefer to solve without regex though
+function disemvowelV2(str) {
+  return str.replace(/[aeiou]/gi, '');
+}
+```
 2022-4-14
 ```js
 // Sort the Odd (6kyu)
