@@ -1,3 +1,27 @@
+2022-4-17
+```js
+// Mumbling (7kyu)
+//
+// This time no story, no theory.
+// The examples below show you how to write function accum:
+//
+// Examples:
+console.log(accum("abcd")) //=> "A-Bb-Ccc-Dddd"
+console.log(accum("RqaEzty")) //=> "R-Qq-Aaa-Eeee-Zzzzz-Tttttt-Yyyyyyy"
+console.log(accum("cwAt")) //=> "C-Ww-Aaa-Tttt"
+
+// The parameter of accum is a string which includes only letters from a..z and A..Z.
+
+function accum(str){
+  // split string into array
+  // map array and repeat each char by letter index + 1
+  // split repeated letter string and map it
+  // if the index of the letter is 0 uppercase it 
+  // join array of same chars with the first now capitalized
+  // join array of all chars with dash
+  return str.split('').map((el,i) => el.toLowerCase().repeat(i + 1).split('').map((el, i) => i === 0 ? el.toUpperCase() : el ).join('')).join('-')
+}
+```
 2022-4-16
 ```js
 // Your order, please (6 kyu)
