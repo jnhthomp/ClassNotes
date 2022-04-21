@@ -1,3 +1,31 @@
+2022-4-21
+```js
+// Duplicate Encoder (6 kyu)
+//
+// The goal of this exercise is to convert a string to a new string 
+// where each character in the new string is 
+// "(" if that character appears only once in the original string, 
+// or ")" if that character appears more than once in the original string. 
+// Ignore capitalization when determining if a character is a duplicate.
+//
+// Examples:
+console.log(duplicateEncode("din") // => "((("
+console.log(duplicateEncode("recede") //=> "()()()"
+console.log(duplicateEncode("Success") //=> ")())())"
+console.log(duplicateEncode("(( @") //=> "))((" 
+
+// Notes
+// Assertion messages may be unclear about what they display in some languages. 
+// If you read "...It Should encode XXX", the "XXX" is the expected result, not the input!
+function duplicateEncode(word){
+  // lowercase word, split each char into array element
+  // map each element to either '(' or ')' by comparing current index to first/last index
+  // if current index differs from current or last index then it is a repeat 
+  // otherwise if it matches both the char is not a repeat
+  // join mapped array to a string
+  return word.toLowerCase().split('').map((el, i, arr) => i !== arr.lastIndexOf(el) || i !== arr.indexOf(el) ? ')' : '(' ).join('')
+}
+```
 2022-4-20
 ```js
 // Ones and Zeros (7 kyu)
