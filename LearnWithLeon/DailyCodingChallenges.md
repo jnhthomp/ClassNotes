@@ -1,3 +1,48 @@
+2022-4-22
+```js
+// Count the smiley faces! (6kyu)
+//
+// Given an array(arr) as an argument complete the function countSmileys 
+// that should return the total number of smiling faces.
+//
+// Rules for a smiling face:
+//
+// 1. Each smiley face must contain a valid pair of eyes.
+//      Eyes can be marked as : or;
+// 2. A smiley face can have a nose but it does not have to.
+//      Valid characters for a nose are - or ~
+// 3. Every smiling face must have a smiling mouth 
+//      that should be marked with either ) or D
+// 4. No additional characters are allowed except for those mentioned.
+
+// Valid smiley face examples: :) : D; -D : ~)
+// Invalid smiley faces: ;( :> :} :]
+
+// Example
+console.log(countSmileys([':)', ';(', ';}', ':-D'])); //=> 2;
+console.log(countSmileys([';D', ':-(', ':-)', ';~)'])); //=> 3;
+console.log(countSmileys([';]', ':[', ';*', ':$', ';-D'])); //=> 1;
+// Note
+// In case of an empty array return 0. 
+// You will not be tested with invalid input
+// (input will always be an array).
+// Order of the face(eyes, nose, mouth) elements will always be the same.
+
+function countSmileys(arr){
+  // reduce array to count of valid smileys
+  return arr.reduce((acc, el) => {
+    // check that eyes and mouth are valid
+    if ((el.charAt(0) === ':' || el.charAt(0) === ';') && (el.charAt(el.length - 1) === ')' || el.charAt(el.length - 1) === 'D')){
+      // if length is three check that nose is valid
+      // if the length is 2 then smiley is valid
+      if((el.length === 3 && (el.charAt(1) === '-' || el.charAt(1) === '~' )) || el.length === 2){
+        // face valid, increment
+        return acc = acc + 1
+      } else return acc // face not valid don't increment
+    } else return acc // face not valid don't increment
+  }, 0)
+}
+```
 2022-4-21
 ```js
 // Duplicate Encoder (6 kyu)
