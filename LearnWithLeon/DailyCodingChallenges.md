@@ -1,3 +1,24 @@
+2022-4-23
+```js
+// Isograms (7 kyu)
+//
+//Hide Kata Description
+// An isogram is a word that has no repeating letters, consecutive or non-consecutive. Implement a function that determines whether a string that contains only letters is an isogram. Assume the empty string is an isogram. Ignore letter case.
+
+// Example: (Input --> Output)
+
+console.log("Dermatoglyphics") --> true
+console.log("aba") --> false
+console.log("moOse") --> false (ignore letter case)
+
+function isIsogram(str){
+  return str.toLowerCase().split('').reduce((acc, el, i, arr) => i === arr.lastIndexOf(el) && acc ? acc : acc = false, true)
+}
+
+// I didn't see a solution I liked more than mine this time
+// Other solutions I saw involved 
+// nested loops to compare each letter to the entire string or regex
+```
 2022-4-22
 ```js
 // Count the smiley faces! (6kyu)
