@@ -1,3 +1,32 @@
+2022-4-26
+```js
+// Highest Scoring Word (6kyu)
+//
+// Given a string of words, you need to find the highest scoring word.
+// Each letter of a word scores points according to its position in the alphabet: 
+// a = 1, b = 2, c = 3 etc.
+
+// You need to return the highest scoring word as a string.
+// If two words score the same, return the word that appears earliest in the original string.
+// All letters will be lowercase and all inputs will be valid.
+function high(x){
+  const score = 'abcdefghijklmnopqrstuvwxyz'
+  // get array of words broken into array of chars
+  let wordsArr = x.split(' ').map(word => word.split(''))
+  // reduce char array to a number based on position of letter in the score string
+  let scoreArr = wordsArr.map((word)=> word.reduce((acc, letter) => acc += score.indexOf(letter) + 1, 0))
+  // get the index of the highest score and use it to find the corresponding word
+  // combine back to string and return
+  return wordsArr[scoreArr.indexOf(Math.max(...scoreArr))].join('')
+}
+
+// Another solution I liked:
+// Same approach but used spread operator to not need a storage array and used charcode - 96 to not need a score key
+function highV2(s){
+  let as = s.split(' ').map(s=>[...s].reduce((a,b)=>a+b.charCodeAt(0)-96,0));
+  return s.split(' ')[as.indexOf(Math.max(...as))];
+}
+```
 2022-4-25
 ```js
 // Persistent Bugger (6 kyu)
