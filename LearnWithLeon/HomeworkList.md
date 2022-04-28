@@ -27,188 +27,13 @@ COMPLETE: Make the cocktailDB api work with spaces between the names!
 
     fetchDrinks()
     ```
-Do: Find three APIs and build three simple apps using those APIs (Not all of these work, but it is a start: https://github.com/public-apis/public-apis)
+COMPLETE: Find three APIs and build three simple apps using those APIs (Not all of these work, but it is a start: https://github.com/public-apis/public-apis)
   - When is the next marvel movie?
-    ```js
-    let date = updateDate()
-    // function to perform or async fetch action
-    function fetchNexMovie(searchDate=date) { // base url
-      const url = `https://www.whenisthenextmcufilm.com/api${searchDate ? `?date=${searchDate}`: ''}`
-      fetch(url)
-        .then(res => res.json()) // parse response as JSON
-        .then(data => {
-          console.log(data)
-          // Update title in dom
-          //console.log(data.title)
-          document.getElementById('title').innerText = data.title
-          // update countdown and release date in dom
-          //console.log(data.days_until)
-          document.getElementById('countdown').innerText = data.days_until
-          //console.log(data.release_date)
-          document.getElementById('releaseDate').innerText = data.release_date
-          //console.log(data.poster_url)
-          document.getElementById('posterImg').src = data.poster_url
-          //console.log(data.overview)
-          document.getElementById('description').innerText = data.overview
-
-        })
-        .catch(err => {
-          console.log(`error ${err}`)
-        });
-    }
-
-    function updateDate(dateISO = null){
-      
-      if(dateISO !== null){
-        return new Date(dateISO)
-      } else {
-        return new Date()
-      }
-      
-    }
-
-    function formatDate(date){
-      return date.toISOString().slice(0, date.toISOString().indexOf('T'))
-    }
-
-    document.getElementById('nextMovieBtn').addEventListener('click', (e) => {
-      // let date = new Date(document.getElementById('releaseDate').innerText)
-      // date.setDate(date.getDate())
-      // console.log(date.toISOString().slice(0, date.toISOString().indexOf('T')))
-      // const dateISO = date.toISOString().slice(0, date.toISOString().indexOf('T'));
-      // fetchNexMovie(dateISO)
-
-      console.log(date)
-      date = updateDate(document.getElementById('releaseDate').innerText)
-      console.log(date)
-
-      // nextDate.setDate(date.getDate() + 1)
-      fetchNexMovie(formatDate(date))
-    })
-
-    document.getElementById('prevMovieBtn').addEventListener('click', (e) => { 
-      let subDate = date
-      console.log(date.getDate())
-      console.log(date.getDate() - 2)
-      subDate.setDate(date.getDate() - 2)
-      date = updateDate(formatDate(subDate))
-      console.log(date)
-      fetchNexMovie(formatDate(date))
-    })
-    fetchNexMovie()
-    ```
-    ```html
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8">
-        <meta name="description" content="Your description goes here">
-        <meta name="keywords" content="one, two, three">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <title>Blank Template</title>
-
-        <!-- external CSS link -->
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/style.css">
-      </head>
-      <body>
-        <!-- 
-        Data to display:
-          - Title  
-          - Days until movie
-          - Poster URL (to display image)
-          - Overview (movie description)
-          - release date (set as date when clicking next movie)
-          - Next movie
-          
-        -->
-
-        <h1 id="title"></h1>
-        <p>Releases in <span id="countdown"></span> days on <span id="releaseDate"></span></p>
-        <img src="" alt="movie poster" id="posterImg">
-        <p id="description"></p>
-        <div class="btnHold">
-          <button id="prevMovieBtn" type="button" name="button">Back to beginning</button>
-          <button id="nextMovieBtn" type="button" name="button">Next Movie</button>
-        </div>
-        <script type="text/javascript" src="js/main.js"></script>
-      </body>
-    </html>
-    ```
-    ```css
-    /* Box Model Hack */
-    * {
-        box-sizing: border-box;
-    }
-
-    /* Clear fix hack */
-    .clearfix:after {
-        content: ".";
-        display: block;
-        clear: both;
-        visibility: hidden;
-        line-height: 0;
-        height: 0;
-    }
-
-    .clear {
-      clear: both;
-    }
-
-    /******************************************
-    /* BASE STYLES
-    /*******************************************/
-
-    body {
-      color: rgb(250, 250, 250);
-      background: rgb(38, 50, 56);
-    }
-
-
-    /******************************************
-    /* LAYOUT
-    /*******************************************/
-    h1, p, img{
-      text-align: center;
-    }
-
-    img, .btnHold {
-      display: block;
-      margin: 0 auto;
-    }
-
-    p {
-      font-size: 1.5rem;
-      width: 60%;
-      margin: 2% auto;
-    }
-
-    button {
-      color: rgb(250, 250, 250);
-      font-size: 1.5rem;
-      background-color: rgb(231, 76, 60);
-      padding: 1% 2%;
-      border: none;
-      border-radius: 5px;
-    }
-
-    .btnHold{
-      display:flex;
-      justify-content: space-evenly;
-    }
-
-    button:hover{
-      background-color: rgb(192, 57, 43);
-    }
-    /******************************************
-    /* ADDITIONAL STYLES
-    /*******************************************/
-
-    ```
+    - https://glitch.com/edit/#!/next-marvel-movie-api
   - F1 API Discord bot
     - https://github.com/jnhthomp/f1-discord-bot
-  
+  - Github api profile card
+    - https://glitch.com/edit/#!/github-details-api
 COMPLETE: Get NASA picture of the day api working
   - ```js
     //The user will enter a date. 
@@ -246,9 +71,10 @@ COMPLETE: Get NASA picture of the day api working
     ```
 
 ## Bonus 3/31
-Do: Make a rotating list of drinks (an automatic carousel) from the cocktailDB
+COMPLETE: Make a rotating list of drinks (an automatic carousel) from the cocktailDB
+  - https://glitch.com/edit/#!/cocktail-db-carousel
 Do: Make the NASA API handle all the data types including video
-Do: Add an API to your portfolio website  
+Do: Add an API to your portfolio website  f
 
 ## Due 4/26
 (No actual submission links)
@@ -263,3 +89,6 @@ DO: FINISH Professional Checklist - https://docs.google.com/document/d/1L2vTX3qv
 
 ## Bonus
 Read / Do: Eloquent JS Ch. 06: https://eloquentjavascript.net/06_object.html
+
+## Extra work (Good idea to do)
+- Add API to portfolio website (github stats api on glitch?)ff
