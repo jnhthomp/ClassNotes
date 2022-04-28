@@ -1,3 +1,25 @@
+2022-4-28
+```js
+Break camelCase (6 kyu)
+
+// Complete the solution so that the function will break up camel casing, using a space between words.
+
+// Example
+console.log(solution("camelCasing")) //=>  "camel Casing"
+console.log(solution("identifier")) //=>  "identifier"
+console.log(solution("")) //=>  ""
+
+function solution(string) {
+  for(let i = 0; i < string.length; i++){
+    if(string[i] === string[i].toUpperCase()){
+      string = `${string.slice(0, i)} ${string.slice(i)}`
+      i++
+    }
+  }
+  
+  return string
+}
+```
 2022-4-27
 ```js
 // Delete Occurences of an Element If It Occurs More than n Times (6kyu)
