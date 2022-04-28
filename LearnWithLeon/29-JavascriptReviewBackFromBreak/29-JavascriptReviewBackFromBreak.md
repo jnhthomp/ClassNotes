@@ -3,8 +3,8 @@ Slides: https://slides.com/leonnoel/100devs2-javascript-review-back-from-break
 ___
 ## Agenda
 Questions? 
-Let's Talk -  Coming Up?
-Let's Talk -  #100Devs
+Let's Talk - Coming Up?
+Let's Talk - #100Devs
 Review - The BIG FOUR
 Review - Arrays
 Review - Objects
@@ -15,16 +15,24 @@ Homework - OOP
 About last class or life
 
 ## This Week
-Review 
-OOP
+Review - Review what we have covered so far as we come back from break
+OOP - Why use OOP?
 
 ## Next Week
-OOP Practice
-Async / Await
+OOP Practice - Put into practice what we learn on thursday
+Async / Await - Last big thing to understsand about JS before backend
 
 ## THEN BACKEND
+Will cover backend after next week
+
 ## Catching up on Discord and DMs
+Leon was also on break while we were on break
+He is catching up on those messages
+
 ## Gonna Get Funky
+Leon is going to start testing some stuff with his streaming setup and new features
+There might be technical difficulties or weirdness with the stream
+
 ## No Networking Until May (Review)
 We are focusing on coding instead of networking until may
 May 3 is when networking will start again
@@ -47,23 +55,33 @@ Contains a list of website that aggregate project issues
 There should be some that are easy enough to contribute to for the first time
 
 ## !youtube
+Youtube is currently behind but will be caught up soon
+
 ## !newsletter
+Should be some goodies in the newsletter so be subscribed
+
 ## Discord Update
 Private LGBTQ+ channel
+There has always been a private LGBTQ+ channel 
+There will be a new public one
 
 ## Live Crafting Your Story
 FRIDAY
 6:30pm EST
 
 ## OFFICE HOURS
-
 SUNDAY
 1:00pm EST
+Will cover git more deeply since we kind of brushed over it and will be using it to submit homework
 
 ## Enough for a job?
 Yes
+This course will be enough for a job
+You will have the tools you need to be a software engineer
 
 ## HUGE ANNOUNCEMENT NEXT WEEK
+Announcement on how much was raised for Resilient Coders via bits and subs
+
 ## Programming (Review)
 ## What is a program? (Review)
 A program is a set of instructions that you write to tell a computer what to do
@@ -288,7 +306,87 @@ Then the value is increased by 1 to 3 etc...
 
 ## Let's Code
 Boulder Badge
+See 'class29-materials/boulder-badge'
+Try to complete in 8 minutes
+Starter: 
+```js
+// Variables
+// You are getting ready to face Brock for the Boulder Badge. 
+// You want three pokemon on your team that each have evolved at least once. 
+// You have 
+// bulbasaur which is at level 5 and evolves at level 16, 
+// caterpie which is at level 1 and evolves at level 7, 
+// and weedle which is at level 1 and evolves at level 7. 
+// Create three variables to store 
+// the number of rare candies each of your pokemon would need 
+// to evolve (rare candies increase your level by one). 
+// Finally, create a fourth variable named totalCandies 
+// that sums all the rare candies you would need. 
 
+
+//Conditionals And Functions
+//You have a charmander in your party. 
+// Charmander can only battle if the temperature is above 0 degrees celcius. 
+// Create one function that converts a Fahrenheit value to Celcius 
+// and another fuction that tells you wheither or not charmander can battle
+
+
+//Loops
+//You have joined an undeground pokemon leauge. 
+// In this league, trainers can use any number of pokemon. 
+// Print to the console "Pikachu I choose you" x times 
+// where x is the number of pokemon the trainer you are battling has in their party
+```
+
+Solution:
+```js
+// Variables
+// You are getting ready to face Brock for the Boulder Badge. 
+// You want three pokemon on your team that each have evolved at least once. 
+// You have 
+// bulbasaur which is at level 5 and evolves at level 16, 
+// caterpie which is at level 1 and evolves at level 7, 
+// and weedle which is at level 1 and evolves at level 7. 
+// Create three variables to store 
+// the number of rare candies each of your pokemon would need 
+// to evolve (rare candies increase your level by one). 
+// Finally, create a fourth variable named totalCandies 
+// that sums all the rare candies you would need. 
+let bRCNeeded = 16-5
+let cRCNeeded = 7-1
+let wRCNeeded = 7-1
+let totalCandies = bRCNeeded + cRCNeeded + wRCNeeded
+console.log(totalCandies)
+
+//Conditionals And Functions
+//You have a charmander in your party. 
+// Charmander can only battle if the temperature is above 0 degrees celcius. 
+// Create one function that converts a Fahrenheit value to Celcius 
+// and another fuction that tells you wheither or not charmander can battle
+function fToC(tempF){
+  return (tempF-32) * (5/9)
+}
+
+function charCanBattle(tempC){
+  return tempC > 0
+}
+console.log(fToC(32))
+console.log(charCanBattle(fToC(32)))
+console.log(charCanBattle(fToC(33)))
+
+//Loops
+//You have joined an undeground pokemon leauge. 
+// In this league, trainers can use any number of pokemon. 
+// Print to the console "Pikachu I choose you" x times 
+// where x is the number of pokemon the trainer you are battling has in their party
+function pickPoke(n){
+  for(let i = 1; i <= n; i++){
+    console.log('Pikachu I choose you')
+  }
+}
+
+pickPoke(6)
+```
 ## Arrays (Review)
 What are arrays?
 
@@ -414,7 +512,76 @@ One of which is the current element in the loop
 
 ## Let's Code
 Cascade Badge
+See 'class29-materials/cascade-badge'
+Instructions:
+Try to solve in 10 minutes 
+```js
+//Arrays
+// Your pokemon party order which is a list of pokemon has been leaked to Misty. 
+// Please create a function that reverses your list 
+// and prints it to the console. 
 
+//Given two integer arrays a, b, both of length >= 1, 
+// create a program that returns true if 
+// the sum of the squares of each element in a 
+// is strictly greater than the sum of the cubes of each element in b.
+
+// Return a new array consisting of elements which are 
+// multiple of their own index in input array (length > 1).
+// Some cases:
+// [22, -6, 32, 82, 9, 25] =>  [-6, 32, 25]
+// [68, -1, 1, -7, 10, 10] => [-1, 10]
+
+// Given an array of integers as strings and numbers, 
+// return the sum of the array values as if all were numbers.
+// Return your answer as a number.
+```
+
+Solution:
+```js
+// Arrays
+// Your pokemon party order which is a list of pokemon has been leaked to Misty. 
+// Please create a function that reverses your list 
+// and prints it to the console. 
+function reverseParty(party){
+  console.log(party.reverse())
+}
+
+reverseParty([1,2,3,4,5,6])
+
+// Given two integer arrays a, b, both of length >= 1, 
+// create a program that returns true if 
+// the sum of the squares of each element in a 
+// is strictly greater than the sum of the cubes of each element in b.
+function compareArr(a, b){
+  return a.reduce((acc, el) => acc += el**2, 0) > b.reduce((acc, el) => acc += el**3, 0)
+}
+
+console.log(compareArr([25, 30], [1,2])) //=> true
+console.log(compareArr([1, 2], [25, 30])) // => false
+
+// Return a new array consisting of elements which are 
+// multiple of their own index in input array (length > 1).
+// Some cases:
+// [22, -6, 32, 82, 9, 25] =>  [-6, 32, 25]
+// [68, -1, 1, -7, 10, 10] => [-1, 10]
+function arrMultiplesOfIndex(arr){
+  return arr.filter((el, i) => el % i === 0)
+}
+console.log(arrMultiplesOfIndex([22, -6, 32, 82, 9, 25]))
+console.log(arrMultiplesOfIndex([68, -1, 1, -7, 10, 10]))
+
+// Given an array of integers as strings and numbers, 
+// return the sum of the array values as if all were numbers.
+// Return your answer as a number.
+function toNumAndAdd(arr) {
+  return arr.reduce((acc, el) => acc + +el, 0)
+}
+console.log(toNumAndAdd([1, 2, '3', 4, '5']))
+```
+
+Class ended here
+___
 ## Objects (Review)
 What are objects?
 
@@ -648,7 +815,7 @@ Some APIs need Query Parameters to return the correct data
 Rainbow Badge
 
 ## Homework
-Do: Something With The Pokemon API (Thursday)
+Do: Something With The Pokemon API (Rainbow Badge) (Thursday) 
 Watch / Do: https://youtu.be/PFmuCDHHpwk
 Read / Do: JS Way Ch. 09: https://github.com/thejsway/thejsway/blob/master/manuscript/chapter09.md
 Push? Read / Do: Eloquent JS Ch. 06: https://eloquentjavascript.net/06_object.html
