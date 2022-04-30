@@ -74,18 +74,24 @@ Will cover git more deeply since we kind of brushed over it and will be using it
 
 ## Objects (Review)
 What are objects?
-
 - Objects are a collection of variables and functions!
 - Objects represent the attributes and behavior of something used in a program
 - Object variables are called properties and object functions are called methods
 - Objects store "keyed" collections
 
-## USE
-UNDERSTAND
-BUILD
+## USE UNDERSTAND BUILD
+This is a method of learning that Leon uses
+First use objects to create properties and methods and constructors
+Then you will undertsand why you use them afterwords
+Finally build projects with them after you understand
 
 ## Finna Make Sum Nerds Angry
-## Objects
+Explaining theory to people who don't have a solid grasp of objects can make it harder to understand
+This is going to cover why encapsulation and abstraction are important
+Not to study dusty theories (we will cover dusty theories later)
+
+## Objects (Review)
+What are objects?
 - Objects are a collection of variables and functions!
 - Objects represent the attributes and behavior of something used in a program
 - Object variables are called properties and object functions are called methods
@@ -250,31 +256,70 @@ Classes are like templates for objects!
 
 ## Let's Code
 Objects - Espresso Machine
+See 'class30-materials/objects-espresso-machine'
+Try to solve in 4 minutes
+Instructions:
+```js
+// Create an espresso machine class that 
+// makes machines with 4 properties and 3 methods
+```
+
+Solution
+```js
+// Create an espresso machine class that 
+// makes machines with 4 properties and 3 methods
+
+class MakeEspressoMachine{
+  constructor(color, make, model, price){
+    this.color = color
+    this.make = make
+    this.model = model
+    this.price = price
+  }
+
+  turnOn(){
+    console.log('powering on...')
+  }
+  steam(){
+    console.log('steaming...')
+  }
+  brew(){
+    console.log('brewing...')
+  }
+}
+
+let gaggia = new MakeEspressoMachine('red', 'Gaggia', 'Classic Pro', 400)
+console.log(gaggia)
+```
 
 ## BUT WHY?
 Why Use Objects?
-Why Would We Need A Factory?
 
-## As our codebase gets larger and more folx join the team, can we keep our code organized?
-## Is it easy to add new features and functionality?
-## Can another developer look at my code and understand what is happening?
-## Can I make changes without losing sleep at night? 
-## What if there was a system, a paradigm, a set of rules, an agreed upon way to structure our code that:
- 
+## Why Would We Need A Factory?
+- As our codebase gets larger and more folx join the team, can we keep our code organized?
+- Is it easy to add new features and functionality?
+- Can another developer look at my code and understand what is happening?
+- Can I make changes without losing sleep at night? 
 
-Made it easier to add new stuff
-
-Made it easier to read through what was already coded
-
-And made it so you were not afraid to make changes
-
- 
+## What if there was a system, a paradigm, a set of rules, an agreed upon way to structure our code that: 
+- Made it easier to add new stuff
+- Made it easier to read through what was already coded
+- Made it so you were not afraid to make changes
 
 Music & Light Warning - Next Slide
+
 ## OOP BABY
+Object Oriented Programming can solve all of the above problems
+
 ## OBJECT ORIENTED PROGRAMING 
 ## Let's See Some Code
 ## Is it easy to add new features and functionality?
+Say we wanted to be able to calculate profit when working with a client
+We can store important values as variables
+We can have a function to calculate profit 
+Then we call that function passing in the aforementioned variables 
+and saving the result to a new variable
+This would work and might be something we actually right
 ```js
 let hourlyRate = 250
 let hours = 160
@@ -288,6 +333,10 @@ let profit = calculateProfit(hourlyRate, hours, taxRate)
 
 console.log(profit)
 ```
+
+But is it easy to add new features? Lets try...
+Just adding one other bit of functionality (`holdForTaxes`)
+Now we have to calculate using this new function passing in our previously calculated profit
 ```js
 let hourlyRate = 250
 let hours = 160
@@ -309,7 +358,9 @@ console.log(profit)
 
 console.log(taxesHeld)
 ```
+Again this works but...
 ## Can another developer look at my code and understand what is happening?
+Even with a small program like this it is more difficult with just a single added function
 ```js
 let hourlyRate = 250
 let hours = 160
@@ -331,6 +382,9 @@ console.log(profit)
 
 console.log(taxesHeld)
 ```
+What if there was 50 or 100 functions to keep track of?
+Since it is procedural if one link is messed up any mistakes are amplified...
+
 ## Can I make changes without losing sleep at night? 
 ```js
 let hourlyRate = 250
@@ -366,7 +420,14 @@ console.log(profit)
 
 console.log(taxesHeld)
 ```
+
 ## DATA & FUNCTIONALITY
+What if there was something we could do to get rid of all this mess?
+We can solve the issue above and clean up the code
+
+There are two main points of our code above
+The data (`hourlyRate`, `hours`, `taxRate`)
+The functionality (`calculateProfit()` and `holdForTaxes()`)
 ## DATA
 ```js
 let hourlyRate = 250
@@ -374,13 +435,18 @@ let hours = 160
 let taxRate = .35
 
 ```
+
 ## Functionality
 ```js
 function calculateProfit(rate, numOfHours, taxes){
   return rate * numOfHours * (1 - taxes)
 }
 ```
+
 ## Fusion
+What if we could fuse our data and functionality together to make it make more sense?
+Now we have data and functionality combined into a single object
+There isn't a big mess and if we want to access any of these values we can with dot notations
 ```js
 
 let seriousBusinessPerson = {
@@ -392,7 +458,10 @@ let seriousBusinessPerson = {
   }
 }
 ```
+
 ## Is it easy to add new features and functionality?
+If we want to add another function we can just add another function
+This can reference values within the object instead of having to check the global scope for those values
 ```js
 let seriousBusinessPerson = {
   hourlyRate: 250,
@@ -410,13 +479,16 @@ let seriousBusinessPerson = {
   taxRate: .35,
   calculateProfit: function() {
     return this.hourlyRate * this.hours * (1 - this.taxRate)
-  }
+  },
   calculateTaxesHeld: function(){
     return this.hourlyRate * this.hours - this.calculateProfit()
   }
 }
 ```
+
 ## Can another developer look at my code and understand what is happening?
+A developer can see what is happening because it is much more organized
+`this` makes it obvious that the values used are properties of the object
 ```js
 let seriousBusinessPerson = {
   hourlyRate: 250,
@@ -427,7 +499,9 @@ let seriousBusinessPerson = {
   }
 }
 ```
+
 ## Can I make changes without losing sleep at night? 
+Changing the tax rate won't ruin any of your other values or functionality in this case
 ```js
 
 let seriousBusinessPerson = {
@@ -441,23 +515,44 @@ let seriousBusinessPerson = {
 ```
 
 ## This fusion of data and functionality into one object
-
 Music & Light Warning - Next Slide
 
 ## Encapsulation Baby
+That is basically encapsulation
+
 ## Encapsulation
+(This is a definition that is just supposed to help people understand
+Not necessarily a technical definition)
+
 The process of storing functions (methods) with their associated data (properties) - in one thing (object)*
+This makes our code more readable and makes it easier to make changes
+Our data and functionality is fused into one thing
+
 ## Is it easy to add new features and functionality?
-## Heats water for espresso and steam for your milk
+Encapsulation is just one step to make it easier
+Imagine the following scenario
+
+Imagine an espresso machine that heats water for espresso and steam for your milk with a steam wand
+But...
 ## Steam wand sucks...
 What should the engineers do?
 ## Do they get rid of the water boiler?
-probably not...
+probably not... because it isn't related to the steam wand
+The water that it heats is fine the only issue is the steam wand
+
 ## At first, do they even need to think about the water boiler?
+No they are two unrelated parts and can be seperated from each other as such
+One can be changed without the other being affected
+
 ## So the water boiling is abstracted?
+Abstracted meanst that you can mess with something and other parts are unaffected
+Similarly with an object if you change how a function works or the value of a property 
+it shouldn't affect other functions that have nothing to do with those functions/values
+
 ## Let's look at some code
 
 ## Ut Oh...
+This calculator was put on the agency website...
 ```js
 function AgencyContractor(hourlyRate, hours, taxRate){
   this.hourlyRate = hourlyRate
@@ -476,7 +571,17 @@ console.log( leon.invoiceClient() ) //40000
 console.log( leon.hourlyRate ) //250
 console.log( leon.calculateProfit() ) //26000
 ```
+You can see that hourly rate, hours, and taxrate are all visible
+A client could come to your website and get an estimate but they see your hourly rate if they inspect the page
+We don't want them to know that
+
 ## Better...
+Now they can't access hourly rate or profit
+These variables and methods are 'private' and only available inside of that object
+By using let instead of this instead of being bound to the object they become local variables
+They are only available locally (inside the object)
+The object that is created does not have access to that data anymore
+It is only available to the methods inside of that object
 ```js
 function AgencyContractor(hourlyRate, hours, taxRate){
   this.hours = hours
@@ -496,44 +601,69 @@ console.log( leon.hourlyRate ) //undefined
 console.log( leon.calculateProfit() ) 
 //Uncaught TypeError: leon.calculateProfit is not a function
 ```
+
 ## So now my client can still get their invoice, but not see my hourly rate
-## Water boiling was hidden from the steam wand
-Hourly rate was hidden from the client
+Much like water boiling was hidden from the steam wand
+the hourly rate was hidden from the client
+
+Remember just because they are hidden doesn't mean they are not used inside the object
+
 ## Complex or unnecessary details are hidden
+The wand does not need to know about the water boiler
+The client does not need to know the hourly rate to get their invoice
+
 ## This enables you to implement things without understanding or even thinking about all the hidden complexity
+If we were all engineers working on the steam wand we don't need to know how the water boiler works
+We only need to know how the wand works
+
 ## Smaller more manageable pieces of code
+This makes code easier to understand and change
+
 ## Do stuff once
+You only need to create functions that do things once
+You don't need to know how the water boiler works, just say give me steam
+
 Music & Light Warning - Next Slide
 ## Abstraction Baby
 ## Abstraction
-Hide details
+All about
+Hiding details
 and show essentials
-SIMPLE, PREDICTABLE, MANAGEABLE
+Doing this makes code more SIMPLE, PREDICTABLE, MANAGEABLE
+
 ## The Four Pillars
 What if they actually made any sense...
+
 ## Encapsulation
 The process of storing functions (methods) with their associated data (properties) in one thing (object)
+
 ## BUT WHY?
-## Made it easier to add new stuff
- 
+- Made it easier to add new stuff
+- Made it easier to read through what was already coded
+- Made it so you were not afraid to make changes
 
-Made it easier to read through what was already coded
- 
-
-And made it so you were not afraid to make changes
 ## Abstraction
-Hide details
+All about
+Hiding details
 and show essentials
+Doing this makes code more SIMPLE, PREDICTABLE, MANAGEABLE
+
 ## BUT WHY?
-## Smaller more manageable pieces of code
-Helps you to split the complexity your software project into manageable parts
-## Inheritance
-Polymophism
-Next Class
+- Smaller more manageable pieces of code
+- Helps you to split the complexity your software project into manageable parts
+
+## Next Class
+Inheritance
+&&
+Polymorphism
+
 ## Group Work
-https://live.remo.co/e/100devs-objects-project
+https://live.remo.co/mic-cam-check?event=100devs-networking-night-group-0-1
 
 ## Right Of Passage
+we are going to create tik-tak-toe 
+If you must do it proceduraly but try to use OOP
+
 https://live.remo.co/e/100devs-objects-project
 
 ## Get It To Work 
@@ -543,7 +673,7 @@ Then:
 - And make it so you are not afraid to make changes
 
 ## Homework
-Watch / Do: https://youtu.be/PFmuCDHHpwk
-Read / Do: JS Way Ch. 09
-Push? Read / Do: Eloquent JS Ch. 06
+Watch/Do: https://youtu.be/PFmuCDHHpwk
+Read/Do: JS Way Ch. 09
+Push? Read/Do: Eloquent JS Ch. 06
 Do: 7 Codewars 
