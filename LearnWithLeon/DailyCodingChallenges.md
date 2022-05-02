@@ -1,3 +1,58 @@
+2022-5-2
+```js
+// Who likes it? (6 kyu)
+// 
+// You probably know the "like" system from Facebook and other pages. 
+// People can "like" blog posts, pictures or other items. 
+// We want to create the text that should be displayed next to such an item.
+//
+// Implement the function which takes an array containing the names of people that like an item. 
+// It must return the display text as shown in the examples:
+
+console.log(likes([]) //=> "no one likes this"
+console.log(likes(["Peter"]) //=> "Peter likes this"
+console.log(likes(["Jacob", "Alex"]) //=> "Jacob and Alex like this"
+console.log(likes(["Max", "John", "Mark"]) //=> "Max, John and Mark like this"
+console.log(likes(["Alex", "Jacob", "Mark", "Max"]) //=> "Alex, Jacob and 2 others like this"
+
+function likes(names) {
+  let likeThis = names.length <= 1 ? 'likes this' : 'like this'
+  // add 'no one' if no names present
+  if(names.length === 0){
+    names.push('no one')
+  }
+  // If only a single name (or was 0 but now 1) output as is
+  if(names.length === 1){
+    names.push(likeThis)
+    return names.join(' ')
+  }
+  
+  // If more than 3 names remove extra names and add count of removed names
+  if(names.length > 3){
+    names = [...names.slice(0, 2), `${names.length - 2} others`]
+  }
+  
+  // If more than 1 name add commas to end of each string unless 
+  let initNames = names.slice(0, -1).join(', ')
+  initNames += ` and ${names.slice(-1)} ${likeThis}`
+  return initNames
+}
+
+// Another version
+// I didn't like this one as much because it is very hardcoded
+// What if you wanted to do 5 names before showing the number instead of just 2?
+// It does look a little cleaner than my version though
+function likesV2(names) {
+  names = names || [];
+  switch(names.length){
+    case 0: return 'no one likes this'; break;
+    case 1: return names[0] + ' likes this'; break;
+    case 2: return names[0] + ' and ' + names[1] + ' like this'; break;
+    case 3: return names[0] + ', ' + names[1] + ' and ' + names[2] + ' like this'; break;
+    default: return names[0] + ', ' + names[1] + ' and ' + (names.length - 2) + ' others like this';
+  }
+}
+```
 2022-5-1
 ```js
 // Equal Sides Of An Array (6kyu)
