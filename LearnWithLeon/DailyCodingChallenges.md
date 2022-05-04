@@ -1,3 +1,31 @@
+2022-5-4
+```js
+// Unique In Order (6 kyu)
+//
+// Implement the function unique_in_order 
+// which takes as argument a sequence and returns a list of items 
+// without any elements with the same value next to each other 
+// and preserving the original order of elements.
+
+// For example:
+uniqueInOrder('AAAABBBCCDAABBB') //=> ['A', 'B', 'C', 'D', 'A', 'B']
+uniqueInOrder('ABBCcAD')         //=> ['A', 'B', 'C', 'c', 'A', 'D']
+uniqueInOrder([1,2,2,3,3])       //=> [1,2,3]
+
+var uniqueInOrder=function(iterable){
+  if(!Array.isArray(iterable)){  
+    iterable = `${iterable}`.split('')
+  }
+  return iterable.reduce((acc, el)=> el !== acc[acc.length - 1] ? [...acc, el] : [...acc] ,[])
+}
+
+// Another solution I liked
+// I liked that this one used spread operator to not have to check that the iterable is an array
+// This way it is converted into an array regardless and you don't have to worry about type conversion
+var uniqueInOrderV2=function(iterable){
+    return [...iterable].filter((a, i) => a !== iterable[i-1])
+}
+```
 2022-5-3
 ```js
 // Build Tower (6kyu)
