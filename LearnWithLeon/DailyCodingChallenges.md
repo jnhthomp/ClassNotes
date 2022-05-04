@@ -1,3 +1,58 @@
+2022-5-3
+```js
+// Build Tower (6kyu)
+// Build a pyramid-shaped tower given a positive integer number of floors. 
+// A tower block is represented with "*" character.
+
+// For example, a tower with 3 floors looks like this:
+// [
+//   "  *  ",
+//   " *** ", 
+//   "*****"
+// ]
+
+// And a tower with 6 floors looks like this:
+
+// [
+//   "     *     ", 
+//   "    ***    ", 
+//   "   *****   ", 
+//   "  *******  ", 
+//   " ********* ", 
+//   "***********"
+// ]
+
+console.log(towerBuilder(1)) //=> ['*']
+console.log(towerBuilder(2)) /*=> [' * ',
+                                   '***' ]*/
+console.log(towerBuilder(3))  /*=> ['  *  ',
+                                    ' *** ',
+                                    '*****'] */
+
+function towerBuilder(nFloors) {
+  let tower = []
+  for(let i = 1; i <= nFloors; i++){
+    // string composed of sections then pushed into array
+    //'(spaces)(star pre-center)(star center)(star post-center)(spaces)'
+    // spaces (each side) = nFloors - current floor
+    // star (pre/post-center) = current floor - 1 (for center star) 
+    // star (center) = constant '*' single star
+    tower.push(`${' '.repeat(nFloors - i)}${'*'.repeat(i - 1)}*${'*'.repeat(i - 1)}${' '.repeat(nFloors - i)}`)
+  }
+  return tower
+}
+
+// Another solution I liked
+// This uses an array constructor and makes it n length where n is number of floors
+// Then it iterates over that array with a .map function
+// This function will edit each element in the array by using the index as a reference to the current floor being mapped
+function towerBuilderV2(n) {
+  return Array.from({length: n}, function(v, k) {
+    const spaces = ' '.repeat(n - k - 1);
+    return spaces + '*'.repeat(k + k + 1) + spaces;
+  });
+}
+```
 2022-5-2
 ```js
 // Who likes it? (6 kyu)
