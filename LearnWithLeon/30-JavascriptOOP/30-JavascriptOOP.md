@@ -1,4 +1,4 @@
-# Javascript - Back From Break
+# Javascript - OOP
 Slides: https://slides.com/leonnoel/100devs2-javascript-oop
 ___
 ## Agenda
