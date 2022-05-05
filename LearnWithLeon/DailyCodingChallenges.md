@@ -1,3 +1,48 @@
+2022-5-5
+```js
+// From..To..Series #1: from m to n. Find the maximum range (6 kyu)
+//
+// Description:
+// Give you an array, like this:
+//
+// ["from 1 to 3","from 2 to 6","from -100 to 0"]
+// Find out the maximum range, return by an array:
+findMaxRange(["from 1 to 3","from 2 to 6","from -100 to 0"]) //=> ["from -100 to 0"]
+// If more than one elements have the maximum range, 
+// return them according to the order of the original array.
+
+// Input data is always an array. 
+// The format of all elements is always "from m to n". 
+// The value of from and to can be an integer or float. 
+// These are all possible: m > n or m == n or m < n
+//
+// Examples
+findMaxRange(["from 1 to 3","from 2 to 4","from 1 to 1"]) //=> ["from 1 to 3","from 2 to 4"]
+findMaxRange(["from 1 to 10","from 10 to 1","from -1 to -10"]) //=> ["from 1 to 10","from 10 to 1","from -1 to -10"]
+findMaxRange(["from 1 to 10","from 10.1 to 1","from -1 to -10"]) //=> ["from 10.1 to 1"]
+findMaxRange([])//=> []
+
+function findMaxRange(ranges){
+  // Get array of differences in each string
+  let calc = ranges.map(el=> el.split(' ') // split string by spaces
+                               .map(el=> +el) // Convert to number
+                               .filter((el, i) => i === 1 || i === 3) // Only get values at index 1 and 3 (where numbers are alternatively a type check would work)
+                               .reduce((a, b)=> Math.abs(b -a))) // Calculate diff between two values
+  
+  const max = Math.max(...calc) // find biggets diff
+  
+  // Build array of indexes containg a value of the max diff from calc array
+  let idx = []
+  for(let i = 0; i < calc.length; i++){
+    if(calc[i] === max){
+      idx.push(i)
+    }
+  }
+  
+  // Return the orinal arraying to filter only those at the above index (that matched the max diff)
+  return ranges.filter((el, i)=> idx.includes(i))
+}
+```
 2022-5-4
 ```js
 // Unique In Order (6 kyu)
