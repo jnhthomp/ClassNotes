@@ -2,7 +2,7 @@
 (No actual submission links)
 Do: Intro JS Course https://www.codecademy.com/learn/introduction-to-javascript
 
-## Due 5/3
+## Due 5/10
 Read / Do: JS Way Ch. 09: https://github.com/thejsway/thejsway/blob/master/manuscript/
 Do: 7 Codewars
 DO: FINISH Professional Checklist - https://docs.google.com/document/d/1L2vTX3qvLhoGHeG5cVD2ljCfRGr1uJ_Gf-hNZj9KzTg
