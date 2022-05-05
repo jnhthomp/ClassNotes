@@ -24,3 +24,9 @@ class Cow extends DairyAnimal {
     this.color = color
   }
 }
+
+let brownCow = new Cow('Bessy', 'brown')
+brownCow.name //=> 'Bessy' (from Animal class)
+brownCow.canMilk //=> true (from DairyAnimal class)
+brownCow.color //=> 'brown' (from Cow class)
+
