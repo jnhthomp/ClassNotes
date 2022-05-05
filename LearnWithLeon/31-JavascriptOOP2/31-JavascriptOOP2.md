@@ -11,12 +11,19 @@ Do - Work In Teams: Tic-tac-toe
 Homework - Object City Yall
 ## Questions
 About last class or life
+
+How to Handle interview questions?
+See this list of interview questions (behavioral and technical)
+https://docs.google.com/document/d/1p7DhCsLOMMybYfePWLlD1-_8KU20zkBoArH4pnW1o3c
+
 ## Checking In
 https://twitter.com/leonnoel/status/1521603078406897664
 Like and Retweet the Tweet
 !checkin
 
 ## !newsletter
+There was a form to get VIP twitch membership if you read the newsletter
+
 ## Networking - Next Week
 ## Client Deadline: May 5th
 ## Client Alternatives (Review)
@@ -32,14 +39,24 @@ Contains a list of website that aggregate project issues
 There should be some that are easy enough to contribute to for the first time
 
 ## GIT BOWL
-SUNDAY
+(Sunday is mothers day, no stream)
+MONDAY
 1:00pm EST
+
 ## Discord
+List of MayanWolfe streams and what they are about (on twitch and youtube)
+(Thread in \#catchup-crew channel in discord)
 https://discord.com/channels/735923219315425401/970098839786758165/970098843435823195
+
 ## Never Miss The Stream Team
+You can see when stream team is online by turning notifications on in discord
+Go to \#stream-team channel in discord
+Set notification settings to 'all messages'
 ## Welcome, verolafox
+New stream team member
 https://www.twitch.tv/verolafox
 Friday @ 11:00am ET! 
+
 ## Objects (Review)
 What are objects?
 - Objects are a collection of variables and functions!
@@ -47,13 +64,13 @@ What are objects?
 - Object variables are called properties and object functions are called methods
 - Objects store "keyed" collections
 
-## USE UNDERSTAND BUILD
+## USE UNDERSTAND BUILD (Review)
 This is a method of learning that Leon uses
 First use objects to create properties and methods and constructors
 Then you will undertsand why you use them afterwords
 Finally build projects with them after you understand
 
-## Finna Make Sum Nerds Angry
+## Finna Make Sum Nerds Angry (Review)
 Explaining theory to people who don't have a solid grasp of objects can make it harder to understand
 This is going to cover why encapsulation and abstraction are important
 Not to study dusty theories (we will cover dusty theories later)
@@ -289,6 +306,7 @@ console.log(profit)
 console.log(taxesHeld)
 ```
 Again this works but...
+
 ## Can another developer look at my code and understand what is happening? (Review)
 Even with a small program like this it is more difficult with just a single added function
 ```js
@@ -358,6 +376,7 @@ We can solve the issue above and clean up the code
 There are two main points of our code above
 The data (`hourlyRate`, `hours`, `taxRate`)
 The functionality (`calculateProfit()` and `holdForTaxes()`)
+
 ## DATA (Review)
 ```js
 let hourlyRate = 250
@@ -565,6 +584,9 @@ and show essentials
 Doing this makes code more SIMPLE, PREDICTABLE, MANAGEABLE
 
 ## Let's Start A Farm
+Here we have an animal class
+We can see there is a constructor that gives all the animals a name 
+and the ability to speak their name
 ```js
 class Animal{
     constructor(name){
@@ -578,6 +600,12 @@ class Animal{
 
 ## What if we want a bunch of different animals on the farm?
 ## We can extend animal
+We can extend our classes
+Think of it like making a 'sub-class'
+This gives the class that extends the other class the ability to have the general properties and methods of an animal
+But we can also include properties and methods specific to the sub-class
+Here we can give a dog a name BECAUSE it is an animal and extends that class
+But because dog is a class itself it can have its own more specific properties and methods
 ```js
 class Animal{
     constructor(name){
@@ -601,13 +629,53 @@ let simba = new Dog('Simba', 'Sheperd')
 
 ## AKA We just eliminated a bunch of redundant code
 Music & Light Warning - Next Slide
-
+ 
 ## Inheritance BABY
 ## Inheritance
 Make a class from another class for a hierarchy of classes that share a set of properties and methods
 
+This keeps our code much more DRY since we can inherit common properties and methods between objects 
+instead of having to rewrite them for similar but slightly different objects
+
 ## Let's Code
 Make A Child Class
+See 'class31-materials/objects-child-class'
+Pick your own animal and create a new class based on that animal type
+```js
+class Animal {
+  constructor(name) {
+    this.name = name
+  }
+  speak() {
+    console.log(`${this.name} makes a sound`)
+  }
+}
+
+class DairyAnimal extends Animal {
+  constructor(name){
+    super(name)
+    this.canMilk = true
+  }
+
+  milk(){
+    console.log(this.canMilk ? 'Dispensing milk' : 'cannot be milked')
+  }
+}
+
+class Cow extends DairyAnimal {
+  constructor(name, color){
+    super(name)
+    this.color = color
+  }
+}
+
+let brownCow = new Cow('Bessy', 'brown')
+brownCow.name //=> 'Bessy' (from Animal class)
+brownCow.canMilk //=> true (from DairyAnimal class)
+brownCow.color //=> 'brown' (from Cow class)
+```
+
+By using `extends Animal` we get access to the methods and properties of the Animal class
 
 ## Back To The Farm
 ## New workers keep renaming animals in our system
@@ -624,9 +692,7 @@ class Animal{
 let simba = new Animal('Simba')
 
 simba.name // "Simba"
-
-simba.name = 'Bob' //nothing happens
-
+simba.name = 'Bob' //! Someone changed the name
 simba.name // "Bob"
 ```
 
@@ -645,20 +711,106 @@ class Animal{
 }
 
 let simba = new Animal('Simba')
-
 simba.name // "Simba"
-
 simba.name = 'Bob'  //nothing happens
+simba.name // "Simba"
+```
+If we use an underscore and define a get method we can make sure that the value of name never changes
+
+The trick is we never set a `name` property
+We actually set a `_name` property
+Then we create a get method called `name`
+We can use this to call the getter `name` to return `_name`
+This works because while the `get name()` method will return a value it does not have the ability to make a change to `_name`
+
+This means someone could come along and do this
+```js
+simba._name = 'bob'
+simba.name // 'bob'
 ```
 
-## We just rescued a bunch of animals! 
-How should we build out our system? 
+The underscore doesn't do anything special it just makes it so it is more difficult to access 
+It is just a convention that programmers use
+When there is an underscore it means DO NOT CHANGE THIS VALUE
+It may be possible to change that value but the underscore signals that you shouldn't
 
+## We just rescued a bunch of animals!
+We will create an animal system to log each different animal and provide properties/methods for the animals
 ## Let's Code
 Animal System
+How should we build out our system? 
+We want to be able to handle new animals coming in
 
+First we will want to create our initial parent class (Animal)
+Remember we will want to use the new `get name()` trick so that someone doesn't accidentally override a set name
+We also need to include the speak method which output the animals name
+```js
+class Animal {
+  constructor(name){
+    this._name = name
+  }
+
+  get name(){
+    return this._name
+  }
+
+  speak(){
+    console.log(`${this._name} makes a sound`)
+  }
+}
+```
+
+Now let's say we want to have dogs and cats on our farm
+We will need to 'extend' the animal class 
+We will need to pass the name that `Animal` uses in its constructor via the `super` method/keyword
+We will want to be able to add a breed to the dog class
+We can also add another speak method to Dog
+Since the Animal class already has a speak method we want to be able to call that within the Dog speak method as well
+To do this we can use the `super` keyword again
+If we use `super.speak()` it will grab speak from the parent class
+```js
+class Dog extends Animal {
+  constructor(name, breed){
+    super(name)
+    this._breed = breed
+  }
+
+  get breed(){
+    return this._breed
+  }
+  
+  function speak(){
+    super.speak()
+    console.log(`${this.name} barks`)
+  }
+}
+```
+Now if we create a dog object and call speak we will see both the Animal speak method activate because of super and the console.log from the Dog object
+
+We will do the same for cat
+NOTE: We wouldn't actuall do this because this is not DRY code since we are reusing the breed property and speak method (basically)
+We would probably do a domesticated class to recieve a breed but the point is just practicing creating and using classes
+```js
+class Cat extends Animal{
+  constructor(name, breed){
+    super(name)
+    this._breed = breed
+  }
+
+  get breed(){
+    return this._breed
+  }
+
+  speak(){
+    super.speak()
+    console.log(`${this.name} meows`)
+  }
+}
+```
 ## We want to do a morning roll call and fortunately Dr. Dolittle works here
 ## ROLL CALL
+Now we have created some new objects
+We can store them in an array, iterate through them, and call a function that is common between them all
 ```js
 let simba = new Dog('Simba','Shepard')
 let machi = new Dog('The Machine','Pitbull')
@@ -670,8 +822,11 @@ for( a of farm ){
     a.speak()
 }
 
+// Simba makes a sound
 //Simba barks
+// Machi makes a sound
 //Machi barks
+// Salem makes a sound
 //Salem Meows
 ```
 
@@ -687,10 +842,31 @@ for( a of farm ){
 ```
 
 ## Code written to use an interface automatically knows how to work with any number of different objects that provide the interface
+In english?
+Code that is written to use a method knows to work with different objects that provide that method
+
 ## Sibling descendants of a base class will all have the same interface but varying implementations
-## When you are not sure of the objects type at runtime and the most specific method is called.
-## Therefore the behavior of the method called may differ, depending on the objects type at runtime
+Huh?
+Two objects that inherit from the same class will have access to the same methods (from the parent)
+But they may have varying implementations 
+Remember when we kept the `speak()` method on the children but called `super.speak()` as well?
+Theyall have access to the same method but perform it slightly differently since dog barks and cat meows (varying implementations)
+
+## When you are not sure of the objects type at runtime the most specific method is called. Therefore the behavior of the method called may differ, depending on the objects type at runtime.
+?
+We may not know if the object is 'Cat' 'Dog' or 'Animal' at runtime
+In that case the most specific instance is called 
+The one belonging to that object
+So if it is the cat object the cats speak method is the one that is activated
+The object will check itself before going up the prototype chaining
+Because a dog and cat could have different speak methods the methods may be different when called
+
 ## Disgusting
+These rules mean that we can assign methods to objects to avoid code like below
+We could assign speak to dog to output bark and cat to output meow 
+Then we could activate the same method for either one and it would output the appropriate sound
+If we were to have hundreds of types of animals this if statement would need updated every single time
+That would also mean it would take longer to run the code to check every condition
 ```js
 for( a of farm ){
     if(a instanceof Dog){
@@ -707,8 +883,9 @@ for( a of farm ){
 
 ## Provides a way to perform a single action in different forms.
 Provides an ability to call the same method on different JavaScript objects.
+Can call speak on different objects and get the appropriate outcome for each one because they all know what to do themselves
 
-## Instead of conditionals and switch cases
+Instead of conditionals and switch cases
 Music & Light Warning - Next Slide
 
 ## POLYMORPHISM BABY
@@ -745,8 +922,8 @@ Make a class from another class for a hierarchy of classes that share a set of p
 ## BUT WHY?
 - Helps you avoid if/else and switch cases
 - Makes your code more reusable
-
 - Supports The Other Pillars
+
 ## Group Work
 https://live.remo.co/e/100devs-networking-night-group-0
 https://live.remo.co/e/100devs-networking-night-group-0-1
