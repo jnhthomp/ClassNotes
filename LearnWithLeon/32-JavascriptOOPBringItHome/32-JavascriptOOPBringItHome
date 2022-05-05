@@ -1,0 +1,259 @@
+# Javascript - OOP Bring It Home
+Slides: https://slides.com/leonnoel/100devs2-javascript-oop-bring-it-home
+___
+
+## Agenda
+Questions? 
+Let's Talk -  #100Devs
+Learn - Objects
+Learn - Basic OOP Principles
+Do - Work In Teams: The Four Pillars
+Do - Work In Teams: Tic-tac-toe
+Homework - Object City Yall
+
+## Questions
+About last class or life
+
+## Checking In
+https://twitter.com/leonnoel/status/1522328349497909248
+Like and Retweet the Tweet
+!checkin
+
+## !newsletter
+## GIT BOWL (Review)
+(Sunday is mothers day, no stream)
+MONDAY
+1:00pm EST
+
+## Networking - Next Week
+Alternatives?
+
+## Client Deadline: May 17th
+## Client Alternatives (Review)
+If you cannot get a paid client right now
+(due to either being unable to find one or unable to take on a paid client)
+
+## Grassroots Volunteer* (Review)
+Find a grassroots campaign near you and see if they need a webpresence
+Instead of being paid they should be an ENTHUSIASTIC reference
+Still go through the proposal/contract process with them
+
+## Free Software / Open Source (Review)
+https://www.firsttimersonly.com/
+Contains a list of website that aggregate project issues
+There should be some that are easy enough to contribute to for the first time
+
+## SO CLOSE
+## Fresh Start
+## Discord Gold & VIP
+!clan
+
+## !pokemon
+Live Drawing
+
+## Big News
+Music & Light Warning - Next Slide
+
+## #100Devs Agency
+## BUT WHY?
+- Education Should Be Free
+- Education Should Provide A  Stipend
+- Education Should Be Practical
+
+## OPEN CORE
+#100Devs Stream Team
+#100Devs Blog
+
+## Discord (Review)
+List of MayanWolfe streams and what they are about (on twitch and youtube)
+(Thread in \#catchup-crew channel in discord)
+https://discord.com/channels/735923219315425401/970098839786758165/970098843435823195
+
+## Never Miss The Stream Team (Review)
+You can see when stream team is online by turning notifications on in discord
+Go to \#stream-team channel in discord
+Set notification settings to 'all messages'
+
+## Welcome, verolafox (Review)
+New stream team member
+https://www.twitch.tv/verolafox
+Friday @ 11:00am ET! 
+
+## Finna Make Sum Nerds Angry (Review)
+Explaining theory to people who don't have a solid grasp of objects can make it harder to understand
+This is going to cover why encapsulation and abstraction are important
+Not to study dusty theories (we will cover dusty theories later)
+
+## Objects (Review)
+What are objects?
+- Objects are a collection of variables and functions!
+- Objects represent the attributes and behavior of something used in a program
+- Object variables are called properties and object functions are called methods
+- Objects store "keyed" collections
+
+## Think of a physical object (Review)
+What are it's attributes and behaviors?
+
+## Car Factory (Review)
+Look Ma! New syntax!
+This is just a new way to make a constructor
+Nothing changes under the hood
+```js
+class MakeCar{
+  constructor(carMake,carModel,carColor,numOfDoors){
+    this.make = carMake
+    this.model = carModel
+    this.color = carColor
+    this.doors = numOfDoors
+  }
+  honk(){
+    alert('BEEP BEEP FUCKER')
+  }
+  lock(){
+    alert(`Locked ${this.doors} doors!`)
+  }
+}
+
+let hondaCivic = new MakeCar('Honda','Civic','Silver', 4)
+
+let teslaRoadster = new MakeCar('Tesla','Roadster', 'Red', 2)
+```
+Classes are like templates for objects!
+
+## BUT WHY? (Review)
+Why Use Objects?
+
+## Why Would We Need A Factory? (Review)
+- As our codebase gets larger and more folx join the team, can we keep our code organized?
+- Is it easy to add new features and functionality?
+- Can another developer look at my code and understand what is happening?
+- Can I make changes without losing sleep at night? 
+
+## What if there was a system, a paradigm, a set of rules, an agreed upon way to structure our code that: (Review)
+- Made it easier to add new stuff
+- Made it easier to read through what was already coded
+- Made it so you were not afraid to make changes
+
+Music & Light Warning - Next Slide
+
+## OOP BABY (Review)
+Object Oriented Programming can solve all of the above problems
+
+## OBJECT ORIENTED PROGRAMING (Review)
+## Let's Talk About It
+## This fusion of data and functionality into one object (Review)
+Music & Light Warning - Next Slide
+
+## Encapsulation Baby (Review)
+That is basically encapsulation
+
+## Encapsulation (Review)
+(This is a definition that is just supposed to help people understand
+Not necessarily a technical definition)
+
+The process of storing functions (methods) with their associated data (properties) - in one thing (object)*
+This makes our code more readable and makes it easier to make changes
+Our data and functionality is fused into one thing
+
+## Complex or unnecessary details are hidden (Review)
+The wand does not need to know about the water boiler
+The client does not need to know the hourly rate to get their invoice
+
+## This enables you to implement things without understanding or even thinking about all the hidden complexity (Review)
+If we were all engineers working on the steam wand we don't need to know how the water boiler works
+We only need to know how the wand works
+
+## Smaller more manageable pieces of code (Review)
+This makes code easier to understand and change
+
+## Abstraction Baby (Review)
+## Abstraction (Review)
+All about
+Hiding details
+and show essentials
+Doing this makes code more SIMPLE, PREDICTABLE, MANAGEABLE
+
+## Create New Objects Based On Old Ones (Review)
+## AKA We just eliminated a bunch of redundant code (Review)
+Music & Light Warning - Next Slide
+
+## Inheritance BABY (Review)
+## Inheritance (Review)
+Make a class from another class for a hierarchy of classes that share a set of properties and methods
+
+This keeps our code much more DRY since we can inherit common properties and methods between objects 
+instead of having to rewrite them for similar but slightly different objects
+
+## A piece of code that automagically works with a bunch of different objects
+polymorphism allows us to override a method in every child class so it will do what we want
+
+## Instead of conditionals and switch cases (Review)
+Music & Light Warning - Next Slide
+
+## POLYMORPHISM BABY (Review)
+## The Four Pillars (Review)
+What if they actually made any sense...
+
+## Encapsulation (Review)
+The process of storing functions (methods) with their associated data (properties) in one thing (object)
+
+## BUT WHY? (Review)
+- Made it easier to add new stuff
+- Made it easier to read through what was already coded
+- Made it so you were not afraid to make changes
+
+## Abstraction (Review)
+All about
+Hiding details
+and show essentials
+Doing this makes code more SIMPLE, PREDICTABLE, MANAGEABLE
+
+## BUT WHY? (Review)
+- Smaller more manageable pieces of code
+- Helps you to split the complexity your software project into manageable parts
+
+## Inheritance (Review)
+Make a class from another class for a hierarchy of classes that share a set of properties and methods
+
+## BUT WHY? (Review)
+- Helps you eliminate redundant code
+
+## Polymorphism (Review)
+ Code written to use an interface automatically knows how to work with any number of different objects that provide the interface
+
+## BUT WHY? (Review)
+- Helps you avoid if/else and switch cases
+- Makes your code more reusable
+- Supports The Other Pillars
+
+## Let's Code
+Let's Build An Agency
+
+## Group Work
+https://live.remo.co/e/100devs-networking-night-group-0
+https://live.remo.co/e/100devs-networking-night-group-0-1
+If Remo does not work for you, please jump into one of our
+
+Discord Voice Channels!
+
+## Talk Through OOP
+Come up with with a parent class
+
+Extend that parent class into two children
+
+Use Encapsulation, Abstraction, Inheritance, and Polymorphism 
+
+## Right Of Passage
+https://live.remo.co/e/100devs-networking-night-group-0
+https://live.remo.co/e/100devs-networking-night-group-0-1
+If Remo does not work for you, please jump into one of our
+
+Discord Voice Channels!
+
+## Homework
+DO: Please review, play, and break the code we go over tonight
+DO: Get a paid client, Volunteer, or Contribute To Free Software
+DO: FINISH Professional Checklist 
+
+Want To Push (Due: Tues. May 10th)?
+Do: Codewars String Ladder (search String problems) - 8kyu, 7kyu, 6kyu, 7kyu, 8kyu  
