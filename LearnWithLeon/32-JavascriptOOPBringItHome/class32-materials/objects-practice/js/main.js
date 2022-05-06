@@ -53,6 +53,7 @@ agency.push(new Front('John', 'Front-end', 'React'))
 agency.push(new Back('Bob', 'Back-end', 'Ruby on Rails'))
 
 agency.forEach(el => el.sayHello())
+
 // // Come up with with a parent class
 // // Extend that parent class into two children
 // // Use Encapsulation, Abstraction, Inheritance, and Polymorphism 
