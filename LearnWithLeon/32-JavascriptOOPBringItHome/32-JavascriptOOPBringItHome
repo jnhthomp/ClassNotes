@@ -20,6 +20,8 @@ Like and Retweet the Tweet
 !checkin
 
 ## !newsletter
+There will be a giveaway in the newsletter next week
+
 ## GIT BOWL (Review)
 (Sunday is mothers day, no stream)
 MONDAY
@@ -27,6 +29,7 @@ MONDAY
 
 ## Networking - Next Week
 Alternatives?
+There will be alternatives next week if it is difficult for you to network because of location or other difficulties
 
 ## Client Deadline: May 17th
 ## Client Alternatives (Review)
@@ -44,25 +47,59 @@ Contains a list of website that aggregate project issues
 There should be some that are easy enough to contribute to for the first time
 
 ## SO CLOSE
+Merch is going to start shipping to those that ordered soon
+
 ## Fresh Start
+If you missed some homework or checkins and want to be part of the things at the end of the program (job board, references, #100Devs verification)
+
+Don't worry. There is a fresh start starting now.
+Missing homework and checkins do not matter
+Slate is clean.
+Going forward there is an expectation that you turn in hw and use checkins
+
 ## Discord Gold & VIP
 !clan
+Join the #100Devs - leonnoel.com/twitch
+The most improved and top scorers will be given vip on twitch
 
 ## !pokemon
 Live Drawing
+Project winners
+Pizza Sweeper: https://spicy-snowy-starfish.glitch.me/
+Catching up on pokemon card raffles
 
 ## Big News
 Music & Light Warning - Next Slide
 
 ## #100Devs Agency
+\#100Devs will now be an agency!
 ## BUT WHY?
 - Education Should Be Free
 - Education Should Provide A  Stipend
 - Education Should Be Practical
 
+Becoming an agency gets us closer to these goals
+This will allow people who are looking to build larger projects find developers like us to work on them
+Everything will  be in the open
+- The work
+- The clients
+- Agency income
+
+There will be clients that come in
+Tasks will be broken down into smaller tasks
+People can contribute to those tasks
+At the end the money paid for the project will be split between those who contributed
+
+This will give people real ability to work with real clients collaboratively with other members of #100Devs
+
+You should be able to get practical experience and a little bit of money
+
 ## OPEN CORE
 #100Devs Stream Team
 #100Devs Blog
+
+Having everything in the open should make it easier for people to see what is happening and see the work that is being done
+This will also make it easier to join projects
 
 ## Discord (Review)
 List of MayanWolfe streams and what they are about (on twitch and youtube)
@@ -228,6 +265,94 @@ Make a class from another class for a hierarchy of classes that share a set of p
 
 ## Let's Code
 Let's Build An Agency
+Build a contractor class and extend it to a front end and back end class
+(The class materials have it complete, comment it out and pretend it isn't there)
+Take 8 minutes to build these three classes
+They should be straightforward
+
+Create Contractor with the following properties 
+  - Name
+  - Role
+
+Remember to abstract your property names to prevent name and role from being changed accidentally
+Use getters to do this
+
+Then create a `sayHello()` method to output the contractor properties
+```js
+class Contractor {
+  constructor(name, role){
+    this._name = name
+    this._role = role
+  }
+
+  get name(){
+    return this._name
+  }
+
+  get role(){
+    return this._role
+  }
+
+  sayHello(){
+    console.log(`Hello world, I am ${this.name} on the ${this.role} team at #100Devs`)
+  }
+}
+```
+
+Now we want to do something similar for front end
+It will need to extend contractor
+It will also need to take/create a new property called `tech`
+Create an `sayHello()` method for this class that overwrites the method inherited from `Contractor` class
+```js
+class Front extends Contractor{
+  constructor(name, role, tech){
+    super(name, role)
+    this._tech = tech
+  }
+
+  get tech(){
+    return this._tech
+  }
+
+  sayHello(){
+    console.log(`Hello world, I am ${this.name} on the ${this.role} team at #100Devs. I use ${this.tech}`)
+  }
+}
+```
+
+Then just for the sake of practice we will make a similar class for backend
+Note that we would not do this in real life because it would basically be repeating a class
+```js
+class Back extends Contractor{
+  constructor(name, role, tech){
+    super(name, role)
+    this._tech = tech
+  }
+
+  get tech(){
+    return this._tech
+  }
+
+  sayHello() {
+    console.log(`Hello world, I am ${this.name} on the ${this.role} team at #100Devs. I use ${this.tech}`)
+  }
+}
+```
+
+Lastly one cool thing we can do is to create several different objects using these classes
+We can store all of these in a single array
+Then we can go through the array and activate our `sayHello()` method since it exists an all objects
+```js
+let agency = []
+agency.push(new Contractor('Bob', 'Front-end'))
+agency.push(new Front('John', 'Front-end', 'React'))
+agency.push(new Back('Bob', 'Back-end', 'Ruby on Rails'))
+
+agency.forEach(el => el.sayHello())
+//=> Hello world, I am Bob on the Front-end team at #100Devs
+//=> Hello world, I am John on the Front-end team at #100Devs. I use React
+//=> Hello world, I am Bob on the Back-end team at #100Devs. I use Ruby on Rails
+```
 
 ## Group Work
 https://live.remo.co/e/100devs-networking-night-group-0
@@ -238,9 +363,7 @@ Discord Voice Channels!
 
 ## Talk Through OOP
 Come up with with a parent class
-
 Extend that parent class into two children
-
 Use Encapsulation, Abstraction, Inheritance, and Polymorphism 
 
 ## Right Of Passage
