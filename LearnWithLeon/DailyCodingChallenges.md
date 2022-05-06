@@ -1,3 +1,54 @@
+2022-5-6
+```js
+// No one likes carrying change (6 kyu)
+//
+// No one enjoys carrying around spare change. 
+// And to avoid all that jingling it's absolutely necessary 
+// to have an efficient algorithm to 
+// calculate the minimum number of coins needed to pay for something. 
+// So given a set of coin denominations 
+// determine the fewest number of coins required 
+// to add up to a given amount.
+//
+// For example: US Currency includes the penny, nickel, dime and quarter 
+// or the coins with denominations: 
+// [1, 5, 10, 25] 
+//
+// If I were to ask you to make 75 cents 
+// you would return 3 
+/// since 75 cents can be made with 3 quarters.
+//
+// NOTES:
+// The coin denominations will contain at least one coin 
+// and will be greater than zero. 
+// [3] or [1, 100, 19] are both valid.
+// All amounts given will be solvable.
+// Be greedy...
+//
+// Sample Tests:
+const coins1= [1,5,10,25];
+const coins2= [1,2,5,10,20,50];
+
+console.log(coinsNeeded(75, coins1)) //=> 3
+console.log(coinsNeeded(123, coins1)) //=> 9
+console.log(coinsNeeded(75, coins2)) //=> 3
+console.log(coinsNeeded(123, coins2)) //=> 5
+
+function coinsNeeded(amount, coinDenominations) {
+  // Make sure coins are in order (small to big)
+  coinDenominations.sort((a, b)=> a - b)
+  let coins = 0
+  for(let i = coinDenominations.length -1; i >= 0; i--){
+    // can the amount be divided by current denomination?
+    // How many times?
+    coins += Math.floor(amount / coinDenominations[i])
+    // Set leftover amount after taking all coins that fit
+    amount = amount % coinDenominations[i]
+  }
+  
+  return coins
+}
+```
 2022-5-5
 ```js
 // From..To..Series #1: from m to n. Find the maximum range (6 kyu)
