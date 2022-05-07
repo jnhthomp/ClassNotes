@@ -1,3 +1,50 @@
+2022-5-7
+```js
+// Where is my parent!?(cry) (6 kyu)
+//
+// Mothers arranged a dance party for the children in school.
+// At that party, there are only mothers and their children. 
+// All are having great fun on the dance floor 
+// when suddenly all the lights went out. 
+// It's a dark night and no one can see each other. 
+// But you were flying nearby and you can see in the dark 
+// and have ability to teleport people anywhere you want.
+//
+// Legend:
+// - Uppercase letters stands for mothers, 
+//   lowercase stand for their children, 
+//   i.e. "A" mother's children are "aaaa".
+//
+// - Function input: String contains only letters, uppercase letters are unique.
+//
+// Task:
+// Place all people in alphabetical order 
+// where Mothers are followed by their children, 
+// i.e. "aAbaBb" => "AaaBbb".
+
+console.log(findChildren("beeeEBb"));
+console.log(findChildren("uwwWUueEe"));
+console.log(findChildren("abBA"));
+console.log(findChildren("AaaaaZazzz")); 
+console.log(findChildren("CbcBcbaA")); 
+console.log(findChildren("xXfuUuuF"));
+
+function findChildren(dB) {
+  return dB.split('').sort((prev, next)=>{
+    // See if chars to sort are the same letter (regardless of case)
+    if(prev.toLowerCase() !== next.toLowerCase()){
+      // If not the same letter set both to lowerCase for even comparison
+      prev = prev.toLowerCase()
+      next = next.toLowerCase()
+    }
+    // (a, a) => 0
+    // (a, b) => 1
+    // (b, a) => -1
+    // (A, a) => 1
+    return prev > next ? 1 : (prev < next ? -1 : 0)
+  }).join('');
+}
+```
 2022-5-6
 ```js
 // No one likes carrying change (6 kyu)
