@@ -1,3 +1,66 @@
+2022-5-8
+```js
+// Never gonna give you up (Beta) (estimated 6kyu)
+
+// Let's go back to the 80s when our parents were students like us.
+
+// In this kata you will have to work with the chorus 
+// of the wonderful song 'Never gonna give you up' by Rick Astley
+
+// A vector of numbers will be input,
+// the output will be a vector of chorus lines
+// Depending on what number will be in the array, you need to insert one stanza, and each even line should have a 'NEVER GONNA' in capital letters.
+
+// I offer you examples of the program.
+
+// Chorus of this song:
+// "Never gonna give you up
+// Never gonna let you down
+// Never gonna run around and desert you
+// Never gonna make you cry
+// Never gonna say goodbye
+// Never gonna tell a lie and hurt you "
+
+// Input: { 1, 3, 3, 4 }
+// Output: [
+// "Never gonna let you down",
+// "NEVER GONNA make you cry",
+// "Never gonna make you cry",
+// "NEVER GONNA say goodbye"
+// ]
+// More examples in the test cases. Good luck and never give up! :D
+
+function music(numbers) {
+  // Store each line
+  const chorus = [
+    'Never gonna give you up',
+    'Never gonna let you down',
+    'Never gonna run around and desert you',
+    'Never gonna make you cry',
+    'Never gonna say goodbye',
+    'Never gonna tell a lie and hurt you'
+  ]
+  
+  // Array that will be badded to for each line in the input array
+  let output = []
+  
+  // iterate through numbers arr and add the corresponding line to output array
+  numbers.forEach((el, i)=>{
+    // fetch line to add
+    let line = chorus[el]
+    // If current line being built is an even line number then...
+    if((i + 1) % 2 === 0){
+      // ...capitalize first two words of line
+      line = line.split(' ').map((el, i)=> i === 0 || i ===1 ? el.toUpperCas() : el).join(' ')
+    }
+    // Add line to output array
+    output.push(line)
+  })
+
+  // return output array
+  return output
+}
+```
 2022-5-7
 ```js
 // Where is my parent!?(cry) (6 kyu)
