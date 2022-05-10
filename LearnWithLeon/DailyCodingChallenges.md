@@ -1,3 +1,296 @@
+2022-5-10
+```js
+// Is the King In Check? (5kyu)
+// You have to write a function that takes for input a 8x8 chessboard in the form of a bi - dimensional array of chars
+// (or strings of length 1, depending on the language) 
+// and returns a boolean indicating whether the king is in check.
+//
+// The array will include 64 squares which can contain the following characters:
+// '♔' for the black King;
+// '♛' for a white Queen;
+// '♝' for a white Bishop;
+// '♞' for a white Knight;
+// '♜' for a white Rook;
+// '♟' for a white Pawn;
+// ' '(a space) if there is no piece on that square.
+//
+// Note : these are actually inverted - color chess Unicode characters 
+// because the codewars dark theme makes the white appear black and vice versa.
+// Use the characters shown above.
+//
+// There will always be exactly one king, which is the black king, 
+// whereas all the other pieces are white.
+// The board is oriented from Black's perspective.
+// Remember that pawns can only move and take forward.
+// Also be careful with the pieces' lines of sight ;-).
+//
+// The input will always be valid, no need to validate it.
+// To help you visualize the position, tests will print a chessboard to show you the problematic cases.
+// Looking like this :
+// |---|---|---|---|---|---|---|---|
+// |   |   |   |   |   |   |   |   |
+// |---|---|---|---|---|---|---|---|
+// |   |   |   | ♜ |   |   |   |   |
+// |---|---|---|---|---|---|---|---|
+// |   |   |   |   |   |   |   |   |
+// |---|---|---|---|---|---|---|---|
+// |   |   |   | ♔ |   |   |   |   |
+// |---|---|---|---|---|---|---|---|
+// |   |   |   |   |   |   |   |   |
+// |---|---|---|---|---|---|---|---|
+// |   |   |   |   |   |   |   |   |
+// |---|---|---|---|---|---|---|---|
+// |   |   |   |   |   |   |   |   |
+// |---|---|---|---|---|---|---|---|
+// |   |   |   |   |   |   |   |   |
+// |---|---|---|---|---|---|---|---|
+
+// Tests:
+// Should work with check by pawn
+let chessboard = [
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', '♟', ' ', ' ', ' ', ' '],
+  [' ', ' ', '♔', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
+console.log(kingIsInCheck(chessboard))
+
+// Should work with check by bishop
+chessboard = [
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', '♝', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  ['♔', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
+console.log(kingIsInCheck(chessboard))
+
+// Should work with a check by rook
+chessboard = [
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', '♔', ' ', '♜', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
+console.log(kingIsInCheck(chessboard))
+
+// Should work with a check by knight
+chessboard = [
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', '♞', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', '♔', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
+console.log(kingIsInCheck(chessboard))
+
+// Should work with a check by queen
+chessboard = [
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', '♔', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', '♛', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
+console.log(kingIsInCheck(chessboard))
+
+// Should work with a king alone
+chessboard = [
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', '♔', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
+console.log(kingIsInCheck(chessboard))
+
+// Should work with no check
+chessboard = [
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  ['♛', ' ', ' ', '♞', ' ', ' ', ' ', '♛'],
+  [' ', ' ', ' ', '♔', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
+console.log(kingIsInCheck(chessboard))
+
+// Should work with another piece blocking line of site
+chessboard = [
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  ['♜', ' ', '♝', '♔', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
+console.log(kingIsInCheck(chessboard))
+
+
+function kingIsInCheck(chessboard) {
+  // Get list of pieces on board
+  let pieceLocations = [] //=> [[piece, rowNum, colNum], [...]...] => [['♛', 1, 3], [...]...]
+  let kingLocation = [] //=> [rowNum, colNum] => [1, 6]
+
+  // Loop through board to find piece locations and king location
+  for (let row = 0; row < chessboard.length; row++) {
+    for (let col = 0; col < chessboard[row].length; col++) {
+      // Space at current row/col is not empty
+      if (chessboard[row][col] !== ' ') {
+        // If it is king, update king location
+        if (chessboard[row][col] === '♔') {
+          kingLocation = [row, col]
+        } else { // Not king, add to arr of pieces/locations
+          pieceLocations.push([chessboard[row][col], row, col])
+        }
+      }
+
+      // Do nothing if not piece found at current square
+    }
+  }
+
+  // Reduce list of piece locations to a true or false value
+  // Will check all pieces and if one of them has check then the entire array reduces to true
+  // Otherwise array will reduce to false
+  return pieceLocations.reduce((acc, el) => {
+
+    // Returns general direction of king as [row, col]
+    // where row is the direction of row 
+    // (0 = same row; 1 = king is in a higher row number; -1 = king is in a lower row number)
+    const getKingDirection = (piece, king) => {
+      let rowIncr = 0
+      let colIncr = 0
+
+      // get general row direction of king
+      if (piece[1] > king[0]) {
+        rowIncr = -1
+      } else if (piece[1] < king[0]) {
+        rowIncr = 1
+      }
+
+      // get general col direction of king
+      if (piece[2] > king[1]) {
+        colIncr = -1
+      } else if (piece[2] < king[1]) {
+        colIncr = 1
+      }
+
+      return [rowIncr, colIncr]
+    }
+
+    // Returns if the passed in piece will hit the king moving in given general direction
+    // ex: rowIncr === 0 and colIncr === 1/-1 same row will check if can take by moving through column
+    const checkForKing = (piece, rowIncr, colIncr) => {
+      // Check chessboard in direction of rowIncr + colIncr for a piece (not space)
+      // If it is a king then check
+      // If it is not a king then no check
+      let piecePathRow = piece[1]
+      let piecePathCol = piece[2]
+      let pieceCheck = null
+      // While within confines of the board
+      while (piecePathRow + rowIncr >= 0 && piecePathRow + rowIncr <= 7 && piecePathCol + colIncr >= 0 && piecePathCol + colIncr <= 7) {
+        if (chessboard[piecePathRow + rowIncr][piecePathCol + colIncr] === ' ') {
+          // next space is empty continue to next space
+          piecePathRow += rowIncr
+          piecePathCol += colIncr
+        } else if (chessboard[piecePathRow + rowIncr][piecePathCol + colIncr] === '♔') {
+          // Next space has king, check is true
+          pieceCheck = true
+          piecePathRow = 8
+          piecePathCol = 8
+        } else {
+          // Next space has a different piece, no check possible
+          pieceCheck = false
+          piecePathRow = 8
+          piecePathCol = 8
+        }
+      }
+
+      return pieceCheck
+    }
+
+    // Pawn
+    if (el[0] === '♟') {
+      // Use pawn and king location to search for check (don't need to check line of sight since king must be next to it)
+      return el[1] === kingLocation[0] - 1 && (el[2] === kingLocation[1] + 1 || el[2] === kingLocation[1] - 1) || acc
+    }
+
+    // Bishop
+    if (el[0] === '♝') {
+      const [rowIncr, colIncr] = getKingDirection(el, kingLocation)
+      // if king is on same row or column it is definitely not in check
+      if (rowIncr === 0 || colIncr === 0) {
+        return false || acc
+      }
+
+      return checkForKing(el, rowIncr, colIncr) || acc
+    }
+
+    // Rook
+    if (el[0] === '♜') {
+      const [rowIncr, colIncr] = getKingDirection(el, kingLocation)
+
+      // if king is not on same row or column it is definitely not in check
+      if (rowIncr !== 0 && colIncr !== 0) {
+        return false || acc
+      }
+
+      return checkForKing(el, rowIncr, colIncr) || acc
+    }
+
+    // Knight
+    if (el[0] === '♞') {
+      // Get array of possible knight moves
+      let possibleKnightMoves = []
+      let knightPathRow = el[1]
+      let knightPathCol = el[2]
+      let knightCheck = false
+
+      possibleKnightMoves.push([(knightPathRow + 2), (knightPathCol - 1)])
+      possibleKnightMoves.push([(knightPathRow + 2), (knightPathCol + 1)])
+      possibleKnightMoves.push([(knightPathRow + 1), (knightPathCol - 2)])
+      possibleKnightMoves.push([(knightPathRow - 1), (knightPathCol - 2)])
+      possibleKnightMoves.push([(knightPathRow - 2), (knightPathCol - 1)])
+      possibleKnightMoves.push([(knightPathRow - 2), (knightPathCol + 1)])
+      possibleKnightMoves.push([(knightPathRow - 1), (knightPathCol + 2)])
+      possibleKnightMoves.push([(knightPathRow + 1), (knightPathCol + 2)])
+
+      for (let i = 0; i < possibleKnightMoves.length; i++) {
+        if (possibleKnightMoves[i][0] === kingLocation[0] && possibleKnightMoves[i][1] === kingLocation[1]) {
+          knightCheck = true
+        }
+      }
+
+      return knightCheck || acc
+    }
+
+    // Queen (If rook or bishop takes rules)
+    if (el[0] === '♛') {
+      const [rowIncr, colIncr] = getKingDirection(el, kingLocation)
+
+      return checkForKing(el, rowIncr, colIncr) || acc
+    }
+
+    return acc
+  }, false)
+}
+```
 2022-5-9
 ```js
 // Anagram Detection (7 kyu)
