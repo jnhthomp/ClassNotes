@@ -1,3 +1,38 @@
+2022-5-11
+```js
+// Maximum Length Difference (7 kyu)
+//
+// You are given two arrays a1 and a2 of strings. 
+// Each string is composed with letters from a to z. 
+// Let x be any string in the first array and y be any string in the second array.
+//
+// Find max(abs(length(x) − length(y)))
+//
+// If a1 and/or a2 are empty return -1 in each language 
+// except in Haskell (F#) where you will return Nothing (None).
+// Bash note:
+// input : 2 strings with substrings separated by ,
+// output: number as a string
+//
+// Example:
+a1 = ["hoqq", "bbllkw", "oox", "ejjuyyy", "plmiis", "xxxzgpsssa", "xxwwkktt", "znnnnfqknaz", "qqquuhii", "dvvvwz"]
+a2 = ["cccooommaaqqoxii", "gggqaffhhh", "tttoowwwmmww"]
+mxdiflg(a1, a2) //=> 13
+
+function mxdiflg(a1, a2) {
+  if(a1.length === 0 || a2.length === 0){
+    return -1
+  }
+  
+  // convert to num -> sort ascending -> keep first and last num (smallest and biggest)->
+  const smallBig = arr => arr.map(el=> +el.length).sort((a,b)=> a - b).filter((el, i, arr)=> i === 0 || i === arr.length - 1)
+  a1 = smallBig(a1)
+  a2 = smallBig(a2)
+  
+  // Cross compare smallest and biggest num and return the largest of the two differences
+  return Math.max(a1[a1.length - 1] - a2[0], a2[a2.length - 1] - a1[0])
+}
+```
 2022-5-10
 ```js
 // Is the King In Check? (5kyu)
