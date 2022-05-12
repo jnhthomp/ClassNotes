@@ -1,4 +1,4 @@
-# Javascript - Interview Prep (THE HUNT)
+# Interview Prep (THE HUNT)
 Slides: https://slides.com/leonnoel/100devs2-interview-prep
 ___
 ## Agenda
