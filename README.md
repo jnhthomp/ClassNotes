@@ -12,7 +12,7 @@ The courses covered include:
 
 ## How It's Made:
 
-**Tech used:** HTML, CSS, JavaScript, React, Ruby on Rails, Node, Ruby
+**Tech used:**  <!-- HTML5 =>--><a href="https://www.w3.org/html/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg" alt="html5" width="40" height="40"/> </a><!-- CSS3 =>--> <a href="https://www.w3schools.com/css/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original-wordmark.svg" alt="css3" width="40" height="40"/> </a><!--JavaSCript  =>--><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="40" height="40"/> </a><!-- React =>--><a href="https://reactjs.org/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="40" height="40"/> </a><!-- Ruby on Rails =>--><a href="https://rubyonrails.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rails/rails-original-wordmark.svg" alt="rails" width="40" height="40"/> </a><!-- Node.js =>--><a href="https://nodejs.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg" alt="nodejs" width="40" height="40"/> </a><!-- Ruby =>--> <a href="https://www.ruby-lang.org/en/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/ruby/ruby-original.svg" alt="ruby" width="40" height="40"/> </a>
 
 Especially early on in my learning career I found documentation really difficult to read and follow along with. The most helpful thing on my journey to learning to program was to 'translate' documentation and teacher lectures into something that I could understand. They have been really useful as I come across problems and being able to have a reference of relevant information so that I can have a better basic understanding when I move onto more hard to understand documentation.
 
@@ -29,6 +29,8 @@ JavaScript - DOM manipulation, ES6, Asyncrhonous JS, Fundamental JavaScript, HTM
 Ruby on Rails - Fundamental Ruby, Creating/Managing Databases, Test driven development, table associations, websocket, backend authentification
 
 React - React state, styling components (CSS Modules/Styled Components), Portals, Reducers, Context Redux, Hooks, Class vs Functional Components
+
+LearnWithLeon - HTML, CSS, JS, solidify fundamental web development, daily coding challenges
 
 ## Other Examples:
 Take a look at other examples from my <a href="https://jtdev.netlify.app/">portfolio</a> using the lessons learned from these classes:
