@@ -16,15 +16,14 @@ About last class or life
 !ask - will be answered
 
 ## Checking In
-
 Like and Retweet the Tweet
 !checkin
 
 ## !youtube
+Youtube is up to date with all classes 
 ## NO CLASS FRIDAY
-Text
+There was supposed to be a C.A.R. class friday but that was cancelled for super review on sunday
 ## REVIEW CLASS
-
 SUNDAY
 1:00pm EST
 
@@ -277,60 +276,189 @@ DO THE PROCESS TO GET JOBS
 Class ended here and will be continued next time
 ## Interviewing
 ## 4. Interview Process
-Apply / Recruited / Recommended
-Phone Screen
-Behavioral 
-Technical Questions
-Take Home
-Whiteboard
-In-person
-Wine and Dine Interview
-Offer
-*Every Company Is Wildly Different
+- Apply / Recruited / **Recommended**
+  - Ideally we get recommended because you can potential skip phone screen and behavioral interviews
+- Phone Screen (sniff test)
+  - They don't want to waste the time of the engineer
+- Behavioral 
+  - These are just like a normal hr-ish interview about why you think you might be a good fit
+- Technical Questions
+  - This can be different in every company usually the follow the following
+    - Just asking technical questions
+    - Take Home coding problem (1-3 hour problem usually making a thing)
+    - Whiteboard (write out code on a whiteboard)
+    - In-person 1-5 interviews in a day where you meet and work with different engineers
+- Wine and Dine Interview
+  - This is where they already know they want to hire you but want you to meet the team and go out to dinner and whatnot
+- Offer
+  - Once here you can ask about the company and begin negotiating
+
+*Every Company Is Wildly Different*
 ## Once Recommended
 WHAT ARE THE STEPS IN THIS PROCESS?
 WHAT ARE THE STEPS IN THIS PROCESS?
+
+Never go into your interview like an accident
+Know what you are going into and what the process is like for each company
 ## WHAT ARE THE STEPS IN THIS PROCESS?!?
 ## Once Recommended
 Find EVERYTHING about their process!
+Some questions they ask in the interview will be posted online
+
 Glassdoor
 Github
-
-Blind
+Blind (glassdoor-like website)
 
 ## How to prepare?
 ## The Bank
+This is a list of problems that you should practice
+There are behavioral questions that you need to know how to answer with C.A.R.
+
+There are also 300 technical questions that are important to know the answer to
+
+ANKI THESE!
+
 Link: https://docs.google.com/document/d/1p7DhCsLOMMybYfePWLlD1-_8KU20zkBoArH4pnW1o3c/preview?pru=AAABgNQ1Cjw*B3lXKUzTbTBmZzar_dkB1Q
 
 ## Behavioral
 ## 5. C.A.R.
-Cause Action Result
+Cause 
+Action 
+Result
+
+Every single behavioral question should have a 3 sentence answer
+1. What happened?
+2. What did you do to solve that problem?
+3. How are you better now because of the solution?
+
+1. Cause
+  - Try starting with one of the two
+    - At my last company...
+    - At my last opportunity...
+  - This avoids saying bootcamp or giving the name of a specific job and lets them dig more
+2. Action
+  - What steps did you take to solve the CAUSE?
+  - It MUST BE POSITIVE 
+  - No time to be humble
+3. Result
+  - Talk about why your solution was great
+  - How did it affect the company?
+  - What did you learn from it?
+
 ## LETS DO IT LIVE
-Math.ceil(Math.random() * 22)
+```Math.ceil(Math.random() * 22)```
+to practice random BANKI questions
+
 ## Technical Questions
+A lot of people are able to get away without having a technical interview
+
 ## Explanation, Use, Example
-Explain CSS sprites, and how you would implement them on a page or site.
- 
+Like we have C.A.R. for behavioral we hav E.U.E for technical questions
+
+That means an explantion, use, and example for all of the concepts in the technical section
+
+Example: Explain CSS sprites, and how you would implement them on a page or site.
+- Explanation: When you take a bunch of images and combine them into one image
+- Use: Reduces amount of requests to a server because you only need to request an image once to get a bunch of images
+- Example: On amazon this is also done and a lot of the images are part of a larger sprite sheet
 
 Explanation, Use, Example
+
 ## Technical Whiteboard
+This is a little different than technical questions
+They are more like coding challenges whereas technical questions are responses about technical topics
+
 ## Whiteboarding
+This used to be more popular
+But if you want to test coding ability then using code and coding tools is popular
+
 ## Whiteboarding Tests:
-Communication And Collaboration Skills
-Job Specific Knowledge
-Survival Abilities when under pressure 
 WHITEBOARDING SKILLS...
 Hotly debated and not always part of the process
 
+Something to understand is that whiteboard questions have nothing to do with just solving the challenge
+Solving it is the goal but they are measuring other things which can be more important than actually solving
+
+- Communication And Collaboration Skills
+- Job Specific Knowledge
+- Survival Abilities when under pressure 
+
+Don't get too pressured to solve the problem because even GOOGLE will give the applicant hints
+But they can only give you a hint if you communicate your thought process and the problem you are running into
+
+They want to know if you have a clear thought process, and communication
+This is a skill that  can be learned
+
 ## Notes On The Side
+First take notes of the question being asked
+The worst thing is getting 20 minutes into solving a problem and forgetting what the problem was supposed to be
+
+It is easy to forget the questions especially when yo are under stress
+
+Put your pseudocode or thought process off to the side to help organize your thoughts for easy reference
+This can help you think through your process without worrying about the syntax of the code
+
 ## Write Clearly
+Writing on a whiteboard can be tough so it may be worth practicing
+You want it to be legible for those who are watching
+
 ## Be Mindful Of Space
+Don't take up too much whiteboard space, you don't get new lines dynamically so you can run out of space easily
+
+You can even take large sections and use a placeholder method to 'save space'
+They may or may not ask you to come back to it
+
 ## Practice Practice Practice
+Practice whiteboard problem solving so that it is more natural whenever you have to do it
+
 ## P.R.E.P
 Parameters, Returns, Examples, Pseudo Code
 
+This is a strategy to get through very tough coding challenges
+This is how we can solve coding challenges
+
+You can practice this with codewars challenges
+
 ## Let's PREP
 FIZZBUZZ
+Practice prep using fizzbuzz
+
+This is a classic interview question
+
+From 1 to n print each number. 
+If it is a multiple of 3 print fizz
+If it is a multiple of 5 print buzz
+If it is a multiple of 3 AND 5 print fizzbuzz
+
+Whiteboard:
+```js
+//PREP
+
+// Paramenters: n (number we are printing to)
+
+// Returns: The number, If the number is divisible by 3 fizz, if the number is divisble by 5 buzz, if the number is divisible by both fizzbuzz
+
+// Examples: 1, 2, fizz, 4, buzz, fizz, 7, 8, fizz, buzz, 11, fizz, 13, 14, fizzbuzz etc...
+
+// Psuedocode
+// start loop starting at 1
+// Ensure it runs until n (passed in) is reached incrementing the counter after each loop
+// Check the current value for i to see if it is divisible by 3
+// If so store fizz as part of the string to be returned
+// Check the current value for i to see if it is divisible by 5
+// if so store buzz as part of the string to be returned
+// check if the string has a length (contains fizz or buzz)
+
+const fizzBuzz = (n) => {
+  for(let i = 1; i <= n; i++){
+    let str = ''
+    if(i % 3 === 0) str += 'fizz';
+    if(i % 5 === 0) str += 'buzz';
+    if(str.length === 0) str += i;
+    console.log(str)
+  }
+}
+```
 
 ## Questions
 !ask
