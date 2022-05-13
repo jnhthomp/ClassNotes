@@ -1,3 +1,49 @@
+2022-5-12
+```js
+// Remove the parentheses (6 kyu)
+//
+// In this kata you are given a string 
+//
+// for example:
+// "example(unwanted thing)example"
+//
+// Your task is to remove everything inside the parentheses 
+// as well as the parentheses themselves.
+
+// The example above would return:
+
+// "exampleexample"
+// Notes
+// Other than parentheses only letters and spaces can occur in the string.
+//  Don't worry about other brackets like "[]" and "{}" 
+// as these will never appear.
+// There can be multiple parentheses.
+// The parentheses can be nested.
+
+function removeParentheses(s){
+  // Split string to array and reduce array to object
+  // object contains count of opening parenthesis at the current element
+  // and string where elements are added as count === 0
+  return s.split('').reduce((acc,el)=> {
+    if(el === '('){// If the current element is '(' 
+      //(about to be between parens)
+      // Increase opening paren count
+      return {...acc, count: acc.count + 1}
+    } else if(el === ')'){// If the current element is ')'
+      // (leaving a set of parens)
+      // Decrease opening paren count
+      return {...acc, count: acc.count - 1}
+    } else if(acc.count === 0){ // If opening paren count is 0 we have not entered or have hit a closing paren for every opening paren encountered
+      // (Not inside a set of parens)
+      // Add the current element to a string
+      return {...acc, str: acc.str + el}
+    } else{ // Count is more than 0 and current element is not closing paren
+      // Disregard current element
+      return {...acc}
+    }
+  },{count: 0, str: ''}).str // return string built in acc objet
+}
+```
 2022-5-11
 ```js
 // Maximum Length Difference (7 kyu)
