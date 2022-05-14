@@ -34,7 +34,11 @@ LearnWithLeon - HTML, CSS, JS, solidify fundamental web development, daily codin
 
 ## Other Examples:
 Take a look at other examples from my <a href="https://jtdev.netlify.app/">portfolio</a> using the lessons learned from these classes:
+
 **Blog Site W/ Categories and Authentification:** https://github.com/jnhthomp/alpha-blog2
+
 **Stock Based Social Network:** https://github.com/jnhthomp/finance-tracker
+
 **Restaurant Web-Based Ordering System:** https://github.com/jnhthomp/practice-food-order-app
+
 **F1 Discord Bot:** https://github.com/jnhthomp/f1-discord-bot
