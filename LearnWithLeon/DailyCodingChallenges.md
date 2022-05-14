@@ -1,3 +1,43 @@
+2022-5-14
+```js
+// 6 kyu
+// Cancer cells
+//
+// Your task is to write a function which cuts cancer cells from the body.
+//
+// Cancer cells are divided into two types:
+// Advance stage,described as letter C
+// Initial stage,described as letter c
+// Rest cells are divided as follows:
+//
+// Normal cell,described as lowercase letter
+// Important cell,described as uppercase letter
+// Prerequisites:
+// Important cell,cannot be cut out.
+// Advance cancer cell,should be cut out with adjacent cells if it can be done.
+// Function input is a string (representing a body), 
+// remove "cancer" characters (based on the described rules) 
+// and return the body cured of those "cancer" characters.
+//
+// Tests: 
+console.log(cutCancerCells('CC')) //=> ''
+console.log(cutCancerCells('CAAC')) //=> 'AA
+console.log(cutCancerCells('CaaC')) //=> ''
+console.log(cutCancerCells('C')) //=> ''
+console.log(cutCancerCells('acb')) //=> 'ab'
+
+function cutCancerCells(organism){
+  return organism.split('').filter((el, i, arr)=> {
+    if((arr[i + 1] === 'C' && el !== el.toUpperCase()) || 
+       (arr[i - 1] === 'C' && el !== el.toUpperCase()) || 
+       (el === 'C' || el === 'c')){
+      return false
+    } else {
+      return true
+    }
+  }).join('')  
+}
+```
 2022-5-13
 ```js
 // Two Joggers (6kyu)
