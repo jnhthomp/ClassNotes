@@ -17,6 +17,7 @@ Do: Update Github readmes and portfolio project images use gifs of your sites in
 Do: Make an independent repo for daily coding challenges
 Do: 100Hours description and wireframe
 Do: URGENT UPDATE LINKEDIN LINKS ON PORTFOLIO, PROFILES, AND READMES
+Do: Add lessons learned section to 'alpha-blog2', 'f1-discord-bot', 'practice-food-order-app'
 
 Want to Push?
 Read / Do: https://javascript.info/async
