@@ -1,3 +1,29 @@
+2022-5-16
+```js
+// Don't give me five! (7 kyu)
+// In this kata you get the start number and the end number of a region 
+// and should return the count of all numbers except numbers with a 5 in it. 
+// The start and the end number are both inclusive!
+//
+// Examples:
+console.log(dontGiveMeFive(1,9)  //=> 1,2,3,4,6,7,8,9 -> Result 8
+console.log(dontGiveMeFive(4,17) //=> 4,6,7,8,9,10,11,12,13,14,16,17 -> Result 12
+// The result may contain fives. ;-)
+// The start number will always be smaller than the end number. Both numbers can be also negative!
+//
+// I'm very curious for your solutions and the way you solve it. 
+// Maybe someone of you will find an easy pure mathematics solution.
+// Have fun coding it and please don't forget to vote and rank this kata! :-)
+// I have also created other katas. Take a look if you enjoyed this kata!
+
+function dontGiveMeFive(start, end){
+  // Create null array of length start - end + 1 (to include last num)
+  // Map over and assign each element start + index so first element would be start second would be start + 1 etc
+  // Filter the array by convertin num to string and seeing if any of the chars are 5
+  // Return length of filtered array
+  return Array.apply(null, new Array(end - start + 1)).map((el, i) => start + i).filter(el=> !`${el}`.includes('5')).length
+}
+```
 2022-5-15
 ```js
 // Help the bookseller! (6 kyu)
