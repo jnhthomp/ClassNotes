@@ -1,3 +1,33 @@
+2022-5-18
+```js
+Perfect squares, perfect fun (7 kyu)
+
+Given an integer, if the length of it's digits is a perfect square, 
+return a square block of sqroot(length) * sqroot(length). 
+If not, simply return "Not a perfect square!".
+
+Examples:
+console.log(squareInt(1212)) // => '12\n12`
+// Note: 4 digits so 2 squared (2x2 perfect square). 2 digits on each line.
+
+console.log(squareInt(123123123)) //=> '123\n123\n123'
+// Note: 9 digits so 3 squared (3x3 perfect square). 3 digits on each line.
+
+function squareIt(int) {
+  let intStr = `${int}`
+  let lengSqrt = Math.sqrt(intStr.length)
+  if(lengSqrt % 1 === 0){
+    let newStr = ''
+    let spread = [...intStr]
+    spread.forEach((el, i) => {
+      (i + 1) % lengSqrt === 0 && i + 1 !== spread.length ? newStr += el + '\n' : newStr += el
+    })
+
+    return newStr
+  }
+	return 'Not a perfect square!';
+}
+```
 2022-5-17
 ```js
 // Build a pile of Cubes (6kyu)
