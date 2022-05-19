@@ -180,6 +180,13 @@ Do: Complete Your Professional Links
 READ: Modern Javascript For Dinosaurs - https://medium.com/the-node-js-collection/modern-javascript-explained-for-dinosaurs-f695e9747b70
 WATCH: Node.js Crash Course (just get through it) - https://youtu.be/fBNz5xF-Kx4
 
+## DUE 5/24
+Do: Start prepping THE BANK
+Do: Complete Your Professional Links (https://forms.gle/Pt7kwXndftDedcbX8
+)
+Do: Make node-backend-simple-json more readable
+Do: Make a coinflip game where the randomization happens server side
+
 ## Bonus
 Read / Do: Eloquent JS Ch. 06: https://eloquentjavascript.net/06_object.html
 Do: Codewars Array Ladder (search array problems) - 8kyu, 7kyu, 6kyu, 7kyu, 8kyu  
