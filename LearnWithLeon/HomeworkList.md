@@ -156,8 +156,6 @@ Read / Do: JS Way Ch. 09: https://github.com/thejsway/thejsway/blob/master/manus
   })
   ```
 
-DO: Contribute to free software: https://www.firsttimersonly.com/
-
 Submission Links
 Paid Client/Volunteer/Open Source: https://docs.google.com/forms/d/e/1FAIpQLSeVqfClPktHdfm-JX2jyKz-QFI6e55D3Gw1EKKVkwf7KO410w/viewform
 
@@ -175,8 +173,6 @@ Want to Push?
 Read / Do: https://javascript.info/async
 
 ## DUE 5/19
-Do: Start prepping THE BANK
-Do: Complete Your Professional Links
 READ: Modern Javascript For Dinosaurs - https://medium.com/the-node-js-collection/modern-javascript-explained-for-dinosaurs-f695e9747b70
 WATCH: Node.js Crash Course (just get through it) - https://youtu.be/fBNz5xF-Kx4
 
@@ -186,6 +182,8 @@ Do: Complete Your Professional Links (https://forms.gle/Pt7kwXndftDedcbX8
 )
 Do: Make node-backend-simple-json more readable
 Do: Make a coinflip game where the randomization happens server side
+Do: How to handle errors with async/await
+Do: Setup/update node.js with node 18
 
 ## Bonus
 Read / Do: Eloquent JS Ch. 06: https://eloquentjavascript.net/06_object.html
