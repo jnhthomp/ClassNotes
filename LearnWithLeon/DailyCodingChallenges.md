@@ -1,3 +1,32 @@
+2022-5-21
+```js
+// Triangular Treasure (7 kyu)
+//
+// Triangular numbers are so called because of the equilateral triangular shape that they occupy when laid out as dots. i.e.
+//
+// 1st (1)   2nd (3)    3rd (6)
+// *          **        ***
+//            *         **
+//                      *
+// You need to return the nth triangular number. You should return 0 for out of range values:
+//
+// For example: (Input => Output)
+console.log(triangular(0) //=> 0
+console.log(triangular(2) //=> 3
+console.log(triangular(3) //=> 6
+console.log(triangular(-10) //=> 0
+
+function triangular(n) {
+  // Sum of sequence
+  // S = (n/2)*(a * L) 
+  // S: sum
+  // n: number of items in sequence
+  // a: first number in sequence 
+  // L: last number in sequence
+  return n >= 1 ? (n/2)*(1 + n): 0
+}
+
+```
 2022-5-20
 ```js
 // Consecutive items (7 kyu)
