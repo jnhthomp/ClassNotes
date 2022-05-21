@@ -13,9 +13,8 @@ console.log(consecutive([1, 3, 5, 7], 3, 7)) // => false
 console.log(consecutive([1, 3, 5, 7], 3, 1)) //=> true
 console.log(consecutive([1, 6, 9, -3, 4, -78, 0], -3, 4)) //=> true
 
-function consecutive(arr, a, b) {
-  arr = arr.reduce((acc, el, i)=> el === a || el === b ? [...acc, i] : acc, [])
-  return arr[0] - arr[1] === 1 || arr[0] - arr[1] === -1 ? true : false
+function consecutive(arr, a, b) { 
+  return Math.abs(arr.indexOf(a) - arr.indexOf(b)) === 1 ? true : false
 }
 ```
 2022-5-19
