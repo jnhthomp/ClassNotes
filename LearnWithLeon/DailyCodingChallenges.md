@@ -1,3 +1,33 @@
+2022-5-24
+```js
+// Bingo ( Or Not ) (7 kyu)
+// 
+// For this game of BINGO, you will receive 
+// a single array of 10 numbers from 1 to 26 as an input. 
+// Duplicate numbers within the array are possible.
+// 
+// Each number corresponds to their alphabetical order letter 
+// (e.g. 1 = A. 2 = B, etc). 
+// Write a function where you will win the game 
+// if your numbers can spell "BINGO". 
+// They do not need to be in the right order in the input array. 
+// Otherwise you will lose. 
+// Your outputs should be "WIN" or "LOSE" respectively.
+//
+// Tests:
+console.log(bingo([1,2,3,4,5,6,7,8,9,10])) //=> 'LOSE' (does not contain 'B: 2 I: 9 N: 14 G: 7 O: 15')
+console.log(bingo([21,13,2,7,5,14,7,15,9,10])) //=> 'WIN' (does contain 'B: 2 I: 9 N: 14 G: 7 O: 15')
+
+function bingo(a) {
+  const key = [2, 9, 14, 7, 15] // B: 2 I: 9 N: 14 G: 7 O: 15
+  // Reduce a to only include numbers we care about (key to 'bingo')
+  // Don't include duplicates of numbers
+  // Compare length of reduced array to length of key
+  // Since there are no duplicates if the length is the same then all values needed are accounted for and 'WIN' else missing needed letters and 'LOSE'
+  return key.length === a.reduce((acc, el, i) => key.includes(el) && i === a.indexOf(el) ? [...acc, el] : [...acc],[]).length ?
+    'WIN' : 'LOSE'
+}
+```
 2022-5-23
 ```js
 // Find the middle element (7 kyu)
@@ -18,7 +48,6 @@ function gimme (triplet) {
   return triplet.indexOf([...triplet].sort((a,b)=>a-b)[1])
 }
 ```
-
 2022-5-22
 ```js
 // Form The Minimum (7 kyu)
