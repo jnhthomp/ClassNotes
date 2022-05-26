@@ -60,6 +60,10 @@ Philip Roberts: https://www.youtube.com/watch?v=8aGhZQkoFbQ&feature=youtu.be
 Jake Archibald: https://www.youtube.com/watch?v=cCOL7MC4Pl0
 Watch These Videos (Homework)
 
+Tonights topics are covered really well by the above two videos
+They are absolutely critical to watch 
+Almost every Node developer has watched these
+
 ## Backend!
 Butt first!
 
@@ -381,7 +385,7 @@ Then the browser will respond with the timeout completing but only after js has 
 ## Queue
 Like a real queue, the first element which was added to the list, will be the first element out.
 
-This is called a FIFO (First In First Out) structure.
+This is called a FIFO (First In First Out) structure. 
 
 ## Queue Example
 ```js
@@ -418,8 +422,70 @@ Window Runtime (Hosting Environment)
 Gives Us Access To Web APIs
 
 Passes stuff to Libevent (Event Loop)
+This is how the browser handles multiple tasks at once
 
 ## The Event Loop monitors the Callback Queue and Job Queue and decides what needs to be pushed to the Call Stack.
+
+What does this mean?
+Watch the two videos from the homework and this will make more sense
+
+When it is time to execute js we know it is single threaded
+This thread can be referred to as the call stack
+When we put things on the stack it is handled Last In First Out (LIFO)
+
+On the call stack is a thread called `main()` which has the js we have written
+Imagine we have this code
+```js
+//code
+console.log('first')
+setTimeout(()=> console.log('Second'), 0)
+console.log('third')
+```
+
+When the first line is executed that log function gets added to the call stack
+```
+Callstack
+
+log('first')
+main()
+```
+
+Since it is a STACK that log will be executed and resolved before returning to `main()`
+
+Once that log is removed from the call stack our program can return to `main()` 
+the next line on `main()` runs which is our `setTimeout()` so that gets added to the call stack
+```
+Callstack
+
+setTimeout()
+main()
+```
+Now `setTimeout()` is async and a web api so `setTimeout()` is handed over to a web api stack and removed from the callstack
+This allows these processes to be handled by the environment or other server or whatever the async task involves
+```
+Call Stack        Web APIs
+              =>
+main()            setTimeout()
+```
+Then after the WebAPI has completed the returned promise is sent to the Task Queue while the next line is added to the call stack
+
+```
+Call Stack        Web APIs          Task Queue
+              =>                =>
+log('third')                       setTimeout() (cb or promise)
+main()                             
+```
+
+Then the log is going to be triggered which will clear the callstack since `main()` is now complete
+However the `setTimeout()` is still in the task queue
+Once the call stack is empty the promise from `setTimeout` is added to the callstack
+```
+Call stack
+
+setTimeout() (cb or promise)
+```
+
+Now the program has gone through the all commands and emptied the call stack and task queue so the program stops
 
 ## Backend BABY
 ## Does Javascript have access to the DOM natively (built in)? (Review)
@@ -461,6 +527,9 @@ This allows us to create a server
 V8 Engine Does All The Heavy Lifting
 
 ## Engine Vs. Compiler
+An engine is more than a compiler such has handle memory management and garbage collecting
+This will be discussed more in the future
+
 ## And just like the browser's Web APIs Node come with a bunch of stuff (Review)
 
 ## Built in Modules (Review)
@@ -475,6 +544,11 @@ https://www.npmjs.com/
 (groupings of one or more custom modules)
 
 ## Not Web APIs, but C/C++ APIs
+Because we are not in the browser
+But C/C++ can be understood by the computer so we use these APIs
+These are generally much faster than a web api
+
+Node is fast because C/C++ are fast
 
 ## Install Node (Review)
 Part of the homework is to setup our environment (aka node)
@@ -524,18 +598,206 @@ Music & Light Warning - Next Slide
 ## You are now a Software Engineer that can build Fullstack Web Applications (Review)
 ## Let's Look
 More Complex Backend
+See 'class36-materials/node-backend-simple-json`
+```js
+// server.js
+const http = require('http');
+const fs = require('fs')
+const url = require('url');
+const querystring = require('querystring');
+const figlet = require('figlet')
+
+const server = http.createServer((req, res) => {
+  const page = url.parse(req.url).pathname;
+  const params = querystring.parse(url.parse(req.url).query);
+  console.log(page);
+  if (page == '/') {
+    fs.readFile('index.html', function(err, data) {
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      res.write(data);
+      res.end();
+    });
+  }
+  else if (page == '/otherpage') {
+    fs.readFile('otherpage.html', function(err, data) {
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      res.write(data);
+      res.end();
+    });
+  }
+  else if (page == '/otherotherpage') {
+    fs.readFile('otherotherpage.html', function(err, data) {
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      res.write(data);
+      res.end();
+    });
+  }
+  else if (page == '/api') {
+    if('student' in params){
+      if(params['student']== 'leon'){
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        const objToJson = {
+          name: "leon",
+          status: "Boss Man",
+          currentOccupation: "Baller"
+        }
+        res.end(JSON.stringify(objToJson));
+      }//student = leon
+      else if(params['student'] != 'leon'){
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        const objToJson = {
+          name: "unknown",
+          status: "unknown",
+          currentOccupation: "unknown"
+        }
+        res.end(JSON.stringify(objToJson));
+      }//student != leon
+    }//student if
+  }//else if
+  else if (page == '/css/style.css'){
+    fs.readFile('css/style.css', function(err, data) {
+      res.write(data);
+      res.end();
+    });
+  }else if (page == '/js/main.js'){
+    fs.readFile('js/main.js', function(err, data) {
+      res.writeHead(200, {'Content-Type': 'text/javascript'});
+      res.write(data);
+      res.end();
+    });
+  }else{
+    figlet('404!!', function(err, data) {
+      if (err) {
+          console.log('Something went wrong...');
+          console.dir(err);
+          return;
+      }
+      res.write(data);
+      res.end();
+    });
+  }
+});
+
+server.listen(8000);
+```
+
+Here we can see a server with several pages setup but there is a lot of code repetition
+
+To run this server in your computer simply use `$node server.js` in the terminal while in the project directory
+You may get an error because there is a module that is not included with node and (probably) not installed called `figlet`
+`figlet` allows you to enter a string and it will output ascii art that can be displayed
+This is used for the 404 page for this project
+In order to install this module
+Within the project directory run `$npm install figlet`
+
+Then navigate to 'localhost:8000' in the browser to be sure everything works right
+
+Here is an explanation of how everything works
+```js
+// server.js
+const http = require('http'); // module that can run a server
+const fs = require('fs') // module that allows access to the local file system
+const url = require('url'); // module to parse url requests
+const querystring = require('querystring'); // 
+const figlet = require('figlet') // module that outputs ascii art
+
+const server = http.createServer((req, res) => {
+  // Find the page that was requestsed
+  // req.url = website.com/pagename
+  // .pathname = pagename
+  const page = url.parse(req.url).pathname;
+  // parse queries in the url string
+  // website.com/pagename?=string+to+search
+  // .query = 'string to search'
+  const params = querystring.parse(url.parse(req.url).query);
+  // Output the requested page to the console
+  console.log(page);
+  // Homepage (no path)
+  if (page == '/') {
+    fs.readFile('index.html', function(err, data) {
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      res.write(data);
+      res.end();
+    });
+  }
+  // website.com/otherpage
+  else if (page == '/otherpage') {
+    fs.readFile('otherpage.html', function(err, data) {
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      res.write(data);
+      res.end();
+    });
+  }
+  // website.com//otherotherpage
+  else if (page == '/otherotherpage') {
+    fs.readFile('otherotherpage.html', function(err, data) {
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      res.write(data);
+      res.end();
+    });
+  }
+  // website.com/api
+  else if (page == '/api') {
+    // Get string from params value
+    if('student' in params){
+      // Check search is 'leon'
+      if(params['student']== 'leon'){
+        // Tell recipient that the content will be json
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        // Create object with data
+        const objToJson = {
+          name: "leon",
+          status: "Boss Man",
+          currentOccupation: "Baller"
+        }
+        res.end(JSON.stringify(objToJson));
+      }
+      //student != leon
+      else if(params['student'] != 'leon'){
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        const objToJson = {
+          name: "unknown",
+          status: "unknown",
+          currentOccupation: "unknown"
+        }
+        // Package object data as json and send as response
+        res.end(JSON.stringify(objToJson));
+      }//student != leon
+    }//student if
+  }//else if
+  // Non-html pages being requested
+  // Must still be served by the server when requested within index.html
+  else if (page == '/css/style.css'){
+    fs.readFile('css/style.css', function(err, data) {
+      res.write(data);
+      res.end();
+    });
+  }else if (page == '/js/main.js'){
+    fs.readFile('js/main.js', function(err, data) {
+      res.writeHead(200, {'Content-Type': 'text/javascript'});
+      res.write(data);
+      res.end();
+    });
+  }else{
+    figlet('404!!', function(err, data) {
+      if (err) {
+          console.log('Something went wrong...');
+          console.dir(err);
+          return;
+      }
+      res.write(data);
+      res.end();
+    });
+  }
+});
+
+server.listen(8000);
+```
 
 ## How could we clean this up?
 There are a lot of if statements here
 How could this be cleaner?
 Figure it out for homework
-
-## Group Work
-
-https://live.remo.co/e/100devs-networking-night-group-0
-https://live.remo.co/e/100devs-networking-night-group-0-1
-
-If Remo does not work for you, please jump into one of our Discord Voice Channels!
 
 ## Homework
 Do: Start prepping THE BANK
