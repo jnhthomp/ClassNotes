@@ -87,7 +87,7 @@ console.log(xMarksTheSpot([
 const xMarksTheSpot = (input) => {
   let spot = []
   for(let i = 0; i < input.length; i++){
-    if(input[i].indexOf('x') > -1){
+    if(input[i].indexOf('x') > -1 && input[i].lastIndexOf('x') === input[i].indexOf('x')){
       spot.push(i)
       spot.push(input[i].indexOf('x'))
     }
