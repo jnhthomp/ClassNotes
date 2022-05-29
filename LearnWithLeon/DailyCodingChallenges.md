@@ -1,3 +1,64 @@
+2022-5-28
+```js
+// 'x' marks the spot. (7 kyu)
+//
+// #'x' marks the spot
+// 
+// ##Task:
+// Given a two dimensional array, return the co-ordinates of 'x'.
+// If 'x' is not inside the array, or if 'x' appears multiple times, return []
+// The co-ordinates should be zero indexed.
+// You should assume you will always get an array as input. 
+// The array will only contain 'x's and 'o's.
+//
+// Example test cases:
+// 'Return an empty array if input is an empty array' => []
+console.log(xMarksTheSpot([]))
+//
+// 'Return an empty array if no x found' => []
+console.log(xMarksTheSpot([
+  ['o', 'o'],
+  ['o', 'o']
+]))
+//
+// 'Return an empty array if more than one x found' => []
+console.log(xMarksTheSpot([
+  ['x', 'o'],
+  ['o', 'x']
+]))
+//
+// 'Return [0,0] when x at top left' => [0, 0]
+console.log(xMarksTheSpot([
+  ['x', 'o'],
+  ['o', 'o']
+]))
+//
+// 'Return [4,6] for the example below' => [4, 6]
+console.log(xMarksTheSpot([
+  ['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o'],
+  ['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o'],
+  ['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o'],
+  ['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o'],
+  ['o', 'o', 'o', 'o', 'o', 'o', 'x', 'o'],
+  ['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o']
+]))
+
+const xMarksTheSpot = (input) => {
+  let spot = []
+  for(let i = 0; i < input.length; i++){
+    if(input[i].indexOf('x') > -1){
+      spot.push(i)
+      spot.push(input[i].indexOf('x'))
+    }
+  }
+  
+  if(spot.length > 2 || spot.length === 0){
+    return []
+  } else {
+    return spot
+  }
+}
+```
 2022-5-27
 ```js
 // The takeWhile Function (6 kyu)
