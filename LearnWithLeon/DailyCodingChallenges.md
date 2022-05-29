@@ -1,3 +1,44 @@
+2022-5-29
+```js
+// Count the divisible numbers (6 kyu)
+//
+// Complete the function that takes 3 numbers x, y and k (where x ≤ y), 
+// and returns the number of integers within the range [x..y] 
+// (both ends included) that are divisible by k.
+//
+// More scientifically: { i : x ≤ i ≤ y, i mod k = 0 }
+//
+// Example
+// Given x = 6, y = 11, k = 2 the function should return 3, 
+// because there are three numbers divisible by 2 between 6 and 11: 6, 8, 10
+//
+// Note: The test cases are very large. 
+// You will need a O(log n) solution or better to pass. (A constant time solution is possible.)
+//
+// Tests:
+console.log(divisibleCount(6, 11, 2)) //=> 3
+console.log(divisibleCount(11, 345, 17)) //=> 20
+console.log(divisibleCount(0, 1, 7)) //=> 1
+console.log(divisibleCount(20, 20, 2)) //=> 1
+console.log(divisibleCount(20, 20, 8)) //=> 0 
+console.log(divisibleCount(19, 20, 2)) //=> 1
+console.log(divisibleCount(0, 10, 1)) //=> 11
+console.log(divisibleCount(11, 14, 2)) //=> 2
+console.log(divisibleCount(101, 9007199254740991, 11)) //=> 818836295885535
+console.log(divisibleCount(1005, 9007199254740991, 109)) //=> 82634855548073
+
+// Constant time solution:
+function divisibleCount(x, y, k) {
+  // Find first divisible number
+  while(x % k !== 0){
+    x++
+  }
+
+  // Ceil of range (inclusive) / divisor will be the number of elements evenly divisible by divisor
+  return Math.ceil(((y + 1) - x) / k)
+}
+
+```
 2022-5-28
 ```js
 // 'x' marks the spot. (7 kyu)
