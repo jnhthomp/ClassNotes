@@ -1,3 +1,66 @@
+2022-5-30
+```js
+// Shortest steps to a number (6 kyu)
+
+// Summary:
+// Given a number, num, return the shortest amount of steps it would take from 1, to land exactly on that number.
+
+// Description:
+// A step is defined as either:
+
+// Adding 1 to the number: num += 1
+// Doubling the number: num *= 2
+// You will always start from the number 1 and you will have to 
+// return the shortest count of steps it would take to land exactly on that number.
+
+// 1 <= num <= 10000
+
+// Examples:
+// num == 3 would return 2 steps:
+// 1 -- +1 --> 2:        1 step
+// 2 -- +1 --> 3:        2 steps
+// 2 steps
+//_______________________________
+// num == 12 would return 4 steps:
+// 1 -- +1 --> 2:        1 step
+// 2 -- +1 --> 3:        2 steps
+// 3 -- x2 --> 6:        3 steps
+// 6 -- x2 --> 12:       4 steps
+// 4 steps
+//_______________________________
+// num == 16 would return 4 steps:
+// 1 -- +1 --> 2:        1 step
+// 2 -- x2 --> 4:        2 steps
+// 4 -- x2 --> 8:        3 steps
+// 8 -- x2 --> 16:       4 steps
+// 4 steps
+//_______________________________
+
+console.log(shortestStepsToNum(1)) //=> 0
+console.log(shortestStepsToNum(12)) //=> 4
+console.log(shortestStepsToNum(16)) //=> 4
+console.log(shortestStepsToNum(71)) //=> 9
+
+function shortestStepsToNum(num) {
+  let count = 0;
+  
+  // If the number is greater than goal number (1)...
+  while(num > 1){
+    if(num % 2 === 0){
+      // If number is even divide by two and increase count
+      num /= 2;
+      count++
+    } else{
+      // If odd subtract one to make even (or 1) and increase count
+      num -= 1
+      count++;
+    }
+  }
+  
+  // return count after reducing number or 0 if number started at goal (1)
+  return count
+}
+```
 2022-5-29
 ```js
 // Count the divisible numbers (6 kyu)
