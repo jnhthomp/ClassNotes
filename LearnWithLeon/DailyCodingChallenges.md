@@ -1,3 +1,26 @@
+2022-6-5
+```js
+// Find the unique number (6 kyu)
+//
+// 168740590% of 7,67427,738 of 79,490isqua3 Issues Reported
+//  JavaScript
+// Node v14.x
+// VIM
+// EMACS
+// Instructions
+// Output
+// There is an array with some numbers. All numbers are equal except for one. Try to find it!
+//
+console.log(findUniq([ 1, 1, 1, 2, 1, 1 ])) //=> 2
+console.log(findUniq([ 0, 0, 0.55, 0, 0 ])) //=> 0.55
+// It’s guaranteed that array contains at least 3 numbers.
+//
+// The tests contain some very huge arrays, so think about performance.
+
+function findUniq(arr) {
+  return arr.filter((el)=> arr.lastIndexOf(el) === arr.indexOf(el))[0]
+}
+```
 2022-6-4
 ```js
 // Good vs Evil (6 kyu)
