@@ -137,7 +137,11 @@ Update (put) - Change something
 Delete (delete) - Remove something
 
 ## Mongo DB
+Mongo DB is a great database that is easy for us to learn and use because everything in it is an object
+There are are two keywords to keep in mind when using MongoDB
 
+Document: An object containing data, think of this like a row on a SQL table
+Collection: A group of document objects, think of this like a SQL table
 ## EJS
 (Embedded Javascript Templates)
 ```html
@@ -154,6 +158,13 @@ Delete (delete) - Remove something
 
   <h2>Add A Rapper:</h2>
 ```
+
+These can be used to create small templates so that we can more easily dynamically insert data into an html structure after it is fetched from the db
+
+Does this violate seperation of concerns?
+No. 
+This is not javascript. The end result of this file running is javascript.
+It allows us to generate html using javascript but will end up as html
 
 ## Rap Names
 What are some Read (get) requests?
@@ -180,32 +191,39 @@ $npm install express --save
 
 ## Connect To DB
 ```js
-let db,
-    dbConnectionStr = 'mongodb+srv://demo:demo@cluster0
-    .2wapm.mongodb.net/rap?retryWrites=true&w=majority',
-    dbName = 'rap'
+let db, // Initialize db
+    dbConnectionStr = 'mongodb+srv://demo:demo@cluster0.2wapm.mongodb.net/rap?retryWrites=true&w=majority', // Database connection (provided by MongoDB)
+    dbName = 'rap' // Name of collection so we don't have ot hardcode it later
 
-MongoClient.connect(dbConnectionStr, { useUnifiedTopology: true })
+// Connect to database
+MongoClient.connect(dbConnectionStr, { useUnifiedTopology: true }) // unified topology avoids a warning
     .then(client => {
+        // Once connected to database log connection
         console.log(`Connected to ${dbName} Database`)
+        // save the connected client object and database we will use as a var 
+        // (if using multiple databases maybe able to save multiple connections under different vars)
         db = client.db(dbName)
     })
 ```
 
+This is how we start a connection with our MongoDB database
+
 ## Setup Server
 ```js
 app.set('view engine', 'ejs')
-app.use(express.static('public'))
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
-
-
+app.use(express.static('public')) /* Magic!*/
+app.use(express.urlencoded({ extended: true })) // https://stackoverflow.com/a/51844327/9059589 - Allows incoming data to be strings, arrays, or objects with nested objects
+app.use(express.json()) // Parses incoming json requests (such as in a head) and adds them to req.body to be accessed
 
 app.listen(process.env.PORT || PORT, ()=>{
     console.log(`Server running on port ${PORT}`)
 })
 ```
 
+After connecting to the db we want to let our app know that we will be rendering ejs files
+The second line will alow anything in your public folder to have a path automatically without having to manually create those paths
+
+After the setup we start listening on a port (either a defined one or environment provided one)
 ## API - GET
 ```js
 app.get('/',(request, response)=>{
@@ -217,20 +235,71 @@ app.get('/',(request, response)=>{
 })
 ```
 
+Now we are setting a route for when someone navigates to the root of our application
+aka: www.website.com or www.website.com/
+
+We start by making a request to the database and finding all documents in the named collection
+Then that list of documents (objects) is converted into an array of objects
+This returns a promise so we can chain `.then` to process the data from that promise
+
+This is where it can get tricky
+We are going to render `index.ejs` and pass in an object containing data for variables used within `index.ejs`
+So we will pass in the data array under the key `info`
+This allows us to access this array within `index.js` by using the `info` variable
+(Will cover more shortly)
+
+Render will make this ejs file run with the passed in data which will generate a static html page that is sent as the response
+
+
 ## API - POST
 ```js
 app.post('/addRapper', (request, response) => {
-    db.collection('rappers').insertOne(request.body)
-    .then(result => {
-        console.log('Rapper Added')
-        response.redirect('/')
+    db.collection('rappers').insertOne(request.body) // async insert request containing the object we want to submit
+    .then(result => { // When submitted successfully
+        console.log('Rapper Added') // log success
+        response.redirect('/') // Redirect to homepage (triggers 'refresh' which will include the newly added item)
     })
     .catch(error => console.error(error))
 })
 ```
 
-## Create EJS File
+This will allow us to add new documents to a collection
+Our server will listen for a request to `/addRapper` which will be triggered by a fetch request in our js
+When we send the post request we also include data to send as well such as information about the requester
+This also includes the infomration that they want to submit
+
+Remember the lines from our setup will include that information to submit as a part of `request.body`
+See these lines from above:
 ```js
+app.use(express.urlencoded({ extended: true })) // https://stackoverflow.com/a/51844327/9059589 - Allows incoming data to be strings, arrays, or objects with nested objects
+app.use(express.json()) // Parses incoming json requests (such as in a head) and adds them to req.body to be accessed
+```
+
+After the item is submitted to the db the user is redirected to the homepage
+When this renders it will ask the server for all the documents in the collection which will now include any that were just added
+
+But where does the data come from?
+In the html (ejs in this case) we can have a form that looks like this:
+```html
+<form action="/addRapper" method="POST">
+  <input type="text" placeholder="Stage Name" name="stageName" />
+  <input type="text" placeholder="Birth Name" name="birthName" />
+  <input type="submit"/>
+</form>
+```
+
+Notice that the action is the same as the route
+They have to be the same for this to work
+
+Notice that the two inputs also have different names
+These names are how we can get data from the request
+So when we make the request to the server 
+it will be able to be accessed by `request.body.stageName` and `request.body.birthName` by the server
+
+You can see the other information that is sent along with this form by logging the request object itself in the server
+
+## Create EJS File
+```html
 <h1>Current Rappers</h1>
 <ul class="rappers">
 <% for(let i=0; i < info.length; i++) {%>
@@ -245,7 +314,18 @@ app.post('/addRapper', (request, response) => {
 <h2>Add A Rapper:</h2>
 ```
 
+Here we start a simple for loop to loop through the `info` variable (remember we passed an array of objects into `info`)
+For each one we will create a new `<li>` each containing information from the object at the current index in `info`
+
+This will output all the rappers that were retrieved from the database each as their own `<li>`
+This will all evaluate out to an html file listing the rappers and be rendered to an html page
+
 ## Create Public Folder/Files
+Simply creating public folder stucture will allow you to link to any files within that folder in index.html or other files
+This is enabled by the magic line mentioned earlier
+```js
+app.use(express.static('public')) /* Magic!*/
+```
 
 ## API - DELETE
 ```js
@@ -256,14 +336,22 @@ app.delete('/deleteRapper', (request, response) => {
         response.json('Rapper Deleted')
     })
     .catch(error => console.error(error))
-
 })
 ```
 
+The last action is delete
+This work sby using the `deleteOne()` method which accepts an object with a key/value assignment
+This will fetch a list of all of the documents that have properties matching the passed object
+In this case it will get a list of all the rappers with a given stage name
+Then it will delete the first document that has a matching key/property value
+
+
+___
+# This is where class ended
 ## Push To Heroku (Review)
 Put all of our code onto heroku so that it can be hosted
 ```bash
-$heroku login -i 
+$heroku login -i #No -i if using two factor auth
 $heroku create simple-rap-api
 $echo "web: node server.js" > Procfile
 $git add . 
