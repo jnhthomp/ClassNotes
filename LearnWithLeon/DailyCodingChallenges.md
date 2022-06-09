@@ -1,3 +1,39 @@
+2022-6-9
+```js
+// Predict your age! (7 kyu)
+//
+// My grandfather always predicted how old people would get, 
+// and right before he passed away he revealed his secret!
+//
+// In honor of my grandfather's memory we will write a function using his formula!
+// 
+// Take a list of ages when each of your great-grandparent died.
+// Multiply each number by itself.
+// Add them all together.
+// Take the square root of the result.
+// Divide by two.
+// Example
+predictAge(65, 60, 75, 55, 60, 63, 64, 45) === 86
+
+// Note: the result should be rounded down to the nearest integer.
+
+// Note original prompt wanted to use the following format to accept args but didn't seem like best practice
+// function predictAge(age1, age2, age3, age4, age5, age6, age7, age8){}
+function predictAge(...ages){
+  return Math.floor(Math.sqrt(ages.map(a=> a*a).reduce((b, c)=> b + c, 0))/2)
+}
+
+// This problem taught me about a cool built in function called `Math.hypot()`
+// This will accept as many numbers as you want to pass in and return the square root of the sum of squares of the args
+// I also learned about the bitwise or operator '|'
+// This can only accept integers so any decimal numbers passed in will be truncated to remove the decimal
+// So:  retun 5.6 | 0 //=> 5
+
+// My solution could be simplified to
+function predictAgeV2(...ages){
+  return (Math.hypot(...ages) / 2) | 0
+}
+```
 2022-6-8
 ```js
 // Reverse or rotate? (6 kyu)
