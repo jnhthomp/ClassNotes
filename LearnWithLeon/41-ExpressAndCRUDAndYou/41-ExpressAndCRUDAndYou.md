@@ -190,22 +190,51 @@ MongoClient.connect(dbConnectionStr, { useUnifiedTopology: true }) // unified to
 This is how we start a connection with our MongoDB database
 
 ## Use .env
-- Create .env file
+1. Create .env file
   ```env
   # /.env
-  DB_STRING=mongodb+srv://demo:demo@cluster0.2wapm.mongodb.net/rap?retryWrites=true&w=majority
+  DB_STRING = mongodb+srv://demo:demo@cluster0.2wapm.mongodb.net/rap?retryWrites=true&w=majority
   ```
+  This is a special file that will hold some variables for us
+  It will not be pushed to github and be kept secret
+  If someone else wants to create this project then they will need to get their own credentials and create their own env file
+  This will prevent others from getting your credentials on accident and allow them to use your code with their own databases
+  This is an additional layer of security on top of your whitelisted IP address
+
+  It is a good idea to create a .env-example file with dummy information so others can use it as a template for what their .env file should look like
+
 - Add .env to .gitignore
   ```gitignore
   # /.gitignore
   .env
   node_modules
   ```
+  By adding our file to .gitignore it will not be uploaded to github or tracked between commits
+  This will keep your credentials from being put on the cloud and keep them local
+
 - In terminal add var to heroku app (can be done online or in terminal)
   ```bash
   heroku config:set DB_STRING=mongodb+srv://demo:demo@cluster0.2wapm.mongodb.net/rap?retryWrites=true&w=majority
   ```
+  In heroku you can drop in the same variables as the ones in your .env file
+  This will mean that you won't have to make any changes when the app is on two different environments
+  
+  This can be especially helpful if you may have different settings or values you would want to use in your development environment and your live site
+
 ## Connect To DB (with env variables)
+In order to access your environment variables you will need to use an npm package
+Install it with:
+```bash
+npm install dotenv --save
+```
+
+Now import the package to your project by including this line somewhere near the top
+```js
+require('dotenv').config() // npm install dotenv --save
+```
+
+Then whenever you use `process.env.VARIABLE_NAME` (where `VARIABLE_NAME` is a variable stored in your .env file)
+Node will automatically put in whatever the corresponding value is from the .env file
 ```js
 let db,
     dbConnectionStr = process.env.DB_STRING,
@@ -218,7 +247,6 @@ MongoClient.connect(dbConnectionStr, { useUnifiedTopology: true })
     })
 ```
 
-This is how we start a connection with our MongoDB database
 ## Setup Server (Review)
 ```js
 app.set('view engine', 'ejs')
@@ -235,6 +263,7 @@ After connecting to the db we want to let our app know that we will be rendering
 The second line will alow anything in your public folder to have a path automatically without having to manually create those paths
 
 After the setup we start listening on a port (either a defined one or environment provided one)
+
 ## API - GET (Review)
 ```js
 app.get('/',(request, response)=>{
@@ -260,7 +289,6 @@ This allows us to access this array within `index.js` by using the `info` variab
 (Will cover more shortly)
 
 Render will make this ejs file run with the passed in data which will generate a static html page that is sent as the response
-
 
 ## API - POST (Review)
 ```js
