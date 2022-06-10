@@ -1,3 +1,35 @@
+2022-6-10
+```js
+// Flatten and sort an array (7 kyu)
+// 
+// Challenge:
+// 
+// Given a two-dimensional array of integers, 
+// return the flattened version of the array 
+// with all the integers in the sorted (ascending) order.
+// 
+// Example:
+// 
+console.log(flattenAndSort([])) //=> []
+console.log(flattenAndSort([[], []])) //=> []
+console.log(flattenAndSort([[], [1]])) // => [1]
+console.log(flattenAndSort([[3, 2, 1], [4, 6, 5], [], [9, 7, 8]]) //=> [1, 2, 3, 4, 5, 6, 7, 8, 9]
+console.log(flattenAndSort([[1, 3, 5], [100], [2, 4, 6]])) //=>  [1, 2, 3, 4, 5, 6, 100]
+
+function flattenAndSort(array) {
+  let newArr = []
+  
+  array.forEach((el)=> {
+    if(el.length > 0){
+      el.forEach(subEl=>{
+        newArr.push(subEl)
+      })
+    }
+  });
+  
+  return newArr.sort((a,b)=>a-b)
+}
+```
 2022-6-9
 ```js
 // Predict your age! (7 kyu)
