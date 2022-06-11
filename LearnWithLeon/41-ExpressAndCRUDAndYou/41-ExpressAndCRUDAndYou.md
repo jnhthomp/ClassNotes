@@ -214,7 +214,7 @@ This is how we start a connection with our MongoDB database
 
 - In terminal add var to heroku app (can be done online or in terminal)
   ```bash
-  heroku config:set DB_STRING=mongodb+srv://demo:demo@cluster0.2wapm.mongodb.net/rap?retryWrites=true&w=majority
+  $heroku config:set DB_STRING=mongodb+srv://demo:demo@cluster0.2wapm.mongodb.net/rap?retryWrites=true&w=majority
   ```
   In heroku you can drop in the same variables as the ones in your .env file
   This will mean that you won't have to make any changes when the app is on two different environments
@@ -225,7 +225,7 @@ This is how we start a connection with our MongoDB database
 In order to access your environment variables you will need to use an npm package
 Install it with:
 ```bash
-npm install dotenv --save
+$npm install dotenv --save
 ```
 
 Now import the package to your project by including this line somewhere near the top
