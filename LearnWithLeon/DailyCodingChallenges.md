@@ -1,3 +1,31 @@
+2022-6-11
+```js
+// Sum of differences in array (8 kyu)
+//
+// Your task is to sum the differences between consecutive pairs in the array 
+// in descending order.
+//
+// Example
+console.log(sumOfDifferences([2, 1, 10])) //=> 9
+// In descending order: [10, 2, 1]
+// Sum: (10 - 2) + (2 - 1) = 8 + 1 = 9
+console.log(sumOfDifferences([-3, -2, -1])) //=> 2
+// In descending order: [-1, -2, -3]
+// Sum: (-1 - -2) + (-2 - -3) = 1 + 1 = 2
+//
+// If the array is empty or the array has only one element 
+// the result should be 0 
+
+function sumOfDifferences(arr) {
+  let f = 0;
+  arr.sort((a,b)=> b - a)
+  for(let i = 0; i < arr.length - 1; i++){
+    f += arr[i] - arr[i + 1]
+  }
+  
+  return f
+}
+```
 2022-6-10
 ```js
 // Flatten and sort an array (7 kyu)
