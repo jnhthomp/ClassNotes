@@ -1,3 +1,36 @@
+2022-6-12
+```js
+// Data Reverse (6 kyu)
+//
+// A stream of data is received and needs to be reversed.
+
+// Each segment is 8 bits long, 
+// meaning the order of these segments needs to be reversed, 
+// for example:
+
+console.log(dataReverse([1,1,1,1,1,1,1,1,/*end byte1*/0,0,0,0,0,0,0,0,/*end byte2*/0,0,0,0,1,1,1,1, /*end byte3*/1,0,1,0,1,0,1,0/*end byte4*/]) //=>[1,0,1,0,1,0,1,0,  0,0,0,0,1,1,1,1,  0,0,0,0,0,0,0,0,  1,1,1,1,1,1,1,1]
+console.log(dataReverse([0,0,1,1,0,1,1,0,0,0,1,0,1,0,0,1])) //=> [0,0,1,0,1,0,0,1,0,0,1,1,0,1,1,0]
+// The total number of bits will always be a multiple of 8.
+
+// The data is given in an array as such:
+
+// [1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,1,0,1,0,1,0]
+
+// Note: In the C and NASM languages you are given the third parameter 
+// which is the number of segment blocks.
+
+function dataReverse(data) {
+  let d = []
+  
+  for(let start = 0; start < data.length; start += 8){
+    d.push([...data.slice(start, start + 8)])
+  }
+
+  d = d.reverse()
+  
+  return d.reduce((acc, el, i)=> [...acc, ...el],[])
+}
+```
 2022-6-11
 ```js
 // Sum of differences in array (8 kyu)
