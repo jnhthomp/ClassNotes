@@ -1,3 +1,21 @@
+2022-6-14
+```js
+Lenght and Two Values (7kyu)
+
+Given a number n and two values firstValue and secondValue, 
+build an array of size n filled with firstValue and secondValue alternating.
+
+console.log(alterante(5, true, false)) //=> [true, false, true, false, true];
+
+function alternate(n, firstValue, secondValue){
+  const vals = [firstValue, secondValue]
+  let retVal = []
+  for(let i = 0; i < n; i++){
+    retVal.push(vals[i % 2])
+  }
+  return retVal
+}
+```
 2022-6-13
 ```js
 // Odd or Even? (7 kyu)
