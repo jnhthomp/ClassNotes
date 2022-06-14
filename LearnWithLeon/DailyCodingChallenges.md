@@ -1,3 +1,22 @@
+2022-6-13
+```js
+// Odd or Even? (7 kyu)
+
+// Task:
+// Given a list of integers, determine whether the sum of its elements is odd or even.
+
+// Give your answer as a string matching "odd" or "even".
+
+// If the input array is empty consider it as: 
+//   [0] (array with a zero).
+
+// Examples:
+console.log(oddOrEven([0]) //=> "even"
+console.log(oddOrEven([0, 1, 4]) //=> "odd"
+console.log(oddOrEven([0, -1, -5]) //=> "even"
+
+const oddOrEven = (array) => array.reduce((a, e, i)=> a + e, 0) % 2 === 0 ? 'even' : 'odd'
+```
 2022-6-12
 ```js
 // Data Reverse (6 kyu)
