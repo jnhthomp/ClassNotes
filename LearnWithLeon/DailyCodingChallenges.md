@@ -1,3 +1,26 @@
+2022-6-16
+```js
+Most digits (7 kyu)
+
+Find the number with the most digits.
+
+If two numbers in the argument array have the same number of digits, 
+return the first one in the array.
+
+Tests:
+console.log(findLongest([1, 10, 100])) //=> 100
+console.log(findLongest([9000, 8, 800])) //=> 9000
+console.log(findLongest([8, 900, 500])) //=> 900
+
+function findLongest(array){
+  // Reduce array to an index of longest num found
+  // First stored index is 0
+  // If the current number is longer than array[0] (where 0 is the accumulator)
+  // Then the accumulator is updated to the index of the current number 
+  // Return the final index (longest or first found of equal length) from array
+  return array[array.reduce((longestIdx, num, i) => `${num}`.length > `${array[longestIdx]}`.length ? i : longestIdx, 0)]
+}
+```
 2022-6-15
 ```js
 // You're a square! (7 kyu)
