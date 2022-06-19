@@ -1,3 +1,38 @@
+2022-6-18
+```js
+// Check the exam (7 kyu)
+//
+// The first input array is the key to the correct answers to an exam, like ["a", "a", "b", "d"]. 
+// The second one contains a student's submitted answers.
+//
+// The two arrays are not empty and are the same length. 
+// Return the score for this array of answers, 
+// giving +4 for each correct answer, 
+// -1 for each incorrect answer, 
+// and +0 for each blank answer, represented as an empty string (in C the space character is used).
+//
+// If the score < 0, return 0.
+//
+// For example:
+console.log(checkExam(["a", "a", "b", "b"], ["a", "c", "b", "d"])) //=> 6
+console.log(checkExam(["a", "a", "c", "b"], ["a", "a", "b",  ""])) //=> 7
+console.log(checkExam(["a", "a", "b", "c"], ["a", "a", "b", "c"])) //=> 16
+console.log(checkExam(["b", "c", "b", "a"], ["",  "a", "a", "c"])) //=> 0
+
+function checkExam(array1, array2) {
+  const grade = array2.reduce((grade, answer, qNum) => {
+    if(answer === ''){
+      return grade
+    } else if(answer === array1[qNum]){
+      return grade += 4
+    } else{
+      return grade -= 1
+    }
+  }, 0) 
+  
+  return grade >=0 ? grade : 0
+}
+```
 2022-6-17
 ```js
 // A Rule of Divisibility by 13 (6 kyu)
