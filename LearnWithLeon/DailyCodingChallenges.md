@@ -1,3 +1,31 @@
+2022-6-19
+```js
+// Printer Errors (7 kyu)
+//
+// Sometimes there are problems: 
+// lack of colors, technical malfunction and a "bad" control string is produced 
+// e.g. aaaxbbbbyyhwawiwjjjwwm with letters not from a to m.
+//
+// You have to write a function printer_error 
+// which given a string will return the error rate of the printer as a string 
+// representing a rational whose numerator is the number of errors 
+// and the denominator the length of the control string. 
+// Don't reduce this fraction to a simpler expression.
+//
+// The string has a length greater or equal to one and contains only letters from ato z.
+//
+// Examples:
+s="aaabbbbhaijjjm"
+console.log(printer_error(s)) //=> "0/14"
+
+s="aaaxbbbbyyhwawiwjjjwwm"
+console.log(printer_error(s)) //=> "8/22"
+
+function printerError(s) {
+  const err = s.split('').filter(el => el.charCodeAt(0) < 97 || el.charCodeAt(0) > 109)
+  return `${err.length}/${s.length}`
+}
+```
 2022-6-18
 ```js
 // Check the exam (7 kyu)
