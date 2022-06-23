@@ -1,3 +1,25 @@
+2022-6-23
+```js
+// Count characters in your string (6 kyu)
+//
+// The main idea is to count all the occurring characters in a string. 
+// If you have a string like 'aba', 
+// then the result should be {'a': 2, 'b': 1}.
+//
+// What if the string is empty? 
+// Then the result should be empty object literal, {}.
+
+console.log(count('aba')) //=> {a: 2, b: 1}
+console.log(count('')) // => {}
+
+function count (string) {  
+  const obj = {}
+  for(let i = 0; i < string.length; i++){
+    obj[string[i]] ? obj[string[i]] += 1 : obj[string[i]] = 1
+  }
+   return obj;
+}
+```
 2022-6-22
 ```js
 // Even numbers in an array (7 kyu)
