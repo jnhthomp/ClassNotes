@@ -1,3 +1,20 @@
+2022-6-24
+```js
+// Factorial (7 kyu)
+//
+// Your task is to write function factorial.
+// https://en.wikipedia.org/wiki/Factorial
+
+console.log(factorial(0)) // => 1
+console.log(factorial(1)) // => 1
+console.log(factorial(4)) // => 24
+console.log(factorial(7)) // => 5040
+console.log(factorial(17)) // => 355687428096000
+
+function factorial(n){
+  return n > 1 ? n * factorial(n - 1) : n === 0 ? 1 : n
+}
+```
 2022-6-23
 ```js
 // Count characters in your string (6 kyu)
