@@ -1,3 +1,61 @@
+2022-6-25
+```js
+// Encrypt this! (6 kyu)
+//
+// Acknowledgments:
+// I thank yvonne-liu for the idea and for the example tests :)
+//
+// Description:
+// Encrypt this!
+//
+// You want to create secret messages which can be deciphered by the Decipher this! kata. 
+//
+// Here are the conditions:
+// Your message is a string containing space separated words.
+// You need to encrypt each word in the message using the following rules:
+// The first letter must be converted to its ASCII code.
+// The second letter must be switched with the last letter
+// Keepin' it simple: 
+// There are no special characters in the input.
+//
+// Examples:
+console.log(encryptThis("Hello")) //=> "72olle"
+console.log(encryptThis("good")) //=> "103doo"
+console.log(encryptThis("hello world")) //=> "104olle 119drlo"
+
+var encryptThis = function(text) {
+  // Split string into array of words to encrypt by mapping each word
+  return text.split(' ').map((word) => {
+    // Split current word into an array
+    word = word.split('')
+    // Get the charcode of the first letter
+    const charCode = word[0].charCodeAt(0)
+    // Remove first letter
+    word.shift()
+    
+    // Init first and last letter holder variables to null (important for building string later)
+    let f = null
+    let l = null
+    
+    // If the word has enough letters to swap them...
+    if(word.length > 1){
+      // Collect first letter and remove it
+      f = word[0]
+      word.shift()
+      // Collect last letter and remove it
+      l = word[word.length - 1]
+      word.pop()
+    }
+    
+    // Create string with gathered data
+    // 1. Charcode of first letter
+    // 2. Last letter (or '' if there is none)
+    // 3. Unaffected chars
+    // 4. Second letter from orignal word (or '' if there is none)
+    return `${charCode}${l || ''}${word.join('')}${f || ''}`
+  }).join(' ') // Join back to a single string
+}
+```
 2022-6-24
 ```js
 // Factorial (7 kyu)
