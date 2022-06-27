@@ -1,3 +1,59 @@
+2022-6-26
+```js
+// Alphabet war (7 kyu)
+//
+// Introduction
+// There is a war and nobody knows - the alphabet war!
+// There are two groups of hostile letters. 
+// The tension between left side letters and right side letters was too high and the war began.
+//
+// Task
+// Write a function that accepts fight string consists of only small letters 
+// and return who wins the fight. 
+// When the left side wins return Left side wins!, 
+// when the right side wins return Right side wins!, 
+// in other case return Let's fight again!.
+//
+// The left side letters and their power:
+//  w - 4
+//  p - 3
+//  b - 2
+//  s - 1
+//
+// The right side letters and their power:
+//  m - 4
+//  q - 3
+//  d - 2
+//  z - 1
+//
+// The other letters don't have power and are only victims.
+//
+// Example
+console.log(alphabetWar("z"));        //=> Right side wins!
+console.log(alphabetWar("zdqmwpbs")); //=> Let's fight again!
+console.log(alphabetWar("zzzzs"));    //=> Right side wins!
+console.log(alphabetWar("wwwwwwz"));  //=> Left side wins!
+
+function alphabetWar(fight){
+  const leftKey = ['s', 'b', 'p', 'w'];
+  const rightKey = ['z', 'd', 'q', 'm'];
+  
+  let left = [];
+  let right = [];
+  fight.split('').forEach((el) => {
+    left.push(leftKey.indexOf(el) + 1)
+    right.push(rightKey.indexOf(el) + 1)
+  })
+  
+  left = left.reduce((acc, el)=> acc += el)
+  right = right.reduce((acc, el)=> acc += el)
+  
+  return left === right ? 
+          "Let's fight again!" : 
+          `${left > right ? 'Left' : 'Right'} side wins!`
+  
+}
+```
 2022-6-25
 ```js
 // Encrypt this! (6 kyu)
