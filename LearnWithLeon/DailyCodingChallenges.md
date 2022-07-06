@@ -1,3 +1,43 @@
+2022-7-6
+```js
+// BAC Calculator
+//
+// You just went to a wedding
+// Create a function that receives a person object containing the following keys:
+// sex, weight, drinks, period
+
+// Use these values and the Widmark Formula to calculate the BAC of a given person object
+
+person1 = {
+  sex: 'female', // or 'male'
+  weight: 120,
+  drinks: 4, //as standard drink value for now
+  period: 5 // in a value of hours
+}
+
+person2 = {
+  sex: 'male', // or 'male'
+  weight: 155,
+  drinks: 5, //as standard drink value for now
+  period: 3 // in a value of hours
+}
+
+console.log(calcBAC(person1)) // ~.11
+console.log(calcBAC(person2)) // ~.10
+
+function calcBAC(person){
+  // Find alcohol dose (using standard drinks we multiply by 14)
+  const alcDose = person.drinks * 14
+  // Find grams person weighs (454 grams per pound) and multiply by gender constant
+  const gConst = person.sex === 'male' ? .68 : .55
+  const weight = person.weight * 454 * gConst
+
+  let bac = 100 * (alcDose / weight)
+  bac -= person.period * .015
+
+  return bac
+}
+```
 2022-7-5
 ```js
 // Maximum Multiple (7kyu)
