@@ -1,3 +1,27 @@
+2022-7-8
+```js
+// Find the vowels (7 kyu)
+//
+// We want to know the index of the vowels in a given word, 
+// for example, there are two vowels in the word super (the second and fourth letters).
+//
+// So given a string "super", we should return a list of [2, 4].
+//
+// Some examples:
+console.log(vowelIndices('Mmmm') //=> []
+console.log(vowelIndices('Super') //=> [2,4]
+console.log(vowelIndices('Apple') //=> [1,5]
+console.log(vowelIndices('YoMama') //=> [1,2,4,6]
+
+// NOTES
+// Vowels in this context refers to: a e i o u y (including upper case)
+// This is indexed from [1..n] (not zero indexed!)
+
+function vowelIndices(word){
+  const vowels = ['a', 'e', 'i', 'o', 'u', 'y']
+  return word.split('').reduce((acc, el, i) => vowels.includes(el.toLowerCase()) ? [...acc, i + 1] : acc, [])
+}q
+```
 2022-7-7
 ```js
 // Mexican Wave (6 kyu)
