@@ -1,3 +1,37 @@
+2022-7-12
+```js
+// Maximum Product (7kyu)
+//
+// Task
+// Given an array of integers, 
+// Find the maximum product obtained from multiplying 2 adjacent numbers in the array.
+//
+// Notes
+// - Array/list size is at least 2.
+// - Array/list numbers could be a mixture of positives, negatives also zeroes .
+//
+// Input >> Output Examples
+console.log(adjacentElementsProduct([1, 2, 3])) //=> 6
+// Explanation:
+// The maximum product obtained from multiplying 2 * 3 = 6, and they're adjacent numbers in the array.
+
+console.log(adjacentElementsProduct([9, 5, 10, 2, 24, -1, -48])) //=> 50
+// Explanation:
+// Max product obtained from multiplying 5 * 10  =  50 .
+
+console.log(adjacentElementsProduct([-23, 4, -5, 99, -27, 329, -2, 7, -921])) //=> -14
+// Explanation:
+// The maximum product obtained from multiplying -2 * 7 = -14, and they're adjacent numbers in the array.
+
+function adjacentElementsProduct(array) {
+  let prods = []
+  for(let i = 1; i < array.length; i++){
+    prods.push(array[i - 1] * array[i])
+  }
+  
+  return Math.max(...prods)
+}
+```
 2022-7-11
 ```js
 // Express: Echo Server (6 kyu)
