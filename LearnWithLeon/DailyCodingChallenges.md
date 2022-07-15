@@ -1,3 +1,32 @@
+2022-7-14
+```js
+// 6 kyu
+// Find the missing letter
+//
+// Write a method that takes an array of consecutive 
+// (increasing) letters as input 
+// and that returns the missing letter in the array.
+//
+// You will always get an valid array. 
+// And it will be always exactly one letter be missing. 
+// The length of the array will always be at least 2.
+// The array will always contain letters in only one case.
+//
+// Examples:
+console.log(findMissingLetter(['a','b','c','d','f']) //=> 'e' 
+console.log(findMissingLetter(['O','Q','R','S'] //=> 'P'
+console.log(findMissingLetter(["a","b","c","d","f"] //=> 'e'
+console.log(findMissingLetter(["O","Q","R","S"] //=> 'P'
+// (Use the English alphabet with 26 letters!)
+
+function findMissingLetter(array){
+  let missing
+  let key = 'abcdefghijklmnopqrstuvwxyz';
+  key = key.split('');
+  [missing] = array.map((el, i) => key.indexOf(el.toLowerCase())).filter((el, i, arr) => el !== arr[i + 1] - 1)
+  return array[0] === array[0].toLowerCase() ? key[missing + 1] : key[missing + 1].toUpperCase()
+}
+```
 2022-7-13
 ```js
 // Row Weights (7kyu)
