@@ -1,3 +1,123 @@
+2022-7-15
+```js
+// 6 kyu
+// Survive The Seven Kingdoms
+//
+// Ser Byron is a hedge knight traveling the length and breadth of Westeros 
+// looking for employment and tournaments.
+// On his travels Ser Byron has drawn up a map of towns and castles 
+// where he can find lodging and hopefully employment as well as areas for camping in between.
+//
+// His map is a simple grid:
+// [["Deepwood Motte",  "Shadow Tower",      "Castle Black",   "Eastwatch",      "Bay of Seals"],
+//  ["The Stony Shore",  "Torrhen's Square", "Winterfell",     "The Dreadfort",  "Karhold"],
+//  ["Flint's Finger",   "Barrowtown",       "Moat Cailin",    "White Harbour",  "Widow's Wat"],
+//  ["Pyke",             "Seagard",          "The Twins",      "Sisterton",      "The Fingers"],
+//  ["The Crag",         "Riverrun",         "Darry",          "The Eyrie",      "Gulltown"],
+//  ["Castamere",        "Acorn Hall",       "Harrenhal",      "Maidenpool",     "Dragonstone"],
+//  ["Lannisport",       "Stoney Sept",      "King's Landing", "Blackwater Bay", "Sharp Point"],
+//  ["High Garden",      "Bitterbridge",     "King's Wood",    "Storm's End",    "Evenfall"],
+//  ["Old Town",          "Horn Hill",       "Prince's Pass",  "Planky Town",    "Sunspear"]];
+//
+// calculate where he might find himself after a time in the saddle 
+// given a starting position and a journey of directions and distances.
+// //
+// Example:
+console.log(finalDestination("Winterfell", S5)) //=> "King's Landing".
+
+// Input/Output
+// [input] string currentPos
+// The starting position.
+// Will be a string inside the map array.
+//
+// [input] string directions
+// The directions.
+// Will be a string of cardinal directions with an integer separated by spaces.
+//
+// [output] a currentPos
+// The final postion.
+// Will be a string inside the map array.
+//
+// Errors
+// if the journey tries to leave Westeros the final destination can not be reached.
+//
+// return if too far North "The Wall blocks your way"
+// return if too far in any other direction "You do not have a ship to cross this sea."
+//
+// Tests:
+console.log(finalDestination("King's Landing", "N5")) //=> "Winterfell"
+console.log(finalDestination("King's Landing", "N2 W1")) //=> "Riverrun"
+console.log(finalDestination("King's Landing", "S2 E2")) //=> "Sunspear"
+console.log(finalDestination("Winterfell", "W1 S3")) //=> "Riverrun"
+console.log(finalDestination("Winterfell", "S3 W1 S2 W1")) //=> "Lannisport"
+
+
+var finalDestination = function(currentPos, directions) {
+  var locales = [
+    ["Deepwood Motte",    "Shadow Tower",     "Castle Black",   "Eastwatch",      "Bay of Seals"],
+    [ "The Stony Shore",  "Torrhen's Square", "Winterfell",     "The Dreadfort",  "Karhold"],
+    [ "Flint's Finger",   "Barrowtown",       "Moat Cailin",    "White Harbour",  "Widow's Wat"],
+    [ "Pyke",             "Seagard",          "The Twins",      "Sisterton",      "The Fingers"],
+    [ "The Crag",         "Riverrun",         "Darry",          "The Eyrie",      "Gulltown"],
+    [ "Castamere",        "Acorn Hall",       "Harrenhal",      "Maidenpool",     "Dragonstone"],
+    [ "Lannisport",       "Stoney Sept",      "King's Landing", "Blackwater Bay", "Sharp Point"],
+    [ "High Garden",      "Bitterbridge",     "King's Wood",    "Storm's End",    "Evenfall"],
+    [ "Old Town",         "Horn Hill",        "Prince's Pass",  "Planky Town",    "Sunspear"]
+  ];
+  
+  // Identify coords of current position
+  // y: up and down index (index of array within locales hoding start position)
+  // x: left to right index (index of start position within subArray)
+  let y, x;
+  for(let i = 0; i < locales.length; i++){
+    if(locales[i].indexOf(currentPos) !== -1){
+      x = locales[i].indexOf(currentPos)
+      y = i
+      // set i to break loop when locale is found
+      i === locales.length + 1
+    }
+  }
+  
+  // Get each individual direction
+  directions = directions.split(' ')
+  
+  for(let i = 0; i < directions.length; i++){
+    // Break individual direction into direction and distance
+    const [dir, num] = directions[i]
+     switch(dir){
+      case 'N': 
+        // decrease y to traverse up
+        y -= +num;
+        break;
+      case 'E':
+        // increase x to traverse right
+        x += +num;
+        break;
+      case 'S':
+        // increase y to traverse down
+        y += +num;
+        break;
+      case 'W':
+        // decrease x to traverse left
+        x -= +num;
+        break;
+  }
+    // Check that you are still in the map after following the last direction
+    if(y < 0 || y > locales.length - 1 || x < 0 || x > locales[y].length){
+      // If off map break out of for loop
+      i = directions.length
+    }
+  }
+  
+  if(y < 0){ // Too far north
+    return 'The Wall blocks your way'
+  } else if(y > locales.length - 1 || x > locales[y].length - 1 || x < 0){ // Too far any other direction
+    return 'You do not have a ship to cross this sea.'
+  } else{ // Stayed on the map
+    return locales[y][x] // Return final coord
+  }
+}
+```
 2022-7-14
 ```js
 // 6 kyu
