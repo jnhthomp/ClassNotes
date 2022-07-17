@@ -1,3 +1,36 @@
+2022-7-17
+```js
+// Extract last names of people named Michael (6 kyu)
+//
+// Given a text, for example:
+const inputText = "Michael, how are you? - Cool, how is John Williamns and Michael Jordan? I don't know but Michael Johnson is fine. Michael do you still score points with LeBron James, Michael Green AKA Star and Michael Wood?";
+
+//Get an array of last names of people named Michael. 
+// The result should be:
+// ["Jordan", "Johnson", "Green", "Wood"]
+//
+// Notes:
+// - First name will always be Michael with upper case 'M'.
+// - There will always be a space character between 'Michael' and last name.
+// - Last name will always be one word, starting with an upper-case letter and continuing with lower-case letters.
+// - There will always be at least one 'Michael' with a valid last name in the input text.
+
+console.log(getMichaelLastName(inputText)) //=> ["Jordan", "Johnson", "Green", "Wood"]
+
+function getMichaelLastName(inputText) {
+  // Remove punctuation
+  inputText = inputText.replace(/[!,.?]/g, '')
+  // Split text into words, and reduce to a list of last names
+  return inputText.split(' ').reduce((acc, word, i, arr) => {
+    // Check if current word is michael && first letter of next word is capitalized
+    return word === 'Michael' && arr[i + 1][0] === arr[i + 1][0].toUpperCase() ?
+      // If so add that word to list of last names
+      [...acc, arr[i + 1]] : 
+      // otherwise skip and return existing last names list
+      acc
+  },[])  
+}
+```
 2022-7-16
 ```js
 // Sum of Digits / Digital Root (6 kyu)
