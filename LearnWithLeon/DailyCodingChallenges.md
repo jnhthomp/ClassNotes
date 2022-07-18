@@ -1,3 +1,59 @@
+2022-7-18
+```js
+// Yes No Yes No (6 kyu)
+//
+// Write a code that receives an array of numbers or strings, 
+// goes one by one through it while taking one value out, 
+// leaving one value in, taking, leaving, and back again to the beginning until all values are out.
+// It's like a circle of people who decide that every second person will leave it, until the last person is there.
+// So if the last element of the array is taken, the first element that's still there, will stay.
+// The code returns a new re-arranged array with the taken values by their order. 
+// The first value of the initial array is always taken.
+//
+// Examples:
+console.log(yesNo([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) //=> [1, 3, 5, 7, 9, 2, 6, 10, 8, 4]
+console.log(yesNo(['this', 'code', 'is', 'right', 'the'])) //=> ['this', 'is', 'the', 'right', 'code']
+
+function yesNo(arr){
+  // Array to store pulled values as they are pulled
+  let final = []
+
+  // Toggle this to determine how each value will be dealt with
+  // !Must be outside of the while loop or is reset on each iteration through the array
+  // !How the last element was handled determines how the first will be so the above won't work
+  // !Per instructions start with taking the first element
+  let takeBool = true
+  while(arr.length > 0){
+    // List of elements being taken this iteration
+    let take = []
+    // List of elements being left in ths iteration
+    let leave = []
+    // ?Easier to reassign the arr we will loop through than remove/keep items as we go
+    //   removing keeping items while iterating makes iterating more difficult to manage
+    
+    // Loop through array to determine what will taken and left
+    for(let i = 0; i < arr.length; i++){
+      if(takeBool){
+        // Keep list up to date of all take elements
+        take = [...take, arr[i]]
+      } else{
+        // Keep list up to date of all leave elements
+        leave = [...leave, arr[i]]
+      }
+      // Toggle take/leave between each element
+      takeBool = !takeBool
+    }
+    
+    // Update array to only remaining values
+    arr = leave
+    // Update final to add taken values to final array
+    final = [...final, ...take]
+  }
+  
+  // Return final array
+  return final
+}
+```
 2022-7-17
 ```js
 // Extract last names of people named Michael (6 kyu)
