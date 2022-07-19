@@ -1,3 +1,97 @@
+2022-7-19
+```js
+// Amazon interview question (?kyu)
+//
+// Create a utility that converts a mapped object into a JSON string.
+//
+// Example:
+let exampleJson = {
+  studentId: 839027,
+  name: "Lenny Learngood",
+  age: 9,
+  grade: 4,
+  reportCard: {
+
+  },
+
+  teachers: [],
+  records: null,
+  emergencyContact: undefined
+}
+
+console.log(toJson(exampleJson)) //=> {"studentId": 839027, "name": "Lenny Learngood", "age": 9, "grade": 4, "reportCard": undefined, "teachers": undefined, "records": undefined, "emergencyContact": undefined}
+
+function toJson(convertToJson) {
+  function checkTypeAndConvert(val) {
+    let curValType = typeof val // get type of curent value
+    let curValue // initialize a value to be returned after formatting
+
+    switch (curValType) {
+      case 'boolean': // bool needs converted into string
+        curValue = `${val}`
+      case 'number': // number similar to bool needs convert to string
+        curValue = `${val}`
+        break;
+      case 'string': // string receives wrapping quotes ("")
+        curValue = `"${val}"`
+        break;
+      case 'array': // array will need to create an array string (see arrayToString())
+        curValue = arrayToString(val)
+        break;
+      case 'object': // Both objects and null are returned as objects
+        if (val !== null) { // check that the value is not null and is a regular object
+          toJson(val) // recursive call and convert this object to json
+        } else {
+          // If null output just null as string
+          curValue = 'null'
+        }
+        break;
+      default: // This shouldn't be hit
+        break;
+
+    }
+
+    // Return the value converted to a json format for the value type
+    return curValue
+  }
+
+  // Convert an array to a string
+  function arrayToString(arr) {
+    // Start an array string with opening bracket
+    let arrayAsString = '['
+
+    arr.forEach(el => {
+      // Add the converted to json value for each element to the string
+      arrayAsString += checkTypeTypeAndConvert(val)
+    })
+
+    // Close array and return array converted to string
+    return arrayAsString += ']'
+  }
+
+  // Start a string to store data
+  let finalString = '{'
+  // Loop through keys in input
+  for (key in convertToJson) {
+    // Add the current key with the following formmating
+    //  - As a string
+    //  - With doube quotes wrapping ("")
+    //  - Followed by a colon
+    //  - Ending in a space
+    finalString += `"${key}": `
+
+    // Check the type and convert the current value to the json string format
+    let addToString = checkTypeAndConvert(convertToJson[key])
+    // Add the json string version of the value followed by a comma and space to the end of finalString
+    finalString += addToString + ', '
+  }
+
+  // Finish and format final string befor returning
+  // Remove final comma and space from json string
+  // Add closing bracket
+  return finalString.slice(0, -2) + '}'
+}
+```
 2022-7-18
 ```js
 // Yes No Yes No (6 kyu)
