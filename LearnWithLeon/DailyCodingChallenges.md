@@ -1,3 +1,53 @@
+2022-7-21
+```js
+// Playing with passphrases (6 kyu)
+//
+// Everyone knows passphrases. 
+// One can choose passphrases from poems, songs, movies names and so on 
+// but frequently they can be guessed due to common cultural references. 
+// You can get your passphrases stronger by different means.
+//
+// One is the following:
+// 1. choose a text in capital letters not including digits and non-alphabetic characters,
+// 2. shift each letter by a given number 
+//     but the transformed letter must be a letter (circular shift)
+// 3. replace each digit by its complement to 9,
+// 4. keep non-alphabetic and non-digit characters as is
+// 5. downcase each letter in odd position, 
+// 6. upcase each letter in even position (the first character is in position 0),
+// 7. reverse the whole result.
+//
+// Example:
+playPass("BORN IN 2015!", 1) //=> "!4897 Oj oSpC"
+// 1 + 2 + 3 + 4 -> "CPSO JO 7984!"
+// 5 + 6 "CpSo jO 7984!"
+// 7 "!4897 Oj oSpC"
+
+function playPass(s, n) {
+    s = s.toLowerCase()
+    let alphaKey = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz' // Repeated in case offset goes past end of alphaKey length
+    let numKey = '0123456789' // easier than attempting to convert each non-alpha char into a num
+    
+    let passcode = '' // store passcode as it is assembled
+    for(let i = 0; i < s.length; i++){
+      if(alphaKey.includes(s[i])){ // is alpha
+         // shift and if even capitalize, otherwise keep lowercase
+        let newLetter = i % 2 === 0 ? alphaKey[alphaKey.indexOf(s[i]) + n].toUpperCase() : alphaKey[alphaKey.indexOf(s[i]) + n]
+        // append to passcode
+        passcode += newLetter
+      } else if(numKey.includes(s[i])){ // is num
+        // convert to num and sub from 9 to find complement of 9
+        passcode += (9 - +s[i]) // append as string to passcode
+      } else { // is not alpha or num
+        // append to string as is
+        passcode += s[i]
+      }
+    }
+    
+    // reverse string before returnings
+    return passcode.split('').reverse().join('')
+}
+```
 2022-7-20
 ```js
 // The Vowel Code (6 kyu)
