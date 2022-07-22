@@ -1,3 +1,40 @@
+2022-7-22
+```js
+// Pie Chart (6 kyu)
+//
+// We are to draw a pie chart! Our parameter shall be given in JSON.
+//
+// The goal of this kata is to return a JSON 
+// containing each key with the corresponding angle to two decimal places when necessary.
+//
+// Example
+console.log(pieChart('{"Hausa": 4, "Yoruba" : 5, "Igbo" : 6, "Efik" : 1, "Edo" : 4}')) //=> {"Hausa":72,"Yoruba":90,"Igbo":108,"Efik":18,"Edo":72}
+console.log(pieChart('{"English": 4, "Polish" : 12, "Russian" : 10, "Spanish" : 2}')) //=> {"English":51.43,"Polish":154.29,"Russian":128.57,"Spanish":25.71}
+console.log(pieChart('{"Android": 500, "iOS" : 270, "Microsoft" : 230}')) //=> {"Android":180,"iOS":97.2,"Microsoft":82.8}
+
+function pieChart(obj){
+  // Convert incoming json to js object
+  let object = JSON.parse(obj)
+  // Create an accumulator to determine what percentage of total each value is
+  let acc = 0
+  // Loop through object and increment accumulator
+  for(key in object){
+    acc += object[key]
+  }
+  
+
+  // Initialize object to hold new values 
+  let json = {}
+  // Add each key to object with calculated value
+  for(key in object){
+    // calculated value is current value's percentage of accumulator * 360 to get the corresponding angle
+    json[key] = (((object[key] / acc)) * 360)
+  }
+  
+  // Convert object to json before returning
+  return JSON.stringify(json);
+}
+```
 2022-7-21
 ```js
 // Playing with passphrases (6 kyu)
