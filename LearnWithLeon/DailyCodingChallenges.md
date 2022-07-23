@@ -1,3 +1,37 @@
+2022-7-23
+```js
+// Make A Window (6kyu)
+// Make me a window. I'll give you a number (N). You return a window.
+// Rules:
+// The window will always be 2 x 2.
+// The window needs to have N number of periods across 
+// and N number of periods vertically in each pane.
+//
+// Example:
+console.log(makeAWindow(3))//=> ---------
+                          //    |...|...|
+                          //    |...|...|
+                          //    |...|...|
+                          //    |---+---|
+                          //    |...|...|
+                          //    |...|...|
+                          //    |...|...|
+                          //    ---------
+
+function makeAWindow(num) {
+  let start = `${'-'.repeat((num * 2) + 3)}\n`
+  
+  let pane = ''
+  for(let i = 1; i <= num; i++){
+    // Create a row
+    pane += `|${'.'.repeat(num)}|${'.'.repeat(num)}|\n`
+  }
+  
+  let mid = `|${'-'.repeat(num)}+${'-'.repeat(num)}|\n`
+  
+  return start + pane + mid + pane + start.replace('\n', '')
+}
+```
 2022-7-22
 ```js
 // Pie Chart (6 kyu)
