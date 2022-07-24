@@ -1,3 +1,29 @@
+2022-7-24
+```js
+// Alphabet symmetry (7 kyu)
+// Consider the word "abode". 
+// We can see that the letter a is in position 1 
+// and b is in position 2. 
+// In the alphabet, a and b are also in positions 1 and 2. 
+// Notice also that d and e in abode occupy the positions 
+// they would occupy in the alphabet, which are positions 4 and 5.
+//
+// Given an array of words, 
+// return an array of the number of letters 
+// that occupy their positions in the alphabet for each word. 
+//
+// Input will consist of alphabet characters, both uppercase and lowercase. No spaces.
+//
+// Good luck!
+//
+// For example,
+console.log(solve(["abode","ABc","xyzD"])) //=> [4, 3, 1]
+
+function solve(arr){  
+  const alphKey = 'abcdefghijklmnopqrstuvwxyz'
+  return arr.map((word) => word.toLowerCase().split('').reduce((acc, l, i, arr) => i === alphKey.indexOf(l) ? acc + 1 : acc, 0))
+};
+```
 2022-7-23
 ```js
 // Make A Window (6kyu)
