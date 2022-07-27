@@ -1,3 +1,78 @@
+2022-7-26
+```js
+// Task
+// The UK driving number is made up from the personal details of the driver. 
+// The individual letters and digits can be code using the below information
+//
+// Rules
+// 1–5: The first five characters of the surname (padded with 9s if less than 5 characters)
+// 6: The decade digit from the year of birth (e.g. for 1987 it would be 8)
+// 7–8: The month of birth (7th character incremented by 5 if driver is female i.e. 51–62 instead of 01–12)
+// 9–10: The date within the month of birth
+// 11: The year digit from the year of birth (e.g. for 1987 it would be 7)
+// 12–13: The first two initials of the first name and middle name, padded with a 9 if no middle name
+// 14: Arbitrary digit – usually 9, but decremented to differentiate drivers with the first 13 characters in common. We will always use 9
+// 15–16: Two computer check digits. We will always use "AA"
+//
+// Your task is to code a UK driving license number using an Array of data. 
+// The Array will look like:
+// data = ["John","James","Smith","01-Jan-2000","M"];
+//
+// Where the elements are as follows:
+// 0 = Forename
+// 1 = Middle Name (if any)
+// 2 = Surname
+// 3 = Date of Birth (In the format Day Month Year, this could include the full Month name or just shorthand ie September or Sep)
+// 4 = M-Male or F-Female
+//
+// You will need to output the full 16 digit driving license number.
+// Good luck and enjoy!
+
+data = ["John","James","Smith","01-Jan-2000","M"];
+console.log(driver(data)); //=> "SMITH001010JJ9AA"
+
+data = ["Johanna","","Gibbs","13-Dec-1981","F"];
+console.log(driver(data)); //=> "GIBBS862131J99AA"
+
+data = ["Andrew","Robert","Lee","02-September-1981","M"];
+console.log(driver(data)); //=> "LEE99809021AR9AA"
+
+function driver(data) {
+  // First 5 characters of surname
+  const [first, middle, last, bDate, sex] = data
+  let lastToFive = last.slice(0, 5)
+  while(lastToFive.length < 5){
+    lastToFive += '9'
+  }
+  
+  lastToFive = lastToFive.toUpperCase()
+  
+  // Decade digit
+  const [bDay, bMonth, bYear] = bDate.split('-')
+  const decadeDigit = bYear.split('')[2]
+  
+  // Month of Birth
+  const monthKey = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  let monthDigit = monthKey.indexOf(bMonth.slice(0, 3))
+  if(sex === 'F'){
+    monthDigit += 50
+  }
+  monthDigit = `${monthDigit}`.length === 1 ? `0${monthDigit}` : `${monthDigit}`
+  
+  
+  //bday
+  const bDayDigit = bDay
+  
+  // Year digit
+  const yearDigit = bYear[3]
+  
+  // First and middle initial
+  const firstInitial = first[0]
+  const middleInitial = middle.length > 0 ? middle[0] : 9
+  
+  return lastToFive + decadeDigit + monthDigit + bDayDigit + yearDigit + firstInitial + middleInitial + '9AA'
+}
+```
 2022-7-25
 ```js
 // Fruit Machine (6 kyu)
@@ -41,7 +116,7 @@ reel1 = ["Wild","Star","Bell","Shell","Seven","Cherry","Bar","King","Queen","Jac
 reel2 = ["Wild","Star","Bell","Shell","Seven","Cherry","Bar","King","Queen","Jack"];
 reel3 = ["Wild","Star","Bell","Shell","Seven","Cherry","Bar","King","Queen","Jack"];
 spin = [5,5,5];
-console.log(fruit([reel1,reel2,reel3],spin)); //=> 50
+console.logfruit([reel1,reel2,reel3],spin)); //=> 50
 // Scoring
 // reel1[5] == "Cherry"
 // reel2[5] == "Cherry"
@@ -82,7 +157,7 @@ function fruit(reels, spins){
       finalScore *= 2
     }
   }
-  
+
   // Return final score
   return finalScore
 }
@@ -106,7 +181,7 @@ function fruit(reels, spins){
 // Good luck!
 //
 // For example,
-console.log(solve(["abode","ABc","xyzD"])) //=> [4, 3, 1]
+console.logsolve(["abode","ABc","xyzD"])) //=> [4, 3, 1]
 
 function solve(arr){  
   const alphKey = 'abcdefghijklmnopqrstuvwxyz'
@@ -123,7 +198,7 @@ function solve(arr){
 // and N number of periods vertically in each pane.
 //
 // Example:
-console.log(makeAWindow(3))//=> ---------
+console.logmakeAWindow(3))//=> ---------
                           //    |...|...|
                           //    |...|...|
                           //    |...|...|
@@ -157,9 +232,9 @@ function makeAWindow(num) {
 // containing each key with the corresponding angle to two decimal places when necessary.
 //
 // Example
-console.log(pieChart('{"Hausa": 4, "Yoruba" : 5, "Igbo" : 6, "Efik" : 1, "Edo" : 4}')) //=> {"Hausa":72,"Yoruba":90,"Igbo":108,"Efik":18,"Edo":72}
-console.log(pieChart('{"English": 4, "Polish" : 12, "Russian" : 10, "Spanish" : 2}')) //=> {"English":51.43,"Polish":154.29,"Russian":128.57,"Spanish":25.71}
-console.log(pieChart('{"Android": 500, "iOS" : 270, "Microsoft" : 230}')) //=> {"Android":180,"iOS":97.2,"Microsoft":82.8}
+console.logpieChart('{"Hausa": 4, "Yoruba" : 5, "Igbo" : 6, "Efik" : 1, "Edo" : 4}')) //=> {"Hausa":72,"Yoruba":90,"Igbo":108,"Efik":18,"Edo":72}
+console.logpieChart('{"English": 4, "Polish" : 12, "Russian" : 10, "Spanish" : 2}')) //=> {"English":51.43,"Polish":154.29,"Russian":128.57,"Spanish":25.71}
+console.logpieChart('{"Android": 500, "iOS" : 270, "Microsoft" : 230}')) //=> {"Android":180,"iOS":97.2,"Microsoft":82.8}
 
 function pieChart(obj){
   // Convert incoming json to js object
@@ -247,24 +322,24 @@ function playPass(s, n) {
 // u -> 5
 //
 // For example: 
-console.log(encode("hello")) //=> "h2ll4". 
+console.logencode("hello")) //=> "h2ll4". 
 // There is no need to worry about uppercase vowels in this kata.
 //
 // Step 2: Now create a function called decode() 
 // to turn the numbers back into vowels according to the same pattern shown above.
 // For example: 
-console.log(decode("h3 th2r2")) //=> "hi there".
+console.logdecode("h3 th2r2")) //=> "hi there".
 
 // For the sake of simplicity, 
 // you can assume that any numbers passed into the function will correspond to vowels.
 //
 // Tests:
-console.log(encode('hello')) //=> 'h2ll4'
-console.log(decode('h2ll4')) //=> 'hello'
-console.log(encode('How are you today?')) //=> 'H4w 1r2 y45 t4d1y?'
-console.log(decode('H4w 1r2 y45 t4d1y?')) //=> 'How are you today?'
-console.log(encode('This is an encoding test.')) //=> 'Th3s 3s 1n 2nc4d3ng t2st.'
-console.log(decode('Th3s 3s 1n 2nc4d3ng t2st.')) //=> 'This is an encoding test.'
+console.logencode('hello')) //=> 'h2ll4'
+console.logdecode('h2ll4')) //=> 'hello'
+console.logencode('How are you today?')) //=> 'H4w 1r2 y45 t4d1y?'
+console.logdecode('H4w 1r2 y45 t4d1y?')) //=> 'How are you today?'
+console.logencode('This is an encoding test.')) //=> 'Th3s 3s 1n 2nc4d3ng t2st.'
+console.logdecode('Th3s 3s 1n 2nc4d3ng t2st.')) //=> 'This is an encoding test.'
 
 function encode(string) {
   
@@ -332,7 +407,7 @@ let exampleJson = {
   emergencyContact: undefined
 }
 
-console.log(toJson(exampleJson)) //=> {"studentId": 839027, "name": "Lenny Learngood", "age": 9, "grade": 4, "reportCard": undefined, "teachers": undefined, "records": undefined, "emergencyContact": undefined}
+console.logtoJson(exampleJson)) //=> {"studentId": 839027, "name": "Lenny Learngood", "age": 9, "grade": 4, "reportCard": undefined, "teachers": undefined, "records": undefined, "emergencyContact": undefined}
 
 function toJson(convertToJson) {
   function checkTypeAndConvert(val) {
@@ -418,8 +493,8 @@ function toJson(convertToJson) {
 // The first value of the initial array is always taken.
 //
 // Examples:
-console.log(yesNo([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) //=> [1, 3, 5, 7, 9, 2, 6, 10, 8, 4]
-console.log(yesNo(['this', 'code', 'is', 'right', 'the'])) //=> ['this', 'is', 'the', 'right', 'code']
+console.logyesNo([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) //=> [1, 3, 5, 7, 9, 2, 6, 10, 8, 4]
+console.logyesNo(['this', 'code', 'is', 'right', 'the'])) //=> ['this', 'is', 'the', 'right', 'code']
 
 function yesNo(arr){
   // Array to store pulled values as they are pulled
@@ -478,7 +553,7 @@ const inputText = "Michael, how are you? - Cool, how is John Williamns and Micha
 // - Last name will always be one word, starting with an upper-case letter and continuing with lower-case letters.
 // - There will always be at least one 'Michael' with a valid last name in the input text.
 
-console.log(getMichaelLastName(inputText)) //=> ["Jordan", "Johnson", "Green", "Wood"]
+console.loggetMichaelLastName(inputText)) //=> ["Jordan", "Johnson", "Green", "Wood"]
 
 function getMichaelLastName(inputText) {
   // Remove punctuation
@@ -505,10 +580,10 @@ function getMichaelLastName(inputText) {
 // The input will be a non-negative integer.
 //
 // Examples
-console.log(digital_root(16)) //=>  1 + 6 = 7
-console.log(digital_root(942)) //=>  9 + 4 + 2 = 15  -->  1 + 5 = 6
-console.log(digital_root(132189)) //=>  1 + 3 + 2 + 1 + 8 + 9 = 24  -->  2 + 4 = 6
-console.log(digital_root(493193)) //=>  4 + 9 + 3 + 1 + 9 + 3 = 29  -->  2 + 9 = 11  -->  1 + 1 = 2
+console.logdigital_root(16)) //=>  1 + 6 = 7
+console.logdigital_root(942)) //=>  9 + 4 + 2 = 15  -->  1 + 5 = 6
+console.logdigital_root(132189)) //=>  1 + 3 + 2 + 1 + 8 + 9 = 24  -->  2 + 4 = 6
+console.logdigital_root(493193)) //=>  4 + 9 + 3 + 1 + 9 + 3 = 29  -->  2 + 9 = 11  -->  1 + 1 = 2
 
 function digital_root(n) {
   n = `${n}`.split('').reduce((acc, d) => acc + +d, 0)
@@ -541,7 +616,7 @@ function digital_root(n) {
 // given a starting position and a journey of directions and distances.
 // //
 // Example:
-console.log(finalDestination("Winterfell", S5)) //=> "King's Landing".
+console.logfinalDestination("Winterfell", S5)) //=> "King's Landing".
 
 // Input/Output
 // [input] string currentPos
@@ -563,11 +638,11 @@ console.log(finalDestination("Winterfell", S5)) //=> "King's Landing".
 // return if too far in any other direction "You do not have a ship to cross this sea."
 //
 // Tests:
-console.log(finalDestination("King's Landing", "N5")) //=> "Winterfell"
-console.log(finalDestination("King's Landing", "N2 W1")) //=> "Riverrun"
-console.log(finalDestination("King's Landing", "S2 E2")) //=> "Sunspear"
-console.log(finalDestination("Winterfell", "W1 S3")) //=> "Riverrun"
-console.log(finalDestination("Winterfell", "S3 W1 S2 W1")) //=> "Lannisport"
+console.logfinalDestination("King's Landing", "N5")) //=> "Winterfell"
+console.logfinalDestination("King's Landing", "N2 W1")) //=> "Riverrun"
+console.logfinalDestination("King's Landing", "S2 E2")) //=> "Sunspear"
+console.logfinalDestination("Winterfell", "W1 S3")) //=> "Riverrun"
+console.logfinalDestination("Winterfell", "S3 W1 S2 W1")) //=> "Lannisport"
 
 
 var finalDestination = function(currentPos, directions) {
@@ -651,10 +726,10 @@ var finalDestination = function(currentPos, directions) {
 // The array will always contain letters in only one case.
 //
 // Examples:
-console.log(findMissingLetter(['a','b','c','d','f']) //=> 'e' 
-console.log(findMissingLetter(['O','Q','R','S'] //=> 'P'
-console.log(findMissingLetter(["a","b","c","d","f"] //=> 'e'
-console.log(findMissingLetter(["O","Q","R","S"] //=> 'P'
+console.logfindMissingLetter(['a','b','c','d','f']) //=> 'e' 
+console.logfindMissingLetter(['O','Q','R','S'] //=> 'P'
+console.logfindMissingLetter(["a","b","c","d","f"] //=> 'e'
+console.logfindMissingLetter(["O","Q","R","S"] //=> 'P'
 // (Use the English alphabet with 26 letters!)
 
 function findMissingLetter(array){
@@ -686,17 +761,17 @@ function findMissingLetter(array){
 // All numbers will be positive.
 //
 // Input >> Output Examples
-console.log(rowWeights([13, 27, 49])) //=> (62, 27)
+console.logrowWeights([13, 27, 49])) //=> (62, 27)
 // Explanation:
 // The first element 62 is the total weight of team 1, 
 // and the second element 27 is the total weight of team 2.
 
-console.log(rowWeights([50, 60, 70, 80])) //=> (120, 140)
+console.logrowWeights([50, 60, 70, 80])) //=> (120, 140)
 // Explanation:
 // The first element 120 is the total weight of team 1, 
 // and the second element 140 is the total weight of team 2.
 
-console.log(rowWeights([80])) //=> (80, 0)
+console.logrowWeights([80])) //=> (80, 0)
 // Explanation:
 // The first element 80 is the total weight of team 1, 
 // and the second element 0 is the total weight of team 2.
@@ -718,15 +793,15 @@ function rowWeights(array){
 // - Array/list numbers could be a mixture of positives, negatives also zeroes .
 //
 // Input >> Output Examples
-console.log(adjacentElementsProduct([1, 2, 3])) //=> 6
+console.logadjacentElementsProduct([1, 2, 3])) //=> 6
 // Explanation:
 // The maximum product obtained from multiplying 2 * 3 = 6, and they're adjacent numbers in the array.
 
-console.log(adjacentElementsProduct([9, 5, 10, 2, 24, -1, -48])) //=> 50
+console.logadjacentElementsProduct([9, 5, 10, 2, 24, -1, -48])) //=> 50
 // Explanation:
 // Max product obtained from multiplying 5 * 10  =  50 .
 
-console.log(adjacentElementsProduct([-23, 4, -5, 99, -27, 329, -2, 7, -921])) //=> -14
+console.logadjacentElementsProduct([-23, 4, -5, 99, -27, 329, -2, 7, -921])) //=> -14
 // Explanation:
 // The maximum product obtained from multiplying -2 * 7 = -14, and they're adjacent numbers in the array.
 
@@ -836,9 +911,9 @@ app.use((err, req, res, next) => {
 // - repeat until the string is the appropriate length
 // Examples:
 
-console.log(ascendDescend(5, 1 ,3)) // => "12321"
-console.log(ascendDescend(14, 0, 2)) // => "01210121012101"
-console.log(ascendDescend(11, 5, 9)) //=> "56789876567"
+console.logascendDescend(5, 1 ,3)) // => "12321"
+console.logascendDescend(14, 0, 2)) // => "01210121012101"
+console.logascendDescend(11, 5, 9)) //=> "56789876567"
 
 // Notes:
 // - length will always be non-negative
@@ -890,8 +965,8 @@ function ascendDescend(length, minimum, maximum) {
 // All dates will be passed as strings in this format: "MONTH DATE, YEAR".
 //
 // Examples:
-console.log(checkCoupon("123", "123", "July 9, 2015", "July 9, 2015")) //=> true
-console.log(checkCoupon("123", "123", "July 9, 2015", "July 2, 2015")) //=> false
+console.logcheckCoupon("123", "123", "July 9, 2015", "July 9, 2015")) //=> true
+console.logcheckCoupon("123", "123", "July 9, 2015", "July 2, 2015")) //=> false
 
 function checkCoupon(enteredCode, correctCode, currentDate, expirationDate){
   return enteredCode === correctCode && new Date(currentDate) <= new Date(expirationDate)
@@ -907,10 +982,10 @@ function checkCoupon(enteredCode, correctCode, currentDate, expirationDate){
 // So given a string "super", we should return a list of [2, 4].
 //
 // Some examples:
-console.log(vowelIndices('Mmmm') //=> []
-console.log(vowelIndices('Super') //=> [2,4]
-console.log(vowelIndices('Apple') //=> [1,5]
-console.log(vowelIndices('YoMama') //=> [1,2,4,6]
+console.logvowelIndices('Mmmm') //=> []
+console.logvowelIndices('Super') //=> [2,4]
+console.logvowelIndices('Apple') //=> [1,5]
+console.logvowelIndices('YoMama') //=> [1,2,4,6]
 
 // NOTES
 // Vowels in this context refers to: a e i o u y (including upper case)
@@ -950,8 +1025,8 @@ function vowelIndices(word){
 //  2.  If the character in the string is whitespace then pass over it as if it was an empty seat
 //
 // Example
-console.log(wave("hello")) //=> ["Hello", "hEllo", "heLlo", "helLo", "hellO"]
-console.log(wave("two words")) //=> ["Two words", "tWo words", "twO words", "two Words", "two wOrds", "two woRds", "two worDs", "two wordS"]
+console.logwave("hello")) //=> ["Hello", "hEllo", "heLlo", "helLo", "hellO"]
+console.logwave("two words")) //=> ["Two words", "tWo words", "twO words", "two Words", "two wOrds", "two woRds", "two worDs", "two wordS"]
 
 function wave(str){
   let arr = [];
@@ -987,8 +1062,8 @@ person2 = {
   period: 3 // in a value of hours
 }
 
-console.log(calcBAC(person1)) // ~.11
-console.log(calcBAC(person2)) // ~.10
+console.logcalcBAC(person1)) // ~.11
+console.logcalcBAC(person2)) // ~.10
 
 function calcBAC(person){
   // Find alcohol dose (using standard drinks we multiply by 14)
@@ -1022,15 +1097,15 @@ function calcBAC(person){
 // It's guaranteed that a divisor is Found .
 // Input >> Output Examples
 
-console.log(maxMultiple(2, 7)) //=> 6
+console.logmaxMultiple(2, 7)) //=> 6
 // Explanation:
 // (6) is divisible by (2) , (6) is less than or equal to bound (7) , and (6) is > 0 .
 
-console.log(maxMultiple(10, 50)) //=> 50
+console.logmaxMultiple(10, 50)) //=> 50
 // Explanation:
 // (50) is divisible by (10) , (50) is less than or equal to bound (50) , and (50) is > 0 .*
 
-console.log(maxMultiple(37, 200)) //=> 185
+console.logmaxMultiple(37, 200)) //=> 185
 // Explanation:
 // (185) is divisible by (37) , (185) is less than or equal to bound (200) , and (185) is > 0 .
 
@@ -1052,17 +1127,17 @@ function maxMultiple(divisor, bound){
 // Repetition of numbers in the array/list could occur, So (duplications are not included when summing).
 //
 // Input >> Output Examples
-console.log(maxTriSum ({3,2,6,8,2,3})) //=> 17
+console.logmaxTriSum ({3,2,6,8,2,3})) //=> 17
 // Explanation:
 // As the triplet that maximize the sum {6,8,3} in order , their sum is (17)
 // Note : duplications are not included when summing , (i.e) the numbers added only once.
 
-console.log(maxTriSum ({2,1,8,0,6,4,8,6,2,4})) //=> 18
+console.logmaxTriSum ({2,1,8,0,6,4,8,6,2,4})) //=> 18
 // Explanation:
 // As the triplet that maximize the sum {8, 6, 4} in order , their sum is (18),
 // Note : duplications are not included when summing , (i.e) the numbers added only once.
 
-console.log(maxTriSum({-7,12,-7,29,-5,0,-7,0,0,29})) //=> 41
+console.logmaxTriSum({-7,12,-7,29,-5,0,-7,0,0,29})) //=> 41
 // Explanation:
 // As the triplet that maximize the sum {12 , 29 , 0} in order , their sum is (41),
 // Note : duplications are not included when summing , (i.e) the numbers added only once.
@@ -1087,20 +1162,20 @@ function maxTriSum(numbers){
 // - Threshold K will always be reachable.
 //
 // Input >> Output Examples
-console.log(minimumSteps([1, 10, 12, 9, 2, 3], 6))  //=> 2
+console.logminimumSteps([1, 10, 12, 9, 2, 3], 6))  //=> 2
 // Explanation:
 // We add two smallest elements (1 + 2), their sum is 3 .
 // Then we add the next smallest number to it (3 + 3) , so the sum becomes 6 .
 // Now the result is greater or equal to 6 , Hence the output is (2) i.e (2) operations are required to do this .
 
-console.log(minimumSteps([8 , 9, 4, 2], 23))  //=> 3
+console.logminimumSteps([8 , 9, 4, 2], 23))  //=> 3
 // Explanation:
 // We add two smallest elements (4 + 2), their sum is 6 .
 // Then we add the next smallest number to it (6 + 8) , so the sum becomes 14 .
 // Now we add the next smallest number (14 + 9) , so the sum becomes 23 .
 // Now the result is greater or equal to 23 , Hence the output is (3) i.e (3) operations are required to do this .
 
-console.log(minimumSteps([19,98,69,28,75,45,17,98,67], 464))  //=> 8
+console.logminimumSteps([19,98,69,28,75,45,17,98,67], 464))  //=> 8
 // Explanation:
 // We add two smallest elements (19 + 17), their sum is 36 .
 // Then we add the next smallest number to it (36 + 28) , so the sum becomes 64 .
@@ -1133,18 +1208,18 @@ function minimumSteps(numbers, value){
 // Repetition of numbers in the array/list could occur.
 // 
 // Input >> Output Examples
-console.log(productArray ([12,20])) //=> [20,12]
+console.logproductArray ([12,20])) //=> [20,12]
 // Explanation:
 // The first element in prod [] array 12 is the product of all array's elements except the first element
 // The second element 20 is the product of all array's elements except the second element .
 
-console.log(productArray ([1,5,2])) //=> [10,2,5]
+console.logproductArray ([1,5,2])) //=> [10,2,5]
 // Explanation:
 // The first element 10 is the product of all array's elements except the first element 1
 // The second element 2 is the product of all array's elements except the second element 5
 // The Third element 5 is the product of all array's elements except the Third element 2.
 
-console.log(productArray ([10,3,5,6,2])) //=> [180,600,360,300,900]
+console.logproductArray ([10,3,5,6,2])) //=> [180,600,360,300,900]
 // Explanation:
 // The first element 180 is the product of all array's elements except the first element 10
 // The second element 600 is the product of all array's elements except the second element 3
@@ -1170,16 +1245,16 @@ function productArray(numbers){
 // - The Maximum Gap is computed Regardless the sign.
 //
 // Tests:
-console.log(maxGap([13,10,2,9,5])) // => 4
-console.log(maxGap([13,3,5])) // => 8
-console.log(maxGap([24,299,131,14,26,25])) // => 168
-console.log(maxGap([-3,-27,-4,-2])) // => 23
-console.log(maxGap([-7,-42,-809,-14,-12])) // => 767
-console.log(maxGap([12,-5,-7,0,290])) // => 278
-console.log(maxGap([-54,37,0,64,-15,640,0])) // => 576
-console.log(maxGap([130,30,50])) // => 80
-console.log(maxGap([1,1,1])) // => 0
-console.log(maxGap([-1,-1,-1])) // => 0
+console.logmaxGap([13,10,2,9,5])) // => 4
+console.logmaxGap([13,3,5])) // => 8
+console.logmaxGap([24,299,131,14,26,25])) // => 168
+console.logmaxGap([-3,-27,-4,-2])) // => 23
+console.logmaxGap([-7,-42,-809,-14,-12])) // => 767
+console.logmaxGap([12,-5,-7,0,290])) // => 278
+console.logmaxGap([-54,37,0,64,-15,640,0])) // => 576
+console.logmaxGap([130,30,50])) // => 80
+console.logmaxGap([1,1,1])) // => 0
+console.logmaxGap([-1,-1,-1])) // => 0
 
 function maxGap (numbers){
   return numbers.sort((a, b) => a - b).reduce((acc, el, i, arr) => arr[i + 1] - el > acc ? arr[i + 1] - el  : acc, 0) 
@@ -1204,24 +1279,24 @@ function maxGap (numbers){
 // - Returned Array/list should store the leading numbers in the same order in the original array/list .
 //
 // Input >> Output Examples
-console.log(arrayLeaders([1, 2, 3, 4, 0])) //=>  [4]
+console.logarrayLeaders([1, 2, 3, 4, 0])) //=>  [4]
 // Explanation:
 // 4 is greater than the sum all the elements to its right side
 // Note : The last element 0 is equal to right sum of its elements (abstract zero).
 
-console.log(arrayLeaders([16, 17, 4, 3, 5, 2])) //=> [17, 5, 2]
+console.logarrayLeaders([16, 17, 4, 3, 5, 2])) //=> [17, 5, 2]
 // Explanation:
 // 17 is greater than the sum all the elements to its right side
 // 5 is greater than the sum all the elements to its right side
 // Note : The last element 2 is greater than the sum of its right elements (abstract zero).
 
-console.log(arrayLeaders([5, 2, -1])) //=> [5, 2]
+console.logarrayLeaders([5, 2, -1])) //=> [5, 2]
 // Explanation:
 // 5 is greater than the sum all the elements to its right side
 // 2 is greater than the sum all the elements to its right side
 // Note : The last element -1 is less than the sum of its right elements (abstract zero).
 
-console.log(arrayLeaders([0, -1, -29, 3, 2])) //=> [0, -1, 3, 2]
+console.logarrayLeaders([0, -1, -29, 3, 2])) //=> [0, -1, 3, 2]
 // Explanation:
 // 0 is greater than the sum all the elements to its right side
 // -1 is greater than the sum all the elements to its right side
@@ -1258,16 +1333,16 @@ function arrayLeaders(numbers){
 // Array/list's numbers Will be mixture of positives , negatives and zeros
 // Repetition of numbers in the array/list could occur.
 //
-console.log(maxProduct([4,3,5], 2)) //=> 20
-console.log(maxProduct([10,8,7,9], 3)) //=> 720
-console.log(maxProduct([8,6,4,6], 3)) //=> 288
-console.log(maxProduct([10,2,3,8,1,10,4], 5)) //=> 9600
-console.log(maxProduct([13,12,-27,-302,25,37,133,155,-14], 5)) //=> 247895375
-console.log(maxProduct([-4,-27,-15,-6,-1], 2)) //=> 4
-console.log(maxProduct([-17,-8,-102,-309], 2)) //=> 136
-console.log(maxProduct([10,3,-27,-1], 3)) //=> -30
-console.log(maxProduct([14,29,-28,39,-16,-48], 4)) //=> -253344
-console.log(maxProduct([1], 1)) //=> 1
+console.logmaxProduct([4,3,5], 2)) //=> 20
+console.logmaxProduct([10,8,7,9], 3)) //=> 720
+console.logmaxProduct([8,6,4,6], 3)) //=> 288
+console.logmaxProduct([10,2,3,8,1,10,4], 5)) //=> 9600
+console.logmaxProduct([13,12,-27,-302,25,37,133,155,-14], 5)) //=> 247895375
+console.logmaxProduct([-4,-27,-15,-6,-1], 2)) //=> 4
+console.logmaxProduct([-17,-8,-102,-309], 2)) //=> 136
+console.logmaxProduct([10,3,-27,-1], 3)) //=> -30
+console.logmaxProduct([14,29,-28,39,-16,-48], 4)) //=> -253344
+console.logmaxProduct([1], 1)) //=> 1
 
 function maxProduct(numbers, size){
   return numbers.sort((a,b) => b - a).reduce((acc, el, i) => i < size ? acc *= el : acc, 1)
@@ -1293,11 +1368,11 @@ e.g. If 4 is given: 1 + 3 + 6 + 10 = 20.
 Triangular Numbers cannot be negative so return 0 if a negative number is given.
 
 Tests:
-console.log(sumTriangularNumbers(6)) //=> 56
-console.log(sumTriangularNumbers(34)) //=> 7140
-console.log(sumTriangularNumbers(-291)) //=> 0
-console.log(sumTriangularNumbers(943)) //=> 140205240
-console.log(sumTriangularNumbers(-971)) //=> 0
+console.logsumTriangularNumbers(6)) //=> 56
+console.logsumTriangularNumbers(34)) //=> 7140
+console.logsumTriangularNumbers(-291)) //=> 0
+console.logsumTriangularNumbers(943)) //=> 140205240
+console.logsumTriangularNumbers(-971)) //=> 0
 
 function sumTriangularNumbers(n) {
   let numTree = [0]
@@ -1322,15 +1397,15 @@ function sumTriangularNumbers(n) {
 // Array/list will always have even size
 //
 // Input >> Output Examples
-console.log(minSum({5,4,2,3})) //=> return (22) 
+console.logminSum({5,4,2,3})) //=> return (22) 
 // Explanation:
 // The minimum sum obtained from summing each two integers product , 5*2 + 3*4 = 22
 
-console.log(minSum({12,6,10,26,3,24})) //=> return (342)
+console.logminSum({12,6,10,26,3,24})) //=> return (342)
 // Explanation:
 // The minimum sum obtained from summing each two integers product , 26*3 + 24*6 + 12*10 = 342
 
-console.log(minSum({9,2,8,7,5,4,0,6})) //=> return (74)
+console.logminSum({9,2,8,7,5,4,0,6})) //=> return (74)
 // Explanation:
 // The minimum sum obtained from summing each two integers product , 9*0 + 8*2 +7*4 +6*5 = 74
 
@@ -1376,10 +1451,10 @@ function minSum(arr) {
 // The other letters don't have power and are only victims.
 //
 // Example
-console.log(alphabetWar("z"));        //=> Right side wins!
-console.log(alphabetWar("zdqmwpbs")); //=> Let's fight again!
-console.log(alphabetWar("zzzzs"));    //=> Right side wins!
-console.log(alphabetWar("wwwwwwz"));  //=> Left side wins!
+console.logalphabetWar("z"));        //=> Right side wins!
+console.logalphabetWar("zdqmwpbs")); //=> Let's fight again!
+console.logalphabetWar("zzzzs"));    //=> Right side wins!
+console.logalphabetWar("wwwwwwz"));  //=> Left side wins!
 
 function alphabetWar(fight){
   const leftKey = ['s', 'b', 'p', 'w'];
@@ -1422,9 +1497,9 @@ function alphabetWar(fight){
 // There are no special characters in the input.
 //
 // Examples:
-console.log(encryptThis("Hello")) //=> "72olle"
-console.log(encryptThis("good")) //=> "103doo"
-console.log(encryptThis("hello world")) //=> "104olle 119drlo"
+console.logencryptThis("Hello")) //=> "72olle"
+console.logencryptThis("good")) //=> "103doo"
+console.logencryptThis("hello world")) //=> "104olle 119drlo"
 
 var encryptThis = function(text) {
   // Split string into array of words to encrypt by mapping each word
@@ -1466,11 +1541,11 @@ var encryptThis = function(text) {
 // Your task is to write function factorial.
 // https://en.wikipedia.org/wiki/Factorial
 
-console.log(factorial(0)) // => 1
-console.log(factorial(1)) // => 1
-console.log(factorial(4)) // => 24
-console.log(factorial(7)) // => 5040
-console.log(factorial(17)) // => 355687428096000
+console.logfactorial(0)) // => 1
+console.logfactorial(1)) // => 1
+console.logfactorial(4)) // => 24
+console.logfactorial(7)) // => 5040
+console.logfactorial(17)) // => 355687428096000
 
 function factorial(n){
   return n > 1 ? n * factorial(n - 1) : n === 0 ? 1 : n
@@ -1487,8 +1562,8 @@ function factorial(n){
 // What if the string is empty? 
 // Then the result should be empty object literal, {}.
 
-console.log(count('aba')) //=> {a: 2, b: 1}
-console.log(count('')) // => {}
+console.logcount('aba')) //=> {a: 2, b: 1}
+console.logcount('')) // => {}
 
 function count (string) {  
   const obj = {}
@@ -1507,9 +1582,9 @@ function count (string) {
 // The original array will be not empty and will contain at least "number" even numbers.
 //
 // For example:
-console.log(([1, 2, 3, 4, 5, 6, 7, 8, 9], 3) //=> [4, 6, 8]
-console.log(([-22, 5, 3, 11, 26, -6, -7, -8, -9, -8, 26], 2) //=> [-8, 26]
-console.log(([6, -25, 3, 7, 5, 5, 7, -3, 23], 1) //=> [6]
+console.log([1, 2, 3, 4, 5, 6, 7, 8, 9], 3) //=> [4, 6, 8]
+console.log([-22, 5, 3, 11, 26, -6, -7, -8, -9, -8, 26], 2) //=> [-8, 26]
+console.log([6, -25, 3, 7, 5, 5, 7, -3, 23], 1) //=> [6]
 
 function evenNumbers(array, number) {
   return array.filter(el=> el % 2 === 0).slice(-number)
@@ -1532,17 +1607,17 @@ function evenNumbers(array, number) {
 // -- The consonant substrings are: "z", "d" and "cs" 
 // and the values are z = 26, d = 4 and cs = 3 + 19 = 22. 
 // The highest is 26.
-console.log(solve("zodiacs")) //=> 26
+console.logsolve("zodiacs")) //=> 26
 
 // For the word "strength", 
-console.log(solve("strength")) //=> 57
+console.logsolve("strength")) //=> 57
 // -- The consonant substrings are: "str" and "ngth" 
 // with values "str" = 19 + 20 + 18 = 57 
 // and "ngth" = 14 + 7 + 20 + 8 = 49. 
 // The highest is 57.
 
 function solve(s) {
-  console.log(s)
+  console.logs)
   const keyVal = 'abcdefghijklmnopqrstuvwxyz'
   const keyVow = ['a', 'e', 'i', 'o', 'u']
   const vals = s.split('')
@@ -1574,7 +1649,7 @@ function solve(s) {
 // your task is to find the sum of the minimum values in each row.
 
 // For Example:
-console.log(sumOfMinimums(
+console.logsumOfMinimums(
 [ [ 1, 2, 3, 4, 5 ]        // minimum value of row is 1
 , [ 5, 6, 7, 8, 9 ]        // minimum value of row is 5
 , [ 20, 21, 34, 56, 100 ]  // minimum value of row is 20
@@ -1608,10 +1683,10 @@ function sumOfMinimums(arr) {
 //
 // Examples:
 s="aaabbbbhaijjjm"
-console.log(printer_error(s)) //=> "0/14"
+console.logprinter_error(s)) //=> "0/14"
 
 s="aaaxbbbbyyhwawiwjjjwwm"
-console.log(printer_error(s)) //=> "8/22"
+console.logprinter_error(s)) //=> "8/22"
 
 function printerError(s) {
   const err = s.split('').filter(el => el.charCodeAt(0) < 97 || el.charCodeAt(0) > 109)
@@ -1634,10 +1709,10 @@ function printerError(s) {
 // If the score < 0, return 0.
 //
 // For example:
-console.log(checkExam(["a", "a", "b", "b"], ["a", "c", "b", "d"])) //=> 6
-console.log(checkExam(["a", "a", "c", "b"], ["a", "a", "b",  ""])) //=> 7
-console.log(checkExam(["a", "a", "b", "c"], ["a", "a", "b", "c"])) //=> 16
-console.log(checkExam(["b", "c", "b", "a"], ["",  "a", "a", "c"])) //=> 0
+console.logcheckExam(["a", "a", "b", "b"], ["a", "c", "b", "d"])) //=> 6
+console.logcheckExam(["a", "a", "c", "b"], ["a", "a", "b",  ""])) //=> 7
+console.logcheckExam(["a", "a", "b", "c"], ["a", "a", "b", "c"])) //=> 16
+console.logcheckExam(["b", "c", "b", "a"], ["",  "a", "a", "c"])) //=> 0
 
 function checkExam(array1, array2) {
   const grade = array2.reduce((grade, answer, qNum) => {
@@ -1711,12 +1786,12 @@ function checkExam(array1, array2) {
 // thirt will return the stationary number.
 //
 // Tests:
-console.log(thirt(1234567))    //=> 87.
-console.log(thirt(321))        //=> 48
-console.log(thirt(85299258))   //=> 31
-console.log(thirt(5634))       //=> 57
-console.log(thirt(1111111111)) //=> 71
-console.log(thirt(987654321))  //=> 30
+console.logthirt(1234567))    //=> 87.
+console.logthirt(321))        //=> 48
+console.logthirt(85299258))   //=> 31
+console.logthirt(5634))       //=> 57
+console.logthirt(1111111111)) //=> 71
+console.logthirt(987654321))  //=> 30
 
 function thirt(n) {
   const calc = (x) => `${x}`.split('').reverse().map((el, i)=>((10**i)%13) * +el).reduce((acc, el) => acc + el,0)
@@ -1745,9 +1820,9 @@ If two numbers in the argument array have the same number of digits,
 return the first one in the array.
 
 Tests:
-console.log(findLongest([1, 10, 100])) //=> 100
-console.log(findLongest([9000, 8, 800])) //=> 9000
-console.log(findLongest([8, 900, 500])) //=> 900
+console.logfindLongest([1, 10, 100])) //=> 100
+console.logfindLongest([9000, 8, 800])) //=> 9000
+console.logfindLongest([8, 900, 500])) //=> 900
 
 function findLongest(array){
   // Reduce array to an index of longest num found
@@ -1780,12 +1855,12 @@ function findLongest(array){
 // The tests will always use some integral number, so don't worry about that in dynamic typed languages.
 //
 // Examples:
-console.log(isSpare(-1)) //  =>false
-console.log(isSpare(0)) // =>true
-console.log(isSpare(3)) // =>false
-console.log(isSpare(4)) // =>true
-console.log(isSpare(25)) //  =>true
-console.log(isSpare(26)) //  =>false
+console.logisSpare(-1)) //  =>false
+console.logisSpare(0)) // =>true
+console.logisSpare(3)) // =>false
+console.logisSpare(4)) // =>true
+console.logisSpare(25)) //  =>true
+console.logisSpare(26)) //  =>false
 
 var isSquare = function(n){
   return Math.sqrt(n) % 1 === 0 ? true : false
@@ -1798,7 +1873,7 @@ Lenght and Two Values (7kyu)
 Given a number n and two values firstValue and secondValue, 
 build an array of size n filled with firstValue and secondValue alternating.
 
-console.log(alterante(5, true, false)) //=> [true, false, true, false, true];
+console.logalterante(5, true, false)) //=> [true, false, true, false, true];
 
 function alternate(n, firstValue, secondValue){
   const vals = [firstValue, secondValue]
@@ -1822,9 +1897,9 @@ function alternate(n, firstValue, secondValue){
 //   [0] (array with a zero).
 
 // Examples:
-console.log(oddOrEven([0]) //=> "even"
-console.log(oddOrEven([0, 1, 4]) //=> "odd"
-console.log(oddOrEven([0, -1, -5]) //=> "even"
+console.logoddOrEven([0]) //=> "even"
+console.logoddOrEven([0, 1, 4]) //=> "odd"
+console.logoddOrEven([0, -1, -5]) //=> "even"
 
 const oddOrEven = (array) => array.reduce((a, e, i)=> a + e, 0) % 2 === 0 ? 'even' : 'odd'
 ```
@@ -1838,8 +1913,8 @@ const oddOrEven = (array) => array.reduce((a, e, i)=> a + e, 0) % 2 === 0 ? 'eve
 // meaning the order of these segments needs to be reversed, 
 // for example:
 
-console.log(dataReverse([1,1,1,1,1,1,1,1,/*end byte1*/0,0,0,0,0,0,0,0,/*end byte2*/0,0,0,0,1,1,1,1, /*end byte3*/1,0,1,0,1,0,1,0/*end byte4*/]) //=>[1,0,1,0,1,0,1,0,  0,0,0,0,1,1,1,1,  0,0,0,0,0,0,0,0,  1,1,1,1,1,1,1,1]
-console.log(dataReverse([0,0,1,1,0,1,1,0,0,0,1,0,1,0,0,1])) //=> [0,0,1,0,1,0,0,1,0,0,1,1,0,1,1,0]
+console.logdataReverse([1,1,1,1,1,1,1,1,/*end byte1*/0,0,0,0,0,0,0,0,/*end byte2*/0,0,0,0,1,1,1,1, /*end byte3*/1,0,1,0,1,0,1,0/*end byte4*/]) //=>[1,0,1,0,1,0,1,0,  0,0,0,0,1,1,1,1,  0,0,0,0,0,0,0,0,  1,1,1,1,1,1,1,1]
+console.logdataReverse([0,0,1,1,0,1,1,0,0,0,1,0,1,0,0,1])) //=> [0,0,1,0,1,0,0,1,0,0,1,1,0,1,1,0]
 // The total number of bits will always be a multiple of 8.
 
 // The data is given in an array as such:
@@ -1869,10 +1944,10 @@ function dataReverse(data) {
 // in descending order.
 //
 // Example
-console.log(sumOfDifferences([2, 1, 10])) //=> 9
+console.logsumOfDifferences([2, 1, 10])) //=> 9
 // In descending order: [10, 2, 1]
 // Sum: (10 - 2) + (2 - 1) = 8 + 1 = 9
-console.log(sumOfDifferences([-3, -2, -1])) //=> 2
+console.logsumOfDifferences([-3, -2, -1])) //=> 2
 // In descending order: [-1, -2, -3]
 // Sum: (-1 - -2) + (-2 - -3) = 1 + 1 = 2
 //
@@ -1901,11 +1976,11 @@ function sumOfDifferences(arr) {
 // 
 // Example:
 // 
-console.log(flattenAndSort([])) //=> []
-console.log(flattenAndSort([[], []])) //=> []
-console.log(flattenAndSort([[], [1]])) // => [1]
-console.log(flattenAndSort([[3, 2, 1], [4, 6, 5], [], [9, 7, 8]]) //=> [1, 2, 3, 4, 5, 6, 7, 8, 9]
-console.log(flattenAndSort([[1, 3, 5], [100], [2, 4, 6]])) //=>  [1, 2, 3, 4, 5, 6, 100]
+console.logflattenAndSort([])) //=> []
+console.logflattenAndSort([[], []])) //=> []
+console.logflattenAndSort([[], [1]])) // => [1]
+console.logflattenAndSort([[3, 2, 1], [4, 6, 5], [], [9, 7, 8]]) //=> [1, 2, 3, 4, 5, 6, 7, 8, 9]
+console.logflattenAndSort([[1, 3, 5], [100], [2, 4, 6]])) //=>  [1, 2, 3, 4, 5, 6, 100]
 
 function flattenAndSort(array) {
   let newArr = []
@@ -1977,15 +2052,15 @@ function predictAgeV2(...ages){
 // sz is greater (>) than the length of str it is impossible to take a chunk of size sz hence return "".
 //
 // Examples:
-console.log(revrot("123456987654", 6)) //=> "234561876549"
-console.log(revrot("123456987653", 6)) //=> "234561356789"
-console.log(revrot("66443875", 4)) //=> "44668753"
-console.log(revrot("66443875", 8)) //=> "64438756"
-console.log(revrot("664438769", 8)) //=> "67834466"
-console.log(revrot("123456779", 8)) //=> "23456771"
-console.log(revrot("", 8)) //=> ""
-console.log(revrot("123456779", 0)) //=> "" 
-console.log(revrot("563000655734469485", 4)) //=> "0365065073456944"
+console.logrevrot("123456987654", 6)) //=> "234561876549"
+console.logrevrot("123456987653", 6)) //=> "234561356789"
+console.logrevrot("66443875", 4)) //=> "44668753"
+console.logrevrot("66443875", 8)) //=> "64438756"
+console.logrevrot("664438769", 8)) //=> "67834466"
+console.logrevrot("123456779", 8)) //=> "23456771"
+console.logrevrot("", 8)) //=> ""
+console.logrevrot("123456779", 0)) //=> "" 
+console.logrevrot("563000655734469485", 4)) //=> "0365065073456944"
 
 // Example of a string rotated to the left by one position:
 // s = "123456" gives "234561".
@@ -2091,8 +2166,8 @@ function sum_pairsV2 (ints, s) {
 // Note: there will always be exactly one wolf in the array.
 //
 // Examples
-console.log(warnTheSheep(["sheep", "sheep", "sheep", "wolf", "sheep"])) //=> "Oi! Sheep number 1! You are about to be eaten by a wolf!"
-console.log(warntheSheep(["sheep", "sheep", "wolf"])) //=> "Pls go away and stop eating my sheep"
+console.logwarnTheSheep(["sheep", "sheep", "sheep", "wolf", "sheep"])) //=> "Oi! Sheep number 1! You are about to be eaten by a wolf!"
+console.logwarntheSheep(["sheep", "sheep", "wolf"])) //=> "Pls go away and stop eating my sheep"
 
 function warnTheSheep(queue) {
   const sheep = (queue.length - 1) - queue.indexOf('wolf')
@@ -2112,8 +2187,8 @@ function warnTheSheep(queue) {
 // Output
 // There is an array with some numbers. All numbers are equal except for one. Try to find it!
 //
-console.log(findUniq([ 1, 1, 1, 2, 1, 1 ])) //=> 2
-console.log(findUniq([ 0, 0, 0.55, 0, 0 ])) //=> 0.55
+console.logfindUniq([ 1, 1, 1, 2, 1, 1 ])) //=> 2
+console.logfindUniq([ 0, 0, 0.55, 0, 0 ])) //=> 0.55
 // It’s guaranteed that array contains at least 3 numbers.
 //
 // The tests contain some very huge arrays, so think about performance.
@@ -2182,9 +2257,9 @@ function findUniq(arr) {
 // or "Battle Result: No victor on this battle field" if it ends in a tie.
 //
 // Tests:
-console.log(goodVsEvil('1 1 1 1 1 1', '1 1 1 1 1 1 1')) //=> 'Battle Result: Evil eradicates all trace of Good'
-console.log(goodVsEvil('0 0 0 0 0 10', '0 1 1 1 1 0 0')) //=> 'Battle Result: Good triumphs over Evil'
-console.log(goodVsEvil('1 0 0 0 0 0', '1 0 0 0 0 0 0')) //=> 'Battle Result: No victor on this battle field'
+console.loggoodVsEvil('1 1 1 1 1 1', '1 1 1 1 1 1 1')) //=> 'Battle Result: Evil eradicates all trace of Good'
+console.loggoodVsEvil('0 0 0 0 0 10', '0 1 1 1 1 0 0')) //=> 'Battle Result: Good triumphs over Evil'
+console.loggoodVsEvil('1 0 0 0 0 0', '1 0 0 0 0 0 0')) //=> 'Battle Result: No victor on this battle field'
 ```
 2022-6-3
 ```js
@@ -2194,9 +2269,9 @@ console.log(goodVsEvil('1 0 0 0 0 0', '1 0 0 0 0 0 0')) //=> 'Battle Result: No 
 // multiple of their own index in input array (length > 1).
 //
 // Some cases:
-console.log(multipleOfIndex([22, -6, 32, 82, 9, 25])) //=>[-6, 32, 25]
-console.log(multipleOfIndex([68, -1, 1, -7, 10, 10])) //=> [-1, 10]
-console.log(multipleOfIndex([-56,-85,72,-26,-14,76,-27,72,35,-21,-67,87,0,21,59,27,-92,68])) //=> [-85, 72, 0, 68]
+console.logmultipleOfIndex([22, -6, 32, 82, 9, 25])) //=>[-6, 32, 25]
+console.logmultipleOfIndex([68, -1, 1, -7, 10, 10])) //=> [-1, 10]
+console.logmultipleOfIndex([-56,-85,72,-26,-14,76,-27,72,35,-21,-67,87,0,21,59,27,-92,68])) //=> [-85, 72, 0, 68]
 
 function multipleOfIndex(array) {
   return array.filter((el, i)=> el % i=== 0) 
@@ -2254,7 +2329,7 @@ function dropWhile(arr, pred) {
 // |1 1 1|     |1 1 3|     |1+1 1+1 1+3|     |2 2 4|
 //
 // Example
-console.log(matrixAddition(
+console.logmatrixAddition(
   [ [1, 2, 3],
     [3, 2, 1],
     [1, 1, 1] ],
@@ -2268,9 +2343,9 @@ console.log(matrixAddition(
 *    [2, 2, 4] ]
 */
 
-console.log(matrixAddition([[1, 2], [1, 2]], [[2, 3],[2, 3]])) //=> [[3,5], [3,5]]
-console.log(matrixAddition([[1]], [[2]])) //=> [[3]]
-console.log(matrixAddition([[1, 2, 3], [3, 2, 1], [1, 1, 1]], [[2, 2, 1], [3, 2, 3], [1, 1, 3]])) //=>[[3, 4, 4], [6, 4, 4], [2, 2, 4]]
+console.logmatrixAddition([[1, 2], [1, 2]], [[2, 3],[2, 3]])) //=> [[3,5], [3,5]]
+console.logmatrixAddition([[1]], [[2]])) //=> [[3]]
+console.logmatrixAddition([[1, 2, 3], [3, 2, 1], [1, 1, 1]], [[2, 2, 1], [3, 2, 3], [1, 1, 3]])) //=>[[3, 4, 4], [6, 4, 4], [2, 2, 4]]
 
 function matrixAddition(a, b){
   return a.map((el, i) => el.map((subEl, idx) => subEl += b[i][idx]))
@@ -2288,9 +2363,9 @@ function matrixAddition(a, b){
 // convert the string to lowercase.
 //
 // For example:
-console.log(solve("coDe")) //=> "code"   (Lowercase characters > uppercase. Change only the "D" to lowercase.)
-console.log(solve("CODe")) //=> "CODE"   (Uppercase characters > lowecase. Change only the "e" to uppercase.)
-console.log(solve("coDE")) //=> "code"   (Upper == lowercase. Change all to lowercase.)
+console.logsolve("coDe")) //=> "code"   (Lowercase characters > uppercase. Change only the "D" to lowercase.)
+console.logsolve("CODe")) //=> "CODE"   (Uppercase characters > lowecase. Change only the "e" to uppercase.)
+console.logsolve("coDE")) //=> "code"   (Upper == lowercase. Change all to lowercase.)
 
 function solve(s){
   let upLeng = s.split('').filter(l=> l === l.toUpperCase()).length
@@ -2335,10 +2410,10 @@ function solve(s){
 // 4 steps
 //_______________________________
 
-console.log(shortestStepsToNum(1)) //=> 0
-console.log(shortestStepsToNum(12)) //=> 4
-console.log(shortestStepsToNum(16)) //=> 4
-console.log(shortestStepsToNum(71)) //=> 9
+console.logshortestStepsToNum(1)) //=> 0
+console.logshortestStepsToNum(12)) //=> 4
+console.logshortestStepsToNum(16)) //=> 4
+console.logshortestStepsToNum(71)) //=> 9
 
 function shortestStepsToNum(num) {
   let count = 0;
@@ -2378,16 +2453,16 @@ function shortestStepsToNum(num) {
 // You will need a O(log n) solution or better to pass. (A constant time solution is possible.)
 //
 // Tests:
-console.log(divisibleCount(6, 11, 2)) //=> 3
-console.log(divisibleCount(11, 345, 17)) //=> 20
-console.log(divisibleCount(0, 1, 7)) //=> 1
-console.log(divisibleCount(20, 20, 2)) //=> 1
-console.log(divisibleCount(20, 20, 8)) //=> 0 
-console.log(divisibleCount(19, 20, 2)) //=> 1
-console.log(divisibleCount(0, 10, 1)) //=> 11
-console.log(divisibleCount(11, 14, 2)) //=> 2
-console.log(divisibleCount(101, 9007199254740991, 11)) //=> 818836295885535
-console.log(divisibleCount(1005, 9007199254740991, 109)) //=> 82634855548073
+console.logdivisibleCount(6, 11, 2)) //=> 3
+console.logdivisibleCount(11, 345, 17)) //=> 20
+console.logdivisibleCount(0, 1, 7)) //=> 1
+console.logdivisibleCount(20, 20, 2)) //=> 1
+console.logdivisibleCount(20, 20, 8)) //=> 0 
+console.logdivisibleCount(19, 20, 2)) //=> 1
+console.logdivisibleCount(0, 10, 1)) //=> 11
+console.logdivisibleCount(11, 14, 2)) //=> 2
+console.logdivisibleCount(101, 9007199254740991, 11)) //=> 818836295885535
+console.logdivisibleCount(1005, 9007199254740991, 109)) //=> 82634855548073
 
 // Constant time solution:
 function divisibleCount(x, y, k) {
@@ -2416,28 +2491,28 @@ function divisibleCount(x, y, k) {
 //
 // Example test cases:
 // 'Return an empty array if input is an empty array' => []
-console.log(xMarksTheSpot([]))
+console.logxMarksTheSpot([]))
 //
 // 'Return an empty array if no x found' => []
-console.log(xMarksTheSpot([
+console.logxMarksTheSpot([
   ['o', 'o'],
   ['o', 'o']
 ]))
 //
 // 'Return an empty array if more than one x found' => []
-console.log(xMarksTheSpot([
+console.logxMarksTheSpot([
   ['x', 'o'],
   ['o', 'x']
 ]))
 //
 // 'Return [0,0] when x at top left' => [0, 0]
-console.log(xMarksTheSpot([
+console.logxMarksTheSpot([
   ['x', 'o'],
   ['o', 'o']
 ]))
 //
 // 'Return [4,6] for the example below' => [4, 6]
-console.log(xMarksTheSpot([
+console.logxMarksTheSpot([
   ['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o'],
   ['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o'],
   ['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o'],
@@ -2491,20 +2566,20 @@ function isEven(num) {
   return num % 2 === 0;
 }
 
-console.log(takeWhile([2,6,4,10,1,5,4,3] ,isEven)) //=> [2,6,4,10]
-console.log(takeWhile([2,100,1000,10000,5,3,4,6] ,isEven)) //=> [2,100,1000,10000]
-console.log(takeWhile([998,996,12,-1000,200,0,1,1,1] ,isEven)) //=> [998,996,12,-1000,200,0]
-console.log(takeWhile([1,4,2,3,5,4,5,6,7] ,isEven)) //=> []
-console.log(takeWhile([2,4,10,100,64,78,92] ,isEven)) //=> [2,4,10,100,64,78,92]
+console.logtakeWhile([2,6,4,10,1,5,4,3] ,isEven)) //=> [2,6,4,10]
+console.logtakeWhile([2,100,1000,10000,5,3,4,6] ,isEven)) //=> [2,100,1000,10000]
+console.logtakeWhile([998,996,12,-1000,200,0,1,1,1] ,isEven)) //=> [998,996,12,-1000,200,0]
+console.logtakeWhile([1,4,2,3,5,4,5,6,7] ,isEven)) //=> []
+console.logtakeWhile([2,4,10,100,64,78,92] ,isEven)) //=> [2,4,10,100,64,78,92]
 
 // isOdd() tests
 function isOdd(num) {
   return num % 2 !== 0;
 }
-console.log(takeWhile([1,5,111,1111,2,4,6,4,5] ,isOdd)) //=> [1,5,111,1111]
-console.log(takeWhile([-1,-5,127,86,902,2,1] ,isOdd)) //=> [-1,-5,127]
-console.log(takeWhile([2,1,2,4,3,5,4,6,7,8,9,0] ,isOdd)) //=> []
-console.log(takeWhile([1,3,5,7,9,111] ,isOdd)) //=> [1,3,5,7,9,111]
+console.logtakeWhile([1,5,111,1111,2,4,6,4,5] ,isOdd)) //=> [1,5,111,1111]
+console.logtakeWhile([-1,-5,127,86,902,2,1] ,isOdd)) //=> [-1,-5,127]
+console.logtakeWhile([2,1,2,4,3,5,4,6,7,8,9,0] ,isOdd)) //=> []
+console.logtakeWhile([1,3,5,7,9,111] ,isOdd)) //=> [1,3,5,7,9,111]
 
 
 
@@ -2561,8 +2636,8 @@ function takeWhile (arr, pred) {
 // The key input number is a positive integer.
 // 
 // Example
-console.log(Encode("scout",1939)); //=>  [ 20, 12, 18, 30, 21]
-console.log(Encode("masterpiece",1939)); //=>  [ 14, 10, 22, 29, 6, 27, 19, 18, 6, 12, 8]
+console.logEncode("scout",1939)); //=>  [ 20, 12, 18, 30, 21]
+console.logEncode("masterpiece",1939)); //=>  [ 14, 10, 22, 29, 6, 27, 19, 18, 6, 12, 8]
 
 function encode(str, n){
   const letters = ' abcdefghijklmnopqrstuvwxyz'
@@ -2594,9 +2669,9 @@ function encode(str, n){
 // Remove duplicated in the returned result.
 //
 // Examples (input -> output)
-console.log(mergeArrays([1, 2, 3, 4, 5], [6, 7, 8, 9, 10])) //=> [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-console.log(mergeArrays([1, 3, 5, 7, 9], [10, 8, 6, 4, 2])) //=> [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-console.log(mergeArrays([1, 3, 5, 7, 9, 11, 12], [1, 2, 3, 4, 5, 10, 12])) //=> [1, 2, 3, 4, 5, 7, 9, 10, 11, 12]
+console.logmergeArrays([1, 2, 3, 4, 5], [6, 7, 8, 9, 10])) //=> [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+console.logmergeArrays([1, 3, 5, 7, 9], [10, 8, 6, 4, 2])) //=> [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+console.logmergeArrays([1, 3, 5, 7, 9, 11, 12], [1, 2, 3, 4, 5, 10, 12])) //=> [1, 2, 3, 4, 5, 7, 9, 10, 11, 12]
 
 function mergeArrays(arr1, arr2) {
   return [...arr1, ...arr2].sort((a, b)=> a - b).filter((el, i, arr) => i === arr.indexOf(el))
@@ -2619,8 +2694,8 @@ function mergeArrays(arr1, arr2) {
 // Your outputs should be "WIN" or "LOSE" respectively.
 //
 // Tests:
-console.log(bingo([1,2,3,4,5,6,7,8,9,10])) //=> 'LOSE' (does not contain 'B: 2 I: 9 N: 14 G: 7 O: 15')
-console.log(bingo([21,13,2,7,5,14,7,15,9,10])) //=> 'WIN' (does contain 'B: 2 I: 9 N: 14 G: 7 O: 15')
+console.logbingo([1,2,3,4,5,6,7,8,9,10])) //=> 'LOSE' (does not contain 'B: 2 I: 9 N: 14 G: 7 O: 15')
+console.logbingo([21,13,2,7,5,14,7,15,9,10])) //=> 'WIN' (does contain 'B: 2 I: 9 N: 14 G: 7 O: 15')
 
 function bingo(a) {
   const key = [2, 9, 14, 7, 15] // B: 2 I: 9 N: 14 G: 7 O: 15
@@ -2642,10 +2717,10 @@ function bingo(a) {
 // The input to the function will be an array of three distinct numbers (Haskell: a tuple).
 //
 // For example:
-console.log(gimme([2, 3, 1])) //=> 0
+console.loggimme([2, 3, 1])) //=> 0
 // 2 is the number that fits between 1 and 3 and the index of 2 in the input array is 0.
 
-console.log(gimme([5, 10, 14])) //=> 1
+console.loggimme([5, 10, 14])) //=> 1
 // 10 is the number that fits between 5 and 14 and the index of 10 in the input array is 1.
 
 function gimme (triplet) {
@@ -2675,15 +2750,15 @@ function gimme (triplet) {
 // Explanation:
 // (134679) is the minimum number could be formed from {1, 9, 3, 1, 7, 4, 6, 6, 7} , Without duplications
 
-console.log(minValue([1, 3, 1])); //=> 13
-console.log(minValue([4, 7, 5, 7])); //=> 457
-console.log(minValue([4, 8, 1, 4])); //=> 148
-console.log(minValue([5, 7, 9, 5, 7])); //=> 579
-console.log(minValue([6, 7, 8, 7, 6, 6])); //=> 678
-console.log(minValue([5, 6, 9, 9, 7, 6, 4])); //=> 45679
-console.log(minValue([1, 9, 1, 3, 7, 4, 6, 6, 7])); //=> 134679
-console.log(minValue([3, 6, 5, 5, 9, 8, 7, 6, 3, 5, 9])); //=> 356789
-console.log(minValue([1, 1, 1, 1, 1, 1, 1, 1, 1, 1])); //=> 1
+console.logminValue([1, 3, 1])); //=> 13
+console.logminValue([4, 7, 5, 7])); //=> 457
+console.logminValue([4, 8, 1, 4])); //=> 148
+console.logminValue([5, 7, 9, 5, 7])); //=> 579
+console.logminValue([6, 7, 8, 7, 6, 6])); //=> 678
+console.logminValue([5, 6, 9, 9, 7, 6, 4])); //=> 45679
+console.logminValue([1, 9, 1, 3, 7, 4, 6, 6, 7])); //=> 134679
+console.logminValue([3, 6, 5, 5, 9, 8, 7, 6, 3, 5, 9])); //=> 356789
+console.logminValue([1, 1, 1, 1, 1, 1, 1, 1, 1, 1])); //=> 1
 
 function minValue(values){
   // Remove duplicates, sort smaller numbers to front of arr join and return as number
@@ -2703,10 +2778,10 @@ function minValue(values){
 // You need to return the nth triangular number. You should return 0 for out of range values:
 //
 // For example: (Input => Output)
-console.log(triangular(0) //=> 0
-console.log(triangular(2) //=> 3
-console.log(triangular(3) //=> 6
-console.log(triangular(-10) //=> 0
+console.logtriangular(0) //=> 0
+console.logtriangular(2) //=> 3
+console.logtriangular(3) //=> 6
+console.logtriangular(-10) //=> 0
 
 function triangular(n) {
   // Sum of sequence
@@ -2730,9 +2805,9 @@ function triangular(n) {
 // It is guaranteed that a and b are both present in arr.
 //
 // Tests: 
-console.log(consecutive([1, 3, 5, 7], 3, 7)) // => false
-console.log(consecutive([1, 3, 5, 7], 3, 1)) //=> true
-console.log(consecutive([1, 6, 9, -3, 4, -78, 0], -3, 4)) //=> true
+console.logconsecutive([1, 3, 5, 7], 3, 7)) // => false
+console.logconsecutive([1, 3, 5, 7], 3, 1)) //=> true
+console.logconsecutive([1, 6, 9, -3, 4, -78, 0], -3, 4)) //=> true
 
 function consecutive(arr, a, b) { 
   return Math.abs(arr.indexOf(a) - arr.indexOf(b)) === 1 ? true : false
@@ -2760,12 +2835,12 @@ function consecutive(arr, a, b) {
 // Looping all the way up to n, or n/2, will be too slow.
 
 // Tests:
-console.log(isPrime(0)) //=> false
-console.log(isPrime(1)) //=> false
-console.log(isPrime(2)) //=> true
-console.log(isPrime(73)) //=> true
-console.log(isPrime(75)) //=> false
-console.log(isPrime(-1)) //=> false
+console.logisPrime(0)) //=> false
+console.logisPrime(1)) //=> false
+console.logisPrime(2)) //=> true
+console.logisPrime(73)) //=> true
+console.logisPrime(75)) //=> false
+console.logisPrime(-1)) //=> false
 
 function isPrime(num) {
   // Only a positive number can be not prime
@@ -2795,10 +2870,10 @@ function isPrime(num) {
 // If not, simply return "Not a perfect square!".
 //
 // Examples:
-console.log(squareInt(1212)) // => '12\n12`
+console.logsquareInt(1212)) // => '12\n12`
 // Note: 4 digits so 2 squared (2x2 perfect square). 2 digits on each line.
 
-console.log(squareInt(123123123)) //=> '123\n123\n123'
+console.logsquareInt(123123123)) //=> '123\n123\n123'
 // Note: 9 digits so 3 squared (3x3 perfect square). 3 digits on each line.
 
 function squareIt(int) {
@@ -2834,8 +2909,8 @@ function squareIt(int) {
 // if such a n exists or -1 if there is no such n.
 
 // Examples:
-console.log(findNb(1071225)) //=> 45
-console.log(findNb(91716553919377)) //=> -1
+console.logfindNb(1071225)) //=> 45
+console.logfindNb(91716553919377)) //=> -1
 
 function findNb(m) {
     // 1 cube initial start
@@ -2867,8 +2942,8 @@ function findNb(m) {
 // The start and the end number are both inclusive!
 //
 // Examples:
-console.log(dontGiveMeFive(1,9)  //=> 1,2,3,4,6,7,8,9 -> Result 8
-console.log(dontGiveMeFive(4,17) //=> 4,6,7,8,9,10,11,12,13,14,16,17 -> Result 12
+console.logdontGiveMeFive(1,9)  //=> 1,2,3,4,6,7,8,9 -> Result 8
+console.logdontGiveMeFive(4,17) //=> 4,6,7,8,9,10,11,12,13,14,16,17 -> Result 12
 // The result may contain fives. ;-)
 // The start number will always be smaller than the end number. Both numbers can be also negative!
 //
@@ -2923,11 +2998,11 @@ function dontGiveMeFive(start, end){
 // Tests:
 let b = ["ABAR 200", "CDXE 500", "BKWR 250", "BTSQ 890", "DRTY 600"]
 let c = ["A", "B"]
-console.log(stockList(b, c)) //=> "(A : 200) - (B : 1140)"
+console.logstockList(b, c)) //=> "(A : 200) - (B : 1140)"
 
 b = ["CBART 20", "CDXEF 50", "BKWRK 25", "BTSQZ 89", "DRTYM 60"]
 c = ["A", "B", "C", "W"]
-console.log(stockList(b, c)) //=> "(A : 0) - (B : 114) - (C : 70) - (W : 0)"
+console.logstockList(b, c)) //=> "(A : 0) - (B : 114) - (C : 70) - (W : 0)"
 
 function stockList(listOfArt, listOfCat){
   // Check for invalid input
@@ -2987,11 +3062,11 @@ function stockList(listOfArt, listOfCat){
 // and return the body cured of those "cancer" characters.
 //
 // Tests: 
-console.log(cutCancerCells('CC')) //=> ''
-console.log(cutCancerCells('CAAC')) //=> 'AA
-console.log(cutCancerCells('CaaC')) //=> ''
-console.log(cutCancerCells('C')) //=> ''
-console.log(cutCancerCells('acb')) //=> 'ab'
+console.logcutCancerCells('CC')) //=> ''
+console.logcutCancerCells('CAAC')) //=> 'AA
+console.logcutCancerCells('CaaC')) //=> ''
+console.logcutCancerCells('C')) //=> ''
+console.logcutCancerCells('acb')) //=> 'ab'
 
 function cutCancerCells(organism){
   return organism.split('').filter((el, i, arr)=> {
@@ -3194,7 +3269,7 @@ let chessboard = [
   [' ', ' ', '♔', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
-console.log(kingIsInCheck(chessboard))
+console.logkingIsInCheck(chessboard))
 
 // Should work with check by bishop
 chessboard = [
@@ -3206,7 +3281,7 @@ chessboard = [
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   ['♔', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
-console.log(kingIsInCheck(chessboard))
+console.logkingIsInCheck(chessboard))
 
 // Should work with a check by rook
 chessboard = [
@@ -3218,7 +3293,7 @@ chessboard = [
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
-console.log(kingIsInCheck(chessboard))
+console.logkingIsInCheck(chessboard))
 
 // Should work with a check by knight
 chessboard = [
@@ -3230,7 +3305,7 @@ chessboard = [
   [' ', ' ', '♔', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
-console.log(kingIsInCheck(chessboard))
+console.logkingIsInCheck(chessboard))
 
 // Should work with a check by queen
 chessboard = [
@@ -3242,7 +3317,7 @@ chessboard = [
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
-console.log(kingIsInCheck(chessboard))
+console.logkingIsInCheck(chessboard))
 
 // Should work with a king alone
 chessboard = [
@@ -3254,7 +3329,7 @@ chessboard = [
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
-console.log(kingIsInCheck(chessboard))
+console.logkingIsInCheck(chessboard))
 
 // Should work with no check
 chessboard = [
@@ -3266,7 +3341,7 @@ chessboard = [
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
-console.log(kingIsInCheck(chessboard))
+console.logkingIsInCheck(chessboard))
 
 // Should work with another piece blocking line of site
 chessboard = [
@@ -3278,7 +3353,7 @@ chessboard = [
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']];
-console.log(kingIsInCheck(chessboard))
+console.logkingIsInCheck(chessboard))
 
 
 function kingIsInCheck(chessboard) {
@@ -3443,13 +3518,13 @@ function kingIsInCheck(chessboard) {
 // return false otherwise.
 //
 // Examples:
-console.log(isAnagram("foefet", "toffee")) //=> true
-console.log(isAnagram("Buckethead", "DeathCubeK")) //=> true
-console.log(isAnagram("Twoo", "WooT")) //=> false
+console.logisAnagram("foefet", "toffee")) //=> true
+console.logisAnagram("Buckethead", "DeathCubeK")) //=> true
+console.logisAnagram("Twoo", "WooT")) //=> false
 
-console.log(isAnagram("dumble", "bumble")) //=> false
-console.log(isAnagram("ound", "round")) //=> false
-console.log(isAnagram("apple", "pale")) //=> false
+console.logisAnagram("dumble", "bumble")) //=> false
+console.logisAnagram("ound", "round")) //=> false
+console.logisAnagram("apple", "pale")) //=> false
 
 // write the function isAnagram
 var isAnagram = function(test, original) {
@@ -3566,12 +3641,12 @@ function music(numbers) {
 // where Mothers are followed by their children, 
 // i.e. "aAbaBb" => "AaaBbb".
 
-console.log(findChildren("beeeEBb"));
-console.log(findChildren("uwwWUueEe"));
-console.log(findChildren("abBA"));
-console.log(findChildren("AaaaaZazzz")); 
-console.log(findChildren("CbcBcbaA")); 
-console.log(findChildren("xXfuUuuF"));
+console.logfindChildren("beeeEBb"));
+console.logfindChildren("uwwWUueEe"));
+console.logfindChildren("abBA"));
+console.logfindChildren("AaaaaZazzz")); 
+console.logfindChildren("CbcBcbaA")); 
+console.logfindChildren("xXfuUuuF"));
 
 function findChildren(dB) {
   return dB.split('').sort((prev, next)=>{
@@ -3620,10 +3695,10 @@ function findChildren(dB) {
 const coins1= [1,5,10,25];
 const coins2= [1,2,5,10,20,50];
 
-console.log(coinsNeeded(75, coins1)) //=> 3
-console.log(coinsNeeded(123, coins1)) //=> 9
-console.log(coinsNeeded(75, coins2)) //=> 3
-console.log(coinsNeeded(123, coins2)) //=> 5
+console.logcoinsNeeded(75, coins1)) //=> 3
+console.logcoinsNeeded(123, coins1)) //=> 9
+console.logcoinsNeeded(75, coins2)) //=> 3
+console.logcoinsNeeded(123, coins2)) //=> 5
 
 function coinsNeeded(amount, coinDenominations) {
   // Make sure coins are in order (small to big)
@@ -3737,10 +3812,10 @@ var uniqueInOrderV2=function(iterable){
 //   "***********"
 // ]
 
-console.log(towerBuilder(1)) //=> ['*']
-console.log(towerBuilder(2)) /*=> [' * ',
+console.logtowerBuilder(1)) //=> ['*']
+console.logtowerBuilder(2)) /*=> [' * ',
                                    '***' ]*/
-console.log(towerBuilder(3))  /*=> ['  *  ',
+console.logtowerBuilder(3))  /*=> ['  *  ',
                                     ' *** ',
                                     '*****'] */
 
@@ -3779,11 +3854,11 @@ function towerBuilderV2(n) {
 // Implement the function which takes an array containing the names of people that like an item. 
 // It must return the display text as shown in the examples:
 
-console.log(likes([]) //=> "no one likes this"
-console.log(likes(["Peter"]) //=> "Peter likes this"
-console.log(likes(["Jacob", "Alex"]) //=> "Jacob and Alex like this"
-console.log(likes(["Max", "John", "Mark"]) //=> "Max, John and Mark like this"
-console.log(likes(["Alex", "Jacob", "Mark", "Max"]) //=> "Alex, Jacob and 2 others like this"
+console.loglikes([]) //=> "no one likes this"
+console.loglikes(["Peter"]) //=> "Peter likes this"
+console.loglikes(["Jacob", "Alex"]) //=> "Jacob and Alex like this"
+console.loglikes(["Max", "John", "Mark"]) //=> "Max, John and Mark like this"
+console.loglikes(["Alex", "Jacob", "Mark", "Max"]) //=> "Alex, Jacob and 2 others like this"
 
 function likes(names) {
   let likeThis = names.length <= 1 ? 'likes this' : 'like this'
@@ -3875,11 +3950,11 @@ function likesV2(names) {
 // If you are given an array with multiple answers, 
 // return the lowest correct index.
 
-console.log(findEvenIndex([1,2,3,4,3,2,1])) //=> 3
-console.log(findEvenIndex([1,100,50,-51,1,1])) //=> 1
-console.log(findEvenIndex([1,2,3,4,5,6])) //=> -1
-console.log(findEvenIndex([20,10,30,10,10,15,35])) //=> 3
-console.log(findEvenIndex([20,10,-80,10,10,15,35])) //=> 0
+console.logfindEvenIndex([1,2,3,4,3,2,1])) //=> 3
+console.logfindEvenIndex([1,100,50,-51,1,1])) //=> 1
+console.logfindEvenIndex([1,2,3,4,5,6])) //=> -1
+console.logfindEvenIndex([20,10,30,10,10,15,35])) //=> 3
+console.logfindEvenIndex([20,10,-80,10,10,15,35])) //=> 0
 
 function findEvenIndex(arr){  
   for (let i=0; i< arr.length; i++) {
@@ -3971,12 +4046,12 @@ function Xbonacci(signature,n){
   for(let i = signature.length - 1; signature.length < n; i++){
     let sum = 0;
     for(let l = signature.length - 1; l >= signature.length - initialLength; l--){
-      console.log(l, signature[l])
+      console.logl, signature[l])
       sum += signature[l]
-      console.log(sum)
+      console.logsum)
     }
     signature.push(sum)
-    console.log(signature)
+    console.logsignature)
   
   }
   return signature
@@ -3998,9 +4073,9 @@ Break camelCase (6 kyu)
 // Complete the solution so that the function will break up camel casing, using a space between words.
 
 // Example
-console.log(solution("camelCasing")) //=>  "camel Casing"
-console.log(solution("identifier")) //=>  "identifier"
-console.log(solution("")) //=>  ""
+console.logsolution("camelCasing")) //=>  "camel Casing"
+console.logsolution("identifier")) //=>  "identifier"
+console.logsolution("")) //=>  ""
 
 function solution(string) {
   for(let i = 0; i < string.length; i++){
@@ -4040,11 +4115,11 @@ function solution(string) {
 // With list [20,37,20,21] and number 1, 
 // the result would be [20,37,21].
 
-console.log(deleteNth([20,37,20,21], 1)) //=> [20,37,21]
-console.log(deleteNth([1,1,3,3,7,2,2,2,2], 3)) //=> [1, 1, 3, 3, 7, 2, 2, 2]
-console.log(deleteNth([1, 2, 3, 1, 1, 2, 1, 2, 3, 3, 2, 4, 5, 3, 1], 3)) //=> [1, 2, 3, 1, 1, 2, 2, 3, 3, 4, 5]
-console.log(deleteNth([1,1,1,1,1], 5)) //=> [1,1,1,1,1]
-console.log(deletenth([], 5)) //=> []
+console.logdeleteNth([20,37,20,21], 1)) //=> [20,37,21]
+console.logdeleteNth([1,1,3,3,7,2,2,2,2], 3)) //=> [1, 1, 3, 3, 7, 2, 2, 2]
+console.logdeleteNth([1, 2, 3, 1, 1, 2, 1, 2, 3, 3, 2, 4, 5, 3, 1], 3)) //=> [1, 2, 3, 1, 1, 2, 2, 3, 3, 4, 5]
+console.logdeleteNth([1,1,1,1,1], 5)) //=> [1,1,1,1,1]
+console.logdeletenth([], 5)) //=> []
 
 // Use a reduce function
 // For each value in the reduce function filter the accumulator array to that value
@@ -4091,9 +4166,9 @@ function highV2(s){
 // until you reach a single digit.
 //
 // For example (Input --> Output):
-console.log(persistence(39) //=> 3 (because 3*9 = 27, 2*7 = 14, 1*4 = 4 and 4 has only one digit)
-console.log(persistence(999) //=> 4 (because 9*9*9 = 729, 7*2*9 = 126, 1*2*6 = 12, and finally 1*2 = 2)
-console.log(persistence(4) //=> 0 (because 4 is already a one-digit number)
+console.logpersistence(39) //=> 3 (because 3*9 = 27, 2*7 = 14, 1*4 = 4 and 4 has only one digit)
+console.logpersistence(999) //=> 4 (because 9*9*9 = 729, 7*2*9 = 126, 1*2*6 = 12, and finally 1*2 = 2)
+console.logpersistence(4) //=> 0 (because 4 is already a one-digit number)
 
 function persistence(num) {
   let count = 0 
@@ -4127,18 +4202,18 @@ const persistenceV2 = num => {
 // ...
 // Calculate the sum of the numbers in the nth row of this triangle 
 // (starting at index 1) e.g.: (Input --> Output)
-console.log(rowSumOddNumbers(1)) //=>  1
-console.log(rowSumOddNumbers(2)) //=> 3 + 5 = 8
+console.logrowSumOddNumbers(1)) //=>  1
+console.logrowSumOddNumbers(2)) //=> 3 + 5 = 8
 
 function rowSumOddNumbers(n) {
 	return n**3
 }
 
 // Mathy expanation (I just wrote out the first few sequences and solutions and saw the pattern)
-console.log(rowSumOddNumbers(1), 1);
-console.log(rowSumOddNumbers(2), 8);
-console.log(rowSumOddNumbers(3), 27);
-console.log(rowSumOddNumbers(4), 64);
+console.logrowSumOddNumbers(1), 1);
+console.logrowSumOddNumbers(2), 8);
+console.logrowSumOddNumbers(3), 27);
+console.logrowSumOddNumbers(4), 64);
 ///...
 // The derivation of formula 
 // for 1st row, count is 1; 2nd row, count is 2;... (n-1)th row, count is n-1 
@@ -4160,9 +4235,9 @@ console.log(rowSumOddNumbers(4), 64);
 
 // Example: (Input --> Output)
 
-console.log("Dermatoglyphics") --> true
-console.log("aba") --> false
-console.log("moOse") --> false (ignore letter case)
+console.log"Dermatoglyphics") --> true
+console.log"aba") --> false
+console.log"moOse") --> false (ignore letter case)
 
 function isIsogram(str){
   return str.toLowerCase().split('').reduce((acc, el, i, arr) => i === arr.lastIndexOf(el) && acc ? acc : acc = false, true)
@@ -4193,9 +4268,9 @@ function isIsogram(str){
 // Invalid smiley faces: ;( :> :} :]
 
 // Example
-console.log(countSmileys([':)', ';(', ';}', ':-D'])); //=> 2;
-console.log(countSmileys([';D', ':-(', ':-)', ';~)'])); //=> 3;
-console.log(countSmileys([';]', ':[', ';*', ':$', ';-D'])); //=> 1;
+console.logcountSmileys([':)', ';(', ';}', ':-D'])); //=> 2;
+console.logcountSmileys([';D', ':-(', ':-)', ';~)'])); //=> 3;
+console.logcountSmileys([';]', ':[', ';*', ':$', ';-D'])); //=> 1;
 // Note
 // In case of an empty array return 0. 
 // You will not be tested with invalid input
@@ -4228,10 +4303,10 @@ function countSmileys(arr){
 // Ignore capitalization when determining if a character is a duplicate.
 //
 // Examples:
-console.log(duplicateEncode("din") // => "((("
-console.log(duplicateEncode("recede") //=> "()()()"
-console.log(duplicateEncode("Success") //=> ")())())"
-console.log(duplicateEncode("(( @") //=> "))((" 
+console.logduplicateEncode("din") // => "((("
+console.logduplicateEncode("recede") //=> "()()()"
+console.logduplicateEncode("Success") //=> ")())())"
+console.logduplicateEncode("(( @") //=> "))((" 
 
 // Notes
 // Assertion messages may be unclear about what they display in some languages. 
@@ -4255,14 +4330,14 @@ function duplicateEncode(word){
 // which is the binary representation of 1.
 
 // Examples:
-console.log(binaryArrayToNumber([0, 0, 0, 1])) //=> 1
-console.log(binaryArrayToNumber([0, 0, 1, 0])) //=> 2
-console.log(binaryArrayToNumber([0, 1, 0, 1])) //=> 5
-console.log(binaryArrayToNumber([1, 0, 0, 1])) //=> 9
-console.log(binaryArrayToNumber([0, 0, 1, 0])) //=> 2
-console.log(binaryArrayToNumber([0, 1, 1, 0])) //=> 6
-console.log(binaryArrayToNumber([1, 1, 1, 1])) //=> 15
-console.log(binaryArrayToNumber([1, 0, 1, 1])) //=> 11
+console.logbinaryArrayToNumber([0, 0, 0, 1])) //=> 1
+console.logbinaryArrayToNumber([0, 0, 1, 0])) //=> 2
+console.logbinaryArrayToNumber([0, 1, 0, 1])) //=> 5
+console.logbinaryArrayToNumber([1, 0, 0, 1])) //=> 9
+console.logbinaryArrayToNumber([0, 0, 1, 0])) //=> 2
+console.logbinaryArrayToNumber([0, 1, 1, 0])) //=> 6
+console.logbinaryArrayToNumber([1, 1, 1, 1])) //=> 15
+console.logbinaryArrayToNumber([1, 0, 1, 1])) //=> 11
 
 // Note: However, the arrays can have varying lengths, not just limited to 4.
 
@@ -4293,9 +4368,9 @@ const binaryArrayToNumberV2 = arr => parseInt(arr.join(''), 2);
 // You may assume the parameter is non-negative.
 
 // Examples:(Input --> Output)
-console.log(findNextSquare(121) //=> 144
-console.log(findNextSquare(625) //=> 676
-console.log(findNextSquare(114) //=> -1 since 114 is not a perfect square
+console.logfindNextSquare(121) //=> 144
+console.logfindNextSquare(625) //=> 676
+console.logfindNextSquare(114) //=> -1 since 114 is not a perfect square
 
 function findNextSquare(sq) {
   // Return the next square if sq is a perfect square, -1 otherwise
@@ -4315,7 +4390,7 @@ function findNextSquare(sq) {
 // This is much smarter than looping until finding the next square root
 // Instead get the current square root, add 1 to it, then square that number, it will be the next square root
 // Example
-console.log(findNextSquareV2(121)) 
+console.logfindNextSquareV2(121)) 
 // Checks if 121 has square root
 // It does so get that square root (11)
 // Add 1 to the square root of sq (12)
@@ -4349,9 +4424,9 @@ function addBinary(a,b){
 // The examples below show you how to write function accum:
 //
 // Examples:
-console.log(accum("abcd")) //=> "A-Bb-Ccc-Dddd"
-console.log(accum("RqaEzty")) //=> "R-Qq-Aaa-Eeee-Zzzzz-Tttttt-Yyyyyyy"
-console.log(accum("cwAt")) //=> "C-Ww-Aaa-Tttt"
+console.logaccum("abcd")) //=> "A-Bb-Ccc-Dddd"
+console.logaccum("RqaEzty")) //=> "R-Qq-Aaa-Eeee-Zzzzz-Tttttt-Yyyyyyy"
+console.logaccum("cwAt")) //=> "C-Ww-Aaa-Tttt"
 
 // The parameter of accum is a string which includes only letters from a..z and A..Z.
 
@@ -4378,9 +4453,9 @@ function accum(str){
 // If the input string is empty, return an empty string.The words in the input String will only contain valid consecutive numbers.
 //
 // Examples:
-console.log(order("is2 Thi1s T4est 3a")) //=> "Thi1s is2 3a T4est"
-console.log(order("4of Fo1r pe6ople g3ood th5e the2"))//=> "Fo1r the2 g3ood 4of th5e pe6ople"
-console.log(order("")) //=> ""
+console.logorder("is2 Thi1s T4est 3a")) //=> "Thi1s is2 3a T4est"
+console.logorder("4of Fo1r pe6ople g3ood th5e the2"))//=> "Fo1r the2 g3ood 4of th5e pe6ople"
+console.logorder("")) //=> ""
 
 function order(words) {
   let newWords = []
@@ -4407,7 +4482,7 @@ function order(words) {
 // would become: "Ths wbst s fr lsrs LL!".
 //
 //  Note: for this kata y isn't considered a vowel.
-console.log(disemvowel('This website is for losers LOL!')) //=> 'Ths wbst s fr lsrs LL!'
+console.logdisemvowel('This website is for losers LOL!')) //=> 'Ths wbst s fr lsrs LL!'
 const disemvowel = (str) => str.split('').reduce((acc, el) => ['A', 'E', 'I', 'O', 'U'].includes(el.toUpperCase()) ? acc += '' : acc += el, '')
 
 // Another solution I liked
@@ -4427,9 +4502,9 @@ function disemvowelV2(str) {
 // while leaving the even numbers at their original positions.
 
 // Examples
-console.log(sortArray([7, 1])) //=> [1, 7]
-console.log(sortArray([5, 8, 6, 3, 4])) //=> [3, 8, 6, 5, 4]
-console.log(sortArray([9, 8, 7, 6, 5, 4, 3, 2, 1, 0])) //=> [1, 8, 3, 6, 5, 4, 7, 2, 9, 0]
+console.logsortArray([7, 1])) //=> [1, 7]
+console.logsortArray([5, 8, 6, 3, 4])) //=> [3, 8, 6, 5, 4]
+console.logsortArray([9, 8, 7, 6, 5, 4, 3, 2, 1, 0])) //=> [1, 8, 3, 6, 5, 4, 7, 2, 9, 0]
 
 function sortArray(array){
   // Extract odd numbers to own array and replace with placehodler value
@@ -4479,10 +4554,10 @@ function sortArrayV2(array) {
 // If the word's length is even, return the middle 2 characters.
 
 // #Examples:
-console.log(getMiddle("test")) //=> "es"
-console.log(getMiddle("testing")) //=> "t"
-console.log(getMiddle("middle")) //=> "dd"
-console.log(getMiddle("A")) //=> "A"
+console.loggetMiddle("test")) //=> "es"
+console.loggetMiddle("testing")) //=> "t"
+console.loggetMiddle("middle")) //=> "dd"
+console.loggetMiddle("A")) //=> "A"
 
 // #Input
 // A word(string) of length 0 < str < 1000
@@ -4530,9 +4605,9 @@ function getMiddleV2(s) {
 // The ball can only be seen if the height of the rebounding ball is strictly greater than the window parameter.
 
 // Examples:
-console.log(bouncingBall(3, .66, 1.5)) //=> 3
+console.logbouncingBall(3, .66, 1.5)) //=> 3
 // - h = 3, bounce = 1, window = 1.5, result is -1 
-console.log(bouncingBall(3, 1, 1.5)) //=> -1
+console.logbouncingBall(3, 1, 1.5)) //=> -1
 
 // (Condition 2) not fulfilled).
 function bouncingBall(h,  bounce,  window) {
@@ -4611,11 +4686,11 @@ function bouncingBall(h,  bounce,  window) {
 // if you want to translate, please ask before translating.
 
 // Tests:
-console.log(dirReduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"])); //=> ["West"]
-console.log(dirReduc(["NORTH", "SOUTH", "EAST", "WEST"],)); //=> []
-console.log(dirReduc(["NORTH", "EAST", "WEST", "SOUTH", "WEST", "WEST"],)); //=> ["WEST", "WEST"]
-console.log(dirReduc(["NORTH", "WEST", "SOUTH", "EAST"])); //=> ["NORTH", "WEST", "SOUTH", "EAST"] (not reucible)
-console.log(dirReduc(["SOUTH", "NORTH", "EAST", "WEST", "SOUTH", "NORTH", "SOUTH", "WEST", "WEST", "EAST", "NORTH", "SOUTH", "EAST", "WEST"])) //=> ['SOUTH', 'WEST']
+console.logdirReduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"])); //=> ["West"]
+console.logdirReduc(["NORTH", "SOUTH", "EAST", "WEST"],)); //=> []
+console.logdirReduc(["NORTH", "EAST", "WEST", "SOUTH", "WEST", "WEST"],)); //=> ["WEST", "WEST"]
+console.logdirReduc(["NORTH", "WEST", "SOUTH", "EAST"])); //=> ["NORTH", "WEST", "SOUTH", "EAST"] (not reucible)
+console.logdirReduc(["SOUTH", "NORTH", "EAST", "WEST", "SOUTH", "NORTH", "SOUTH", "WEST", "WEST", "EAST", "NORTH", "SOUTH", "EAST", "WEST"])) //=> ['SOUTH', 'WEST']
 
 function dirReduc(arr){
   // Create an array of values where opposite directions are opposite values
@@ -4684,16 +4759,16 @@ function dirReduc(arr){
 // return any pair that proves it.
 
 // Examples:
-// console.log(isPP(4)) //=> "4 = 2^2"
-// console.log(isPP(9)) //=> "9 = 3^2"
-// console.log(isPP(5)) //=> "null"
+// console.logisPP(4)) //=> "4 = 2^2"
+// console.logisPP(9)) //=> "9 = 3^2"
+// console.logisPP(5)) //=> "null"
 
 for(let i = 4; i <= 1024; i++){
   // Will return pairs for the following: (See Sequence A001597 https://oeis.org/A001597)
   // 1, 4, 8, 9, 16, 25, 27, 32, 36, 49, 64, 81, 100, 121,
   // 125, 128, 144, 169, 196, 216, 225, 243, 256, 289, 324, 343, 361, 400, 
   // 441, 484, 512, 529, 576, 625, 676, 729, 784, 841, 900, 961, 1000, 1024
-  console.log(isPP(i))
+  console.logisPP(i))
 }
 
 function isPP(n){
@@ -4720,9 +4795,9 @@ function isPP(n){
 // All non-letter chars are considered delimiters
 //
 // example:
-console.log(reverseWords("The fox'es dog left, the house.")); 
+console.logreverseWords("The fox'es dog left, the house.")); 
 //^=> "ehT xof'se god tfel, eht esouh."
-console.log(reverseWords("Works with no delimiting char at the end"));
+console.logreverseWords("Works with no delimiting char at the end"));
 //^=> "skroW htiw on gnitimiled rahc ta eht dne"
 
 function reverseWords(input) {
@@ -4766,12 +4841,12 @@ function reverseWords(input) {
 
 // Example
 //
-console.log(duplicateCount("abcde")) //=> 0 # no characters repeats more than once
-console.log(duplicateCount("aabbcde")) //=> 2 # 'a' and 'b'
-console.log(duplicateCount("aabBcde")) //=> 2 # 'a' occurs twice and 'b' twice(`b` and`B`)
-console.log(duplicateCount("indivisibility")) //=> 1 # 'i' occurs six times
-console.log(duplicateCount("Indivisibilities")) //=> 2 # 'a' and '1'
-console.log(duplicateCount("ABBA")) //=> 2 # 'A' and 'B' each occur twice
+console.logduplicateCount("abcde")) //=> 0 # no characters repeats more than once
+console.logduplicateCount("aabbcde")) //=> 2 # 'a' and 'b'
+console.logduplicateCount("aabBcde")) //=> 2 # 'a' occurs twice and 'b' twice(`b` and`B`)
+console.logduplicateCount("indivisibility")) //=> 1 # 'i' occurs six times
+console.logduplicateCount("Indivisibilities")) //=> 2 # 'a' and '1'
+console.logduplicateCount("ABBA")) //=> 2 # 'A' and 'B' each occur twice
 
 function duplicateCount(str){
   // Object: key = letter & value = number of times appearing in string
@@ -4825,7 +4900,7 @@ function duplicateCountV2(text){
 // You may assume the input only contain English alphabet and spaces.
 
 
-console.log(stringTransformer('Example Input'))  //=> "iNPUT eXAMPLE"
+console.logstringTransformer('Example Input'))  //=> "iNPUT eXAMPLE"
 function stringTransformer(str){
   return str.split(' ').reverse().map((el) => {
     return el.split('').map((el) => el.toUpperCase() === el ? el.toLowerCase().toLowerCase() : el.toUpperCase()).join('') 
@@ -4835,7 +4910,7 @@ function stringTransformer(str){
 
 // Another version of the above
 const stringTransformerV2 = (str) => str.split(' ').reverse().map((el) => el.split('').map((el) => el.toUpperCase() === el ? el.toLowerCase().toLowerCase() : el.toUpperCase()).join('')).join(' ')
-console.log(stringTransformerV2('Example Input')) //=> "iNPUT eXAMPLE"
+console.logstringTransformerV2('Example Input')) //=> "iNPUT eXAMPLE"
 ```
 2022-4-6
 ```js
@@ -4904,13 +4979,13 @@ function bingo(ticket, win) {
     let str = el[0]
     let found = false
     for (let i = 0; i < str.length; i++) {
-      console.log(str[i], el[1])
+      console.logstr[i], el[1])
       if (str.charCodeAt(i) === el[1]) {
         found = true
       }
     }
     return found ? 1 : 0
-    console.log(el)
+    console.logel)
   }).reduce((acc, el) => acc += el, 0)
 
   return ticketVal >= win ? 'Winner!' : 'Loser!'
@@ -4983,8 +5058,8 @@ multiplicationTableV2 = function(size) {
 // that returns the time in tenth of second of the maximum height recorded by the device.
 
 // Examples:
-console.log(maxBall(15)) //=> 4
-console.log(maxBall(25)) //=> 7
+console.logmaxBall(15)) //=> 4
+console.logmaxBall(25)) //=> 7
 
 // Notes
 // Remember to convert the velocity from km / h to m / s 
@@ -5029,11 +5104,11 @@ function maxBallV2(v0) {
 // There will always be only one integer that appears an odd number of times.
 
 // Examples
-console.log(findOdd([7])) //=> 7 because it occurs 1 time(which is odd).
-console.log(findOdd([0])) //=> 0, because it occurs 1 time(which is odd).
-console.log(findOdd([1, 1, 2])) //=> 2, because it occurs 1 time(which is odd).
-console.log(findOdd([0, 1, 0, 1, 0])) //=> 0, because it occurs 3 times(which is odd).
-console.log(findOdd([1, 2, 2, 3, 3, 3, 4, 3, 3, 3, 2, 2, 1])) //=> 4, because it appears 1 time(which is odd).
+console.logfindOdd([7])) //=> 7 because it occurs 1 time(which is odd).
+console.logfindOdd([0])) //=> 0, because it occurs 1 time(which is odd).
+console.logfindOdd([1, 1, 2])) //=> 2, because it occurs 1 time(which is odd).
+console.logfindOdd([0, 1, 0, 1, 0])) //=> 0, because it occurs 3 times(which is odd).
+console.logfindOdd([1, 2, 2, 3, 3, 3, 4, 3, 3, 3, 2, 2, 1])) //=> 4, because it appears 1 time(which is odd).
 
 function findOdd(A) {
   let val
@@ -5123,7 +5198,7 @@ const expandedFormV2 = n => n.toString()
 //  parameter(positive int or float, guaranteed) savingperMonth
 //  parameter(positive float or int, guaranteed) percentLossByMonth
 
-console.log(nbMonths(2000, 8000, 1000, 1.5)) //=> [6, 766] or(6, 766)
+console.lognbMonths(2000, 8000, 1000, 1.5)) //=> [6, 766] or(6, 766)
 // Detail of the above example:
 // end month 1: percentLoss 1.5 available -4910.0
 // end month 2: percentLoss 2.0 available -3791.7999...
@@ -5141,8 +5216,8 @@ console.log(nbMonths(2000, 8000, 1000, 1.5)) //=> [6, 766] or(6, 766)
 // the value of the old car is bigger than the value of the new one or equal 
 // there is no saving to be made, 
 //no need to wait so he can at the beginning of the month buy the new car:
-// console.log(nbMonths(12000, 8000, 1000, 1.5)) //=> [0, 4000]
-// console.log(nbMonths(8000, 8000, 1000, 1.5)) //=> [0, 0]
+// console.lognbMonths(12000, 8000, 1000, 1.5)) //=> [0, 4000]
+// console.lognbMonths(8000, 8000, 1000, 1.5)) //=> [0, 0]
 // We don't take care of a deposit of savings in a bank:-)
 
 function nbMonths(startPriceOld, startPriceNew, savingPerMonth, percentLossByMonth) {
@@ -5154,7 +5229,7 @@ function nbMonths(startPriceOld, startPriceNew, savingPerMonth, percentLossByMon
     if(months % 2 === 0 && months !== 0) {percentLossByMonth += .5}
     startPriceOld -= (startPriceOld * (percentLossByMonth * .01))
     startPriceNew -= (startPriceNew * percentLossByMonth * .01)
-    // console.log(`end month ${months} percentLoss ${percentLossByMonth} available: old:${startPriceOld} savings:${savings} new:${startPriceNew}`)
+    // console.log`end month ${months} percentLoss ${percentLossByMonth} available: old:${startPriceOld} savings:${savings} new:${startPriceNew}`)
   }
 
   return [months, Math.round((startPriceOld + savings) % startPriceNew)]
@@ -5176,10 +5251,10 @@ function isPangram(string) {
   return [...'abcdefghijklmnopqrstuvwxyz'].reduce((acc, el, i) => string.toLowerCase().includes(el) && acc !== false ? true : false, null)
 }
 
-console.log(isPangram('This isn\'t a pangram!'))  //=> false
-console.log(isPangram('Cwm fjord bank glyphs vext quiz'))//=> true
-console.log(isPangram('Detect Pangram')) //=> false
-console.log(isPangram('Pack my box with five dozen liquor jugs'))//=> true
+console.logisPangram('This isn\'t a pangram!'))  //=> false
+console.logisPangram('Cwm fjord bank glyphs vext quiz'))//=> true
+console.logisPangram('Detect Pangram')) //=> false
+console.logisPangram('Pack my box with five dozen liquor jugs'))//=> true
 ```
 2022-3-29
 ```js
@@ -5235,8 +5310,8 @@ console.log(isPangram('Pack my box with five dozen liquor jugs'))//=> true
 
 
 // TESTS:
-console.log(presses('LOL')) //=> 9
-console.log(presses('HOW R U')) //=> 13
+console.logpresses('LOL')) //=> 9
+console.logpresses('HOW R U')) //=> 13
 
 function presses(phrase) {
   let layout = ['1',     'abc2', 'def3', 
@@ -5279,7 +5354,7 @@ function presses(phrase) {
 // Write a function ip_to_int32(ip) (JS: ipToInt32(ip) ) 
 // that takes an IPv4 address and returns a 32 bit number.
 
-console.log(ipToInt32("128.32.10.1")) //=> 2149583361
+console.logipToInt32("128.32.10.1")) //=> 2149583361
 
 function ipToInt32(ipStr){
   // Convert string to array of numbers
@@ -5324,16 +5399,16 @@ function ipToInt32(ipStr){
 // to ensure you understand the task correctly:)
 
 //Examples
-// console.log(`Should return 12: ${queueTime([5, 3, 4], 1)}`)
+// console.log`Should return 12: ${queueTime([5, 3, 4], 1)}`)
 // should return 12
 // because when there is 1 till, the total time is just the sum of the times
 
-// console.log(`Should return 10: ${queueTime([10, 2, 3, 3], 2)}`)
+// console.log`Should return 10: ${queueTime([10, 2, 3, 3], 2)}`)
 // should return 10
 // because here n=2 and the 2nd, 3rd, and 4th people in the 
 // queue finish before the 1st person has finished.
 
-// console.log(`Should return 12: ${queueTime([2, 3, 10], 2)}`)
+// console.log`Should return 12: ${queueTime([2, 3, 10], 2)}`)
 // should return 12
 // Clarifications
 // There is only ONE queue serving many tills, and
@@ -5367,7 +5442,7 @@ function queueTime(customers, n) {
   while(customers.length >= 1){
     
     let shortLine = Math.min(...tills)
-    console.log(tills, totalCheckoutTime)
+    console.logtills, totalCheckoutTime)
     tills = tills.map((el) => el - shortLine)
     tills.forEach((el, i) => {
       if(el === 0){
@@ -5376,8 +5451,8 @@ function queueTime(customers, n) {
       } 
     });
     totalCheckoutTime += shortLine
-    console.log(totalCheckoutTime)
-    console.log(customers)
+    console.logtotalCheckoutTime)
+    console.logcustomers)
     
   }
   
@@ -5460,16 +5535,16 @@ function longestConsec(strarr, k) {
   return longest
 }
 
-console.log(longestConsec(["zone", "abigail", "theta", "form", "libe", "zas"], 2)) //=> "abigailtheta"
-console.log(longestConsec(["ejjjjmmtthh", "zxxuueeg", "aanlljrrrxx", "dqqqaaabbb", "oocccffuucccjjjkkkjyyyeehh"], 1)) //=> "oocccffuucccjjjkkkjyyyeehh"
-console.log(longestConsec([], 3)) //=> ''
-console.log(longestConsec(["itvayloxrp", "wkppqsztdkmvcuwvereiupccauycnjutlv", "vweqilsfytihvrzlaodfixoyxvyuyvgpck"], 2)) //=> "wkppqsztdkmvcuwvereiupccauycnjutlvvweqilsfytihvrzlaodfixoyxvyuyvgpck"
-console.log(longestConsec(["wlwsasphmxx", "owiaxujylentrklctozmymu", "wpgozvxxiu"], 2)) //=> "wlwsasphmxxowiaxujylentrklctozmymu"
-console.log(longestConsec(["zone", "abigail", "theta", "form", "libe", "zas"], -2)) //=> ''
-console.log(longestConsec(["it", "wkppv", "ixoyx", "3452", "zzzzzzzzzzzz"], 3)) //=> "ixoyx3452zzzzzzzzzzzz"
-console.log(longestConsec(["it", "wkppv", "ixoyx", "3452", "zzzzzzzzzzzz"], 15)) //=> ''
-console.log(longestConsec(["it", "wkppv", "ixoyx", "3452", "zzzzzzzzzzzz"], 0)) //=> ''
-console.log(longestConsec(['test1', 'test2', 'test3'])) //=> 'test1test2'
+console.loglongestConsec(["zone", "abigail", "theta", "form", "libe", "zas"], 2)) //=> "abigailtheta"
+console.loglongestConsec(["ejjjjmmtthh", "zxxuueeg", "aanlljrrrxx", "dqqqaaabbb", "oocccffuucccjjjkkkjyyyeehh"], 1)) //=> "oocccffuucccjjjkkkjyyyeehh"
+console.loglongestConsec([], 3)) //=> ''
+console.loglongestConsec(["itvayloxrp", "wkppqsztdkmvcuwvereiupccauycnjutlv", "vweqilsfytihvrzlaodfixoyxvyuyvgpck"], 2)) //=> "wkppqsztdkmvcuwvereiupccauycnjutlvvweqilsfytihvrzlaodfixoyxvyuyvgpck"
+console.loglongestConsec(["wlwsasphmxx", "owiaxujylentrklctozmymu", "wpgozvxxiu"], 2)) //=> "wlwsasphmxxowiaxujylentrklctozmymu"
+console.loglongestConsec(["zone", "abigail", "theta", "form", "libe", "zas"], -2)) //=> ''
+console.loglongestConsec(["it", "wkppv", "ixoyx", "3452", "zzzzzzzzzzzz"], 3)) //=> "ixoyx3452zzzzzzzzzzzz"
+console.loglongestConsec(["it", "wkppv", "ixoyx", "3452", "zzzzzzzzzzzz"], 15)) //=> ''
+console.loglongestConsec(["it", "wkppv", "ixoyx", "3452", "zzzzzzzzzzzz"], 0)) //=> ''
+console.loglongestConsec(['test1', 'test2', 'test3'])) //=> 'test1test2'
 ```
 2022-3-25
 ```js
@@ -5518,8 +5593,8 @@ console.log(longestConsec(['test1', 'test2', 'test3'])) //=> 'test1test2'
 // if the given string is "" you will return ""
 
 
-console.log(stat("01|15|59, 1|47|16, 01|17|20, 1|32|34, 2|17|17")) //=> "Range: 01|01|18 Average: 01|38|05 Median: 01|32|34"
-console.log(stat("02|15|59, 2|47|16, 02|17|20, 2|32|34, 2|17|17, 2|22|00, 2|31|41")) //=> "Range: 00|31|17 Average: 02|26|18 Median: 02|22|00"
+console.logstat("01|15|59, 1|47|16, 01|17|20, 1|32|34, 2|17|17")) //=> "Range: 01|01|18 Average: 01|38|05 Median: 01|32|34"
+console.logstat("02|15|59, 2|47|16, 02|17|20, 2|32|34, 2|17|17, 2|22|00, 2|31|41")) //=> "Range: 00|31|17 Average: 02|26|18 Median: 02|22|00"
 
 //1 hr= 3600
 // 15 min = 900
@@ -5619,10 +5694,10 @@ function stat(strg){
 // The JavaScript / CoffeeScript tests will pass undefined when this argument is unused.
 // ###Example
 
-console.log(titleCase('a clash of KINGS', 'a an the of')) // should return: 'A Clash of Kings'
-console.log(titleCase('THE WIND IN THE WILLOWS', 'The In')) // should return: 'The Wind in the Willows'
-console.log(titleCase('the quick brown fox')) // should return: 'The Quick Brown Fox'
-console.log(titleCase("First a of in", "an often into"))
+console.logtitleCase('a clash of KINGS', 'a an the of')) // should return: 'A Clash of Kings'
+console.logtitleCase('THE WIND IN THE WILLOWS', 'The In')) // should return: 'The Wind in the Willows'
+console.logtitleCase('the quick brown fox')) // should return: 'The Quick Brown Fox'
+console.logtitleCase("First a of in", "an often into"))
 
 function titleCase(title, minorWords) {
   // Handle empty titles
@@ -5673,10 +5748,10 @@ function titleCase(title, minorWords) {
 // If it is the case we will return k, if not return -1.
 // Note: n and p will always be given as strictly positive integers.
 
-console.log(digPow(89, 1)) // should return 1 since 8¹ + 9² = 89 = 89 * 1
-console.log(digPow(92, 1)) // should return -1 since there is no k such as 9¹ + 2² equals 92 * k
-console.log(digPow(695, 2)) // should return 2 since 6² + 9³ + 5⁴= 1390 = 695 * 2
-console.log(digPow(46288, 3)) // should return 51 since 4³ + 6⁴+ 2⁵ + 8⁶ + 8⁷ = 2360688 = 46288 * 51
+console.logdigPow(89, 1)) // should return 1 since 8¹ + 9² = 89 = 89 * 1
+console.logdigPow(92, 1)) // should return -1 since there is no k such as 9¹ + 2² equals 92 * k
+console.logdigPow(695, 2)) // should return 2 since 6² + 9³ + 5⁴= 1390 = 695 * 2
+console.logdigPow(46288, 3)) // should return 51 since 4³ + 6⁴+ 2⁵ + 8⁶ + 8⁷ = 2360688 = 46288 * 51
 
 // Take in a large number and second number
 // For each digit in the large number:
@@ -5745,12 +5820,12 @@ function digPowV2(n, p) {
 // "  *\n ***\n*****\n ***\n  *\n"
 
 // Tests
-console.log(diamond(1)) // => "*/n"
-console.log(diamond(3)) // => " *\n***\n *\n"
-console.log(diamond(5)) // => "  *\n ***\n*****\n ***\n  *\n"
-console.log(diamond(2)) // => null
-console.log(diamond(-3)) // => null
-console.log(diamond(0)) // => null
+console.logdiamond(1)) // => "*/n"
+console.logdiamond(3)) // => " *\n***\n *\n"
+console.logdiamond(5)) // => "  *\n ***\n*****\n ***\n  *\n"
+console.logdiamond(2)) // => null
+console.logdiamond(-3)) // => null
+console.logdiamond(0)) // => null
 
 function diamond(d){
   // Create empty array to hold lines we will create
@@ -5795,7 +5870,7 @@ function diamond(d){
 // "a" = 1, "b" = 2, etc.
 
 // Example
-console.log(alphabetPosition("The sunset sets at twelve o' clock.")) //=> "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 15 3 11"
+console.logalphabetPosition("The sunset sets at twelve o' clock.")) //=> "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 15 3 11"
 
 function alphabetPosition(text) {
   // Key to check what number should replace a value
@@ -5828,7 +5903,7 @@ function alphabetPosition(text) {
 // So there are 11 digits 1 for the squares of numbers between 0 and 25.
 // Note that 121 has twice the digit 1.
 
-console.log(nbDig(25, 1)) //=> 11
+console.lognbDig(25, 1)) //=> 11
 
 function nbDig(n, d) {
   // empty array to hold values
@@ -5868,9 +5943,9 @@ function nbDigV2(n, d) {
 // All spaces in the string should be retained.
 
 // Examples
-console.log(reverseWords("Hello There!")); // => "olleH !erehT"
-console.log(reverseWords("This is an example!")) //=> "sihT si na !elpmaxe"
-console.log(reverseWords("double  spaces")) //=> "elbuod  secaps"
+console.logreverseWords("Hello There!")); // => "olleH !erehT"
+console.logreverseWords("This is an example!")) //=> "sihT si na !elpmaxe"
+console.logreverseWords("double  spaces")) //=> "elbuod  secaps"
 
 
 
@@ -5900,14 +5975,14 @@ function reverseWords(str) {
 
 // You can assume all values in the array are numbers.
 
-console.log(smallEnough([66, 101], 200)); // true
-console.log(smallEnough([78, 117, 110, 99, 104, 117, 107, 115], 100)); // false
-console.log(smallEnough([101, 45, 75, 105, 99, 107], 107)); // true 
-console.log(smallEnough([80, 117, 115, 104, 45, 85, 112, 115], 120)); // true
-console.log(smallEnoughV2([66, 101], 200)); // true
-console.log(smallEnoughV2([78, 117, 110, 99, 104, 117, 107, 115], 100)); // false
-console.log(smallEnoughV2([101, 45, 75, 105, 99, 107], 107)); // true 
-console.log(smallEnoughV2([80, 117, 115, 104, 45, 85, 112, 115], 120)); // true
+console.logsmallEnough([66, 101], 200)); // true
+console.logsmallEnough([78, 117, 110, 99, 104, 117, 107, 115], 100)); // false
+console.logsmallEnough([101, 45, 75, 105, 99, 107], 107)); // true 
+console.logsmallEnough([80, 117, 115, 104, 45, 85, 112, 115], 120)); // true
+console.logsmallEnoughV2([66, 101], 200)); // true
+console.logsmallEnoughV2([78, 117, 110, 99, 104, 117, 107, 115], 100)); // false
+console.logsmallEnoughV2([101, 45, 75, 105, 99, 107], 107)); // true 
+console.logsmallEnoughV2([80, 117, 115, 104, 45, 85, 112, 115], 120)); // true
 
 function smallEnough(a, limit) {
   // Reduce array to boolean value
@@ -5934,10 +6009,10 @@ function smallEnoughV2(a, limit) {
 // "www.codewars.com#about" --> "www.codewars.com"
 // "www.codewars.com?page=1" -->"www.codewars.com?page=1"
 
-console.log(removeUrlAnchor('www.codewars.com#about')); // => www.codewars.com
-console.log(removeUrlAnchor('www.codewars.com?page=1')); // => www.codewars.com?page=1
-console.log(removeUrlAnchorV2('www.codewars.com#about')); // => www.codewars.com
-console.log(removeUrlAnchorV2('www.codewars.com?page=1')); // => www.codewars.com?page=1
+console.logremoveUrlAnchor('www.codewars.com#about')); // => www.codewars.com
+console.logremoveUrlAnchor('www.codewars.com?page=1')); // => www.codewars.com?page=1
+console.logremoveUrlAnchorV2('www.codewars.com#about')); // => www.codewars.com
+console.logremoveUrlAnchorV2('www.codewars.com?page=1')); // => www.codewars.com?page=1
 
 function removeUrlAnchor(url) {
   return url.includes('#') ? url.slice(0, url.indexOf('#')) : url;
@@ -5982,12 +6057,12 @@ const removeUrlAnchorV2 = (url) => url.split("#")[0];
 // p0 and p are positive integers(> 0)
 
 // Examples:
-console.log(nbYear(1500, 5, 100, 5000)) //=> 15
-console.log(nbYear(1500000, 2.5, 10000, 2000000)) //=> 10
-console.log(nbYear(1500000, 0.25, 1000, 2000000)) // => 94
-console.log(nbYearV2(1500, 5, 100, 5000)) //=> 15
-console.log(nbYearV2(1500000, 2.5, 10000, 2000000)) //=> 10
-console.log(nbYearV2(1500000, 0.25, 1000, 2000000)) // => 94
+console.lognbYear(1500, 5, 100, 5000)) //=> 15
+console.lognbYear(1500000, 2.5, 10000, 2000000)) //=> 10
+console.lognbYear(1500000, 0.25, 1000, 2000000)) // => 94
+console.lognbYearV2(1500, 5, 100, 5000)) //=> 15
+console.lognbYearV2(1500000, 2.5, 10000, 2000000)) //=> 10
+console.lognbYearV2(1500000, 0.25, 1000, 2000000)) // => 94
 // Note:
 // Don't forget to convert the percent parameter as a percentage in the body of your function: 
 // if the parameter percent is 2 you have to convert it to 0.02.
@@ -6028,9 +6103,9 @@ function nbYearV2(p0, percent, aug, p) {
 // Write a function that returns both the minimum and maximum number of the given list/array.
 
 // Examples
-console.log(minMax([1, 2, 3, 4, 5]))   //== [1,5]
-console.log(minMax([2334454, 5]))   //== [5, 2334454]
-console.log(minMax([1]))           //== [1, 1]
+console.logminMax([1, 2, 3, 4, 5]))   //== [1,5]
+console.logminMax([2334454, 5]))   //== [5, 2334454]
+console.logminMax([1]))           //== [1, 1]
 // Remarks
 // All arrays or lists will always have at least one element, so you don't need to check the length. 
 // Also, your function will always get an array or a list, you don't have to check for null, undefined or similar.
@@ -6064,9 +6139,9 @@ function minMaxV2(arr) {
 }
 
 // Examples
-console.log(minMaxV2([1, 2, 3, 4, 5]))   //== [1,5]
-console.log(minMaxV2([2334454, 5]))   //== [5, 2334454]
-console.log(minMaxV2([1]))           //== [1, 1]
+console.logminMaxV2([1, 2, 3, 4, 5]))   //== [1,5]
+console.logminMaxV2([2334454, 5]))   //== [5, 2334454]
+console.logminMaxV2([1]))           //== [1, 1]
 ```
 2022-3-15
 ```js
@@ -6099,9 +6174,9 @@ function sumDigits(number) {
 }
 
 // Test Cases
-console.log(sumDigits(10)); // 1
-console.log(sumDigits(99)); // 18
-console.log(sumDigits(-32)); // 5
+console.logsumDigits(10)); // 1
+console.logsumDigits(99)); // 18
+console.logsumDigits(-32)); // 5
 
 
 // Another solution I liked
@@ -6115,7 +6190,7 @@ function sumDigitsV2(number) {
 }
 
 // Test Cases
-console.log(sumDigitsV2(10)); // 1
-console.log(sumDigitsV2(99)); // 18
-console.log(sumDigitsV2(-32)); // 5
+console.logsumDigitsV2(10)); // 1
+console.logsumDigitsV2(99)); // 18
+console.logsumDigitsV2(-32)); // 5
 ```
