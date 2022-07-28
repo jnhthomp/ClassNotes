@@ -1,3 +1,18 @@
+2022-7-27
+```js
+// Divide and Conquer (7 kyu)
+//
+// Given a mixed array of number and string representations of integers,
+// add up the string integers 
+// and subtract this from the total of the non-string integers.
+//
+// Return as a number.
+
+function divCon(x){
+  x = x.reduce((acc, el) => typeof el === 'string' ? [acc[0] + +el, acc[1]] : [acc[0], acc[1] + el], [0, 0]);
+  return x[1] - x[0]
+}
+```
 2022-7-26
 ```js
 // Task
